@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "AstraSk",
+    "slug": "horary-astrology",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "astrask",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#070714"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.astrask.horary",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Your exact location at the moment of asking is required to cast an accurate horary chart."
+      }
+    },
+    "android": {
+      "package": "com.astrask.horary",
+      "adaptiveIcon": {
+        "backgroundColor": "#070714",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "plugins": [
+      ["expo-router", { "root": "src/app" }],
+      "expo-secure-store",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/CormorantGaramond-Regular.ttf",
+            "./assets/fonts/CormorantGaramond-Medium.ttf",
+            "./assets/fonts/CormorantGaramond-Bold.ttf",
+            "./assets/fonts/Inter-Regular.ttf",
+            "./assets/fonts/Inter-Medium.ttf",
+            "./assets/fonts/Inter-SemiBold.ttf"
+          ]
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Your exact location at the moment of asking is required to cast an accurate horary chart."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

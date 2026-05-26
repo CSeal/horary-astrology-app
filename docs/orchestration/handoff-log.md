@@ -76,3 +76,12 @@ Records completed stage transitions, gate status, and next-stage routing for the
   "blockers": []
 }
 ```
+
+## Stage4-Architecture — 2026-05-26
+status: COMPLETE
+gate5: PASS
+gate6: PASS
+artifacts: [docs/technical-architecture.md, docs/api-integration-spec.md, docs/quality-gates.md, docs/delivery-roadmap.md, docs/superpowers/plans/partition-map.md]
+expo_initialized: true
+next_stage: Stage5a-Foundation
+blockers: []

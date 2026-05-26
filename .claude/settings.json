@@ -3,7 +3,21 @@
     "allow": [
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(npx create-expo-app@latest . --template tabs@sdk-55)",
+      "Bash(npx create-expo-app@latest . --template tabs@sdk-55 --yes)",
+      "Bash(npx create-expo-app@latest --help)",
+      "Read(//private/tmp/**)",
+      "Bash(npx create-expo-app@latest horary-init --template tabs@sdk-55 --no-install)",
+      "Bash(ls /tmp/horary-init/ && echo \"---\" && ls /tmp/horary-init/src/ 2>/dev/null || echo \"no src/\" && ls /tmp/horary-init/app/ 2>/dev/null || echo \"no app/\")",
+      "Read(//tmp/horary-init/**)",
+      "Bash(cp -n /tmp/horary-init/.gitignore /Users/user/Dev/react-native/horary-astrology-v1-app/.gitignore)",
+      "Bash(cp -rn /tmp/horary-init/.vscode /Users/user/Dev/react-native/horary-astrology-v1-app/)",
+      "Bash(cp /tmp/horary-init/package.json /Users/user/Dev/react-native/horary-astrology-v1-app/package.json)",
+      "Bash(cp /tmp/horary-init/tsconfig.json /Users/user/Dev/react-native/horary-astrology-v1-app/tsconfig.json)",
+      "Bash(cp /tmp/horary-init/app.json /Users/user/Dev/react-native/horary-astrology-v1-app/app.json)",
+      "Bash(npm install *)",
+      "Bash(npx expo *)"
     ]
   }
 }
