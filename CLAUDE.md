@@ -135,3 +135,63 @@ If any required item is not complete, coding remains closed.
 ## Change Management
 - Baseline and governance updates are approved by project owner only.
 - Any governance change must include rationale and impacted gates/commands.
+
+---
+
+## Coding Conventions (enforced by ESLint + TypeScript)
+
+### Imports — CSS components
+**ALWAYS import `View`, `Text`, `ScrollView`, `Pressable`, `TextInput`, `TouchableOpacity` from `@/tw`, NOT from `react-native`.**
+
+```ts
+// ✅ Correct
+import { View, Text, ScrollView } from '@/tw';
+
+// ❌ Wrong — className won't work, ESLint error
+import { View, Text } from 'react-native';
+```
+
+**Why:** `globalClassNamePolyfill` is disabled in `metro.config.js` to preserve `PlatformColor` in CSS variables. Without it, `className` prop has no effect on plain RN components. `src/tw/index.tsx` wraps them with `useCssElement` from `react-native-css`.
+
+### Styling
+- No `StyleSheet.create()` — NativeWind `className` only
+- No hardcoded hex colors (ESLint warns) — use tokens from `src/constants/theme.ts`
+- No inline `style={{ color: '#...' }}` — use `className="text-accent-gold"` instead
+
+### Strings / i18n
+- No hardcoded JSX strings — all via `t('key')` from `react-i18next`
+
+### TypeScript
+- No `any` — use proper interfaces from `src/types/`
+- SVG color props from `theme.ts` — never inline
+
+### Verification commands
+```bash
+npm run typecheck   # tsc --noEmit
+npm run lint        # eslint src/
+npm run test        # jest
+```
+
+---
+
+## Active Expo Skills
+
+Installed via `npx skills add expo/skills` into `.claude/skills/`. Auto-discovered by Claude Code based on context.
+
+| Skill | When it activates |
+|---|---|
+| `expo-tailwind-setup` | NativeWind v5, `className`, CSS variables, `@/tw` imports |
+| `building-native-ui` | UI components, navigation, animations, Expo Router |
+| `native-data-fetching` | `fetch`, React Query, axios, SecureStore, offline |
+| `expo-deployment` | EAS Build, App Store, Play Store, `eas.json` |
+| `upgrading-expo` | SDK upgrades, dependency conflicts |
+| `expo-dev-client` | Custom dev builds, TestFlight |
+| `expo-cicd-workflows` | EAS Workflows, CI/CD YAML |
+| `expo-api-routes` | Expo Router API routes, EAS Hosting |
+| `expo-module` | Native modules, Swift, Kotlin |
+| `expo-brownfield` | Embedding RN in existing native apps |
+| `expo-ui-swiftui` | SwiftUI components via `@expo/ui` |
+| `expo-ui-jetpack-compose` | Jetpack Compose via `@expo/ui` |
+| `eas-update-insights` | OTA update health, crash rates |
+| `use-dom` | Expo DOM components, webviews |
+| `add-app-clip` | iOS App Clip targets |

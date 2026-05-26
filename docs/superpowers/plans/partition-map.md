@@ -87,7 +87,7 @@ Sprint C. Depends on Batch B. Runs in parallel with Batch D.
 ```
 src/app/(tabs)/index.tsx
 src/app/(tabs)/journal.tsx
-src/app/result/[id].tsx
+src/app/(tabs)/result/[id].tsx
 src/components/AskForm.tsx
 src/components/VerdictCard.tsx
 src/components/SignificatorRow.tsx
@@ -135,7 +135,7 @@ Cross-batch collision check (manual):
 | `src/stores/questionsStore.ts` | — | — | C | — |
 | `src/app/(tabs)/index.tsx` | — | — | C | — |
 | `src/app/(tabs)/journal.tsx` | — | — | C | — |
-| `src/app/result/[id].tsx` | — | — | C | — |
+| `src/app/(tabs)/result/[id].tsx` | — | — | C | — |
 | `src/app/(tabs)/settings.tsx` | — | — | — | D |
 | `src/app/onboarding.tsx` | — | — | — | D |
 | `src/components/svg/StarField.tsx` | — | — | — | D |

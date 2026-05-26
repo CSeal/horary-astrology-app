@@ -1,3 +1,61 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+
+/* Cosmos Dark — AstraSk design tokens */
+@layer theme {
+  @theme {
+    /* Background tokens */
+    --color-bg-base:    #070714;
+    --color-bg-surface: #12102A;
+    --color-bg-card:    #1C1940;
+    --color-bg-overlay: #0A091F;
+
+    /* Accent tokens */
+    --color-accent-gold:     #F5C842;
+    --color-accent-violet:   #8B5CF6;
+    --color-accent-gold-dim: #7A6421;
+
+    /* Verdict semantic colors */
+    --color-yes:     #22D3A4;
+    --color-no:      #F87171;
+    --color-maybe:   #FBBF24;
+    --color-unclear: #9B93B8;
+
+    /* Text tokens */
+    --color-text-primary:   #F0EEFF;
+    --color-text-secondary: #9B93B8;
+    --color-text-disabled:  #4A4465;
+    --color-text-inverse:   #070714;
+
+    /* Border tokens */
+    --color-border:       rgba(240, 238, 255, 0.08);
+    --color-border-focus: rgba(245, 200, 66, 0.4);
+
+    /* Custom font families */
+    --font-cormorant: "CormorantGaramond-Regular";
+    --font-cormorant-medium: "CormorantGaramond-Medium";
+    --font-cormorant-bold: "CormorantGaramond-Bold";
+    --font-inter: "Inter-Regular";
+    --font-inter-medium: "Inter-Medium";
+    --font-inter-semibold: "Inter-SemiBold";
+  }
+}
+
+/* Platform-specific font families */
+@media android {
+  :root {
+    --font-mono: monospace;
+    --font-sans: normal;
+    --font-serif: serif;
+  }
+}
+
+@media ios {
+  :root {
+    --font-mono: ui-monospace;
+    --font-sans: system-ui;
+    --font-serif: ui-serif;
+    --font-rounded: ui-rounded;
+  }
+}

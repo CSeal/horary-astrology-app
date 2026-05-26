@@ -31,21 +31,21 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: t('a11y.homeTab'),
-          accessibilityLabel: t('a11y.homeTab'),
+          tabBarAccessibilityLabel: t('a11y.homeTab'),
         }}
       />
       <Tabs.Screen
         name="journal"
         options={{
           title: t('a11y.journalTab'),
-          accessibilityLabel: t('a11y.journalTab'),
+          tabBarAccessibilityLabel: t('a11y.journalTab'),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: t('a11y.settingsTab'),
-          accessibilityLabel: t('a11y.settingsTab'),
+          tabBarAccessibilityLabel: t('a11y.settingsTab'),
         }}
       />
       <Tabs.Screen
