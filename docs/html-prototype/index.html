@@ -1,0 +1,1774 @@
+<!-- created_by: claude-sonnet | updated_by: claude-sonnet | source_inputs: ux-flows.md, prd-v1.md, mvp-scope.md, design-system-brief.md | reviewed_by: owner-pending -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AstraSk — Prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== CSS RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ===== DESIGN TOKENS ===== */
+    :root {
+      --bg-base:        #070714;
+      --bg-surface:     #12102A;
+      --bg-card:        #1C1940;
+      --bg-overlay:     #0A091F;
+
+      --accent-gold:    #F5C842;
+      --accent-violet:  #8B5CF6;
+      --accent-gold-dim:#7A6421;
+
+      --yes:            #22D3A4;
+      --yes-glow:       rgba(34,211,164,0.15);
+      --yes-glow-strong:rgba(34,211,164,0.30);
+      --no:             #F87171;
+      --no-glow:        rgba(248,113,113,0.15);
+      --no-glow-strong: rgba(248,113,113,0.30);
+      --maybe:          #FBBF24;
+      --maybe-glow:     rgba(251,191,36,0.15);
+      --unclear:        #9B93B8;
+      --unclear-glow:   rgba(155,147,184,0.15);
+
+      --text-primary:   #F0EEFF;
+      --text-secondary: #9B93B8;
+      --text-disabled:  #4A4465;
+      --text-inverse:   #070714;
+
+      --border:         rgba(240,238,255,0.08);
+      --border-focus:   rgba(245,200,66,0.4);
+
+      --radius-sm:  8px;
+      --radius-md:  12px;
+      --radius-lg:  16px;
+      --radius-xl:  24px;
+      --radius-full:9999px;
+
+      --shadow-card:    0 2px 16px rgba(0,0,0,0.4);
+      --shadow-button:  0 0 20px rgba(245,200,66,0.3);
+
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body:    'Inter', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+    }
+
+    /* ===== PAGE SCAFFOLD ===== */
+    body {
+      background: #0C0B1A;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: var(--font-body);
+      overflow: hidden;
+    }
+
+    /* ===== PHONE FRAME ===== */
+    .phone-frame {
+      position: relative;
+      width: 390px;
+      height: 844px;
+      background: var(--bg-base);
+      border-radius: 44px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,0.07),
+        0 0 0 10px #1a1830,
+        0 0 0 12px rgba(255,255,255,0.04),
+        0 50px 120px rgba(0,0,0,0.8);
+    }
+
+    /* ===== SCREEN BASE ===== */
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      background: var(--bg-base);
+      overflow: hidden;
+    }
+    .screen.active { display: flex; }
+
+    /* ===== STAR CANVAS (background particles) ===== */
+    .star-bg {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: star-pulse var(--dur, 3s) ease-in-out infinite alternate,
+                 star-drift calc(var(--dur, 3s) * 3) ease-in-out infinite alternate;
+    }
+    @keyframes star-pulse {
+      from { opacity: var(--op-low, 0.1); }
+      to   { opacity: var(--op-high, 0.5); }
+    }
+    @keyframes star-drift {
+      from { transform: translate(0, 0); }
+      to   { transform: translate(var(--dx, 2px), var(--dy, -2px)); }
+    }
+
+    /* ===== SCROLL CONTAINER ===== */
+    .screen-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+      z-index: 1;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .screen-scroll::-webkit-scrollbar { display: none; }
+
+    .screen-content {
+      padding: 0 20px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== STATUS BAR ===== */
+    .status-bar {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .status-time {
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .status-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      color: var(--text-primary);
+    }
+    .status-icons svg { width: 16px; height: 16px; fill: currentColor; }
+    .status-battery {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* ===== NAVIGATION HEADER ===== */
+    .nav-header {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 2;
+    }
+    .nav-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text-primary);
+      letter-spacing: 0.5px;
+    }
+    .nav-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent-gold);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 8px 0;
+      user-select: none;
+      transition: opacity 0.15s;
+    }
+    .nav-back:active { opacity: 0.7; }
+    .nav-back svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }
+    .nav-icon-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.15s;
+      border-radius: var(--radius-md);
+    }
+    .nav-icon-btn:hover { color: var(--text-primary); }
+    .nav-icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* ===== TAB BAR ===== */
+    .tab-bar {
+      height: 72px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      padding-top: 8px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 4px 0;
+      transition: opacity 0.15s;
+      user-select: none;
+    }
+    .tab-item:active { opacity: 0.7; }
+    .tab-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--text-disabled);
+      transition: color 0.2s;
+    }
+    .tab-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .tab-item.active .tab-icon { color: var(--accent-gold); }
+    .tab-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-disabled);
+      transition: color 0.2s;
+    }
+    .tab-item.active .tab-label { color: var(--accent-gold); }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 16px 24px;
+      background: var(--accent-gold);
+      color: var(--text-inverse);
+      font-family: var(--font-body);
+      font-size: 17px;
+      font-weight: 600;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: var(--shadow-button);
+      transition: transform 0.1s ease-out, filter 0.1s ease-out;
+      user-select: none;
+      letter-spacing: 0.1px;
+    }
+    .btn-primary:active { transform: scale(0.97); filter: brightness(0.9); }
+
+    .btn-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px 24px;
+      background: transparent;
+      color: var(--accent-gold);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      border: 1px solid rgba(245,200,66,0.4);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: opacity 0.15s;
+      user-select: none;
+    }
+    .btn-secondary:active { opacity: 0.7; }
+
+    /* ===== SECTION LABEL ===== */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 0 16px;
+    }
+
+    /* ===== CARD ===== */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-card);
+      overflow: hidden;
+    }
+
+    /* =====================================================
+       SCREEN 1: ONBOARDING
+    ===================================================== */
+    #screen-onboarding .star-bg { z-index: 0; }
+    #screen-onboarding .screen-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 60px 32px 40px;
+      z-index: 1;
+    }
+
+    .onboarding-top { text-align: center; }
+    .onboarding-star-icon {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 20px;
+      display: block;
+      filter: drop-shadow(0 0 20px rgba(245,200,66,0.5));
+    }
+    .onboarding-app-name {
+      font-family: var(--font-display);
+      font-size: 52px;
+      font-weight: 500;
+      color: var(--text-primary);
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .onboarding-tagline {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 400;
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .onboarding-features {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }
+    .feature-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: rgba(28,25,64,0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .feature-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .feature-text {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+
+    .onboarding-bottom { width: 100%; }
+    .onboarding-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-disabled);
+      margin-top: 12px;
+    }
+
+    .step-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 16px;
+    }
+    .step-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--text-disabled);
+      transition: background 0.2s, width 0.2s;
+    }
+    .step-dot.active {
+      background: var(--accent-gold);
+      width: 20px;
+      border-radius: 4px;
+    }
+
+    /* =====================================================
+       SCREEN 2: HOME
+    ===================================================== */
+    #screen-home .nav-header { background: transparent; border-bottom: none; }
+    .home-app-name {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 500;
+      color: var(--text-primary);
+      letter-spacing: 1px;
+    }
+    .home-content { padding: 8px 20px 20px; }
+
+    .ask-label {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .ask-sublabel {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .question-input-wrap { position: relative; margin-bottom: 8px; }
+    .question-input {
+      width: 100%;
+      min-height: 120px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 16px;
+      resize: none;
+      outline: none;
+      transition: border-color 0.15s;
+      display: block;
+    }
+    .question-input::placeholder { color: var(--text-disabled); }
+    .question-input:focus { border-color: var(--border-focus); }
+    .char-count {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: right;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+    }
+
+    .location-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .location-pin { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+    .location-city {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .location-coords {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      margin-top: 2px;
+    }
+
+    .question-counter {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 14px;
+    }
+    .question-counter span { color: var(--accent-gold); font-weight: 600; }
+
+    /* =====================================================
+       SCREEN 3: LOADING
+    ===================================================== */
+    #screen-loading {
+      align-items: center;
+      justify-content: center;
+    }
+    #screen-loading .star-bg { z-index: 0; }
+    .loading-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 0 32px;
+      text-align: center;
+    }
+
+    .orbit-container {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      margin-bottom: 8px;
+    }
+    .orbit-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 28px; height: 28px;
+      background: radial-gradient(circle, #8B5CF6, #5b3d9e);
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(139,92,246,0.6);
+      animation: center-pulse 1.5s ease-in-out infinite alternate;
+    }
+    @keyframes center-pulse {
+      from { box-shadow: 0 0 15px rgba(139,92,246,0.4); transform: translate(-50%,-50%) scale(0.92); }
+      to   { box-shadow: 0 0 30px rgba(139,92,246,0.8); transform: translate(-50%,-50%) scale(1.08); }
+    }
+    .orbit-ring {
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 1px dashed rgba(139,92,246,0.2);
+    }
+    .orbit-planet {
+      position: absolute;
+      width: 14px; height: 14px;
+      background: radial-gradient(circle, #F5C842, #c49b1e);
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(245,200,66,0.7);
+      top: 50%; left: 50%;
+      transform-origin: -46px 0;
+      animation: orbit 2s linear infinite;
+    }
+    @keyframes orbit {
+      from { transform: rotate(0deg) translateX(46px) rotate(0deg); }
+      to   { transform: rotate(360deg) translateX(46px) rotate(-360deg); }
+    }
+    .orbit-trail {
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      border-top-color: rgba(245,200,66,0.3);
+      border-right-color: rgba(245,200,66,0.15);
+      animation: orbit 2s linear infinite;
+    }
+
+    .loading-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 0.2px;
+    }
+    .loading-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: -16px;
+    }
+
+    .progress-bar-track {
+      width: 200px;
+      height: 3px;
+      background: var(--bg-card);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+      border-radius: var(--radius-full);
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%   { transform: translateX(-200%); }
+      100% { transform: translateX(400%); }
+    }
+
+    .loading-question {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text-secondary);
+      max-width: 280px;
+      line-height: 1.6;
+    }
+
+    /* =====================================================
+       SCREEN 4: VERDICT
+    ===================================================== */
+    .verdict-question {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .verdict-card {
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(34,211,164,0.3);
+      background: var(--yes-glow);
+      padding: 28px 24px 24px;
+      box-shadow: 0 0 48px var(--yes-glow-strong);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .verdict-word {
+      font-family: var(--font-display);
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--yes);
+      line-height: 1;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      text-shadow: 0 0 30px rgba(34,211,164,0.5);
+    }
+    .confidence-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .conf-dots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .conf-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--bg-card);
+    }
+    .conf-dot.filled { background: var(--yes); box-shadow: 0 0 6px rgba(34,211,164,0.5); }
+    .conf-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--yes);
+      letter-spacing: 1px;
+    }
+
+    .significators-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0 10px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .significators-toggle .section-label { margin-bottom: 0; }
+    .toggle-arrow {
+      font-size: 12px;
+      color: var(--accent-gold);
+      transition: transform 0.2s;
+    }
+    .toggle-arrow.open { transform: rotate(180deg); }
+
+    .sig-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .sig-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .sig-symbol {
+      font-size: 22px;
+      color: var(--accent-violet);
+      width: 28px;
+      flex-shrink: 0;
+      text-align: center;
+      line-height: 1;
+    }
+    .sig-info { flex: 1; }
+    .sig-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .sig-role {
+      font-size: 11px;
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+    .sig-detail {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+    .sig-check { font-size: 14px; color: var(--yes); }
+
+    .aspect-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: rgba(139,92,246,0.08);
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+    }
+    .aspect-symbol { font-size: 16px; color: var(--accent-violet); }
+    .aspect-text { font-size: 13px; color: var(--text-secondary); flex: 1; }
+    .aspect-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--yes);
+      background: rgba(34,211,164,0.12);
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+    }
+
+    .summary-section { margin-bottom: 20px; }
+    .summary-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+
+    .verdict-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      margin-bottom: 20px;
+    }
+    .verdict-meta .dot-sep { color: var(--text-disabled); }
+
+    /* =====================================================
+       SCREEN 5: JOURNAL
+    ===================================================== */
+    .month-header {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      padding: 4px 0 10px;
+    }
+
+    .journal-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .journal-item {
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      padding: 14px 14px 14px 17px;
+      border-left: 3px solid var(--yes);
+      cursor: pointer;
+      transition: opacity 0.15s;
+      user-select: none;
+    }
+    .journal-item:active { opacity: 0.7; }
+    .journal-item.no { border-left-color: var(--no); }
+    .journal-item.maybe { border-left-color: var(--maybe); }
+    .journal-item.unclear { border-left-color: var(--unclear); }
+
+    .journal-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .journal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(34,211,164,0.15);
+      color: var(--yes);
+    }
+    .journal-badge.no { background: rgba(248,113,113,0.15); color: var(--no); }
+    .journal-badge.maybe { background: rgba(251,191,36,0.15); color: var(--maybe); }
+    .journal-badge.unclear { background: rgba(155,147,184,0.15); color: var(--unclear); }
+
+    .journal-date {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+    }
+    .journal-question {
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .journal-item-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .journal-conf {
+      font-size: 11px;
+      color: var(--text-disabled);
+    }
+    .journal-arrow {
+      font-size: 14px;
+      color: var(--text-disabled);
+    }
+
+    /* =====================================================
+       SCREEN 6: SETTINGS
+    ===================================================== */
+    .settings-section { margin-bottom: 24px; }
+
+    .settings-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row-label {
+      font-size: 15px;
+      color: var(--text-primary);
+      font-weight: 400;
+    }
+    .settings-row-value {
+      font-size: 14px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .settings-picker {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 5px 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    .settings-picker-arrow { color: var(--text-secondary); font-size: 10px; }
+
+    .usage-track {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-base);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+      margin-top: 8px;
+      margin-bottom: 6px;
+    }
+    .usage-fill {
+      height: 100%;
+      width: 80%;
+      background: linear-gradient(90deg, var(--accent-gold), #c49b1e);
+      border-radius: var(--radius-full);
+    }
+    .usage-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+    .usage-count { color: var(--accent-gold); font-weight: 600; }
+
+    .api-key-display {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      color: var(--text-secondary);
+      letter-spacing: 3px;
+      flex: 1;
+    }
+    .edit-icon-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-gold);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .edit-icon-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    .settings-note {
+      font-size: 12px;
+      color: var(--text-secondary);
+      padding: 6px 16px 0;
+    }
+
+    .version-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    /* ===== MISC UTILITIES ===== */
+    .mt-4 { margin-top: 4px; }
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-20 { margin-top: 20px; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-16 { margin-bottom: 16px; }
+
+    /* ===== VERDICT SCREEN REVEAL ANIMATION ===== */
+    .verdict-card-anim {
+      animation: verdict-reveal 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes verdict-reveal {
+      from { transform: scale(0.82); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    /* ===== PAGE TITLE (large screen) ===== */
+    .screen-page-title {
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding: 16px 20px 8px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+     PHONE FRAME
+================================================================ -->
+<div class="phone-frame">
+
+  <!-- ============================================================
+       SCREEN 1: ONBOARDING
+  ============================================================ -->
+  <div class="screen active" id="screen-onboarding">
+    <!-- Star background -->
+    <div class="star-bg" id="stars-onboarding"></div>
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M5 12.5c0-2.5 3.1-4.5 7-4.5s7 2 7 4.5"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/></svg>
+        <span class="status-battery">100%</span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="screen-content" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:48px 32px 40px;position:relative;z-index:1;">
+      <div class="onboarding-top" style="text-align:center;width:100%;">
+        <span class="onboarding-star-icon">✦</span>
+        <div class="onboarding-app-name">AstraSk</div>
+        <div class="onboarding-tagline">Ask the stars.<br>Get your answer.</div>
+      </div>
+
+      <div class="onboarding-features" style="width:100%;">
+        <div class="feature-row">
+          <span class="feature-icon">✦</span>
+          <span class="feature-text">Instant horary readings</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-icon">☽</span>
+          <span class="feature-text">Traditional William Lilly technique</span>
+        </div>
+        <div class="feature-row">
+          <span class="feature-icon">◎</span>
+          <span class="feature-text">Plain language interpretations</span>
+        </div>
+      </div>
+
+      <div class="onboarding-bottom" style="width:100%;">
+        <button class="btn-primary" onclick="showScreen('home')">✦ &nbsp;Get Started</button>
+        <div class="onboarding-note">Enable location for accurate chart casting</div>
+        <div class="step-dots" style="margin-top:14px;">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /screen-onboarding -->
+
+
+  <!-- ============================================================
+       SCREEN 2: HOME (ASK)
+  ============================================================ -->
+  <div class="screen" id="screen-home">
+    <div class="star-bg" id="stars-home"></div>
+
+    <!-- Status bar -->
+    <div class="status-bar" style="position:relative;z-index:2;">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M5 12.5c0-2.5 3.1-4.5 7-4.5s7 2 7 4.5"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/></svg>
+        <span class="status-battery">100%</span>
+      </div>
+    </div>
+
+    <!-- Nav header -->
+    <div class="nav-header" style="background:transparent;border-bottom:none;">
+      <span class="home-app-name">✦ AstraSk</span>
+      <div class="nav-icon-btn" onclick="showScreen('settings')">
+        <!-- Settings gear -->
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="screen-scroll" style="position:relative;z-index:1;">
+      <div style="padding:8px 20px 20px;">
+        <div class="ask-label">Ask your question</div>
+        <div class="ask-sublabel">Be sincere and specific</div>
+
+        <div class="question-input-wrap">
+          <textarea class="question-input" id="home-textarea" placeholder="Ask a sincere, specific question...&#10;e.g. Will I get the promotion?" rows="5" oninput="updateCharCount(this)">Will I get the job offer this month?</textarea>
+        </div>
+        <div class="char-count" id="char-count">36 / 280</div>
+
+        <div class="location-row">
+          <span class="location-pin">📍</span>
+          <div>
+            <div class="location-city">London, United Kingdom</div>
+            <div class="location-coords">51.5074° N, 0.1278° W</div>
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="startLoading()">✦ &nbsp;Ask the Stars</button>
+
+        <div class="question-counter" style="margin-top:16px;">Questions this month: <span>2 / 5</span></div>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab-item active" onclick="showScreen('home')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <span class="tab-label">Ask</span>
+      </div>
+      <div class="tab-item" onclick="showScreen('journal')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <span class="tab-label">Journal</span>
+      </div>
+    </div>
+  </div><!-- /screen-home -->
+
+
+  <!-- ============================================================
+       SCREEN 3: LOADING
+  ============================================================ -->
+  <div class="screen" id="screen-loading" style="align-items:center;justify-content:center;">
+    <div class="star-bg" id="stars-loading"></div>
+
+    <!-- Status bar -->
+    <div class="status-bar" style="position:absolute;top:0;left:0;right:0;z-index:2;">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M5 12.5c0-2.5 3.1-4.5 7-4.5s7 2 7 4.5"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/></svg>
+        <span class="status-battery">100%</span>
+      </div>
+    </div>
+
+    <div class="loading-content">
+      <!-- Orbit animation -->
+      <div class="orbit-container">
+        <div class="orbit-ring"></div>
+        <div class="orbit-trail"></div>
+        <div class="orbit-center"></div>
+        <div class="orbit-planet"></div>
+      </div>
+
+      <div>
+        <div class="loading-title">Casting your chart...</div>
+        <div class="loading-sub" style="margin-top:6px;">Reading the celestial map</div>
+      </div>
+
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill"></div>
+      </div>
+
+      <div class="loading-question">"Will I get the job offer this month?"</div>
+    </div>
+  </div><!-- /screen-loading -->
+
+
+  <!-- ============================================================
+       SCREEN 4: VERDICT (YES)
+  ============================================================ -->
+  <div class="screen" id="screen-verdict">
+    <!-- Status bar -->
+    <div class="status-bar" style="flex-shrink:0;position:relative;z-index:2;">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M5 12.5c0-2.5 3.1-4.5 7-4.5s7 2 7 4.5"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/></svg>
+        <span class="status-battery">100%</span>
+      </div>
+    </div>
+
+    <!-- Nav header -->
+    <div class="nav-header" style="flex-shrink:0;">
+      <div class="nav-back" onclick="showScreen('home')" id="verdict-back-btn">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </div>
+      <div class="nav-icon-btn" style="opacity:0.35;cursor:default;">
+        <!-- Share (Phase 2 placeholder, disabled) -->
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </div>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="screen-scroll" style="flex:1;">
+      <div style="padding:12px 20px 20px;">
+        <div class="verdict-question">"Will I get the job offer this month?"</div>
+
+        <!-- Verdict card -->
+        <div class="verdict-card verdict-card-anim">
+          <div class="verdict-word">YES ✦</div>
+          <div class="confidence-row">
+            <div class="conf-dots">
+              <div class="conf-dot filled"></div>
+              <div class="conf-dot filled"></div>
+              <div class="conf-dot filled"></div>
+              <div class="conf-dot filled"></div>
+              <div class="conf-dot filled"></div>
+            </div>
+            <span class="conf-label">HIGH</span>
+          </div>
+        </div>
+
+        <!-- Significators toggle -->
+        <div class="significators-toggle" onclick="toggleSig()">
+          <div class="section-label" style="margin-bottom:0;">The Planets Say</div>
+          <span class="toggle-arrow open" id="sig-arrow">▲</span>
+        </div>
+        <div class="divider"></div>
+
+        <div class="sig-list" id="sig-list">
+          <!-- Querent -->
+          <div class="sig-row">
+            <span class="sig-symbol">♃</span>
+            <div class="sig-info">
+              <div class="sig-name">Jupiter</div>
+              <div class="sig-role">You · Querent</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="sig-detail">Sagittarius · H1</div>
+              <div style="margin-top:3px;">
+                <span style="font-size:10px;font-weight:600;color:#070714;background:#F5C842;padding:2px 7px;border-radius:999px;letter-spacing:0.5px;">DOMICILE</span>
+              </div>
+            </div>
+          </div>
+          <!-- Quesited -->
+          <div class="sig-row">
+            <span class="sig-symbol">☉</span>
+            <div class="sig-info">
+              <div class="sig-name">Sun</div>
+              <div class="sig-role">Your goal · Quesited</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="sig-detail">Aries · H10</div>
+              <div style="margin-top:3px;">
+                <span style="font-size:10px;font-weight:600;color:#070714;background:#F5C842;padding:2px 7px;border-radius:999px;letter-spacing:0.5px;">EXALTATION</span>
+              </div>
+            </div>
+          </div>
+          <!-- Moon -->
+          <div class="sig-row">
+            <span class="sig-symbol">☽</span>
+            <div class="sig-info">
+              <div class="sig-name">Moon</div>
+              <div class="sig-role">The Moon</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="sig-detail">Cancer · H3</div>
+              <div style="margin-top:4px;font-size:12px;color:var(--yes);">Not VOC ✓</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aspect -->
+        <div class="aspect-row">
+          <span class="aspect-symbol">△</span>
+          <span class="aspect-text">Jupiter ▷ Applying trine ▷ Sun · 4.2° orb</span>
+          <span class="aspect-badge">Applying ✓</span>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-section">
+          <div class="section-label" style="margin-bottom:10px;">Reading</div>
+          <div class="divider"></div>
+          <p class="summary-text">The situation is moving strongly in your favor. Jupiter, your significator, applies by trine to the Sun in the tenth house of career — a powerful indicator of professional success. The Moon supports the matter and is not void-of-course. The chart is radical and the testimony is clear.</p>
+        </div>
+
+        <!-- Meta -->
+        <div class="verdict-meta">
+          <span>May 25, 2026</span>
+          <span class="dot-sep">·</span>
+          <span>14:32</span>
+          <span class="dot-sep">·</span>
+          <span>📍 London</span>
+        </div>
+
+        <!-- CTA -->
+        <button class="btn-secondary" onclick="showScreen('home')">Ask Another Question</button>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab-item" onclick="showScreen('home')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <span class="tab-label">Ask</span>
+      </div>
+      <div class="tab-item" onclick="showScreen('journal')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <span class="tab-label">Journal</span>
+      </div>
+    </div>
+  </div><!-- /screen-verdict -->
+
+
+  <!-- ============================================================
+       SCREEN 5: JOURNAL
+  ============================================================ -->
+  <div class="screen" id="screen-journal">
+    <!-- Status bar -->
+    <div class="status-bar" style="flex-shrink:0;">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M5 12.5c0-2.5 3.1-4.5 7-4.5s7 2 7 4.5"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/></svg>
+        <span class="status-battery">100%</span>
+      </div>
+    </div>
+
+    <div class="screen-page-title">Journal</div>
+
+    <div class="screen-scroll" style="flex:1;">
+      <div style="padding:4px 20px 20px;">
+        <div class="month-header">May 2026</div>
+
+        <div class="journal-list">
+          <!-- Entry 1: YES -->
+          <div class="journal-item" onclick="showScreen('verdict-from-journal')">
+            <div class="journal-item-top">
+              <span class="journal-badge">✦ YES</span>
+              <span class="journal-date">May 25</span>
+            </div>
+            <div class="journal-question">Will I get the job offer this month?</div>
+            <div class="journal-item-bottom">
+              <span class="journal-conf">Confidence: HIGH</span>
+              <span class="journal-arrow">›</span>
+            </div>
+          </div>
+
+          <!-- Entry 2: NO -->
+          <div class="journal-item no" onclick="showScreen('verdict-from-journal')">
+            <div class="journal-item-top">
+              <span class="journal-badge no">✕ NO</span>
+              <span class="journal-date">May 22</span>
+            </div>
+            <div class="journal-question">Will she call me this week?</div>
+            <div class="journal-item-bottom">
+              <span class="journal-conf">Confidence: MEDIUM</span>
+              <span class="journal-arrow">›</span>
+            </div>
+          </div>
+
+          <!-- Entry 3: UNCLEAR -->
+          <div class="journal-item unclear" onclick="showScreen('verdict-from-journal')">
+            <div class="journal-item-top">
+              <span class="journal-badge unclear">~ UNCLEAR</span>
+              <span class="journal-date">May 20</span>
+            </div>
+            <div class="journal-question">Is this the right investment decision?</div>
+            <div class="journal-item-bottom">
+              <span class="journal-conf">Confidence: LOW</span>
+              <span class="journal-arrow">›</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="month-header" style="margin-top:8px;">April 2026</div>
+        <div class="journal-list">
+          <!-- Entry 4: YES -->
+          <div class="journal-item" onclick="showScreen('verdict-from-journal')">
+            <div class="journal-item-top">
+              <span class="journal-badge">✦ YES</span>
+              <span class="journal-date">Apr 30</span>
+            </div>
+            <div class="journal-question">Should I accept the offer from Berlin?</div>
+            <div class="journal-item-bottom">
+              <span class="journal-conf">Confidence: HIGH</span>
+              <span class="journal-arrow">›</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:center;font-size:11px;font-style:italic;color:var(--text-disabled);margin-top:8px;">
+          Swipe left on any entry to delete
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab-item" onclick="showScreen('home')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <span class="tab-label">Ask</span>
+      </div>
+      <div class="tab-item active" onclick="showScreen('journal')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <span class="tab-label">Journal</span>
+      </div>
+    </div>
+  </div><!-- /screen-journal -->
+
+
+  <!-- ============================================================
+       SCREEN: VERDICT (from journal — same data, back goes to journal)
+  ============================================================ -->
+  <div class="screen" id="screen-verdict-from-journal">
+    <!-- Status bar -->
+    <div class="status-bar" style="flex-shrink:0;position:relative;z-index:2;">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M5 12.5c0-2.5 3.1-4.5 7-4.5s7 2 7 4.5"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/></svg>
+        <span class="status-battery">100%</span>
+      </div>
+    </div>
+
+    <!-- Nav header -->
+    <div class="nav-header" style="flex-shrink:0;">
+      <div class="nav-back" onclick="showScreen('journal')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Journal
+      </div>
+      <div class="nav-icon-btn" style="opacity:0.35;cursor:default;">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      </div>
+    </div>
+
+    <div class="screen-scroll" style="flex:1;">
+      <div style="padding:12px 20px 20px;">
+        <div class="verdict-question">"Will I get the job offer this month?"</div>
+
+        <div class="verdict-card verdict-card-anim">
+          <div class="verdict-word">YES ✦</div>
+          <div class="confidence-row">
+            <div class="conf-dots">
+              <div class="conf-dot filled"></div>
+              <div class="conf-dot filled"></div>
+              <div class="conf-dot filled"></div>
+              <div class="conf-dot filled"></div>
+              <div class="conf-dot filled"></div>
+            </div>
+            <span class="conf-label">HIGH</span>
+          </div>
+        </div>
+
+        <div class="significators-toggle" onclick="toggleSig2()">
+          <div class="section-label" style="margin-bottom:0;">The Planets Say</div>
+          <span class="toggle-arrow open" id="sig-arrow-2">▲</span>
+        </div>
+        <div class="divider"></div>
+
+        <div class="sig-list" id="sig-list-2">
+          <div class="sig-row">
+            <span class="sig-symbol">♃</span>
+            <div class="sig-info">
+              <div class="sig-name">Jupiter</div>
+              <div class="sig-role">You · Querent</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="sig-detail">Sagittarius · H1</div>
+              <div style="margin-top:3px;">
+                <span style="font-size:10px;font-weight:600;color:#070714;background:#F5C842;padding:2px 7px;border-radius:999px;letter-spacing:0.5px;">DOMICILE</span>
+              </div>
+            </div>
+          </div>
+          <div class="sig-row">
+            <span class="sig-symbol">☉</span>
+            <div class="sig-info">
+              <div class="sig-name">Sun</div>
+              <div class="sig-role">Your goal · Quesited</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="sig-detail">Aries · H10</div>
+              <div style="margin-top:3px;">
+                <span style="font-size:10px;font-weight:600;color:#070714;background:#F5C842;padding:2px 7px;border-radius:999px;letter-spacing:0.5px;">EXALTATION</span>
+              </div>
+            </div>
+          </div>
+          <div class="sig-row">
+            <span class="sig-symbol">☽</span>
+            <div class="sig-info">
+              <div class="sig-name">Moon</div>
+              <div class="sig-role">The Moon</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="sig-detail">Cancer · H3</div>
+              <div style="margin-top:4px;font-size:12px;color:var(--yes);">Not VOC ✓</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aspect-row">
+          <span class="aspect-symbol">△</span>
+          <span class="aspect-text">Jupiter ▷ Applying trine ▷ Sun · 4.2° orb</span>
+          <span class="aspect-badge">Applying ✓</span>
+        </div>
+
+        <div class="summary-section">
+          <div class="section-label" style="margin-bottom:10px;">Reading</div>
+          <div class="divider"></div>
+          <p class="summary-text">The situation is moving strongly in your favor. Jupiter, your significator, applies by trine to the Sun in the tenth house of career — a powerful indicator of professional success. The Moon supports the matter and is not void-of-course. The chart is radical and the testimony is clear.</p>
+        </div>
+
+        <div class="verdict-meta">
+          <span>May 25, 2026</span>
+          <span class="dot-sep">·</span>
+          <span>14:32</span>
+          <span class="dot-sep">·</span>
+          <span>📍 London</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab-item" onclick="showScreen('home')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <span class="tab-label">Ask</span>
+      </div>
+      <div class="tab-item active" onclick="showScreen('journal')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <span class="tab-label">Journal</span>
+      </div>
+    </div>
+  </div><!-- /screen-verdict-from-journal -->
+
+
+  <!-- ============================================================
+       SCREEN 6: SETTINGS
+  ============================================================ -->
+  <div class="screen" id="screen-settings">
+    <!-- Status bar -->
+    <div class="status-bar" style="flex-shrink:0;">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M5 12.5c0-2.5 3.1-4.5 7-4.5s7 2 7 4.5"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/></svg>
+        <span class="status-battery">100%</span>
+      </div>
+    </div>
+
+    <!-- Nav header -->
+    <div class="nav-header" style="flex-shrink:0;">
+      <div class="nav-back" onclick="showScreen('home')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </div>
+      <span style="font-size:17px;font-weight:600;color:var(--text-primary);">Settings</span>
+      <div style="width:56px;"></div>
+    </div>
+
+    <div class="screen-scroll" style="flex:1;">
+      <div style="padding:12px 20px 40px;">
+
+        <!-- LANGUAGE section -->
+        <div class="settings-section">
+          <div class="section-label">Language</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <span class="settings-row-label">Language</span>
+              <div class="settings-picker">
+                <span>English</span>
+                <span class="settings-picker-arrow">▾</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LOCATION section -->
+        <div class="settings-section">
+          <div class="section-label">Location</div>
+          <div class="settings-card">
+            <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:4px;">
+              <span class="settings-row-label">Detected timezone</span>
+              <span style="font-family:var(--font-mono);font-size:13px;color:var(--accent-violet);">Europe/London</span>
+              <span style="font-size:11px;color:var(--text-disabled);font-style:italic;">Based on your device location and system timezone</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- USAGE section -->
+        <div class="settings-section">
+          <div class="section-label">Usage</div>
+          <div class="settings-card">
+            <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:0;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <span class="settings-row-label">Questions this month</span>
+                <span style="font-size:14px;font-weight:600;color:var(--accent-gold);">4 / 5</span>
+              </div>
+              <div class="usage-track">
+                <div class="usage-fill"></div>
+              </div>
+              <div class="usage-label">
+                <span>Free tier</span>
+                <span style="color:var(--text-secondary);">Resets June 1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- API KEY section -->
+        <div class="settings-section">
+          <div class="section-label">API Key</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <span class="api-key-display">●●●●●●●●●●●●●●</span>
+              <div class="edit-icon-btn">
+                <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Edit
+              </div>
+            </div>
+          </div>
+          <div class="settings-note">Using: personal key</div>
+          <div style="padding:8px 0 0 0;">
+            <span style="font-size:13px;color:var(--no);cursor:pointer;padding:4px 0;">Remove key</span>
+          </div>
+        </div>
+
+        <!-- ABOUT section -->
+        <div class="settings-section">
+          <div class="section-label">About</div>
+          <div class="settings-card">
+            <div class="settings-row">
+              <span class="settings-row-label">Version</span>
+              <span class="settings-row-value" style="font-family:var(--font-mono);font-size:13px;">1.0.0</span>
+            </div>
+            <div class="settings-row" style="cursor:pointer;">
+              <span class="settings-row-label">Disclaimer</span>
+              <span style="color:var(--text-secondary);font-size:16px;">›</span>
+            </div>
+          </div>
+          <div style="padding:10px 4px 0;">
+            <p style="font-size:12px;color:var(--text-disabled);line-height:1.6;">For entertainment and reflection purposes. Not a substitute for professional advice.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab-item" onclick="showScreen('home')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <span class="tab-label">Ask</span>
+      </div>
+      <div class="tab-item" onclick="showScreen('journal')">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <span class="tab-label">Journal</span>
+      </div>
+    </div>
+  </div><!-- /screen-settings -->
+
+</div><!-- /phone-frame -->
+
+<!-- ================================================================
+     NAVIGATION KEY (outside frame)
+================================================================ -->
+<div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100;">
+  <button onclick="showScreen('onboarding')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Onboarding</button>
+  <button onclick="showScreen('home')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Home</button>
+  <button onclick="showScreen('loading')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Loading</button>
+  <button onclick="showScreen('verdict')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Verdict</button>
+  <button onclick="showScreen('journal')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Journal</button>
+  <button onclick="showScreen('settings')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Settings</button>
+</div>
+
+<script>
+  // ================================================================
+  // STAR PARTICLE GENERATOR
+  // ================================================================
+  function createStars(containerId, count) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    for (let i = 0; i < count; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 2 + 0.8;
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      const opLow = (Math.random() * 0.2 + 0.05).toFixed(2);
+      const opHigh = (parseFloat(opLow) + Math.random() * 0.35 + 0.1).toFixed(2);
+      const dur = (Math.random() * 3 + 2).toFixed(1);
+      const dx = (Math.random() * 6 - 3).toFixed(1);
+      const dy = (Math.random() * 6 - 3).toFixed(1);
+      const delay = (Math.random() * 5).toFixed(1);
+      star.style.cssText = `
+        width: ${size}px;
+        height: ${size}px;
+        left: ${x}%;
+        top: ${y}%;
+        --op-low: ${opLow};
+        --op-high: ${opHigh};
+        --dur: ${dur}s;
+        --dx: ${dx}px;
+        --dy: ${dy}px;
+        animation-delay: -${delay}s;
+        opacity: ${opLow};
+      `;
+      container.appendChild(star);
+    }
+  }
+
+  // Initialise all star backgrounds
+  createStars('stars-onboarding', 60);
+  createStars('stars-home', 45);
+  createStars('stars-loading', 55);
+
+  // ================================================================
+  // SCREEN NAVIGATION
+  // ================================================================
+  const screenMap = {
+    'onboarding':          'screen-onboarding',
+    'home':                'screen-home',
+    'loading':             'screen-loading',
+    'verdict':             'screen-verdict',
+    'journal':             'screen-journal',
+    'verdict-from-journal':'screen-verdict-from-journal',
+    'settings':            'screen-settings',
+  };
+
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => {
+      s.classList.remove('active');
+      s.style.display = 'none';
+    });
+    const target = document.getElementById(screenMap[name]);
+    if (target) {
+      target.style.display = 'flex';
+      target.classList.add('active');
+      // Scroll reset
+      const scroll = target.querySelector('.screen-scroll');
+      if (scroll) scroll.scrollTop = 0;
+      // Re-trigger verdict animation
+      if (name === 'verdict' || name === 'verdict-from-journal') {
+        target.querySelectorAll('.verdict-card-anim').forEach(el => {
+          el.style.animation = 'none';
+          void el.offsetWidth; // reflow
+          el.style.animation = '';
+        });
+      }
+    }
+  }
+
+  // ================================================================
+  // LOADING → VERDICT AUTO-TRANSITION
+  // ================================================================
+  function startLoading() {
+    showScreen('loading');
+    setTimeout(() => showScreen('verdict'), 1600);
+  }
+
+  // ================================================================
+  // CHARACTER COUNTER
+  // ================================================================
+  function updateCharCount(el) {
+    const count = document.getElementById('char-count');
+    if (count) {
+      count.textContent = el.value.length + ' / 280';
+      count.style.color = el.value.length > 280 ? 'var(--no)' : 'var(--text-secondary)';
+    }
+  }
+
+  // ================================================================
+  // SIGNIFICATORS TOGGLE
+  // ================================================================
+  function toggleSig() {
+    const list = document.getElementById('sig-list');
+    const arrow = document.getElementById('sig-arrow');
+    if (!list || !arrow) return;
+    const isOpen = list.style.display !== 'none';
+    list.style.display = isOpen ? 'none' : 'flex';
+    arrow.textContent = isOpen ? '▼' : '▲';
+    arrow.classList.toggle('open', !isOpen);
+  }
+
+  function toggleSig2() {
+    const list = document.getElementById('sig-list-2');
+    const arrow = document.getElementById('sig-arrow-2');
+    if (!list || !arrow) return;
+    const isOpen = list.style.display !== 'none';
+    list.style.display = isOpen ? 'none' : 'flex';
+    arrow.textContent = isOpen ? '▼' : '▲';
+    arrow.classList.toggle('open', !isOpen);
+  }
+</script>
+</body>
+</html>

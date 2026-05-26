@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /Users/user/Dev/react-native/horary-astrology-v1-app/.claude/commands)",
+      "Bash(mkdir -p /Users/user/Dev/react-native/horary-astrology-v1-app/.claude/agents)",
+      "Bash(gh repo *)",
+      "Bash(cat /Users/user/Dev/react-native/horary-astrology-v1-app/.claude/settings.json 2>/dev/null || echo \"NO_SETTINGS\" && ls /Users/user/.claude/ 2>/dev/null)",
+      "Read(//Users/user/.claude/**)",
+      "Bash(python3 -m json.tool)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(claude --version)",
+      "Bash(claude -v)",
+      "Bash(npm list *)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:code.claude.com)",
+      "Bash(npx -y @upstash/context7-mcp*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/user/Dev/react-native/horary-astrology-v1-app/.claude/hooks/session-banner.sh",
+            "async": false
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/user/Dev/react-native/horary-astrology-v1-app/.claude/hooks/plan-saved-nudge.sh",
+            "async": false
+          }
+        ]
+      }
+    ]
+  }
+}
