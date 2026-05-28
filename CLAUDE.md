@@ -83,6 +83,8 @@ superpowers-v output locations:
 - `docs/superpowers/plans/`
 
 ## Command Interface
+
+### Orchestration (feature development flow)
 - `/orchestrate:start`
 - `/orchestrate:research`      → Stage 1
 - `/orchestrate:prd`           → Stage 2
@@ -92,6 +94,12 @@ superpowers-v output locations:
 - `/orchestrate-stage5e`       → Stage 5e only (re-run cleanup without full Stage 5)
 - `/orchestrate:qa`            → Stage 6
 - `/orchestrate:status`        → show all stages table
+
+### Dependency management (run anytime)
+- `/deps:audit`                → analyse outdated packages, classify tiers, research changelogs,
+                                 check SDK upgrade availability, sync expo.install.exclude
+- `/sdk:upgrade`               → create SDK migration plan (read-only, safe)
+- `/sdk:upgrade execute`       → apply approved SDK migration plan (modifies project)
 
 Each command must define:
 - required inputs
@@ -109,6 +117,7 @@ Doc structure:
 - `docs/ops/` — operational runbooks (deployment, env vars, secrets)
 - `docs/orchestration/` — internal process artifacts (handoff log, plans)
 - `docs/superpowers/` — pre-flight research outputs
+- `docs/deps/` — dependency audit reports (`audit-YYYY-MM-DD.md`) and SDK upgrade plans (`sdk-upgrade-plan-YYYY-MM-DD.md`)
 
 ### `/doc:feature <name>`
 
