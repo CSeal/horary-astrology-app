@@ -60,7 +60,7 @@ Read each file and verify it exists and has non-trivial content:
 | 3 | API service complete | src/services/horaryApi.ts | Has retry logic + error normalization |
 | 4 | Counter logic | src/stores/questionsStore.ts | Has checkAndIncrementCount with monthly reset |
 | 5 | i18n complete | src/i18n/en.ts + ru.ts | Both exist with same keys |
-| 6 | Settings screen | app/settings.tsx | Has language picker + API key input |
+| 6 | Settings screen | src/app/(tabs)/settings.tsx | Has language picker + API key input |
 
 ## Step 3 — Anti-pattern audit
 
