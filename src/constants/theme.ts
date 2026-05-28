@@ -39,13 +39,13 @@ export const colors = {
 } as const;
 
 export const typography = {
-  // Font families
-  display: 'CormorantGaramond-Regular',
-  displayMedium: 'CormorantGaramond-Medium',
-  displayBold: 'CormorantGaramond-Bold',
-  body: 'Inter-Regular',
-  bodyMedium: 'Inter-Medium',
-  bodySemiBold: 'Inter-SemiBold',
+  // Font families — names match @expo-google-fonts/* exports
+  display: 'CormorantGaramond_400Regular',
+  displayMedium: 'CormorantGaramond_500Medium',
+  displayBold: 'CormorantGaramond_700Bold',
+  body: 'Inter_400Regular',
+  bodyMedium: 'Inter_500Medium',
+  bodySemiBold: 'Inter_600SemiBold',
 
   // Font sizes (px → pt equivalent)
   xs: 11,

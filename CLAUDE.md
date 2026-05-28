@@ -94,6 +94,34 @@ Each command must define:
 - gate linkage
 - fallback path
 
+## Documentation System
+
+Central index: `docs/INDEX.md` — single entry point for all project docs.
+
+Doc structure:
+- `docs/` — product artifacts (PRD, brief, architecture, design system, etc.)
+- `docs/features/` — per-feature technical guides (one file per feature)
+- `docs/ops/` — operational runbooks (deployment, env vars, secrets)
+- `docs/orchestration/` — internal process artifacts (handoff log, plans)
+- `docs/superpowers/` — pre-flight research outputs
+
+### `/doc:feature <name>`
+
+Trigger `doc-writer` agent to create or update `docs/features/<name>.md`.
+Use after any non-trivial feature is implemented or modified.
+
+Inputs: feature name + relevant source file paths (optional)
+Output: `docs/features/<name>.md` + updated `docs/INDEX.md`
+
+### When to write docs
+
+| Event | Action |
+|---|---|
+| New service or hook implemented | `/doc:feature <name>` |
+| New screen completed | `/doc:feature <screen-name>` |
+| Operational config required (env, deploy) | `/doc:feature <ops-topic>` → goes to `docs/ops/` |
+| Existing feature changed significantly | Re-run `/doc:feature` to update the doc |
+
 ## Fallback Policy
 If auto-fire fails:
 - `/v:archaeology <topic>`
@@ -171,6 +199,94 @@ npm run typecheck   # tsc --noEmit
 npm run lint        # eslint src/
 npm run test        # jest
 ```
+
+---
+
+### Reanimated 4 rules (`react-native-reanimated ^4.x`)
+
+#### 1. Single-owner rule — each SharedValue written in exactly ONE `useEffect`
+```ts
+// ✅ One effect, all writes to the same value
+useEffect(() => {
+  switch (phase) {
+    case 'intro': scale.value = withSpring(1); break;
+    case 'exit':  scale.value = withTiming(0); break;
+  }
+}, [phase]);
+
+// ❌ Two effects both writing `scale` → compile-time Reanimated error
+useEffect(() => { scale.value = withSpring(1); }, []);
+useEffect(() => { scale.value = withTiming(0); }, [done]); // ERROR
+```
+**Fix pattern:** use a `phase` state (`'intro' | 'idle' | 'exit'`) to drive a single switch-effect. Call `cancelAnimation(value)` at the top of the effect to clear the previous animation before starting the next.
+
+#### 2. `runOnJS` deprecated — callbacks already run on JS thread
+```ts
+// ✅ Reanimated 4 — callback is automatically on JS thread
+withTiming(1, { duration: 300 }, (finished) => {
+  if (finished) onComplete();
+});
+
+// ❌ Old pattern — runOnJS no longer needed
+withTiming(1, { duration: 300 }, (finished) => {
+  if (finished) runOnJS(onComplete)();
+});
+```
+
+#### 3. SharedValues must NOT appear in `useEffect` deps arrays
+SharedValues are stable refs (like `useRef`) — they never change identity, so listing them as deps is wrong and triggers Reanimated's static analysis errors.
+```ts
+// ✅ Correct — suppress exhaustive-deps for SharedValues
+useEffect(() => {
+  opacity.value = withTiming(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // opacity excluded — stable Reanimated ref
+
+// ❌ Wrong — triggers "cannot be modified" if another effect also uses this value
+useEffect(() => {
+  opacity.value = withTiming(1);
+}, [opacity]); // listing SharedValue as dep
+```
+**Exception:** if ONE effect both reads AND writes the same SharedValue with no other effect touching it, listing it as dep is safe (but unnecessary).
+
+#### 4. Phase transitions — use `queueMicrotask` for `setState` inside effects
+```ts
+// ✅ Deferred setState avoids cascading renders
+useEffect(() => {
+  if (phase === 'idle' && appReady) {
+    queueMicrotask(() => setPhase('exit'));
+  }
+}, [phase, appReady]);
+
+// ❌ Synchronous setState in effect body triggers Reanimated lint error
+useEffect(() => {
+  if (phase === 'idle' && appReady) setPhase('exit'); // ERROR
+}, [phase, appReady]);
+```
+
+---
+
+### react-native-svg 15.x rules
+
+#### Deprecated individual transform props — use SVG `transform` string instead
+```tsx
+// ✅ SVG-standard transform string (react-native-svg 15+)
+<Polygon transform={`translate(${cx} ${cy}) rotate(${angle}) translate(${-cx} ${-cy})`} />
+<G transform={`rotate(${deg} ${cx} ${cy})`} />
+
+// ❌ Deprecated individual props — removed in svg 15+
+<Polygon scale="1.07" origin="110, 110" />       // ESLint hint
+<G originX={cx} originY={cy} rotate={angle} />   // ESLint hint
+```
+
+**For animated transforms with `useAnimatedProps`:** use a template-literal `transform` string — Reanimated's worklet engine evaluates `.value` reads inline.
+```ts
+const props = useAnimatedProps(() => ({
+  transform: `rotate(${rotation.value} ${cx} ${cy})`,
+}));
+```
+
+**For static scaled shadows** (e.g., shadow polygon 1.07× scaled around a center): pre-calculate the polygon points at build time instead of using SVG scale transform. This avoids both the deprecated props and any runtime transform overhead.
 
 ---
 

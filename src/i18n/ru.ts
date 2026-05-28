@@ -11,10 +11,24 @@ const ru = {
     inputHint: 'например: Получу ли я работу в этом месяце?',
     submitButton: 'Спроси звёзды',
     locationLabel: 'Определение местоположения...',
+    locationManual: '· вручную',
+    changeLocation: 'Изменить',
     questionCounter: 'Вопросов в этом месяце: {{count}} / {{limit}}',
     questionLimitBanner:
       'Вы использовали {{limit}} бесплатных вопросов этого месяца. Безлимитный доступ скоро появится.',
     charCount: '{{count}} / {{max}}',
+  },
+
+  locationPicker: {
+    title: 'Указать местоположение',
+    detected: 'Определено через GPS',
+    hint: 'Укажите своё текущее местоположение, а не город человека, о котором спрашиваете.',
+    search: 'Поиск города...',
+    searching: 'Поиск...',
+    noResults: 'Города не найдены.',
+    error: 'Не удалось выполнить поиск. Проверьте подключение.',
+    useGps: 'Использовать GPS',
+    attribution: 'Данные © OpenStreetMap',
   },
 
   verdict: {
@@ -45,6 +59,7 @@ const ru = {
 
   settings: {
     title: 'Настройки',
+    appVersion: 'Версия {{version}}',
     languageSection: 'ЯЗЫК',
     languageLabel: 'Язык приложения',
     languageEn: 'English',
@@ -73,15 +88,22 @@ const ru = {
     step3Title: 'Доступ к геолокации',
     step3Body:
       'Твоё точное местоположение в момент вопроса является частью гороскопической карты. Мы используем его только для построения карты.',
+    step3Privacy: 'Мы никогда не сохраняем и не передаём данные о местоположении.',
     step3Button: 'Разрешить геолокацию',
+    step3SkipButton: 'Продолжить без геолокации',
     step4Title: 'Твой API ключ',
     step4Body:
       'Есть ли у тебя собственный ключ astrology-api.io? Можешь пропустить этот шаг.',
     step4Skip: 'Пропустить',
     step4Enter: 'Ввести ключ',
+    step2HowAsk: 'Спроси',
+    step2HowCast: 'Построим',
+    step2HowVerdict: 'Ответ',
     getStarted: 'Начать',
     next: 'Далее',
+    back: 'Назад',
     skip: 'Пропустить',
+    finish: 'Начать спрашивать',
   },
 
   verdictTypes: {
@@ -116,6 +138,13 @@ const ru = {
     rateLimited: 'Превышен лимит запросов к API. Пожалуйста, подождите перед следующим вопросом.',
     asyncStorageError: 'Не удалось загрузить сохранённые данные.',
     storageError: 'Не удалось сохранить данные.',
+    geocodeError: 'Не удалось найти города. Проверьте подключение.',
+  },
+
+  forceUpdate: {
+    title: 'Требуется обновление',
+    body: 'Доступно критическое обновление. Пожалуйста, обновите AstraSk для продолжения работы.',
+    cta: 'Обновить',
   },
 
   a11y: {
@@ -127,6 +156,8 @@ const ru = {
     settingsTab: 'Настройки, вкладка',
     backButton: 'Назад',
     settingsIcon: 'Открыть настройки',
+    openLocationPicker: 'Изменить местоположение',
+    clearOverride: 'Сбросить к GPS',
   },
 } as const;
 

@@ -2,7 +2,6 @@
 // Unit tests for horaryApi.ts — mock axios, test retry logic.
 // See docs/quality-gates.md section 2.1 for full test spec.
 
-import { horaryApi } from '../horaryApi';
 import type { HoraryRequest, HoraryResponse } from '../../types/horary';
 
 // Mock axios at module level

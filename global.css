@@ -32,13 +32,13 @@
     --color-border:       rgba(240, 238, 255, 0.08);
     --color-border-focus: rgba(245, 200, 66, 0.4);
 
-    /* Custom font families */
-    --font-cormorant: "CormorantGaramond-Regular";
-    --font-cormorant-medium: "CormorantGaramond-Medium";
-    --font-cormorant-bold: "CormorantGaramond-Bold";
-    --font-inter: "Inter-Regular";
-    --font-inter-medium: "Inter-Medium";
-    --font-inter-semibold: "Inter-SemiBold";
+    /* Custom font families — naming matches @expo-google-fonts variants */
+    --font-cormorant: "CormorantGaramond_400Regular";
+    --font-cormorant-medium: "CormorantGaramond_500Medium";
+    --font-cormorant-bold: "CormorantGaramond_700Bold";
+    --font-inter: "Inter_400Regular";
+    --font-inter-medium: "Inter_500Medium";
+    --font-inter-semibold: "Inter_600SemiBold";
   }
 }
 

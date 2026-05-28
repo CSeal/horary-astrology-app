@@ -1,15 +1,380 @@
 // src/app/(tabs)/settings.tsx
-// Settings screen — language toggle, API key input, counter display.
-// Stub implementation — full implementation in Sprint D.
+// Settings screen — language toggle, timezone display, monthly counter,
+// API key management (via SecureStore).
+// Four cards stagger in from below; the monthly progress bar fills with timing.
 
-import { View, Text } from 'react-native';
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import Constants from 'expo-constants';
+import { Globe, Key } from 'lucide-react-native';
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  withDelay,
+  Easing,
+  type SharedValue,
+} from 'react-native-reanimated';
+import {
+  AnimatedView,
+  ScrollView,
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+} from '@/tw';
+import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
+import { DebugSheet, type DebugSheetRef } from '../../components/DebugSheet';
+import { useSettingsStore } from '../../stores/settingsStore';
+import { useQuestionsStore } from '../../stores/questionsStore';
+import { secureKeyService } from '../../services/secureKeyService';
+import { useDebugTrigger } from '../../hooks/useDebugTrigger';
+import { MONTHLY_QUESTION_LIMIT } from '../../constants/config';
+import { colors, typography } from '../../constants/theme';
+import type { SupportedLocale } from '../../constants/config';
 
 export default function SettingsScreen() {
+  const { t, i18n } = useTranslation();
+  const locale = useSettingsStore((s) => s.locale);
+  const setLocale = useSettingsStore((s) => s.setLocale);
+  const apiKeySource = useSettingsStore((s) => s.apiKeySource);
+  const setApiKeySource = useSettingsStore((s) => s.setApiKeySource);
+  const monthlyCount = useQuestionsStore((s) => s.monthlyCount);
+
+  const [apiKeyInput, setApiKeyInput] = useState('');
+  const [savingKey, setSavingKey] = useState(false);
+  const [timezone] = useState<string>(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
+
+  // Hidden debug mode: tap the version label 7× to open the developer sheet.
+  const debugSheetRef = useRef<DebugSheetRef>(null);
+  const { registerTap } = useDebugTrigger(() =>
+    debugSheetRef.current?.present()
+  );
+  const appVersion = Constants.expoConfig?.version ?? '1.0.0';
+
+  // Detect whether a personal key is already present.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const stored = await secureKeyService.getKey();
+      if (!cancelled) {
+        setApiKeySource(stored ? 'personal' : 'default');
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [setApiKeySource]);
+
+  const handleLocaleChange = useCallback(
+    async (next: SupportedLocale) => {
+      await setLocale(next);
+      await i18n.changeLanguage(next);
+    },
+    [setLocale, i18n]
+  );
+
+  const handleSaveKey = useCallback(async () => {
+    const trimmed = apiKeyInput.trim();
+    if (!trimmed) return;
+    setSavingKey(true);
+    try {
+      await secureKeyService.setKey(trimmed);
+      setApiKeySource('personal');
+      setApiKeyInput('');
+    } catch {
+      Alert.alert(t('errors.storageError'));
+    } finally {
+      setSavingKey(false);
+    }
+  }, [apiKeyInput, setApiKeySource, t]);
+
+  const handleClearKey = useCallback(() => {
+    Alert.alert(
+      t('settings.apiKeyRemove'),
+      '',
+      [
+        { text: t('journal.deleteCancel'), style: 'cancel' },
+        {
+          text: t('settings.apiKeyRemove'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await secureKeyService.deleteKey();
+              setApiKeySource('default');
+            } catch {
+              Alert.alert(t('errors.storageError'));
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  }, [setApiKeySource, t]);
+
+  const fillPct = Math.min(
+    100,
+    Math.round((monthlyCount / MONTHLY_QUESTION_LIMIT) * 100)
+  );
+
+  // ── Card stagger (4 sections + title) ──
+  const titleY = useSharedValue(20);
+  const titleOp = useSharedValue(0);
+  const s0Y = useSharedValue(20);
+  const s0Op = useSharedValue(0);
+  const s1Y = useSharedValue(20);
+  const s1Op = useSharedValue(0);
+  const s2Y = useSharedValue(20);
+  const s2Op = useSharedValue(0);
+  const s3Y = useSharedValue(20);
+  const s3Op = useSharedValue(0);
+
+  useEffect(() => {
+    const spring = { damping: 12, stiffness: 90 };
+    const fade = { duration: 350 };
+    const sections: [SharedValue<number>, SharedValue<number>, number][] = [
+      [titleY, titleOp, 0],
+      [s0Y, s0Op, 80],
+      [s1Y, s1Op, 160],
+      [s2Y, s2Op, 240],
+      [s3Y, s3Op, 320],
+    ];
+    sections.forEach(([y, op, delay]) => {
+      y.value = withDelay(delay, withSpring(0, spring));
+      op.value = withDelay(delay, withTiming(1, fade));
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const titleStyle = useAnimatedStyle(() => ({
+    opacity: titleOp.value,
+    transform: [{ translateY: titleY.value }],
+  }));
+  const s0Style = useAnimatedStyle(() => ({
+    opacity: s0Op.value,
+    transform: [{ translateY: s0Y.value }],
+  }));
+  const s1Style = useAnimatedStyle(() => ({
+    opacity: s1Op.value,
+    transform: [{ translateY: s1Y.value }],
+  }));
+  const s2Style = useAnimatedStyle(() => ({
+    opacity: s2Op.value,
+    transform: [{ translateY: s2Y.value }],
+  }));
+  const s3Style = useAnimatedStyle(() => ({
+    opacity: s3Op.value,
+    transform: [{ translateY: s3Y.value }],
+  }));
+
+  // ── Progress bar fill ──
+  const barWidth = useSharedValue(0);
+
+  useEffect(() => {
+    barWidth.value = withDelay(
+      500,
+      withTiming(fillPct, {
+        duration: 700,
+        easing: Easing.out(Easing.ease),
+      })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fillPct]);
+
+  const barStyle = useAnimatedStyle(() => ({
+    width: `${barWidth.value}%`,
+  }));
+
   return (
-    <View className="flex-1 bg-bg-base items-center justify-center">
-      <Text className="text-text-primary font-inter text-lg">
-        Settings (Sprint D)
-      </Text>
-    </View>
+    <>
+    <SafeAreaView className="flex-1 bg-bg-base" edges={['top']}>
+      <ScrollView
+        className="flex-1"
+        contentContainerClassName="px-5 py-4 gap-6"
+        keyboardShouldPersistTaps="handled"
+      >
+        <AnimatedView style={titleStyle}>
+          <Text className="font-cormorant-medium text-2xl text-text-primary">
+            {t('settings.title')}
+          </Text>
+          <TouchableOpacity
+            onPress={registerTap}
+            activeOpacity={1}
+            accessibilityRole="text"
+          >
+            <Text className="font-inter text-xs text-text-secondary mt-1">
+              {t('settings.appVersion', { version: appVersion })}
+            </Text>
+          </TouchableOpacity>
+        </AnimatedView>
+
+        {/* LANGUAGE */}
+        <AnimatedView style={s0Style} className="gap-2">
+          <View className="flex-row items-center gap-2">
+            <Globe color={colors.accentGold} size={typography.sm} />
+            <Text
+              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+              accessibilityRole="header"
+            >
+              {t('settings.languageSection')}
+            </Text>
+          </View>
+          <Card elevated>
+            <Text className="font-inter text-base text-text-primary mb-3">
+              {t('settings.languageLabel')}
+            </Text>
+            <View className="flex-row gap-2">
+              <TouchableOpacity
+                onPress={() => handleLocaleChange('en')}
+                className={`flex-1 min-h-11 rounded-xl items-center justify-center ${
+                  locale === 'en'
+                    ? 'bg-accent-gold'
+                    : 'bg-bg-surface border border-border'
+                }`}
+                accessibilityRole="button"
+                accessibilityState={{ selected: locale === 'en' }}
+              >
+                <Text
+                  className={`font-inter-medium text-base ${
+                    locale === 'en' ? 'text-text-inverse' : 'text-text-primary'
+                  }`}
+                >
+                  {t('settings.languageEn')}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleLocaleChange('ru')}
+                className={`flex-1 min-h-11 rounded-xl items-center justify-center ${
+                  locale === 'ru'
+                    ? 'bg-accent-gold'
+                    : 'bg-bg-surface border border-border'
+                }`}
+                accessibilityRole="button"
+                accessibilityState={{ selected: locale === 'ru' }}
+              >
+                <Text
+                  className={`font-inter-medium text-base ${
+                    locale === 'ru' ? 'text-text-inverse' : 'text-text-primary'
+                  }`}
+                >
+                  {t('settings.languageRu')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Card>
+        </AnimatedView>
+
+        {/* TIMEZONE */}
+        <AnimatedView style={s1Style} className="gap-2">
+          <Text
+            className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+            accessibilityRole="header"
+          >
+            {t('settings.timezoneSection')}
+          </Text>
+          <Card elevated>
+            <Text className="font-inter text-sm text-text-secondary mb-1">
+              {t('settings.timezoneLabel')}
+            </Text>
+            <Text className="font-inter text-base text-text-primary">
+              {timezone}
+            </Text>
+          </Card>
+        </AnimatedView>
+
+        {/* USAGE */}
+        <AnimatedView style={s2Style} className="gap-2">
+          <Text
+            className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+            accessibilityRole="header"
+          >
+            {t('settings.questionCountSection')}
+          </Text>
+          <Card elevated>
+            <Text className="font-inter text-base text-text-primary mb-2">
+              {t('settings.questionCountLabel')}
+            </Text>
+            <Text className="font-inter text-sm text-text-secondary mb-3">
+              {t('home.questionCounter', {
+                count: monthlyCount,
+                limit: MONTHLY_QUESTION_LIMIT,
+              })}
+            </Text>
+            <View
+              className="h-2 rounded-full bg-bg-surface overflow-hidden"
+              accessibilityRole="progressbar"
+              accessibilityValue={{
+                min: 0,
+                max: MONTHLY_QUESTION_LIMIT,
+                now: monthlyCount,
+              }}
+            >
+              <AnimatedView
+                className="h-full bg-accent-gold rounded-full"
+                style={barStyle}
+              />
+            </View>
+          </Card>
+        </AnimatedView>
+
+        {/* API KEY */}
+        <AnimatedView style={s3Style} className="gap-2">
+          <View className="flex-row items-center gap-2">
+            <Key color={colors.accentGold} size={typography.sm} />
+            <Text
+              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+              accessibilityRole="header"
+            >
+              {t('settings.apiKeySection')}
+            </Text>
+          </View>
+          <Card elevated>
+            <Text className="font-inter text-base text-text-primary mb-1">
+              {t('settings.apiKeyLabel')}
+            </Text>
+            <Text className="font-inter text-xs text-text-secondary mb-3">
+              {apiKeySource === 'personal'
+                ? t('settings.apiKeySourcePersonal')
+                : t('settings.apiKeySourceDefault')}
+            </Text>
+            <TextInput
+              value={apiKeyInput}
+              onChangeText={setApiKeyInput}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+              placeholder={t('settings.apiKeyPlaceholder')}
+              placeholderTextColor={colors.textDisabled}
+              className="bg-bg-surface rounded-xl px-4 min-h-12 font-inter text-base text-text-primary border border-border"
+            />
+            <View className="mt-3 gap-2">
+              <Button
+                label={t('settings.apiKeySave')}
+                variant="primary"
+                size="sm"
+                onPress={handleSaveKey}
+                disabled={savingKey || apiKeyInput.trim().length === 0}
+              />
+              {apiKeySource === 'personal' && (
+                <Button
+                  label={t('settings.apiKeyRemove')}
+                  variant="destructive"
+                  size="sm"
+                  onPress={handleClearKey}
+                />
+              )}
+            </View>
+          </Card>
+        </AnimatedView>
+      </ScrollView>
+    </SafeAreaView>
+    <DebugSheet ref={debugSheetRef} />
+    </>
   );
 }

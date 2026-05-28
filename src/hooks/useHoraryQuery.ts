@@ -6,7 +6,11 @@
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { horaryApi } from '../services/horaryApi';
+import { mockHoraryApi } from '../services/mockHoraryApi';
 import { useQuestionsStore } from '../stores/questionsStore';
+import { useDebugStore } from '../stores/debugStore';
+import { LOADING_MIN_DURATION } from '../constants/config';
+import { withMinDuration } from './withMinDuration';
 import type { HoraryRequest, HoraryResponse, HoraryAPIError } from '../types/horary';
 import type { JournalEntry } from '../types/journal';
 
@@ -37,7 +41,16 @@ export function useHoraryQuery(city?: string) {
   const incrementMonthlyCount = useQuestionsStore((s) => s.incrementMonthlyCount);
 
   return useMutation<HoraryResponse, HoraryAPIError, HoraryRequest>({
-    mutationFn: (request: HoraryRequest) => horaryApi.ask(request),
+    mutationFn: (request: HoraryRequest) => {
+      // Debug mode: stub the response instead of hitting the real API.
+      const { mockMode, mockVerdict, skipMinLoading } = useDebugStore.getState();
+      const call = mockMode
+        ? mockHoraryApi.ask(request, mockVerdict)
+        : horaryApi.ask(request);
+      return skipMinLoading
+        ? call
+        : withMinDuration(call, LOADING_MIN_DURATION);
+    },
     onSuccess: async (data: HoraryResponse, variables: HoraryRequest) => {
       const entry = buildJournalEntry(variables, data, city);
       await addEntry(entry);

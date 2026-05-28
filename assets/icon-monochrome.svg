@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Android monochrome icon — single white layer, transparent background.
+       Used for notification icons and Android 13+ themed/monochrome adaptive icons. -->
+
+  <!-- Star glyph in pure white -->
+  <polygon
+    points="512,282 547.2,427 674.6,349.4 597,476.8 742,512 597,547.2 674.6,674.6 547.2,597 512,742 476.8,597 349.4,674.6 427,547.2 282,512 427,476.8 349.4,349.4 476.8,427"
+    fill="#FFFFFF"
+  />
+
+  <!-- Center dot -->
+  <circle cx="512" cy="512" r="26" fill="#FFFFFF"/>
+</svg>

@@ -37,6 +37,10 @@ module.exports = defineConfig([
         },
       ],
 
+      // `i18n.use(...)` and `axios.create(...)` are the canonical idioms in their
+      // respective libraries; the named-as-default-member rule is noisy here.
+      'import/no-named-as-default-member': 'off',
+
       // Prevent inline hex colors — all colors must come from src/constants/theme.ts
       'no-restricted-syntax': [
         'warn',

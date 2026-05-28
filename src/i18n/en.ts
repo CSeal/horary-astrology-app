@@ -14,10 +14,25 @@ const en = {
     inputHint: 'e.g. Will I get the job offer this month?',
     submitButton: 'Ask the Stars',
     locationLabel: 'Detecting location...',
+    locationManual: '· manual',
+    changeLocation: 'Change',
     questionCounter: 'Questions this month: {{count}} / {{limit}}',
     questionLimitBanner:
       "You've used your {{limit}} free questions this month. Unlimited access is coming soon.",
     charCount: '{{count}} / {{max}}',
+  },
+
+  // Location picker (bottom sheet for manual override)
+  locationPicker: {
+    title: 'Set location',
+    detected: 'Detected by GPS',
+    hint: 'Use your current location — not the city of the person you are asking about.',
+    search: 'Search city...',
+    searching: 'Searching...',
+    noResults: 'No cities found.',
+    error: 'Could not search right now. Check your connection.',
+    useGps: 'Use GPS location',
+    attribution: 'Data © OpenStreetMap contributors',
   },
 
   // Verdict screen
@@ -51,6 +66,7 @@ const en = {
   // Settings screen
   settings: {
     title: 'Settings',
+    appVersion: 'Version {{version}}',
     languageSection: 'LANGUAGE',
     languageLabel: 'App Language',
     languageEn: 'English',
@@ -80,15 +96,22 @@ const en = {
     step3Title: 'Allow Location',
     step3Body:
       'Your exact location at the moment of asking is part of the horary chart. We only use it to cast your chart.',
+    step3Privacy: 'We never store or share your location data.',
     step3Button: 'Allow Location',
+    step3SkipButton: 'Continue without location',
     step4Title: 'Your API Key',
     step4Body:
       'Do you have your own astrology-api.io key? You can skip this for now.',
     step4Skip: 'Skip',
     step4Enter: 'Enter Key',
+    step2HowAsk: 'Ask',
+    step2HowCast: 'Cast',
+    step2HowVerdict: 'Verdict',
     getStarted: 'Get Started',
     next: 'Next',
+    back: 'Back',
     skip: 'Skip',
+    finish: 'Start Asking',
   },
 
   // Verdict types
@@ -127,6 +150,14 @@ const en = {
     rateLimited: "You've reached the API rate limit. Please wait before asking again.",
     asyncStorageError: 'Could not load saved data.',
     storageError: 'Could not save your data.',
+    geocodeError: 'Could not search for cities. Check your connection.',
+  },
+
+  // Force-update gate
+  forceUpdate: {
+    title: 'Update Required',
+    body: 'A critical update is available. Please update the app to continue using AstraSk.',
+    cta: 'Update Now',
   },
 
   // Accessibility labels
@@ -139,6 +170,8 @@ const en = {
     settingsTab: 'Settings, tab',
     backButton: 'Go back',
     settingsIcon: 'Open settings',
+    openLocationPicker: 'Change location',
+    clearOverride: 'Reset to GPS location',
   },
 } as const;
 

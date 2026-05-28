@@ -4,7 +4,8 @@
 
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { colors } from '../../constants/theme';
+import { Sparkles, BookOpen, Settings as SettingsIcon } from 'lucide-react-native';
+import { colors, typography } from '../../constants/theme';
 
 export default function TabsLayout() {
   const { t } = useTranslation();
@@ -20,9 +21,9 @@ export default function TabsLayout() {
           height: 83,
         },
         tabBarActiveTintColor: colors.accentGold,
-        tabBarInactiveTintColor: colors.textDisabled,
+        tabBarInactiveTintColor: colors.textSecondary,
         tabBarLabelStyle: {
-          fontFamily: 'Inter-Medium',
+          fontFamily: typography.bodyMedium,
           fontSize: 11,
         },
       }}
@@ -32,6 +33,7 @@ export default function TabsLayout() {
         options={{
           title: t('a11y.homeTab'),
           tabBarAccessibilityLabel: t('a11y.homeTab'),
+          tabBarIcon: ({ color, size }) => <Sparkles color={color} size={size} />,
         }}
       />
       <Tabs.Screen
@@ -39,6 +41,7 @@ export default function TabsLayout() {
         options={{
           title: t('a11y.journalTab'),
           tabBarAccessibilityLabel: t('a11y.journalTab'),
+          tabBarIcon: ({ color, size }) => <BookOpen color={color} size={size} />,
         }}
       />
       <Tabs.Screen
@@ -46,6 +49,7 @@ export default function TabsLayout() {
         options={{
           title: t('a11y.settingsTab'),
           tabBarAccessibilityLabel: t('a11y.settingsTab'),
+          tabBarIcon: ({ color, size }) => <SettingsIcon color={color} size={size} />,
         }}
       />
       <Tabs.Screen

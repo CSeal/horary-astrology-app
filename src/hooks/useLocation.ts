@@ -2,7 +2,8 @@
 // expo-location wrapper hook.
 // Returns location state and a function to request/refresh location.
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { AppState, type AppStateStatus } from 'react-native';
 import { locationService, type LocationResult } from '../services/locationService';
 
 interface UseLocationReturn {
@@ -17,7 +18,7 @@ export function useLocation(): UseLocationReturn {
     'granted' | 'denied' | 'undetermined' | 'loading'
   >('loading');
 
-  async function requestLocation() {
+  const requestLocation = useCallback(async () => {
     setPermissionStatus('loading');
     const status = await locationService.getPermissionStatus();
 
@@ -39,11 +40,28 @@ export function useLocation(): UseLocationReturn {
     } catch {
       setPermissionStatus('denied');
     }
-  }
+  }, []);
+
+  const appState = useRef<AppStateStatus>(AppState.currentState);
 
   useEffect(() => {
-    requestLocation();
-  }, []);
+    let cancelled = false;
+    (async () => {
+      if (!cancelled) await requestLocation();
+    })();
+    return () => { cancelled = true; };
+  }, [requestLocation]);
+
+  // Re-check location when app returns to foreground (e.g. user granted in Settings)
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (next) => {
+      if (appState.current.match(/inactive|background/) && next === 'active') {
+        void requestLocation();
+      }
+      appState.current = next;
+    });
+    return () => sub.remove();
+  }, [requestLocation]);
 
   return { location, permissionStatus, requestLocation };
 }

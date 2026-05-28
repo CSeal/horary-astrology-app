@@ -33,27 +33,20 @@
       ]
     },
     "plugins": [
-      ["expo-router", { "root": "src/app" }],
-      "expo-secure-store",
       [
-        "expo-font",
+        "expo-router",
         {
-          "fonts": [
-            "./assets/fonts/CormorantGaramond-Regular.ttf",
-            "./assets/fonts/CormorantGaramond-Medium.ttf",
-            "./assets/fonts/CormorantGaramond-Bold.ttf",
-            "./assets/fonts/Inter-Regular.ttf",
-            "./assets/fonts/Inter-Medium.ttf",
-            "./assets/fonts/Inter-SemiBold.ttf"
-          ]
+          "root": "src/app"
         }
       ],
+      "expo-secure-store",
       [
         "expo-location",
         {
           "locationWhenInUsePermission": "Your exact location at the moment of asking is required to cast an accurate horary chart."
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true

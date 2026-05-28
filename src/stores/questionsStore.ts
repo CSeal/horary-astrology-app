@@ -18,6 +18,10 @@ interface QuestionsState {
   incrementMonthlyCount: () => Promise<void>;
   checkAndResetMonthlyCounter: () => Promise<void>;
   hydrate: () => Promise<void>;
+  // Debug-only — force the monthly counter to zero and wipe all entries.
+  // Not part of normal app flow; used by the hidden developer DebugSheet.
+  resetMonthlyCount: () => Promise<void>;
+  clearAllEntries: () => Promise<void>;
 }
 
 function getCurrentMonth(): string {
@@ -89,5 +93,23 @@ export const useQuestionsStore = create<QuestionsState>((set, get) => ({
     } catch {
       console.error('[questionsStore] Failed to hydrate questions store');
     }
+  },
+
+  resetMonthlyCount: async () => {
+    set({ monthlyCount: 0, monthlyResetDate: getCurrentMonth() });
+    try {
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.QUESTION_COUNT, '0');
+      await AsyncStorage.setItem(
+        ASYNC_STORAGE_KEYS.QUESTION_RESET_DATE,
+        getCurrentMonth()
+      );
+    } catch {
+      console.error('[questionsStore] Failed to reset monthly count');
+    }
+  },
+
+  clearAllEntries: async () => {
+    await journalService.clear();
+    set({ entries: [] });
   },
 }));

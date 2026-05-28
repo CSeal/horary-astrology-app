@@ -2,9 +2,13 @@
 // Unit tests for questionsStore — monthly counter reset logic.
 // See docs/quality-gates.md section 2.2 for full test spec.
 
+import { useQuestionsStore } from '../questionsStore';
+
 // Mock AsyncStorage
-jest.mock('@react-native-async-storage/async-storage', () =>
-  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+jest.mock(
+  '@react-native-async-storage/async-storage',
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  () => require('@react-native-async-storage/async-storage/jest/async-storage-mock')
 );
 
 // Mock journalService to avoid real AsyncStorage reads
@@ -15,8 +19,6 @@ jest.mock('../../services/journalService', () => ({
     deleteEntry: jest.fn().mockResolvedValue(undefined),
   },
 }));
-
-import { useQuestionsStore } from '../questionsStore';
 
 describe('questionsStore — monthly counter', () => {
   beforeEach(() => {
