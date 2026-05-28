@@ -24,7 +24,7 @@ npx tsc --noEmit 2>&1 | head -50
 npx eslint src/ 2>&1 | tail -20
 ```
 ```bash
-npx jest --coverage 2>&1 | tail -40
+npm run test:table 2>&1
 ```
 
 ### Unit-test gate (P0)
