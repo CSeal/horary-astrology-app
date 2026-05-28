@@ -19,6 +19,10 @@ Build an internal MVP of a horary astrology mobile app with controlled Claude-dr
 4. UxUiSpecAndHtmlPrototype
 5. MobileArchitectureAndApiContracts
 6. ImplementationSprints
+   - 6a. Foundation (Batch A)
+   - 6b. Services (Batch B)
+   - 6c. Screens (Batch C) ∥ 6d. Polish (Batch D)
+   - **6e. Pre-QA Cleanup (Batch E)** — auto-fix version drift, lint, TS, deferred items
 7. QaAndReleaseReadiness
 8. DemoAndStakeholderReview
 
@@ -80,13 +84,14 @@ superpowers-v output locations:
 
 ## Command Interface
 - `/orchestrate:start`
-- `/orchestrate:research`
-- `/orchestrate:prd`
-- `/orchestrate:design`
-- `/orchestrate:architecture`
-- `/orchestrate:implement`
-- `/orchestrate:qa`
-- `/orchestrate:status`
+- `/orchestrate:research`      → Stage 1
+- `/orchestrate:prd`           → Stage 2
+- `/orchestrate:design`        → Stage 3
+- `/orchestrate:architecture`  → Stage 4
+- `/orchestrate:implement`     → Stage 5 (runs 5a→5b→5c∥5d→5e automatically)
+- `/orchestrate-stage5e`       → Stage 5e only (re-run cleanup without full Stage 5)
+- `/orchestrate:qa`            → Stage 6
+- `/orchestrate:status`        → show all stages table
 
 Each command must define:
 - required inputs

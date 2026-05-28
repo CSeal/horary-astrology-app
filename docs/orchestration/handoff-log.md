@@ -149,18 +149,20 @@ verification: "tsc --noEmit PASS; eslint src/ — 0 errors, 2 pre-existing idiom
 next_stage: Stage6-QA
 blockers: []
 
-## Stage5-Cleanup — 2026-05-26
+## Stage5e-Cleanup — 2026-05-26
 status: COMPLETE
-scope: "Pre-QA hardening — resolve installable warnings & finish deferred items from Batch C/D handoffs."
-fixes:
-  jest_runtime: "Installed jest-expo@~55.0.x + babel-preset-expo via `npx expo install`. `npm test` now PASS: 2 suites, 7 tests."
-  gesture_handler: "Installed react-native-gesture-handler. Wrapped root layout in GestureHandlerRootView. Replaced JournalItem long-press+Alert fallback with ReanimatedSwipeable (current non-deprecated API) + RectButton delete action — original architecture intent restored."
-  version_alignment: "`npx expo install --fix` aligned @types/jest → 29.5.14 and eslint-config-expo → ~55.0.1 to SDK 55 expected versions."
-  lint_warnings: "Disabled `import/no-named-as-default-member` rule in eslint.config.js — `i18n.use(...)` and `axios.create(...)` are canonical library idioms, not user error."
+scope: "Pre-QA hardening — auto-fix version drift, lint, TypeScript, and deferred batch items."
+note: "Originally recorded as informal 'Stage5-Cleanup'. Formalised as Stage5e on 2026-05-28 with dedicated agent (horary-cleanup-agent) and command (/orchestrate-stage5e)."
+automated_fixes:
+  expo_install_fix: "npx expo install --fix — aligned @types/jest → 29.5.14 and eslint-config-expo → ~55.0.1 to SDK 55 expected versions."
+  gesture_handler: "Installed react-native-gesture-handler. Wrapped root layout in GestureHandlerRootView. Replaced JournalItem long-press+Alert fallback with ReanimatedSwipeable."
+  jest_runtime: "Installed jest-expo@~55.0.x + babel-preset-expo. Test suite now runs."
+  lint_autofix: "Disabled import/no-named-as-default-member (i18n.use, axios.create canonical idioms)."
   expo_doctor: "19/19 checks PASS (was 18/19)."
-residual_known_issues:
-  npm_audit: "13 moderate vulnerabilities — ALL transitive within Expo SDK 55 (uuid<11.1.1 → xcode → @expo/config-plugins → @expo/cli → expo). `npm audit fix --force` would downgrade Expo to v46 (breaking). Upstream Expo issue; not actionable at app level. Tracked for monitoring."
-  env_local: ".env.local not created (would contain secret). Use .env.local.example as template before Stage 6 smoke test."
-  loading_min_duration: "1.5s LOADING_MIN_DURATION still not enforced at screen layer (relies on natural API latency). Acceptable for MVP."
-final_verification: "tsc --noEmit PASS; eslint src/ PASS (0 errors, 0 warnings); jest PASS (7/7); expo-doctor PASS (19/19)."
+p0_issues: "none"
+p1_issues:
+  npm_audit: "13 moderate vulnerabilities — ALL transitive within Expo SDK 55 (uuid<11.1.1 → @expo/cli). npm audit fix --force would downgrade Expo to v46 (breaking). Upstream issue, not actionable at app level."
+  loading_min_duration: "1.5s LOADING_MIN_DURATION not enforced at screen layer (relies on natural API latency). Acceptable for MVP."
+final_verification: "expo doctor PASS (19/19); tsc PASS; lint 0 errors 0 warnings; jest 9 suites / 54 tests PASS"
+next_stage: Stage6-QA
 blockers: []

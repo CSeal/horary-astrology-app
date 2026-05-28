@@ -36,5 +36,13 @@ Agent 2:
 
 Wait for both. Read handoff-log.md — confirm Stage5c and Stage5d COMPLETE.
 
+### Sprint 5 — Cleanup (after Sprints 3+4 complete)
+Call Agent:
+- subagent_type: "horary-cleanup-agent"
+- model: "sonnet"
+- prompt: "Stage 5e — Pre-QA hardening. Batches A–D are complete. Run baseline audit, auto-fix all issues (expo install --fix, lint --fix, TypeScript errors, deferred items from batch handoffs), confirm all checks green, write Stage5e-Cleanup handoff entry."
+
+Wait for completion. Read handoff-log.md — confirm Stage5e-Cleanup COMPLETE.
+
 ### Final report
-"✓ Stage 5 complete — all implementation batches done. Run /orchestrate-stage6 for QA."
+"✓ Stage 5 complete — all 5 sprints done (Foundation → Services → Screens ∥ Polish → Cleanup). Run /orchestrate-stage6 for QA."

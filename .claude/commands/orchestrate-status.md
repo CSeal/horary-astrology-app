@@ -3,7 +3,7 @@ Read docs/orchestration/handoff-log.md and display a status table of all stages:
 | Stage | Agent | Status | Gate | Last Artifact |
 |---|---|---|---|---|
 
-Stages to check: Stage1-Research, Stage2-PRD, Stage3-Design, Stage4-Architecture, Stage5a-Foundation, Stage5b-Services, Stage5c-Screens, Stage5d-Polish, Stage6-QA
+Stages to check: Stage1-Research, Stage2-PRD, Stage3-Design, Stage4-Architecture, Stage5a-Foundation, Stage5b-Services, Stage5c-Screens, Stage5d-Polish, Stage5e-Cleanup, Stage6-QA
 
 After the table, show:
 - Next pending stage and the command to run it
