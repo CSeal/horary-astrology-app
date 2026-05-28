@@ -21,8 +21,33 @@ npx expo doctor
 npx tsc --noEmit 2>&1 | head -50
 ```
 ```bash
-npx jest --passWithNoTests 2>&1 | tail -20
+npx eslint src/ 2>&1 | tail -20
 ```
+```bash
+npx jest --coverage 2>&1 | tail -40
+```
+
+### Unit-test gate (P0)
+
+The unit suite is a **must-pass** gate — `--passWithNoTests` is NOT allowed.
+The build fails QA if any test fails, or if the suite has regressed below its
+baseline. Current baseline: **9 suites / 54 tests** (see docs/features/testing.md).
+
+Coverage focus areas that MUST stay green:
+
+| Area | Suite | Why it's a gate |
+|---|---|---|
+| Error mapping | horaryApi.test.ts | Drives every user-facing error message |
+| Retry/backoff | horaryApi.retry.test.ts | Network resilience |
+| Force-update | updateCheckService.test.ts | Can lock all users out if broken |
+| Journal CRUD | journalService.test.ts | Data integrity + 500-entry prune |
+| Geocoding | geocodingService.test.ts | Coordinates sent to the API |
+| Monthly counter | questionsStore.test.ts | Quota + month rollover |
+| i18n parity | parity.test.ts | No untranslated keys ship |
+| Debug gesture | useDebugTrigger.test.ts | 7-tap activation window |
+
+If the test count is **below** the baseline, treat it as a P0 regression
+(tests were deleted or a suite stopped loading) and report which suite is missing.
 
 ## Step 2 — Smoke test checklist (manual review)
 

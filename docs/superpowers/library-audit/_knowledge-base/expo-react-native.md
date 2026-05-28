@@ -240,3 +240,30 @@ Sources: Context7 `/gorhom/react-native-bottom-sheet`, Context7 `/expo/expo` (`l
 - Using `Location.geocodeAsync` for type-ahead UX — single-result return + Android permission gate + Apple CLGeocoder throttling all break this UX.
 - Setting `User-Agent` to a default like `axios/1.x` against Nominatim — 403.
 - Skipping `accept-language` for non-Latin queries → `display_name` returns transliterated/English form.
+
+---
+
+## Updated 2026-05-28 — Testing stack (Jest / RNTL / mocks for SDK 55 + RN 0.83.6)
+
+Sources: Context7 `/callstack/react-native-testing-library` (v13.x migration + api-reference-v13 + install docs); WebSearch on npm/GitHub releases for RNTL, msw, jest-expo; Expo unit-testing & mocking docs; swmansion Reanimated testing guide; invertase async-storage Jest-integration docs. WebFetch/curl were DENIED this run — exact patch numbers are WebSearch-snapshot, not registry-canonical.
+
+### @testing-library/react-native — v13.3.3 (latest, ~Aug 2025)
+- Requires React 19.0+ and RN 0.78+. Repo (React 19.2.0 / RN 0.83.6) is in range. Already pinned `^13.3.3` in devDeps.
+- BREAKING in v13: RNTL's own Jest preset was REMOVED. ~~`preset: '@testing-library/react-native'`~~ → updated 2026-05-28: use `preset: 'react-native'`, OR keep `preset: 'jest-expo'` (it extends the react-native preset). Do NOT add the RNTL preset on top of jest-expo.
+- v13 install still lists `react-test-renderer` as a peer dep → pin it to **19.2.0** (exact match to `react`) to avoid renderer/React version mismatch (see GH issue #671).
+- React 19 / Suspense: use async variants `renderAsync`, `fireEventAsync`, `rerenderAsync`, `unmountAsync` (return Promises, must `await`). Sync `render`/`fireEvent` remain for non-Suspense trees. `toBeOnTheScreen()` is a built-in matcher (no jest-native import).
+
+### jest-expo coverage (no extra package)
+- Add to `jest` block: `collectCoverage: true`, `collectCoverageFrom: ["**/*.{ts,tsx,js,jsx}", "!**/coverage/**", "!**/node_modules/**", "!**/babel.config.js", "!**/expo-env.d.ts", "!**/.expo/**"]`, optional `coverageReporters: ["text","html","lcov"]`. Babel/Istanbul provider default. Gitignore `/coverage`.
+- jest stays at ~29.7.0 to match `jest-expo ~55.0.18`. Do NOT bump to jest 30 unless jest-expo 55 declares jest-30 support.
+
+### Mocks
+- AsyncStorage (v2.2.0): unchanged official pattern — `jest.mock('@react-native-async-storage/async-storage', () => require('@react-native-async-storage/async-storage/jest/async-storage-mock'))`. Bundled mock path still ships in v2.
+- expo-secure-store / expo-haptics / expo-location: auto-mocked by the `jest-expo` preset (native side stubbed). No standalone official mock packages. Hand-mock with `jest.mock('expo-secure-store')` etc. only when asserting call args (`getItemAsync`/`setItemAsync`/`deleteItemAsync`, `getCurrentPositionAsync`, `impactAsync`).
+
+### Reanimated 4 in Jest (repo: react-native-reanimated 4.2.1 + react-native-worklets 0.7.4)
+- Use `require('react-native-reanimated').setUpTests();` in a `setupFilesAfterEnv` file. ~~`jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'))` + `.call = () => {}`~~ → updated 2026-05-28: that `.call` override is the obsolete v1/v2 pattern; v4 uses `setUpTests()`. jest-expo handles transformIgnorePatterns for reanimated + worklets.
+
+### msw — v2.14.6 (~May 2026), NOT installed
+- Compatible with jest-expo BUT must import from **`msw/native`** (not `msw/node` — RN has no `http` module). Needs polyfills in setup: `react-native-url-polyfill`, `fast-text-encoding`, `web-streams-polyfill`. Request-library agnostic (works with the repo's axios ^1.16.1 + @tanstack/react-query ^5.x).
+- Lighter alternative for pure axios unit tests: `axios-mock-adapter` (no polyfills, no network interception). Scoping decision — msw is more realistic, heavier footprint.

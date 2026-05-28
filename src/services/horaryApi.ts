@@ -10,7 +10,7 @@ import type { HoraryRequest, HoraryResponse, HoraryAPIError } from '../types/hor
 const MAX_RETRIES = 3;
 const BACKOFF_BASE_MS = 1000;
 
-async function getApiKey(): Promise<string> {
+export async function getApiKey(): Promise<string> {
   // Priority 1: User-supplied key in SecureStore
   const stored = await secureKeyService.getKey();
   if (stored && stored.trim().length > 0) {
@@ -27,7 +27,7 @@ async function getApiKey(): Promise<string> {
   return '';
 }
 
-function normalizeError(error: AxiosError): HoraryAPIError {
+export function normalizeError(error: AxiosError): HoraryAPIError {
   if (!error.response) {
     const isTimeout =
       error.code === 'ECONNABORTED' || error.message.toLowerCase().includes('timeout');

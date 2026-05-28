@@ -51,6 +51,7 @@ Written and updated by `doc-writer` agent via `/doc:feature <name>`.
 | [features/force-update.md](features/force-update.md) | Force-update gate (remote config + version enforcement) | Done |
 | [features/location-override.md](features/location-override.md) | Manual city override (per-question) via bottom sheet + Photon geocoding | Done |
 | [features/debug-mode.md](features/debug-mode.md) | Hidden developer debug menu (7-tap + PIN gate, mock API, state resets) | Done |
+| [features/testing.md](features/testing.md) | Unit/integration test suite (9 suites / 54 tests) + Stage 6 QA gate | Done |
 
 ---
 
@@ -98,7 +99,10 @@ Auto-generated during pre-flight phases.
 | [superpowers/expert/2026-05-26-force-update-mobile.md](superpowers/expert/2026-05-26-force-update-mobile.md) | Domain expert: mobile force-update patterns |
 | [superpowers/expert/2026-05-27-hidden-debug-mode.md](superpowers/expert/2026-05-27-hidden-debug-mode.md) | Domain expert: hidden debug-mode patterns + Apple 2.3.1 |
 | [superpowers/expert/_knowledge-base/mobile-debug-mode.md](superpowers/expert/_knowledge-base/mobile-debug-mode.md) | Debug-mode KB (trigger matrix, gating layers, disclosure) |
-| [superpowers/library-audit/_knowledge-base/expo-react-native.md](superpowers/library-audit/_knowledge-base/expo-react-native.md) | Cumulative library audit KB (incl. bottom-sheet + geocoding) |
+| [superpowers/expert/2026-05-28-rn-expo-testing-strategy.md](superpowers/expert/2026-05-28-rn-expo-testing-strategy.md) | Domain expert: RN/Expo testing strategy (ROI, must-test, dangerous gaps) |
+| [superpowers/expert/_knowledge-base/rn-expo-testing.md](superpowers/expert/_knowledge-base/rn-expo-testing.md) | RN/Expo testing KB (Zustand, React Query, timing, Maestro) |
+| [superpowers/library-audit/2026-05-28-testing-libraries.md](superpowers/library-audit/2026-05-28-testing-libraries.md) | Library audit: testing stack (RNTL, coverage, mocks) |
+| [superpowers/library-audit/_knowledge-base/expo-react-native.md](superpowers/library-audit/_knowledge-base/expo-react-native.md) | Cumulative library audit KB (incl. bottom-sheet + geocoding + testing) |
 
 ---
 
