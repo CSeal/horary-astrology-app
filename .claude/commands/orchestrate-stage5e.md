@@ -20,4 +20,12 @@ Call Agent:
 Read `docs/orchestration/handoff-log.md` — confirm Stage5e-Cleanup entry with status COMPLETE.
 
 If P0 issues listed: "⚠ P0 issues found — fix before running Stage 6. See handoff-log Stage5e entry."
-If no P0 issues: "✓ Stage 5e complete — project is green. Run /orchestrate-stage6 for QA."
+If no P0 issues: "✓ Stage 5e complete — project is green."
+
+### Review & Commit
+
+Run `git diff --stat` and show the output to the user.
+Propose a commit message following AstraSk conventions (feat/fix/chore scope).
+
+**Wait for explicit approval before running `git commit`.**
+Do not commit automatically.

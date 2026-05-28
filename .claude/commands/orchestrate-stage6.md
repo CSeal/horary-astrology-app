@@ -17,3 +17,11 @@ Read docs/orchestration/handoff-log.md — confirm Stage6-QA entry.
 
 If P0 issues exist: "⚠ P0 issues found — fix before demo. See docs/qa-summary.md."
 If no P0 issues: "✓ Build ready. See docs/demo-readiness.md for demo instructions."
+
+### Review & Commit
+
+Run `git diff --stat` and show the output to the user.
+Propose a commit message following AstraSk conventions.
+
+**Wait for explicit approval before running `git commit`.**
+Do not commit automatically.

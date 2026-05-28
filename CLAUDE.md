@@ -169,6 +169,22 @@ If any required item is not complete, coding remains closed.
 - Baseline and governance updates are approved by project owner only.
 - Any governance change must include rationale and impacted gates/commands.
 
+## Git / Commit Policy
+
+**No automatic commits — ever.**
+
+Before any `git commit`, Claude must:
+1. Show `git diff --stat` (what changed)
+2. Propose a commit message following AstraSk conventions (see `.claude/skills/git-commit/`)
+3. Wait for explicit approval from the project owner
+
+**The only exception:** if the owner's message itself contains an explicit commit instruction ("закоммить", "commit this", "сделай коммит"), that message is the approval — proceed directly.
+
+This applies to:
+- Main conversation (Claude working directly)
+- Orchestration commands (after each stage completes, show diff + proposed message, wait)
+- Agents do NOT commit — they write files only; the orchestration command layer handles commit approval
+
 ---
 
 ## Coding Conventions (enforced by ESLint + TypeScript)

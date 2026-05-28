@@ -44,5 +44,13 @@ Call Agent:
 
 Wait for completion. Read handoff-log.md — confirm Stage5e-Cleanup COMPLETE.
 
+### Review & Commit
+
+Run `git diff --stat` and show the output to the user.
+Propose a commit message following AstraSk conventions.
+
+**Wait for explicit approval before running `git commit`.**
+Do not commit automatically.
+
 ### Final report
-"✓ Stage 5 complete — all 5 sprints done (Foundation → Services → Screens ∥ Polish → Cleanup). Run /orchestrate-stage6 for QA."
+"✓ Stage 5 complete — all 5 sprints done. Ready to commit and run /orchestrate-stage6 for QA."
