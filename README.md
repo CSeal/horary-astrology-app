@@ -13,7 +13,7 @@
   <p>
     <img alt="Platform" src="https://img.shields.io/badge/Platform-iOS%20%7C%20Android-lightgrey?style=for-the-badge" />
     <img alt="Languages" src="https://img.shields.io/badge/i18n-EN%20%7C%20RU-4285F4?style=for-the-badge" />
-    <img alt="License" src="https://img.shields.io/badge/License-Private-red?style=for-the-badge" />
+    <img alt="License" src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" />
   </p>
 </div>
 
@@ -296,4 +296,4 @@ This is an internal MVP. Contributions are managed through the Claude-driven orc
 
 ## License
 
-Private — all rights reserved. Not open source.
+[MIT](LICENSE) — © 2026 Anton Manuzin.
