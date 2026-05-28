@@ -122,8 +122,8 @@ You ask a sincere, specific yes-or-no question. AstraSk captures your precise lo
 ### Install
 
 ```bash
-git clone https://github.com/your-org/horary-astrology-v1-app.git
-cd horary-astrology-v1-app
+git clone https://github.com/CSeal/horary-astrology-app.git
+cd horary-astrology-app
 npm install
 ```
 
