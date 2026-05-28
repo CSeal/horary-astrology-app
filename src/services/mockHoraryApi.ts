@@ -11,7 +11,7 @@ import type {
   VerdictType,
   ConfidenceBand,
   SignificatorData,
-} from '../types/horary';
+} from '@/types/horary';
 
 const MOCK_DELAY_MS = 600;
 

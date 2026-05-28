@@ -18,11 +18,11 @@ import BottomSheet, {
   type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
 import { View, Text, TouchableOpacity } from '@/tw';
-import { useQuestionsStore } from '../stores/questionsStore';
-import { useDebugStore } from '../stores/debugStore';
-import { DEBUG_PIN, ASYNC_STORAGE_KEYS } from '../constants/config';
-import { colors } from '../constants/theme';
-import type { VerdictType } from '../types/horary';
+import { useQuestionsStore } from '@/stores/questionsStore';
+import { useDebugStore } from '@/stores/debugStore';
+import { DEBUG_PIN, ASYNC_STORAGE_KEYS } from '@/constants/config';
+import { colors } from '@/constants/theme';
+import type { VerdictType } from '@/types/horary';
 
 export interface DebugSheetRef {
   present: () => void;

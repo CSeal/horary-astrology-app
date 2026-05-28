@@ -5,8 +5,8 @@
 // Retry/backoff behaviour lives in horaryApi.retry.test.ts.
 
 import type { AxiosError } from 'axios';
-import { normalizeError, getApiKey } from '../horaryApi';
-import { secureKeyService } from '../secureKeyService';
+import { normalizeError, getApiKey } from '@/services/horaryApi';
+import { secureKeyService } from '@/services/secureKeyService';
 
 // secureKeyService is mocked per-test so getApiKey's priority chain is observable.
 jest.mock('../secureKeyService', () => ({

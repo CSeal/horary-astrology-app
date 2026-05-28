@@ -4,8 +4,8 @@
 // Maximum 500 entries — oldest pruned when exceeded.
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ASYNC_STORAGE_KEYS, MAX_JOURNAL_ENTRIES } from '../constants/config';
-import type { JournalEntry } from '../types/journal';
+import { ASYNC_STORAGE_KEYS, MAX_JOURNAL_ENTRIES } from '@/constants/config';
+import type { JournalEntry } from '@/types/journal';
 
 export const journalService = {
   async getAll(): Promise<JournalEntry[]> {

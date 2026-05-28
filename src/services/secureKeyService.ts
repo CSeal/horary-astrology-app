@@ -3,7 +3,7 @@
 // API key is NEVER stored in AsyncStorage or logged.
 
 import * as SecureStore from 'expo-secure-store';
-import { SECURE_STORE_KEY_API } from '../constants/config';
+import { SECURE_STORE_KEY_API } from '@/constants/config';
 
 export const secureKeyService = {
   async getKey(): Promise<string | null> {

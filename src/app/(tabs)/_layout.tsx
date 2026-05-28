@@ -5,7 +5,7 @@
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, BookOpen, Settings as SettingsIcon } from 'lucide-react-native';
-import { colors, typography } from '../../constants/theme';
+import { colors, typography } from '@/constants/theme';
 
 export default function TabsLayout() {
   const { t } = useTranslation();

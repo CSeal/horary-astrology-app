@@ -5,14 +5,14 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import { horaryApi } from '../services/horaryApi';
-import { mockHoraryApi } from '../services/mockHoraryApi';
-import { useQuestionsStore } from '../stores/questionsStore';
-import { useDebugStore } from '../stores/debugStore';
-import { LOADING_MIN_DURATION } from '../constants/config';
-import { withMinDuration } from './withMinDuration';
-import type { HoraryRequest, HoraryResponse, HoraryAPIError } from '../types/horary';
-import type { JournalEntry } from '../types/journal';
+import { horaryApi } from '@/services/horaryApi';
+import { mockHoraryApi } from '@/services/mockHoraryApi';
+import { useQuestionsStore } from '@/stores/questionsStore';
+import { useDebugStore } from '@/stores/debugStore';
+import { LOADING_MIN_DURATION } from '@/constants/config';
+import { withMinDuration } from '@/hooks/withMinDuration';
+import type { HoraryRequest, HoraryResponse, HoraryAPIError } from '@/types/horary';
+import type { JournalEntry } from '@/types/journal';
 
 function buildJournalEntry(
   request: HoraryRequest,

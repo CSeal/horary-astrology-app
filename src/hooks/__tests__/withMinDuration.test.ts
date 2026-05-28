@@ -2,7 +2,7 @@
 // Validates that the loading-floor helper extends fast resolutions/rejections
 // up to the minimum duration without delaying slow ones.
 
-import { withMinDuration } from '../withMinDuration';
+import { withMinDuration } from '@/hooks/withMinDuration';
 
 describe('withMinDuration', () => {
   it('extends a fast resolution up to the minimum duration', async () => {

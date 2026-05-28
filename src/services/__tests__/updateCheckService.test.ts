@@ -4,8 +4,8 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Application from 'expo-application';
-import { checkForUpdate } from '../updateCheckService';
-import { ASYNC_STORAGE_KEYS } from '../../constants/config';
+import { checkForUpdate } from '@/services/updateCheckService';
+import { ASYNC_STORAGE_KEYS } from '@/constants/config';
 
 jest.mock(
   '@react-native-async-storage/async-storage',

@@ -3,8 +3,8 @@
 // same key set, no untranslated placeholders, and matching {{interpolation}}
 // tokens. This silently breaks on the next string edit without a test.
 
-import en from '../en';
-import ru from '../ru';
+import en from '@/i18n/en';
+import ru from '@/i18n/ru';
 
 type Dict = Record<string, unknown>;
 

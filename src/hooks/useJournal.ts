@@ -1,7 +1,7 @@
 // src/hooks/useJournal.ts
 // Journal helper hook — selectors + delete helper.
 
-import { useQuestionsStore } from '../stores/questionsStore';
+import { useQuestionsStore } from '@/stores/questionsStore';
 
 export function useJournal() {
   const entries = useQuestionsStore((s) => s.entries);

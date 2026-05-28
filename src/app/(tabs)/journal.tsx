@@ -8,12 +8,12 @@ import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react-native';
 import { ScrollView, View, Text } from '@/tw';
-import { CosmosBackground } from '../../components/CosmosBackground';
-import { JournalItem } from '../../components/JournalItem';
-import { Button } from '../../components/ui/Button';
-import { useJournal } from '../../hooks/useJournal';
-import { colors, typography } from '../../constants/theme';
-import type { JournalEntry } from '../../types/journal';
+import { CosmosBackground } from '@/components/CosmosBackground';
+import { JournalItem } from '@/components/JournalItem';
+import { Button } from '@/components/ui/Button';
+import { useJournal } from '@/hooks/useJournal';
+import { colors, typography } from '@/constants/theme';
+import type { JournalEntry } from '@/types/journal';
 
 interface MonthGroup {
   label: string;

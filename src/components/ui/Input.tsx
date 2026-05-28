@@ -11,8 +11,8 @@ import {
   withTiming,
   interpolateColor,
 } from 'react-native-reanimated';
-import { MAX_QUESTION_CHARS } from '../../constants/config';
-import { colors } from '../../constants/theme';
+import { MAX_QUESTION_CHARS } from '@/constants/config';
+import { colors } from '@/constants/theme';
 
 interface InputProps extends TextInputProps {
   showCharCount?: boolean;

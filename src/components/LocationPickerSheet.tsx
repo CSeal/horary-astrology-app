@@ -16,9 +16,9 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import { useDebounce } from 'use-debounce';
 import { View, Text, TouchableOpacity } from '@/tw';
-import { geocodingService } from '../services/geocodingService';
-import { colors, typography } from '../constants/theme';
-import type { LocationOverride } from '../types/location';
+import { geocodingService } from '@/services/geocodingService';
+import { colors, typography } from '@/constants/theme';
+import type { LocationOverride } from '@/types/location';
 
 export interface LocationPickerSheetRef {
   present: () => void;

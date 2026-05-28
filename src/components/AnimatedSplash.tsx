@@ -26,7 +26,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Svg, Polygon, Circle } from 'react-native-svg';
-import { colors } from '../constants/theme';
+import { colors } from '@/constants/theme';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 

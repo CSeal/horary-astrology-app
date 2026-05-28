@@ -20,13 +20,21 @@ module.exports = defineConfig([
   },
   {
     rules: {
-      // Enforce CSS wrapper imports from @/tw instead of react-native.
-      // globalClassNamePolyfill is disabled in metro.config.js to preserve
-      // PlatformColor in CSS variables — className only works via @/tw wrappers.
+      // Enforce absolute imports (@/) instead of relative imports.
+      // Relative parent imports (../../) are fragile during refactoring and hurt readability.
+      // Same-directory imports (./foo) are OK; use @/path/to/foo for modules outside current dir.
+      // Exception: src/tw/index.tsx and src/constants/theme.ts are exempted below.
       'no-restricted-imports': [
         'error',
         {
           patterns: [
+            // Forbid relative parent imports (../ at any depth)
+            {
+              group: ['../**'],
+              message:
+                'Use absolute imports (@/) for modules outside the current directory. Example: @/components/Foo instead of ../../../components/Foo',
+            },
+            // Forbid CSS components from react-native (must use @/tw wrappers)
             {
               group: ['react-native'],
               importNames: RN_CSS_COMPONENTS,

@@ -14,7 +14,7 @@ import Animated, {
 import { Svg, Polygon, Circle } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { View, Text, Pressable } from '@/tw';
-import { colors, typography, radius, spacing } from '../constants/theme';
+import { colors, typography, radius, spacing } from '@/constants/theme';
 
 // 8-pointed star — 220×220 viewBox (shared with AnimatedSplash)
 const STAR_POINTS =

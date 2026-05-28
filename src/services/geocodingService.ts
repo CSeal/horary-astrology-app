@@ -9,7 +9,7 @@
 // We restrict results to populated places via osm_tag filters so the picker
 // never returns streets, businesses, or POIs.
 
-import type { LocationOverride } from '../types/location';
+import type { LocationOverride } from '@/types/location';
 
 const PHOTON_ENDPOINT = 'https://photon.komoot.io/api';
 const RESULT_LIMIT = 5;

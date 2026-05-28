@@ -4,8 +4,8 @@
 // Color always from theme.ts via `color` prop (default: textPrimary).
 
 import Svg, { Text as SvgText } from 'react-native-svg';
-import { colors } from '../../constants/theme';
-import { PLANET_GLYPHS } from '../../constants/planets';
+import { colors } from '@/constants/theme';
+import { PLANET_GLYPHS } from '@/constants/planets';
 
 export type PlanetKey =
   | 'sun'

@@ -4,7 +4,7 @@
 // Import View/Text from '@/tw' (NOT react-native) for className support.
 
 import { View, Text } from '@/tw';
-import type { VerdictType, ConfidenceBand } from '../../types/horary';
+import type { VerdictType, ConfidenceBand } from '@/types/horary';
 
 interface VerdictBadgeProps {
   verdict: VerdictType;

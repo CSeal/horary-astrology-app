@@ -18,9 +18,9 @@ import {
   withTiming,
   withDelay,
 } from 'react-native-reanimated';
-import { VerdictBadge } from './ui/Badge';
-import { colors } from '../constants/theme';
-import type { JournalEntry } from '../types/journal';
+import { VerdictBadge } from '@/components/ui/Badge';
+import { colors } from '@/constants/theme';
+import type { JournalEntry } from '@/types/journal';
 
 interface JournalItemProps {
   entry: JournalEntry;

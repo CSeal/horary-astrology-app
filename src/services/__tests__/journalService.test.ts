@@ -3,9 +3,9 @@
 // the corrupt-JSON fail-open path of journalService.
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { journalService } from '../journalService';
-import { ASYNC_STORAGE_KEYS, MAX_JOURNAL_ENTRIES } from '../../constants/config';
-import type { JournalEntry } from '../../types/journal';
+import { journalService } from '@/services/journalService';
+import { ASYNC_STORAGE_KEYS, MAX_JOURNAL_ENTRIES } from '@/constants/config';
+import type { JournalEntry } from '@/types/journal';
 
 jest.mock(
   '@react-native-async-storage/async-storage',

@@ -16,13 +16,13 @@ import {
   withDelay,
 } from 'react-native-reanimated';
 import { AnimatedView, ScrollView, TouchableOpacity, View, Text } from '@/tw';
-import { CosmosBackground } from '../../../components/CosmosBackground';
-import { VerdictCard } from '../../../components/VerdictCard';
-import { SignificatorRow } from '../../../components/SignificatorRow';
-import { Banner } from '../../../components/ui/Banner';
-import { Button } from '../../../components/ui/Button';
-import { useJournal } from '../../../hooks/useJournal';
-import { colors, typography } from '../../../constants/theme';
+import { CosmosBackground } from '@/components/CosmosBackground';
+import { VerdictCard } from '@/components/VerdictCard';
+import { SignificatorRow } from '@/components/SignificatorRow';
+import { Banner } from '@/components/ui/Banner';
+import { Button } from '@/components/ui/Button';
+import { useJournal } from '@/hooks/useJournal';
+import { colors, typography } from '@/constants/theme';
 
 function formatDateTime(iso: string, locale: string): string {
   return new Date(iso).toLocaleString(locale === 'ru' ? 'ru-RU' : 'en-US', {

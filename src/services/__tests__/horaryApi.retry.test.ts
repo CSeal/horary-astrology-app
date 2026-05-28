@@ -4,8 +4,8 @@
 // interceptor that normally normalizes errors is a no-op here, so post is
 // made to reject directly with already-normalized HoraryAPIError shapes.
 
-import type { HoraryRequest, HoraryResponse } from '../../types/horary';
-import { horaryApi } from '../horaryApi';
+import type { HoraryRequest, HoraryResponse } from '@/types/horary';
+import { horaryApi } from '@/services/horaryApi';
 
 const mockPost = jest.fn();
 

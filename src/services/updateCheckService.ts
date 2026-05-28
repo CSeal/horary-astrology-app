@@ -10,7 +10,7 @@ import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Application from 'expo-application';
 import semver from 'semver';
-import { UPDATE_CONFIG_URL, ASYNC_STORAGE_KEYS } from '../constants/config';
+import { UPDATE_CONFIG_URL, ASYNC_STORAGE_KEYS } from '@/constants/config';
 
 const CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 const FETCH_TIMEOUT_MS = 3_000;

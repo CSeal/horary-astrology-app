@@ -20,14 +20,14 @@ import {
   CormorantGaramond_500Medium,
   CormorantGaramond_700Bold,
 } from '@expo-google-fonts/cormorant-garamond';
-import i18n from '../i18n/index';
-import { useSettingsStore } from '../stores/settingsStore';
-import { useQuestionsStore } from '../stores/questionsStore';
-import { useDebugStore } from '../stores/debugStore';
-import { ASYNC_STORAGE_KEYS } from '../constants/config';
-import { AnimatedSplash } from '../components/AnimatedSplash';
-import { ForceUpdateScreen } from '../components/ForceUpdateScreen';
-import { checkForUpdate, UpdateCheckResult } from '../services/updateCheckService';
+import i18n from '@/i18n/index';
+import { useSettingsStore } from '@/stores/settingsStore';
+import { useQuestionsStore } from '@/stores/questionsStore';
+import { useDebugStore } from '@/stores/debugStore';
+import { ASYNC_STORAGE_KEYS } from '@/constants/config';
+import { AnimatedSplash } from '@/components/AnimatedSplash';
+import { ForceUpdateScreen } from '@/components/ForceUpdateScreen';
+import { checkForUpdate, UpdateCheckResult } from '@/services/updateCheckService';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   /* splash auto-hide may have already happened */

@@ -2,7 +2,7 @@
 // Covers geocodingService.search(): short-query short-circuit, !res.ok throw,
 // display-name assembly, invalid-feature filtering, and AbortSignal pass-through.
 
-import { geocodingService } from '../geocodingService';
+import { geocodingService } from '@/services/geocodingService';
 
 function photonFeature(props: {
   name?: string;

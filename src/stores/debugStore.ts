@@ -7,7 +7,7 @@
 // here is user-facing; the DebugSheet only renders once `isActive` is true.
 
 import { create } from 'zustand';
-import type { VerdictType } from '../types/horary';
+import type { VerdictType } from '@/types/horary';
 
 interface DebugState {
   // True once the user has passed the 7-tap + PIN gate this session.

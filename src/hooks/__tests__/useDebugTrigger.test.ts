@@ -4,7 +4,7 @@
 
 import { renderHook, act } from '@testing-library/react-native';
 import * as Haptics from 'expo-haptics';
-import { useDebugTrigger } from '../useDebugTrigger';
+import { useDebugTrigger } from '@/hooks/useDebugTrigger';
 
 jest.mock('expo-haptics', () => ({
   impactAsync: jest.fn().mockResolvedValue(undefined),

@@ -1,5 +1,5 @@
 // src/types/journal.ts
-import type { VerdictType, ConfidenceBand, SignificatorData } from './horary';
+import type { VerdictType, ConfidenceBand, SignificatorData } from '@/types/horary';
 
 export interface JournalEntry {
   id: string;

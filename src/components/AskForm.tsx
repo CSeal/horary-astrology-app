@@ -6,15 +6,15 @@
 import { View, Text, TouchableOpacity } from '@/tw';
 import { useTranslation } from 'react-i18next';
 import { MapPin, X } from 'lucide-react-native';
-import { Input } from './ui/Input';
-import { Button } from './ui/Button';
-import { colors, typography } from '../constants/theme';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { colors, typography } from '@/constants/theme';
 import {
   MAX_QUESTION_CHARS,
   MIN_QUESTION_CHARS,
   MONTHLY_QUESTION_LIMIT,
-} from '../constants/config';
-import type { LocationOverride } from '../types/location';
+} from '@/constants/config';
+import type { LocationOverride } from '@/types/location';
 
 interface AskFormProps {
   value: string;

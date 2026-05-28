@@ -6,7 +6,7 @@
 
 import { useWindowDimensions } from 'react-native';
 import { View } from '@/tw';
-import { StarField } from './svg/StarField';
+import { StarField } from '@/components/svg/StarField';
 
 interface CosmosBackgroundProps {
   children?: React.ReactNode;

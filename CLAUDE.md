@@ -168,6 +168,32 @@ If any required item is not complete, coding remains closed.
 
 ## Coding Conventions (enforced by ESLint + TypeScript)
 
+### Imports — absolute only (no relative parent imports)
+**ALWAYS use absolute `@/` imports for modules outside the current directory. Never use relative parent imports (`../../../`).**
+
+```ts
+// ✅ Correct — absolute imports
+import { Button } from '@/components/ui/Button';
+import { horaryApi } from '@/services/horaryApi';
+import type { HoraryRequest } from '@/types/horary';
+
+// ❌ Wrong — relative imports break on file moves
+import { Button } from '../../../components/ui/Button';
+import { horaryApi } from '../../services/horaryApi';
+```
+
+**Why:** Relative imports are fragile during refactoring. Moving a file one level up/down breaks all relative paths. Absolute imports (`@/`) always work regardless of file location. `tsconfig.json` is configured with `@/*: ./src/*` alias.
+
+**Exception:** Same-directory imports (`./) are OK as an alternative to absolute imports.
+
+```ts
+// ✅ Both are acceptable for same-directory imports
+import { helper } from './helper';
+import { helper } from '@/hooks/helper'; // if file is in src/hooks/
+```
+
+**Enforcement:** ESLint rule `no-restricted-imports` forbids `../**` patterns. Run `npm run lint` to verify.
+
 ### Imports — CSS components
 **ALWAYS import `View`, `Text`, `ScrollView`, `Pressable`, `TextInput`, `TouchableOpacity` from `@/tw`, NOT from `react-native`.**
 

@@ -4,7 +4,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { AppState, type AppStateStatus } from 'react-native';
-import { locationService, type LocationResult } from '../services/locationService';
+import { locationService, type LocationResult } from '@/services/locationService';
 
 interface UseLocationReturn {
   location: LocationResult | null;

@@ -4,7 +4,7 @@
 
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ASYNC_STORAGE_KEYS, type SupportedLocale } from '../constants/config';
+import { ASYNC_STORAGE_KEYS, type SupportedLocale } from '@/constants/config';
 
 interface SettingsState {
   locale: SupportedLocale;

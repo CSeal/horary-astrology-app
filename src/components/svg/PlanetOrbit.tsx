@@ -13,8 +13,8 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import { colors } from '../../constants/theme';
-import { PLANET_GLYPHS } from '../../constants/planets';
+import { colors } from '@/constants/theme';
+import { PLANET_GLYPHS } from '@/constants/planets';
 
 const AnimatedG = Animated.createAnimatedComponent(G);
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);

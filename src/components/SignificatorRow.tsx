@@ -12,8 +12,8 @@ import {
   withTiming,
   withDelay,
 } from 'react-native-reanimated';
-import type { SignificatorData } from '../types/horary';
-import { PLANET_GLYPHS, PLANET_ROLES } from '../constants/planets';
+import type { SignificatorData } from '@/types/horary';
+import { PLANET_GLYPHS, PLANET_ROLES } from '@/constants/planets';
 
 interface SignificatorRowProps {
   data: SignificatorData;

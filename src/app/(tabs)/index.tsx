@@ -16,20 +16,20 @@ import {
   withDelay,
 } from 'react-native-reanimated';
 import { AnimatedView, ScrollView, View, Text } from '@/tw';
-import { CosmosBackground } from '../../components/CosmosBackground';
-import { AskForm } from '../../components/AskForm';
-import { Banner } from '../../components/ui/Banner';
+import { CosmosBackground } from '@/components/CosmosBackground';
+import { AskForm } from '@/components/AskForm';
+import { Banner } from '@/components/ui/Banner';
 import {
   LocationPickerSheet,
   type LocationPickerSheetRef,
-} from '../../components/LocationPickerSheet';
-import { useHoraryQuery } from '../../hooks/useHoraryQuery';
-import { useLocation } from '../../hooks/useLocation';
-import { useQuestionsStore } from '../../stores/questionsStore';
-import { MONTHLY_QUESTION_LIMIT } from '../../constants/config';
-import { colors, typography } from '../../constants/theme';
-import type { HoraryAPIError } from '../../types/horary';
-import type { LocationOverride } from '../../types/location';
+} from '@/components/LocationPickerSheet';
+import { useHoraryQuery } from '@/hooks/useHoraryQuery';
+import { useLocation } from '@/hooks/useLocation';
+import { useQuestionsStore } from '@/stores/questionsStore';
+import { MONTHLY_QUESTION_LIMIT } from '@/constants/config';
+import { colors, typography } from '@/constants/theme';
+import type { HoraryAPIError } from '@/types/horary';
+import type { LocationOverride } from '@/types/location';
 
 export default function HomeScreen() {
   const { t } = useTranslation();

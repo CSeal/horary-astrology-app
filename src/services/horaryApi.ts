@@ -3,9 +3,9 @@
 // API key priority: SecureStore → EXPO_PUBLIC_ASTROLOGY_API_KEY env var
 
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { secureKeyService } from './secureKeyService';
-import { API_BASE_URL, API_TIMEOUT } from '../constants/config';
-import type { HoraryRequest, HoraryResponse, HoraryAPIError } from '../types/horary';
+import { secureKeyService } from '@/services/secureKeyService';
+import { API_BASE_URL, API_TIMEOUT } from '@/constants/config';
+import type { HoraryRequest, HoraryResponse, HoraryAPIError } from '@/types/horary';
 
 const MAX_RETRIES = 3;
 const BACKOFF_BASE_MS = 1000;

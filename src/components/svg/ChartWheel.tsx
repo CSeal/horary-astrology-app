@@ -4,7 +4,7 @@
 // "Chart wheel — Phase 2" label. Colors from theme.ts.
 
 import Svg, { Circle, Line, Text as SvgText } from 'react-native-svg';
-import { colors } from '../../constants/theme';
+import { colors } from '@/constants/theme';
 
 interface ChartWheelProps {
   size?: number;

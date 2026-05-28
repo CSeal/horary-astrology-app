@@ -4,10 +4,10 @@
 // See docs/quality-gates.md section 2.2 for the original test spec.
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useQuestionsStore } from '../questionsStore';
-import { journalService } from '../../services/journalService';
-import { ASYNC_STORAGE_KEYS } from '../../constants/config';
-import type { JournalEntry } from '../../types/journal';
+import { useQuestionsStore } from '@/stores/questionsStore';
+import { journalService } from '@/services/journalService';
+import { ASYNC_STORAGE_KEYS } from '@/constants/config';
+import type { JournalEntry } from '@/types/journal';
 
 // Mock AsyncStorage
 jest.mock(

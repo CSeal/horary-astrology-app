@@ -14,8 +14,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import type { VerdictType, ConfidenceBand } from '../types/horary';
-import { colors } from '../constants/theme';
+import type { VerdictType, ConfidenceBand } from '@/types/horary';
+import { colors } from '@/constants/theme';
 
 interface VerdictCardProps {
   verdict: VerdictType;

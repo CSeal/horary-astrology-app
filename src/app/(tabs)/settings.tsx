@@ -26,16 +26,16 @@ import {
   TouchableOpacity,
   TextInput,
 } from '@/tw';
-import { Card } from '../../components/ui/Card';
-import { Button } from '../../components/ui/Button';
-import { DebugSheet, type DebugSheetRef } from '../../components/DebugSheet';
-import { useSettingsStore } from '../../stores/settingsStore';
-import { useQuestionsStore } from '../../stores/questionsStore';
-import { secureKeyService } from '../../services/secureKeyService';
-import { useDebugTrigger } from '../../hooks/useDebugTrigger';
-import { MONTHLY_QUESTION_LIMIT } from '../../constants/config';
-import { colors, typography } from '../../constants/theme';
-import type { SupportedLocale } from '../../constants/config';
+import { Card } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { DebugSheet, type DebugSheetRef } from '@/components/DebugSheet';
+import { useSettingsStore } from '@/stores/settingsStore';
+import { useQuestionsStore } from '@/stores/questionsStore';
+import { secureKeyService } from '@/services/secureKeyService';
+import { useDebugTrigger } from '@/hooks/useDebugTrigger';
+import { MONTHLY_QUESTION_LIMIT } from '@/constants/config';
+import { colors, typography } from '@/constants/theme';
+import type { SupportedLocale } from '@/constants/config';
 
 export default function SettingsScreen() {
   const { t, i18n } = useTranslation();

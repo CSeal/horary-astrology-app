@@ -11,8 +11,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { colors } from '../../constants/theme';
-import type { VerdictType } from '../../types/horary';
+import { colors } from '@/constants/theme';
+import type { VerdictType } from '@/types/horary';
 
 const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
 

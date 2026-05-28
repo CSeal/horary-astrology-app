@@ -5,9 +5,9 @@
 
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ASYNC_STORAGE_KEYS } from '../constants/config';
-import { journalService } from '../services/journalService';
-import type { JournalEntry } from '../types/journal';
+import { ASYNC_STORAGE_KEYS } from '@/constants/config';
+import { journalService } from '@/services/journalService';
+import type { JournalEntry } from '@/types/journal';
 
 interface QuestionsState {
   entries: JournalEntry[];

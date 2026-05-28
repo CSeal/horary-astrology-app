@@ -21,12 +21,12 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import { AnimatedView, ScrollView, View, Text, TouchableOpacity } from '@/tw';
-import { CosmosBackground } from '../components/CosmosBackground';
-import { Button } from '../components/ui/Button';
-import { PlanetGlyph } from '../components/svg/PlanetGlyph';
-import { locationService } from '../services/locationService';
-import { ASYNC_STORAGE_KEYS } from '../constants/config';
-import { colors, typography } from '../constants/theme';
+import { CosmosBackground } from '@/components/CosmosBackground';
+import { Button } from '@/components/ui/Button';
+import { PlanetGlyph } from '@/components/svg/PlanetGlyph';
+import { locationService } from '@/services/locationService';
+import { ASYNC_STORAGE_KEYS } from '@/constants/config';
+import { colors, typography } from '@/constants/theme';
 
 const TOTAL_STEPS = 3;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
