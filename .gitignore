@@ -1,6 +1,8 @@
 node_modules/
 .expo/
 dist/
+ios/
+android/
 .env.local
 *.jks
 *.p8
