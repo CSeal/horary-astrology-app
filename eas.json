@@ -27,8 +27,8 @@
     "production": {
       "ios": {
         "appleId": "19mann84@gmail.com",
-        "ascAppId": "",
-        "appleTeamId": ""
+        "ascAppId": "TODO_FILL_WHEN_APP_CREATED_IN_APP_STORE_CONNECT",
+        "appleTeamId": "DGAHHMV358"
       },
       "android": {
         "serviceAccountKeyPath": "./service-account.json",
