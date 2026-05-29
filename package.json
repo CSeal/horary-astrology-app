@@ -12,6 +12,7 @@
     "doctor": "expo-doctor",
     "prebuild": "expo prebuild",
     "prebuild:clean": "expo prebuild --clean",
+    "prebuild:choose": "node scripts/prebuild-choose-team.js",
     "run:ios": "expo run:ios",
     "run:ios:device": "expo run:ios --device",
     "run:android": "expo run:android",
