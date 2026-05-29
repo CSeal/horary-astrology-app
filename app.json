@@ -34,6 +34,7 @@
       ]
     },
     "plugins": [
+      "./plugins/withAutoSigning",
       "expo-dev-client",
       [
         "expo-router",
