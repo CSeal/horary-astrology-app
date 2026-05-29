@@ -119,6 +119,8 @@
         "axios",
         "lucide-react-native",
         "expo-dev-client",
+        "react-native-safe-area-context",
+        "react-native-screens",
         "@gorhom/bottom-sheet",
         "lottie-react-native",
         "react-native-svg",
