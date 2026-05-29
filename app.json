@@ -47,7 +47,8 @@
           "locationWhenInUsePermission": "Your exact location at the moment of asking is required to cast an accurate horary chart."
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-system-ui"
     ],
     "experiments": {
       "typedRoutes": true
