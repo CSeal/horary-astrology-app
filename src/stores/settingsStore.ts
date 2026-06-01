@@ -9,14 +9,17 @@ import { ASYNC_STORAGE_KEYS, type SupportedLocale } from '@/constants/config';
 interface SettingsState {
   locale: SupportedLocale;
   apiKeySource: 'personal' | 'default';
+  onboardingComplete: boolean;
   setLocale: (locale: SupportedLocale) => Promise<void>;
   setApiKeySource: (source: 'personal' | 'default') => void;
+  completeOnboarding: () => Promise<void>;
   hydrate: () => Promise<void>;
 }
 
 export const useSettingsStore = create<SettingsState>((set) => ({
   locale: 'en',
   apiKeySource: 'default',
+  onboardingComplete: false,
 
   setLocale: async (locale: SupportedLocale) => {
     set({ locale });
@@ -31,12 +34,25 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     set({ apiKeySource: source });
   },
 
+  completeOnboarding: async () => {
+    set({ onboardingComplete: true });
+    try {
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ONBOARDING_COMPLETE, '1');
+    } catch {
+      console.error('[settingsStore] Failed to persist onboarding flag');
+    }
+  },
+
   hydrate: async () => {
     try {
-      const storedLocale = await AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LANGUAGE);
-      if (storedLocale === 'en' || storedLocale === 'ru') {
-        set({ locale: storedLocale });
-      }
+      const [storedLocale, onboardingFlag] = await Promise.all([
+        AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LANGUAGE),
+        AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ONBOARDING_COMPLETE),
+      ]);
+      const update: Partial<SettingsState> = {};
+      if (storedLocale === 'en' || storedLocale === 'ru') update.locale = storedLocale;
+      if (onboardingFlag === '1') update.onboardingComplete = true;
+      set(update);
     } catch {
       console.error('[settingsStore] Failed to hydrate settings');
     }

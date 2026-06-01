@@ -4,7 +4,6 @@
 // Content cascades in with a celestial rise: question → verdict → header → rows.
 
 import { useCallback, useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Info, MapPin } from 'lucide-react-native';
@@ -15,7 +14,7 @@ import {
   withTiming,
   withDelay,
 } from 'react-native-reanimated';
-import { AnimatedView, ScrollView, TouchableOpacity, View, Text } from '@/tw';
+import { AnimatedView, SafeAreaView, ScrollView, TouchableOpacity, View, Text } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { VerdictCard } from '@/components/VerdictCard';
 import { SignificatorRow } from '@/components/SignificatorRow';

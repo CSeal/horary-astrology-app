@@ -3,11 +3,10 @@
 // Tap entry → /result/[id]. Long-press → delete confirmation (Alert).
 
 import { useMemo } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react-native';
-import { ScrollView, View, Text } from '@/tw';
+import { SafeAreaView, ScrollView, View, Text } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { JournalItem } from '@/components/JournalItem';
 import { Button } from '@/components/ui/Button';

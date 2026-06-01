@@ -9,8 +9,6 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Dimensions } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { HelpCircle, MapPin, Star } from 'lucide-react-native';
@@ -20,12 +18,12 @@ import {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { AnimatedView, ScrollView, View, Text, TouchableOpacity } from '@/tw';
+import { AnimatedView, SafeAreaView, ScrollView, View, Text, TouchableOpacity } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { Button } from '@/components/ui/Button';
 import { PlanetGlyph } from '@/components/svg/PlanetGlyph';
 import { locationService } from '@/services/locationService';
-import { ASYNC_STORAGE_KEYS } from '@/constants/config';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { colors, typography } from '@/constants/theme';
 
 const TOTAL_STEPS = 3;
@@ -126,18 +124,15 @@ function StepBody({ direction, children }: StepBodyProps) {
 export default function OnboardingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
   const directionRef = useRef<'forward' | 'back'>('forward');
 
   const finish = useCallback(async () => {
-    try {
-      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ONBOARDING_COMPLETE, '1');
-    } catch {
-      // Non-fatal — root layout will retry next boot.
-    }
+    await completeOnboarding();
     router.replace('/');
-  }, [router]);
+  }, [completeOnboarding, router]);
 
   const handleAllowLocation = useCallback(async () => {
     setBusy(true);

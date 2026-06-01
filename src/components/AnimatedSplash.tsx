@@ -9,14 +9,14 @@
 // Animation phases (driven by `phase` state — ONE effect owns all SharedValue writes):
 //   'intro' (0-900ms): Glyph scale 0.82→1.0 via spring. Stars fade in staggered.
 //   'idle':            Glyph pulses ×1.06 while waiting for appReady.
-//   'exit':            exitProgress 0→1 over 380ms, then onComplete() is called.
-//                      In Reanimated 4 the withTiming callback runs on JS thread — no runOnJS needed.
+//   'exit':            exitProgress 0→1 over 380ms, then onComplete() via runOnJS.
 
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, useWindowDimensions } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
+  runOnJS,
   SharedValue,
   useAnimatedStyle,
   useSharedValue,
@@ -132,7 +132,6 @@ export function AnimatedSplash({ appReady, onComplete }: AnimatedSplashProps) {
   // ── Single effect that owns ALL SharedValue writes ──────────────────────────
   // Reanimated 4 rule: each SharedValue may only be written in ONE effect.
   // appReady is included so idle→exit transition fires when it becomes true.
-  // Reanimated 4: withTiming/withSpring callbacks run on JS thread — no runOnJS.
   useEffect(() => {
     cancelAnimation(glyphScale);
     cancelAnimation(exitProgress);
@@ -168,7 +167,8 @@ export function AnimatedSplash({ appReady, onComplete }: AnimatedSplashProps) {
         exitProgress.value = withDelay(
           150,
           withTiming(1, { duration: EXIT_DURATION }, (finished) => {
-            if (finished) onComplete();
+            'worklet';
+            if (finished) runOnJS(onComplete)();
           }),
         );
         return;

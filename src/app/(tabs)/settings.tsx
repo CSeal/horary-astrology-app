@@ -5,7 +5,6 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import { Globe, Key } from 'lucide-react-native';
@@ -20,6 +19,7 @@ import {
 } from 'react-native-reanimated';
 import {
   AnimatedView,
+  SafeAreaView,
   ScrollView,
   View,
   Text,

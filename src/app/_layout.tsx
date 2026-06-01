@@ -3,11 +3,14 @@
 // Native splash is dismissed immediately on mount; AnimatedSplash overlays the
 // app tree until fonts + stores + onboarding flag are all ready.
 
+// NativeWind v5: must be imported at the app entry so react-native-css
+// registers all design tokens (@theme) and utility classes before first render.
+import '../../global.css';
+
 import { useEffect, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   useFonts as useInterFonts,
@@ -24,7 +27,6 @@ import i18n from '@/i18n/index';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { useDebugStore } from '@/stores/debugStore';
-import { ASYNC_STORAGE_KEYS } from '@/constants/config';
 import { AnimatedSplash } from '@/components/AnimatedSplash';
 import { ForceUpdateScreen } from '@/components/ForceUpdateScreen';
 import { checkForUpdate, UpdateCheckResult } from '@/services/updateCheckService';
@@ -45,13 +47,12 @@ export default function RootLayout() {
   const hydrateSettings = useSettingsStore((s) => s.hydrate);
   const hydrateQuestions = useQuestionsStore((s) => s.hydrate);
   const locale = useSettingsStore((s) => s.locale);
+  const onboardingComplete = useSettingsStore((s) => s.onboardingComplete);
   const forceUpdateOverride = useDebugStore((s) => s.forceUpdateOverride);
   const router = useRouter();
   const segments = useSegments();
 
   const [storesHydrated, setStoresHydrated] = useState(false);
-  const [onboardingChecked, setOnboardingChecked] = useState(false);
-  const [onboardingComplete, setOnboardingComplete] = useState(false);
   const [splashDone, setSplashDone] = useState(false);
   const [updateCheckDone, setUpdateCheckDone] = useState(false);
   const [updateCheck, setUpdateCheck] = useState<UpdateCheckResult | null>(null);
@@ -86,26 +87,6 @@ export default function RootLayout() {
     };
   }, [hydrateSettings, hydrateQuestions]);
 
-  // Read onboarding flag once at boot.
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const flag = await AsyncStorage.getItem(
-          ASYNC_STORAGE_KEYS.ONBOARDING_COMPLETE
-        );
-        if (!cancelled) setOnboardingComplete(flag === '1');
-      } catch {
-        // Default to false — onboarding will show again next boot.
-      } finally {
-        if (!cancelled) setOnboardingChecked(true);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   // Run update check in parallel with store hydration and onboarding flag.
   // Fail-open: updateCheckDone is set to true regardless of fetch outcome.
   useEffect(() => {
@@ -132,17 +113,17 @@ export default function RootLayout() {
   // Gate route: redirect to /onboarding when flag is false; redirect home when
   // user accidentally lands on /onboarding after completion.
   useEffect(() => {
-    if (!onboardingChecked || !storesHydrated) return;
+    if (!storesHydrated) return;
     const inOnboarding = segments[0] === 'onboarding';
     if (!onboardingComplete && !inOnboarding) {
       router.replace('/onboarding');
     } else if (onboardingComplete && inOnboarding) {
       router.replace('/');
     }
-  }, [onboardingChecked, onboardingComplete, storesHydrated, segments, router]);
+  }, [onboardingComplete, storesHydrated, segments, router]);
 
   const isAppReady = Boolean(
-    fontsLoaded && storesHydrated && onboardingChecked && updateCheckDone,
+    fontsLoaded && storesHydrated && updateCheckDone,
   );
 
   return (

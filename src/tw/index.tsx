@@ -12,6 +12,7 @@ import {
   TextInput as RNTextInput,
   TouchableOpacity as RNTouchableOpacity,
 } from 'react-native';
+import { SafeAreaView as RNSafeAreaView } from 'react-native-safe-area-context';
 import { useCssElement as _useCssElement, useNativeVariable as useFunctionalVariable } from 'react-native-css';
 import Animated from 'react-native-reanimated';
 
@@ -77,20 +78,40 @@ export const TextInput = (
 TextInput.displayName = 'CSS(TextInput)';
 
 // AnimatedView
-export const AnimatedView = (
-  props: React.ComponentProps<typeof Animated.View> & { className?: string }
-): React.ReactElement => useCssElement(Animated.View, props, { className: 'style' });
-AnimatedView.displayName = 'CSS(AnimatedView)';
+// Cannot pass Animated.View directly to useCssElement — in Reanimated 4,
+// Animated.View.displayName = 'View' (not 'Animated.*'), so react-native-css's
+// animatedComponentFamily tries to double-wrap it and Reanimated throws.
+// Fix: CSS-aware base (forwardRef to RNView) + createAnimatedComponent on top.
+const _AnimatedViewBase = React.forwardRef<
+  React.ComponentRef<typeof RNView>,
+  React.ComponentProps<typeof RNView> & { className?: string }
+>((props, ref) =>
+  useCssElement(RNView, { ...props, ref }, { className: 'style' }) as React.ReactElement
+);
+_AnimatedViewBase.displayName = 'CSSAnimatedViewBase';
+export const AnimatedView = Animated.createAnimatedComponent(_AnimatedViewBase);
+(AnimatedView as { displayName?: string }).displayName = 'CSS(AnimatedView)';
+
+// SafeAreaView
+export const SafeAreaView = (
+  props: React.ComponentProps<typeof RNSafeAreaView> & { className?: string }
+): React.ReactElement => useCssElement(RNSafeAreaView, props, { className: 'style' });
+SafeAreaView.displayName = 'CSS(SafeAreaView)';
 
 // AnimatedScrollView
-export const AnimatedScrollView = (
-  props: React.ComponentProps<typeof Animated.ScrollView> & {
+const _AnimatedScrollViewBase = React.forwardRef<
+  React.ComponentRef<typeof RNScrollView>,
+  React.ComponentProps<typeof RNScrollView> & {
     className?: string;
     contentContainerClassName?: string;
   }
-): React.ReactElement =>
-  useCssElement(Animated.ScrollView, props, {
-    className: 'style',
-    contentContainerClassName: 'contentContainerStyle',
-  });
-AnimatedScrollView.displayName = 'CSS(AnimatedScrollView)';
+>((props, ref) =>
+  useCssElement(
+    RNScrollView,
+    { ...props, ref },
+    { className: 'style', contentContainerClassName: 'contentContainerStyle' }
+  ) as React.ReactElement
+);
+_AnimatedScrollViewBase.displayName = 'CSSAnimatedScrollViewBase';
+export const AnimatedScrollView = Animated.createAnimatedComponent(_AnimatedScrollViewBase);
+(AnimatedScrollView as { displayName?: string }).displayName = 'CSS(AnimatedScrollView)';

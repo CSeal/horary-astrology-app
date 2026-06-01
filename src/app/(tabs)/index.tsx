@@ -5,7 +5,6 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, Linking } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react-native';
 import {
@@ -15,7 +14,7 @@ import {
   withTiming,
   withDelay,
 } from 'react-native-reanimated';
-import { AnimatedView, ScrollView, View, Text } from '@/tw';
+import { AnimatedView, SafeAreaView, ScrollView, View, Text } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { AskForm } from '@/components/AskForm';
 import { Banner } from '@/components/ui/Banner';

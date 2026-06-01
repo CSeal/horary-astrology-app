@@ -276,16 +276,22 @@ useEffect(() => { scale.value = withTiming(0); }, [done]); // ERROR
 ```
 **Fix pattern:** use a `phase` state (`'intro' | 'idle' | 'exit'`) to drive a single switch-effect. Call `cancelAnimation(value)` at the top of the effect to clear the previous animation before starting the next.
 
-#### 2. `runOnJS` deprecated — callbacks already run on JS thread
+#### 2. `runOnJS` required — `withTiming` callbacks run on the UI/worklet thread
+In Reanimated 4.2.x the completion callback of `withTiming`/`withSpring` still executes on the
+UI (worklet) thread. You MUST use `runOnJS` to call any regular JS function from it.
+Also add the `'worklet'` directive to make Babel compile the closure as a worklet.
 ```ts
-// ✅ Reanimated 4 — callback is automatically on JS thread
+import { runOnJS, withTiming } from 'react-native-reanimated';
+
+// ✅ Correct — runOnJS bridges back to JS thread
 withTiming(1, { duration: 300 }, (finished) => {
-  if (finished) onComplete();
+  'worklet';
+  if (finished) runOnJS(onComplete)();
 });
 
-// ❌ Old pattern — runOnJS no longer needed
+// ❌ Wrong — crashes with "Tried to synchronously call a non-worklet function on the UI thread"
 withTiming(1, { duration: 300 }, (finished) => {
-  if (finished) runOnJS(onComplete)();
+  if (finished) onComplete();
 });
 ```
 
