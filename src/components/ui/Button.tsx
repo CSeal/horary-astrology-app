@@ -42,9 +42,9 @@ export function Button({
   }[variant];
 
   const textClass = {
-    primary: 'font-inter-semibold text-lg text-text-inverse',
-    secondary: 'font-inter-medium text-base text-accent-gold',
-    destructive: 'font-inter text-sm text-no underline',
+    primary: 'font-inter-semibold text-lg text-text-inverse text-center',
+    secondary: 'font-inter-medium text-base text-accent-gold text-center',
+    destructive: 'font-inter text-sm text-no underline text-center',
   }[variant];
 
   const pressScale = useSharedValue(1);

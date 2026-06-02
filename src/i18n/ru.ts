@@ -146,6 +146,7 @@ const ru = {
     zodiacSiderealHint: 'Ведическая (Джйотиш) астрология. Реальные положения звёзд (сдвиг ~23°).',
     timezoneSection: 'ЧАСОВОЙ ПОЯС',
     timezoneLabel: 'Определённый часовой пояс',
+    timezoneHint: 'Только для просмотра — берётся с устройства. Все карты строятся для этого часового пояса.',
     locationSection: 'МЕСТОПОЛОЖЕНИЕ',
     locationSourceLabel: 'Источник местоположения',
     locationSourceDevice: 'Устройство (GPS)',

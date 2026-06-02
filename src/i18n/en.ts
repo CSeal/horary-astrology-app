@@ -156,6 +156,7 @@ const en = {
     zodiacSiderealHint: 'Vedic (Jyotish) astrology. Uses the actual star positions (~23° shift).',
     timezoneSection: 'TIMEZONE',
     timezoneLabel: 'Detected Timezone',
+    timezoneHint: 'Read-only — set by your device. All charts are cast for this timezone.',
     locationSection: 'LOCATION',
     locationSourceLabel: 'Location source',
     locationSourceDevice: 'Device GPS',

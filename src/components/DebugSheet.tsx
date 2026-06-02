@@ -3,15 +3,21 @@
 // (useDebugTrigger) followed by the build-time PIN (DEBUG_PIN).
 // All actions mutate LOCAL device state only. No server-side bypass exists.
 //
-// NOTE: Zustand state is in-memory and persists across Fast Refresh in the same
-// Metro session. Use the "Lock" button or full app restart to re-show the PIN gate.
+// isActive resets automatically when the sheet is fully closed (onChange index === -1),
+// so the PIN gate is shown again next time the sheet is opened.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Alert, Switch } from 'react-native';
+import { Alert, Switch, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
 import { useTranslation } from 'react-i18next';
+import {
+  Archive,
+  Compass,
+  FlaskConical,
+  Gauge,
+} from 'lucide-react-native';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetScrollView,
@@ -20,11 +26,10 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import { View, Text, TouchableOpacity } from '@/tw';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { useDebugStore } from '@/stores/debugStore';
 import { DEBUG_PIN, ASYNC_STORAGE_KEYS } from '@/constants/config';
-import { colors } from '@/constants/theme';
+import { colors, shadows } from '@/constants/theme';
 import type { VerdictType } from '@/types/horary';
 
 export interface DebugSheetRef {
@@ -33,6 +38,27 @@ export interface DebugSheetRef {
 }
 
 const VERDICTS: VerdictType[] = ['YES', 'NO', 'MAYBE', 'UNCLEAR'];
+
+// Cross-platform card elevation: shadow on iOS, elevation on Android.
+const cardStyle = Platform.select({
+  ios: {
+    backgroundColor: colors.bgCard,
+    borderRadius: 16,
+    padding: 20,
+    ...shadows.card,
+  },
+  android: {
+    backgroundColor: colors.bgCard,
+    borderRadius: 16,
+    padding: 20,
+    elevation: 6,
+  },
+  default: {
+    backgroundColor: colors.bgCard,
+    borderRadius: 16,
+    padding: 20,
+  },
+});
 
 interface DebugSheetProps {
   ref?: React.Ref<DebugSheetRef>;
@@ -72,6 +98,19 @@ export function DebugSheet({ ref }: DebugSheetProps) {
     }
   }, [ref]);
 
+  // Reset PIN gate when sheet fully closes so it's always shown on next open.
+  const handleSheetChange = useCallback(
+    (index: number) => {
+      if (index === -1) {
+        deactivate();
+        setPinInput('');
+        setPinError(false);
+        setStatus(null);
+      }
+    },
+    [deactivate]
+  );
+
   const flashStatus = useCallback((msg: string) => {
     setStatus(msg);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
@@ -90,11 +129,6 @@ export function DebugSheet({ ref }: DebugSheetProps) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
     }
   }, [pinInput, activate]);
-
-  const handleLock = useCallback(() => {
-    deactivate();
-    sheetRef.current?.close();
-  }, [deactivate]);
 
   const handleResetCounter = useCallback(async () => {
     await resetMonthlyCount();
@@ -140,8 +174,9 @@ export function DebugSheet({ ref }: DebugSheetProps) {
       enableDynamicSizing={false}
       enablePanDownToClose
       index={-1}
+      onChange={handleSheetChange}
       backdropComponent={renderBackdrop}
-      backgroundStyle={{ backgroundColor: colors.bgCard }}
+      backgroundStyle={{ backgroundColor: colors.bgSurface }}
       handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
@@ -156,8 +191,8 @@ export function DebugSheet({ ref }: DebugSheetProps) {
 
         {!isActive ? (
           // ── PIN gate ──────────────────────────────────────────────────────
-          <Card elevated>
-            <View className="gap-4">
+          <View style={cardStyle}>
+            <View style={{ gap: 16 }}>
               <Text className="font-inter text-sm text-text-secondary">
                 {t('debug.pinHint')}
               </Text>
@@ -182,9 +217,9 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                   letterSpacing: 8,
                 }}
               />
-              {pinError && (
+              {pinError ? (
                 <Text className="font-inter text-sm text-no">{t('debug.pinError')}</Text>
-              )}
+              ) : null}
               <Button
                 label={t('debug.unlock')}
                 variant="primary"
@@ -193,22 +228,23 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                 onPress={handleVerifyPin}
               />
             </View>
-          </Card>
+          </View>
         ) : (
           // ── Action menu ───────────────────────────────────────────────────
-          <View className="gap-6">
+          <View style={{ gap: 20 }}>
 
             {/* Status flash */}
-            {status && (
-              <Card>
+            {status ? (
+              <View style={{ ...cardStyle, padding: 12 }}>
                 <Text className="font-inter-medium text-sm text-yes">✓ {status}</Text>
-              </Card>
-            )}
+              </View>
+            ) : null}
 
             {/* STATE */}
             <DebugSection
               title={t('debug.stateSection')}
               hint={t('debug.stateSectionHint')}
+              icon={<Archive color={colors.accentGold} size={13} />}
             >
               <DebugRow
                 description={t('debug.resetCounterHint')}
@@ -239,6 +275,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
             <DebugSection
               title={t('debug.navigationSection')}
               hint={t('debug.navigationSectionHint')}
+              icon={<Compass color={colors.accentGold} size={13} />}
             >
               <DebugRow
                 description={t('debug.resetOnboardingHint')}
@@ -269,6 +306,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
             <DebugSection
               title={t('debug.mockApiSection')}
               hint={t('debug.mockApiSectionHint')}
+              icon={<FlaskConical color={colors.accentGold} size={13} />}
             >
               <DebugToggleRow
                 label={t('debug.mockApiToggle')}
@@ -276,10 +314,10 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                 value={mockMode}
                 onValueChange={setMockMode}
               />
-              {mockMode && (
+              {mockMode ? (
                 <>
                   <Divider />
-                  <View className="flex-row flex-wrap gap-2">
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                     {VERDICTS.map((v) => {
                       const sel = mockVerdict === v;
                       return (
@@ -300,13 +338,14 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                     })}
                   </View>
                 </>
-              )}
+              ) : null}
             </DebugSection>
 
             {/* PERFORMANCE */}
             <DebugSection
               title={t('debug.performanceSection')}
               hint={t('debug.performanceSectionHint')}
+              icon={<Gauge color={colors.accentGold} size={13} />}
             >
               <DebugToggleRow
                 label={t('debug.skipLoadingDelay')}
@@ -315,14 +354,6 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                 onValueChange={setSkipMinLoading}
               />
             </DebugSection>
-
-            {/* LOCK — re-show PIN gate (needed after Fast Refresh) */}
-            <Button
-              label={t('debug.lockLabel')}
-              variant="destructive"
-              size="sm"
-              onPress={handleLock}
-            />
 
           </View>
         )}
@@ -336,28 +367,35 @@ export function DebugSheet({ ref }: DebugSheetProps) {
 function DebugSection({
   title,
   hint,
+  icon,
   children,
 }: {
   title: string;
   hint?: string;
+  icon?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <View className="gap-2">
-      <Text className="text-xs font-inter-semibold text-accent-gold tracking-widest">
-        {title}
-      </Text>
+    <View style={{ gap: 6 }}>
+      {/* Section header — matches Settings style */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        {icon}
+        <Text className="text-xs font-inter-semibold text-accent-gold tracking-widest">
+          {title}
+        </Text>
+      </View>
       {hint ? (
         <Text className="font-inter text-xs text-text-secondary">{hint}</Text>
       ) : null}
-      <Card elevated>
-        <View className="gap-4">{children}</View>
-      </Card>
+      {/* Elevated card with cross-platform shadow */}
+      <View style={cardStyle}>
+        <View style={{ gap: 16 }}>{children}</View>
+      </View>
     </View>
   );
 }
 
-// Вертикальный ряд: описание → кнопка на полную ширину.
+// Вертикальный ряд: описание сверху → кнопка снизу, полная ширина.
 function DebugRow({
   description,
   action,
@@ -366,7 +404,7 @@ function DebugRow({
   action: React.ReactNode;
 }) {
   return (
-    <View className="gap-2">
+    <View style={{ gap: 8 }}>
       <Text className="font-inter text-xs text-text-secondary leading-relaxed">
         {description}
       </Text>
@@ -375,9 +413,12 @@ function DebugRow({
   );
 }
 
-// Разделитель между рядами внутри карточки.
 function Divider() {
-  return <View className="h-px bg-border" />;
+  return (
+    <View
+      style={{ height: 1, backgroundColor: colors.border }}
+    />
+  );
 }
 
 // Ряд тогла: label + Switch в одну строку, описание снизу.
@@ -393,9 +434,11 @@ function DebugToggleRow({
   onValueChange: (v: boolean) => void;
 }) {
   return (
-    <View className="gap-1.5">
-      <View className="flex-row items-center justify-between gap-3">
-        <Text className="font-inter-medium text-base text-text-primary flex-1">{label}</Text>
+    <View style={{ gap: 6 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+        <Text className="font-inter-medium text-base text-text-primary" style={{ flex: 1 }}>
+          {label}
+        </Text>
         <Switch
           value={value}
           onValueChange={onValueChange}

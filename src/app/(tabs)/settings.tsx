@@ -7,7 +7,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
-import { Globe, Key, MapPin, Star } from 'lucide-react-native';
+import { Globe, Key, MapPin, Star, Clock, BarChart3 } from 'lucide-react-native';
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -481,30 +481,36 @@ export default function SettingsScreen() {
 
         {/* TIMEZONE */}
         <AnimatedView style={s1Style} className="gap-2">
-          <Text
-            className="text-xs font-inter-semibold text-accent-gold tracking-widest"
-            accessibilityRole="header"
-          >
-            {t('settings.timezoneSection')}
-          </Text>
-          <Card elevated>
-            <Text className="font-inter text-sm text-text-secondary mb-1">
-              {t('settings.timezoneLabel')}
+          <View className="flex-row items-center gap-2">
+            <Clock color={colors.accentGold} size={typography.sm} />
+            <Text
+              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+              accessibilityRole="header"
+            >
+              {t('settings.timezoneSection')}
             </Text>
-            <Text className="font-inter text-base text-text-primary">
+          </View>
+          <Card elevated>
+            <Text className="font-inter text-base text-text-primary mb-1">
               {timezone}
+            </Text>
+            <Text className="font-inter text-xs text-text-secondary">
+              {t('settings.timezoneHint')}
             </Text>
           </Card>
         </AnimatedView>
 
         {/* USAGE */}
         <AnimatedView style={s2Style} className="gap-2">
-          <Text
-            className="text-xs font-inter-semibold text-accent-gold tracking-widest"
-            accessibilityRole="header"
-          >
-            {t('settings.questionCountSection')}
-          </Text>
+          <View className="flex-row items-center gap-2">
+            <BarChart3 color={colors.accentGold} size={typography.sm} />
+            <Text
+              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+              accessibilityRole="header"
+            >
+              {t('settings.questionCountSection')}
+            </Text>
+          </View>
           <Card elevated>
             <Text className="font-inter text-base text-text-primary mb-2">
               {t('settings.questionCountLabel')}
