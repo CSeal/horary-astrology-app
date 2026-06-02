@@ -290,6 +290,7 @@ const en = {
     clearJournalConfirm: 'Clear all journal entries?',
     clearLabel: 'Clear',
     lockLabel: 'Lock debug mode',
+    maybeOnlyHint: 'MAYBE is mock-only — real API returns yes / no / unclear / reask_later.',
     navigationSection: 'NAVIGATION',
     navigationSectionHint: 'Navigate to specific app states without manual steps.',
     resetOnboarding: 'Reset onboarding',

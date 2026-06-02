@@ -320,10 +320,13 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
                     {VERDICTS.map((v) => {
                       const sel = mockVerdict === v;
+                      // MAYBE does not exist in the real API contract (yes/no/unclear/reask_later only).
+                      const mockOnly = v === 'MAYBE';
                       return (
                         <TouchableOpacity
                           key={v}
                           onPress={() => setMockVerdict(v)}
+                          style={mockOnly ? { borderStyle: 'dashed' } : undefined}
                           className={`px-4 min-h-10 rounded-full items-center justify-center border ${
                             sel ? 'bg-accent-gold border-accent-gold' : 'bg-bg-surface border-border'
                           }`}
@@ -332,11 +335,16 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                         >
                           <Text className={`font-inter-medium text-sm ${sel ? 'text-text-inverse' : 'text-text-primary'}`}>
                             {t(`verdictTypes.${v}`)}
+                            {mockOnly ? ' *' : ''}
                           </Text>
                         </TouchableOpacity>
                       );
                     })}
                   </View>
+                  <Text style={{ fontSize: 11, color: colors.textSecondary, marginTop: 2 }}>
+                    {'* '}
+                    {t('debug.maybeOnlyHint')}
+                  </Text>
                 </>
               ) : null}
             </DebugSection>

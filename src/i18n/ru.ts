@@ -272,6 +272,7 @@ const ru = {
     clearJournalConfirm: 'Очистить все записи журнала?',
     clearLabel: 'Очистить',
     lockLabel: 'Заблокировать режим разработчика',
+    maybeOnlyHint: 'ВОЗМОЖНО только в mock — реальный API возвращает yes / no / unclear / reask_later.',
     navigationSection: 'НАВИГАЦИЯ',
     navigationSectionHint: 'Переход к конкретным состояниям приложения без ручных шагов.',
     resetOnboarding: 'Сбросить онбординг',
