@@ -247,6 +247,36 @@ const en = {
     geocodeError: 'Could not search for cities. Check your connection.',
   },
 
+  // Developer debug mode (hidden behind PIN)
+  debug: {
+    title: 'Developer Mode',
+    pinHint: 'Enter developer PIN to continue.',
+    pinError: 'Incorrect PIN.',
+    unlock: 'Unlock',
+    stateSection: 'STATE',
+    stateSectionHint: 'Resets local on-device data only — no server side effects.',
+    resetCounter: 'Reset monthly counter → 0',
+    resetCounterHint: 'Lets you test the ask flow without hitting the monthly limit.',
+    clearJournal: 'Clear all journal entries',
+    clearJournalHint: 'Permanently deletes all readings saved on this device.',
+    clearJournalConfirm: 'Clear all journal entries?',
+    clearLabel: 'Clear',
+    navigationSection: 'NAVIGATION',
+    navigationSectionHint: 'Navigate to specific app states without manual steps.',
+    resetOnboarding: 'Reset onboarding',
+    resetOnboardingHint: 'Shows the first-launch flow on next app restart.',
+    triggerForceUpdate: 'Trigger force-update screen',
+    triggerForceUpdateHint: 'Simulates a mandatory update gate — useful for testing the gate UI.',
+    mockApiSection: 'MOCK API',
+    mockApiSectionHint: 'Bypasses the real API — no network requests or credits consumed.',
+    mockApiToggle: 'Mock API responses',
+    mockApiToggleHint: 'Returns a fake verdict instantly. Choose which verdict below.',
+    performanceSection: 'PERFORMANCE',
+    performanceSectionHint: 'Tune timing behaviour for faster UI iteration.',
+    skipLoadingDelay: 'Skip minimum loading delay',
+    skipLoadingDelayHint: 'Removes the 1.5 s artificial wait so the result appears immediately.',
+  },
+
   // Force-update gate
   forceUpdate: {
     title: 'Update Required',

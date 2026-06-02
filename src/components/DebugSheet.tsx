@@ -1,9 +1,6 @@
 // src/components/DebugSheet.tsx
 // Hidden developer debug menu. Reached only via the 7-tap version-label gesture
-// (useDebugTrigger) followed by the build-time PIN (DEBUG_PIN). Strings here are
-// intentionally hardcoded English and NOT in the i18n bundle — keeping debug
-// vocabulary out of the shipped translation files.
-//
+// (useDebugTrigger) followed by the build-time PIN (DEBUG_PIN).
 // All actions mutate LOCAL device state only. No server-side bypass exists.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -11,6 +8,7 @@ import { Alert, Switch } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Haptics from 'expo-haptics';
+import { useTranslation } from 'react-i18next';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetScrollView,
@@ -36,6 +34,7 @@ interface DebugSheetProps {
 }
 
 export function DebugSheet({ ref }: DebugSheetProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const sheetRef = useRef<BottomSheet>(null);
 
@@ -69,48 +68,41 @@ export function DebugSheet({ ref }: DebugSheetProps) {
 
   const flashStatus = useCallback((msg: string) => {
     setStatus(msg);
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(
-      () => {}
-    );
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     setTimeout(() => setStatus(null), 2000);
   }, []);
 
   const handleVerifyPin = useCallback(() => {
-    // DEBUG_PIN is null when EXPO_PUBLIC_DEBUG_PIN is unset → gate never opens.
     if (DEBUG_PIN && pinInput === DEBUG_PIN) {
       activate();
       setPinError(false);
       setPinInput('');
-      Haptics.notificationAsync(
-        Haptics.NotificationFeedbackType.Success
-      ).catch(() => {});
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     } else {
       setPinError(true);
       setPinInput('');
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(
-        () => {}
-      );
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
     }
   }, [pinInput, activate]);
 
   const handleResetCounter = useCallback(async () => {
     await resetMonthlyCount();
-    flashStatus('Monthly counter reset to 0');
-  }, [resetMonthlyCount, flashStatus]);
+    flashStatus(t('debug.resetCounter'));
+  }, [resetMonthlyCount, flashStatus, t]);
 
   const handleClearJournal = useCallback(() => {
-    Alert.alert('Clear all journal entries?', 'This cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert(t('debug.clearJournalConfirm'), '', [
+      { text: t('journal.deleteCancel'), style: 'cancel' },
       {
-        text: 'Clear',
+        text: t('debug.clearLabel'),
         style: 'destructive',
         onPress: async () => {
           await clearAllEntries();
-          flashStatus('Journal cleared');
+          flashStatus(t('debug.clearJournal'));
         },
       },
     ]);
-  }, [clearAllEntries, flashStatus]);
+  }, [clearAllEntries, flashStatus, t]);
 
   const handleResetOnboarding = useCallback(async () => {
     await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.ONBOARDING_COMPLETE);
@@ -125,12 +117,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
-        {...props}
-        appearsOnIndex={0}
-        disappearsOnIndex={-1}
-        opacity={0.7}
-      />
+      <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.7} />
     ),
     []
   );
@@ -139,6 +126,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
     <BottomSheet
       ref={sheetRef}
       snapPoints={['85%']}
+      enableDynamicSizing={false}
       enablePanDownToClose
       index={-1}
       backdropComponent={renderBackdrop}
@@ -152,21 +140,18 @@ export function DebugSheet({ ref }: DebugSheetProps) {
         keyboardShouldPersistTaps="handled"
       >
         <Text className="font-cormorant-medium text-2xl text-text-primary">
-          ⚙ Debug Mode
+          ⚙ {t('debug.title')}
         </Text>
 
         {!isActive ? (
           // ── PIN gate ──
           <View className="gap-3">
             <Text className="font-inter text-sm text-text-secondary">
-              Enter developer PIN to continue.
+              {t('debug.pinHint')}
             </Text>
             <BottomSheetTextInput
               value={pinInput}
-              onChangeText={(v) => {
-                setPinInput(v);
-                setPinError(false);
-              }}
+              onChangeText={(v) => { setPinInput(v); setPinError(false); }}
               placeholder="PIN"
               placeholderTextColor={colors.textDisabled}
               keyboardType="number-pad"
@@ -186,9 +171,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
               }}
             />
             {pinError && (
-              <Text className="font-inter text-sm text-no">
-                Incorrect PIN.
-              </Text>
+              <Text className="font-inter text-sm text-no">{t('debug.pinError')}</Text>
             )}
             <TouchableOpacity
               onPress={handleVerifyPin}
@@ -199,7 +182,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
               accessibilityRole="button"
             >
               <Text className="font-inter-semibold text-base text-text-inverse">
-                Unlock
+                {t('debug.unlock')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -212,32 +195,46 @@ export function DebugSheet({ ref }: DebugSheetProps) {
               </View>
             )}
 
-            <DebugSection title="STATE">
+            <DebugSection
+              title={t('debug.stateSection')}
+              hint={t('debug.stateSectionHint')}
+            >
               <DebugButton
-                label="Reset monthly counter → 0"
+                label={t('debug.resetCounter')}
+                description={t('debug.resetCounterHint')}
                 onPress={handleResetCounter}
               />
               <DebugButton
-                label="Clear all journal entries"
+                label={t('debug.clearJournal')}
+                description={t('debug.clearJournalHint')}
                 onPress={handleClearJournal}
                 destructive
               />
             </DebugSection>
 
-            <DebugSection title="NAVIGATION">
+            <DebugSection
+              title={t('debug.navigationSection')}
+              hint={t('debug.navigationSectionHint')}
+            >
               <DebugButton
-                label="Reset onboarding (re-run first launch)"
+                label={t('debug.resetOnboarding')}
+                description={t('debug.resetOnboardingHint')}
                 onPress={handleResetOnboarding}
               />
               <DebugButton
-                label="Trigger force-update screen"
+                label={t('debug.triggerForceUpdate')}
+                description={t('debug.triggerForceUpdateHint')}
                 onPress={handleForceUpdate}
               />
             </DebugSection>
 
-            <DebugSection title="MOCK API">
+            <DebugSection
+              title={t('debug.mockApiSection')}
+              hint={t('debug.mockApiSectionHint')}
+            >
               <DebugToggle
-                label="Mock API responses"
+                label={t('debug.mockApiToggle')}
+                description={t('debug.mockApiToggleHint')}
                 value={mockMode}
                 onValueChange={setMockMode}
               />
@@ -257,12 +254,10 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                     >
                       <Text
                         className={`font-inter-medium text-sm ${
-                          mockVerdict === v
-                            ? 'text-text-inverse'
-                            : 'text-text-primary'
+                          mockVerdict === v ? 'text-text-inverse' : 'text-text-primary'
                         }`}
                       >
-                        {v}
+                        {t(`verdictTypes.${v}`)}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -270,9 +265,13 @@ export function DebugSheet({ ref }: DebugSheetProps) {
               )}
             </DebugSection>
 
-            <DebugSection title="PERFORMANCE">
+            <DebugSection
+              title={t('debug.performanceSection')}
+              hint={t('debug.performanceSectionHint')}
+            >
               <DebugToggle
-                label="Skip min loading delay (1.5s)"
+                label={t('debug.skipLoadingDelay')}
+                description={t('debug.skipLoadingDelayHint')}
                 value={skipMinLoading}
                 onValueChange={setSkipMinLoading}
               />
@@ -286,9 +285,11 @@ export function DebugSheet({ ref }: DebugSheetProps) {
 
 function DebugSection({
   title,
+  hint,
   children,
 }: {
   title: string;
+  hint?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -296,6 +297,9 @@ function DebugSection({
       <Text className="font-inter-semibold text-xs text-accent-gold tracking-widest">
         {title}
       </Text>
+      {hint && (
+        <Text className="font-inter text-xs text-text-secondary -mt-1">{hint}</Text>
+      )}
       {children}
     </View>
   );
@@ -303,52 +307,60 @@ function DebugSection({
 
 function DebugButton({
   label,
+  description,
   onPress,
   destructive = false,
 }: {
   label: string;
+  description?: string;
   onPress: () => void;
   destructive?: boolean;
 }) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`min-h-12 rounded-xl px-4 justify-center bg-bg-surface border ${
+      className={`rounded-xl px-4 py-3 bg-bg-surface border ${
         destructive ? 'border-no' : 'border-border'
       }`}
       accessibilityRole="button"
     >
       <Text
-        className={`font-inter text-base ${
-          destructive ? 'text-no' : 'text-text-primary'
-        }`}
+        className={`font-inter text-base ${destructive ? 'text-no' : 'text-text-primary'}`}
       >
         {label}
       </Text>
+      {description && (
+        <Text className="font-inter text-xs text-text-secondary mt-1">{description}</Text>
+      )}
     </TouchableOpacity>
   );
 }
 
 function DebugToggle({
   label,
+  description,
   value,
   onValueChange,
 }: {
   label: string;
+  description?: string;
   value: boolean;
   onValueChange: (v: boolean) => void;
 }) {
   return (
-    <View className="flex-row items-center justify-between min-h-12 px-4 rounded-xl bg-bg-surface border border-border">
-      <Text className="font-inter text-base text-text-primary flex-1">
-        {label}
-      </Text>
-      <Switch
-        value={value}
-        onValueChange={onValueChange}
-        trackColor={{ false: colors.bgCard, true: colors.accentGold }}
-        thumbColor={colors.textPrimary}
-      />
+    <View className="rounded-xl px-4 py-3 bg-bg-surface border border-border gap-1">
+      <View className="flex-row items-center justify-between">
+        <Text className="font-inter text-base text-text-primary flex-1 mr-3">{label}</Text>
+        <Switch
+          value={value}
+          onValueChange={onValueChange}
+          trackColor={{ false: colors.bgCard, true: colors.accentGold }}
+          thumbColor={colors.textPrimary}
+        />
+      </View>
+      {description && (
+        <Text className="font-inter text-xs text-text-secondary">{description}</Text>
+      )}
     </View>
   );
 }
