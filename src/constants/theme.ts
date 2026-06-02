@@ -28,8 +28,8 @@ export const colors = {
   unclearGlow: 'rgba(155,147,184,0.15)',
 
   // Text tokens
-  textPrimary: '#F0EEFF',
-  textSecondary: '#9B93B8',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#C4BDD8',
   textDisabled: '#4A4465',
   textInverse: '#070714',
 
