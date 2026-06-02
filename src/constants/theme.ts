@@ -30,7 +30,7 @@ export const colors = {
   // Text tokens
   textPrimary: '#FFFFFF',
   textSecondary: '#C4BDD8',
-  textDisabled: '#4A4465',
+  textDisabled: '#7A7295',
   textInverse: '#070714',
 
   // Border tokens
