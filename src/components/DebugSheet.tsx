@@ -16,6 +16,8 @@ import BottomSheet, {
   type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
 import { View, Text, TouchableOpacity } from '@/tw';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { useDebugStore } from '@/stores/debugStore';
 import { DEBUG_PIN, ASYNC_STORAGE_KEYS } from '@/constants/config';
@@ -69,7 +71,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
   const flashStatus = useCallback((msg: string) => {
     setStatus(msg);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-    setTimeout(() => setStatus(null), 2000);
+    setTimeout(() => setStatus(null), 2500);
   }, []);
 
   const handleVerifyPin = useCallback(() => {
@@ -125,7 +127,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
   return (
     <BottomSheet
       ref={sheetRef}
-      snapPoints={['85%']}
+      snapPoints={['90%']}
       enableDynamicSizing={false}
       enablePanDownToClose
       index={-1}
@@ -136,152 +138,195 @@ export function DebugSheet({ ref }: DebugSheetProps) {
       keyboardBlurBehavior="restore"
     >
       <BottomSheetScrollView
-        contentContainerStyle={{ padding: 20, gap: 20 }}
+        contentContainerStyle={{ padding: 20, gap: 24 }}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Title */}
         <Text className="font-cormorant-medium text-2xl text-text-primary">
           ⚙ {t('debug.title')}
         </Text>
 
         {!isActive ? (
-          // ── PIN gate ──
-          <View className="gap-3">
-            <Text className="font-inter text-sm text-text-secondary">
-              {t('debug.pinHint')}
-            </Text>
-            <BottomSheetTextInput
-              value={pinInput}
-              onChangeText={(v) => { setPinInput(v); setPinError(false); }}
-              placeholder="PIN"
-              placeholderTextColor={colors.textDisabled}
-              keyboardType="number-pad"
-              secureTextEntry
-              maxLength={8}
-              style={{
-                backgroundColor: colors.bgSurface,
-                color: colors.textPrimary,
-                fontFamily: 'Inter_400Regular',
-                fontSize: 17,
-                paddingHorizontal: 16,
-                paddingVertical: 14,
-                borderRadius: 12,
-                borderWidth: 1,
-                borderColor: pinError ? colors.no : colors.border,
-                letterSpacing: 8,
-              }}
-            />
-            {pinError && (
-              <Text className="font-inter text-sm text-no">{t('debug.pinError')}</Text>
-            )}
-            <TouchableOpacity
-              onPress={handleVerifyPin}
-              disabled={pinInput.length === 0}
-              className={`min-h-12 rounded-xl items-center justify-center ${
-                pinInput.length === 0 ? 'bg-accent-gold-dim' : 'bg-accent-gold'
-              }`}
-              accessibilityRole="button"
-            >
-              <Text className="font-inter-semibold text-base text-text-inverse">
-                {t('debug.unlock')}
+          // ── PIN gate ──────────────────────────────────────────────────────
+          <Card elevated>
+            <View className="gap-4">
+              <Text className="font-inter text-sm text-text-secondary">
+                {t('debug.pinHint')}
               </Text>
-            </TouchableOpacity>
-          </View>
+              <BottomSheetTextInput
+                value={pinInput}
+                onChangeText={(v) => { setPinInput(v); setPinError(false); }}
+                placeholder="PIN"
+                placeholderTextColor={colors.textDisabled}
+                keyboardType="number-pad"
+                secureTextEntry
+                maxLength={8}
+                style={{
+                  backgroundColor: colors.bgSurface,
+                  color: colors.textPrimary,
+                  fontFamily: 'Inter_400Regular',
+                  fontSize: 17,
+                  paddingHorizontal: 16,
+                  paddingVertical: 14,
+                  borderRadius: 12,
+                  borderWidth: 1,
+                  borderColor: pinError ? colors.no : colors.border,
+                  letterSpacing: 8,
+                }}
+              />
+              {pinError && (
+                <Text className="font-inter text-sm text-no">{t('debug.pinError')}</Text>
+              )}
+              <Button
+                label={t('debug.unlock')}
+                variant="primary"
+                size="sm"
+                disabled={pinInput.length === 0}
+                onPress={handleVerifyPin}
+              />
+            </View>
+          </Card>
         ) : (
-          // ── Action menu ──
+          // ── Action menu ───────────────────────────────────────────────────
           <View className="gap-6">
+
+            {/* Status flash */}
             {status && (
-              <View className="px-3 py-2 rounded-xl bg-bg-surface">
-                <Text className="font-inter text-sm text-yes">✓ {status}</Text>
-              </View>
+              <Card>
+                <Text className="font-inter-medium text-sm text-yes">✓ {status}</Text>
+              </Card>
             )}
 
+            {/* STATE */}
             <DebugSection
               title={t('debug.stateSection')}
               hint={t('debug.stateSectionHint')}
             >
-              <DebugButton
+              <DebugItem
                 label={t('debug.resetCounter')}
                 description={t('debug.resetCounterHint')}
-                onPress={handleResetCounter}
-              />
-              <DebugButton
+              >
+                <Button
+                  label={t('debug.resetCounter')}
+                  variant="secondary"
+                  size="sm"
+                  onPress={handleResetCounter}
+                />
+              </DebugItem>
+
+              <View className="h-px bg-border" />
+
+              <DebugItem
                 label={t('debug.clearJournal')}
                 description={t('debug.clearJournalHint')}
-                onPress={handleClearJournal}
-                destructive
-              />
+              >
+                <Button
+                  label={t('debug.clearLabel')}
+                  variant="destructive"
+                  size="sm"
+                  onPress={handleClearJournal}
+                />
+              </DebugItem>
             </DebugSection>
 
+            {/* NAVIGATION */}
             <DebugSection
               title={t('debug.navigationSection')}
               hint={t('debug.navigationSectionHint')}
             >
-              <DebugButton
+              <DebugItem
                 label={t('debug.resetOnboarding')}
                 description={t('debug.resetOnboardingHint')}
-                onPress={handleResetOnboarding}
-              />
-              <DebugButton
+              >
+                <Button
+                  label={t('debug.resetOnboarding')}
+                  variant="secondary"
+                  size="sm"
+                  onPress={handleResetOnboarding}
+                />
+              </DebugItem>
+
+              <View className="h-px bg-border" />
+
+              <DebugItem
                 label={t('debug.triggerForceUpdate')}
                 description={t('debug.triggerForceUpdateHint')}
-                onPress={handleForceUpdate}
-              />
+              >
+                <Button
+                  label={t('debug.triggerForceUpdate')}
+                  variant="secondary"
+                  size="sm"
+                  onPress={handleForceUpdate}
+                />
+              </DebugItem>
             </DebugSection>
 
+            {/* MOCK API */}
             <DebugSection
               title={t('debug.mockApiSection')}
               hint={t('debug.mockApiSectionHint')}
             >
-              <DebugToggle
+              <DebugToggleRow
                 label={t('debug.mockApiToggle')}
                 description={t('debug.mockApiToggleHint')}
                 value={mockMode}
                 onValueChange={setMockMode}
               />
+
               {mockMode && (
-                <View className="flex-row flex-wrap gap-2 mt-1">
-                  {VERDICTS.map((v) => (
-                    <TouchableOpacity
-                      key={v}
-                      onPress={() => setMockVerdict(v)}
-                      className={`px-4 min-h-10 rounded-lg items-center justify-center border ${
-                        mockVerdict === v
-                          ? 'bg-accent-gold border-accent-gold'
-                          : 'bg-bg-surface border-border'
-                      }`}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: mockVerdict === v }}
-                    >
-                      <Text
-                        className={`font-inter-medium text-sm ${
-                          mockVerdict === v ? 'text-text-inverse' : 'text-text-primary'
-                        }`}
-                      >
-                        {t(`verdictTypes.${v}`)}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
+                <>
+                  <View className="h-px bg-border" />
+                  <View className="flex-row flex-wrap gap-2">
+                    {VERDICTS.map((v) => {
+                      const isSelected = mockVerdict === v;
+                      return (
+                        <TouchableOpacity
+                          key={v}
+                          onPress={() => setMockVerdict(v)}
+                          className={`px-4 min-h-10 rounded-full items-center justify-center border ${
+                            isSelected
+                              ? 'bg-accent-gold border-accent-gold'
+                              : 'bg-bg-surface border-border'
+                          }`}
+                          accessibilityRole="button"
+                          accessibilityState={{ selected: isSelected }}
+                        >
+                          <Text
+                            className={`font-inter-medium text-sm ${
+                              isSelected ? 'text-text-inverse' : 'text-text-primary'
+                            }`}
+                          >
+                            {t(`verdictTypes.${v}`)}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </>
               )}
             </DebugSection>
 
+            {/* PERFORMANCE */}
             <DebugSection
               title={t('debug.performanceSection')}
               hint={t('debug.performanceSectionHint')}
             >
-              <DebugToggle
+              <DebugToggleRow
                 label={t('debug.skipLoadingDelay')}
                 description={t('debug.skipLoadingDelayHint')}
                 value={skipMinLoading}
                 onValueChange={setSkipMinLoading}
               />
             </DebugSection>
+
           </View>
         )}
       </BottomSheetScrollView>
     </BottomSheet>
   );
 }
+
+// ── Sub-components ────────────────────────────────────────────────────────────
 
 function DebugSection({
   title,
@@ -294,49 +339,46 @@ function DebugSection({
 }) {
   return (
     <View className="gap-2">
-      <Text className="font-inter-semibold text-xs text-accent-gold tracking-widest">
+      <Text className="text-xs font-inter-semibold text-accent-gold tracking-widest">
         {title}
       </Text>
       {hint && (
-        <Text className="font-inter text-xs text-text-secondary -mt-1">{hint}</Text>
+        <Text className="font-inter text-xs text-text-secondary">{hint}</Text>
       )}
-      {children}
+      <Card elevated>
+        <View className="gap-4">{children}</View>
+      </Card>
     </View>
   );
 }
 
-function DebugButton({
+// Row: label + description on the left, control (Button) on the right.
+function DebugItem({
   label,
   description,
-  onPress,
-  destructive = false,
+  children,
 }: {
   label: string;
   description?: string;
-  onPress: () => void;
-  destructive?: boolean;
+  children: React.ReactNode;
 }) {
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      className={`rounded-xl px-4 py-3 bg-bg-surface border ${
-        destructive ? 'border-no' : 'border-border'
-      }`}
-      accessibilityRole="button"
-    >
-      <Text
-        className={`font-inter text-base ${destructive ? 'text-no' : 'text-text-primary'}`}
-      >
-        {label}
-      </Text>
-      {description && (
-        <Text className="font-inter text-xs text-text-secondary mt-1">{description}</Text>
-      )}
-    </TouchableOpacity>
+    <View className="flex-row items-center gap-3">
+      <View className="flex-1 gap-0.5">
+        <Text className="font-inter text-base text-text-primary">{label}</Text>
+        {description && (
+          <Text className="font-inter text-xs text-text-secondary leading-snug">
+            {description}
+          </Text>
+        )}
+      </View>
+      <View>{children}</View>
+    </View>
   );
 }
 
-function DebugToggle({
+// Row: label + description + Switch toggle.
+function DebugToggleRow({
   label,
   description,
   value,
@@ -348,13 +390,13 @@ function DebugToggle({
   onValueChange: (v: boolean) => void;
 }) {
   return (
-    <View className="rounded-xl px-4 py-3 bg-bg-surface border border-border gap-1">
-      <View className="flex-row items-center justify-between">
-        <Text className="font-inter text-base text-text-primary flex-1 mr-3">{label}</Text>
+    <View className="gap-1">
+      <View className="flex-row items-center justify-between gap-3">
+        <Text className="font-inter text-base text-text-primary flex-1">{label}</Text>
         <Switch
           value={value}
           onValueChange={onValueChange}
-          trackColor={{ false: colors.bgCard, true: colors.accentGold }}
+          trackColor={{ false: colors.bgSurface, true: colors.accentGold }}
           thumbColor={colors.textPrimary}
         />
       </View>
