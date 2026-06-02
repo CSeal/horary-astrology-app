@@ -7,6 +7,7 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import { secureKeyService } from '@/services/secureKeyService';
 import { API_BASE_URL, API_TIMEOUT, HORARY_ENDPOINT } from '@/constants/config';
 import i18n from '@/i18n/index';
+import { useSettingsStore } from '@/stores/settingsStore';
 import {
   buildAnalysisRequest,
   normalizeAnalysisResponse,
@@ -134,7 +135,8 @@ async function askWithRetry(
 export const horaryApi = {
   ask: async (request: HoraryRequest): Promise<HoraryResponse> => {
     const language = i18n.language === 'ru' ? 'ru' : 'en';
-    const apiRequest = buildAnalysisRequest(request, language);
+    const zodiacType = useSettingsStore.getState().zodiacType;
+    const apiRequest = buildAnalysisRequest(request, language, zodiacType);
     const envelope = await askWithRetry(apiRequest);
     // The analysis lives under `data`; a malformed envelope is a server fault.
     if (!envelope?.data) {

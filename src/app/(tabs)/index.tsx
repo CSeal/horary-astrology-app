@@ -30,7 +30,9 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import {
   MONTHLY_QUESTION_LIMIT,
   DEFAULT_HORARY_CATEGORY,
+  DEFAULT_SUBJECT_ROLE,
   type HoraryCategory,
+  type SubjectRole,
 } from '@/constants/config';
 import { colors, typography } from '@/constants/theme';
 import type { HoraryAPIError } from '@/types/horary';
@@ -43,6 +45,13 @@ export default function HomeScreen() {
   const [dismissedError, setDismissedError] = useState(false);
   const [override, setOverride] = useState<LocationOverride | null>(null);
   const [category, setCategory] = useState<HoraryCategory>(DEFAULT_HORARY_CATEGORY);
+  const [subcategory, setSubcategory] = useState<string | undefined>(undefined);
+  const [subjectRole, setSubjectRole] = useState<SubjectRole>(DEFAULT_SUBJECT_ROLE);
+
+  const handleSelectCategory = useCallback((cat: HoraryCategory) => {
+    setCategory(cat);
+    setSubcategory(undefined); // reset subcategory when category changes
+  }, []);
 
   const { location, permissionStatus } = useLocation();
   const monthlyCount = useQuestionsStore((s) => s.monthlyCount);
@@ -113,12 +122,14 @@ export default function HomeScreen() {
     mutation.mutate({
       question: question.trim(),
       category,
+      subcategory,
+      subject_role: subjectRole,
       latitude: coords.latitude,
       longitude: coords.longitude,
       timezone,
       timestamp: new Date().toISOString(),
     });
-  }, [location, override, resolvedDefault, mutation, question, category]);
+  }, [location, override, resolvedDefault, mutation, question, category, subcategory, subjectRole]);
 
   // Per-question scope — clear override after successful submission so the
   // next question defaults back to GPS.
@@ -232,7 +243,11 @@ export default function HomeScreen() {
                 locationMissing={locationMissing}
                 monthlyCount={monthlyCount}
                 category={category}
-                onSelectCategory={setCategory}
+                onSelectCategory={handleSelectCategory}
+                subcategory={subcategory}
+                onSelectSubcategory={setSubcategory}
+                subjectRole={subjectRole}
+                onSelectSubjectRole={setSubjectRole}
                 override={override}
                 onOpenLocationPicker={handleOpenPicker}
                 onClearOverride={handleClearOverride}

@@ -1,22 +1,62 @@
 // src/components/AskForm.tsx
-// Multiline question input + location row + monthly counter + primary CTA.
-// Location row is tappable — opens LocationPickerSheet for manual override.
-// Override is shown as a removable chip; tap ✕ to revert to GPS.
+// Multiline question input + category/subcategory/subject_role selectors +
+// location row + monthly counter + primary CTA.
+// Category chips use ChipScrollRow (auto-center on select + icons).
+// Subcategory chips appear when the selected category has sub-options.
+// Subject role chips let the user specify whose perspective is being asked.
 
-import { View, Text, TouchableOpacity, ScrollView } from '@/tw';
+import { useMemo } from 'react';
+import { View, Text, TouchableOpacity } from '@/tw';
 import { useTranslation } from 'react-i18next';
-import { MapPin, X } from 'lucide-react-native';
+import {
+  MapPin, X,
+  CircleHelp, Heart, Gem, TrendingUp, Briefcase, Coins,
+  HeartPulse, Baby, Leaf, Package, Plane,
+  User, Users, Users2, Building2, UserPlus, UserX, UserRound,
+} from 'lucide-react-native';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { ChipScrollRow, type ChipItem } from '@/components/ChipScrollRow';
 import { colors, typography } from '@/constants/theme';
 import {
   MAX_QUESTION_CHARS,
   MIN_QUESTION_CHARS,
   MONTHLY_QUESTION_LIMIT,
   HORARY_CATEGORIES,
+  HORARY_SUBCATEGORIES,
+  SUBJECT_ROLES,
   type HoraryCategory,
+  type SubjectRole,
 } from '@/constants/config';
 import type { LocationOverride } from '@/types/location';
+
+// Icon render-functions per category (ChipScrollRow injects the correct color).
+const CATEGORY_ICONS: Record<HoraryCategory, (c: string, s: number) => React.ReactElement> = {
+  general:      (c, s) => <CircleHelp  color={c} size={s} />,
+  love:         (c, s) => <Heart       color={c} size={s} />,
+  marriage:     (c, s) => <Gem         color={c} size={s} />,
+  career:       (c, s) => <TrendingUp  color={c} size={s} />,
+  job:          (c, s) => <Briefcase   color={c} size={s} />,
+  money:        (c, s) => <Coins       color={c} size={s} />,
+  health:       (c, s) => <HeartPulse  color={c} size={s} />,
+  pregnancy:    (c, s) => <Baby        color={c} size={s} />,
+  fertility:    (c, s) => <Leaf        color={c} size={s} />,
+  missing_item: (c, s) => <Package     color={c} size={s} />,
+  travel:       (c, s) => <Plane       color={c} size={s} />,
+};
+
+const SUBJECT_ROLE_ICONS: Record<SubjectRole, (c: string, s: number) => React.ReactElement> = {
+  self:                  (c, s) => <User      color={c} size={s} />,
+  spouse_partner:        (c, s) => <Heart     color={c} size={s} />,
+  third_party_friend:    (c, s) => <UserPlus  color={c} size={s} />,
+  third_party_employer:  (c, s) => <Building2 color={c} size={s} />,
+  third_party_parent:    (c, s) => <Users     color={c} size={s} />,
+  third_party_child:     (c, s) => <Baby      color={c} size={s} />,
+  third_party_other:     (c, s) => <UserRound color={c} size={s} />,
+};
+
+// Unused icons kept to avoid import-pruning — referenced by future roles.
+void Users2; void UserX;
 
 interface AskFormProps {
   value: string;
@@ -24,15 +64,16 @@ interface AskFormProps {
   onSubmit: () => void;
   isLoading?: boolean;
   city?: string;
-  // Suffix shown after the city, e.g. '· GPS' or '· default'.
   locationSourceLabel?: string;
-  // GPS still resolving and no fallback city is available yet.
   locationPending?: boolean;
-  // No usable coordinates at all — blocks submit and prompts to set a city.
   locationMissing?: boolean;
   monthlyCount: number;
   category: HoraryCategory;
   onSelectCategory: (category: HoraryCategory) => void;
+  subcategory?: string;
+  onSelectSubcategory: (sub: string | undefined) => void;
+  subjectRole: SubjectRole;
+  onSelectSubjectRole: (role: SubjectRole) => void;
   override?: LocationOverride | null;
   onOpenLocationPicker?: () => void;
   onClearOverride?: () => void;
@@ -50,6 +91,10 @@ export function AskForm({
   monthlyCount,
   category,
   onSelectCategory,
+  subcategory,
+  onSelectSubcategory,
+  subjectRole,
+  onSelectSubjectRole,
   override = null,
   onOpenLocationPicker,
   onClearOverride,
@@ -58,21 +103,61 @@ export function AskForm({
   const trimmedLen = value.trim().length;
   const isValid = trimmedLen >= MIN_QUESTION_CHARS && value.length <= MAX_QUESTION_CHARS;
 
-  // An override always supplies coordinates. Otherwise we need a resolved
-  // default (GPS or home city) — blocked only while pending or fully missing.
   const hasLocation = override !== null || (!locationPending && !locationMissing);
   const canSubmit = isValid && !isLoading && hasLocation;
 
   const showOverrideChip = override !== null;
-  const showGpsRow = !showOverrideChip;
 
   const locationDisplay = locationPending
     ? t('errors.locationDetecting')
     : locationMissing
       ? t('home.locationSet')
-      : `${city ?? t('home.locationLabel')}${
-          locationSourceLabel ? ` ${locationSourceLabel}` : ''
-        }`;
+      : `${city ?? t('home.locationLabel')}${locationSourceLabel ? ` ${locationSourceLabel}` : ''}`;
+
+  // Build category chip items.
+  const categoryItems = useMemo<ChipItem[]>(
+    () =>
+      HORARY_CATEGORIES.map((cat) => ({
+        key: cat,
+        label: t(`categories.${cat}`),
+        icon: CATEGORY_ICONS[cat],
+      })),
+    [t]
+  );
+
+  // Build subcategory chip items for the selected category.
+  const subcategoryKeys = HORARY_SUBCATEGORIES[category];
+  const subcategoryItems = useMemo<ChipItem[]>(() => {
+    if (!subcategoryKeys) return [];
+    return subcategoryKeys.map((sub) => ({
+      key: sub,
+      label: t(`subcategories.${sub}`),
+    }));
+  }, [subcategoryKeys, t]);
+
+  // Build subject role chip items.
+  const subjectRoleItems = useMemo<ChipItem[]>(
+    () =>
+      SUBJECT_ROLES.map((role) => ({
+        key: role,
+        label: t(`subjectRoles.${role}`),
+        icon: SUBJECT_ROLE_ICONS[role],
+      })),
+    [t]
+  );
+
+  const handleSelectCategory = (cat: string) => {
+    onSelectCategory(cat as HoraryCategory);
+  };
+
+  const handleSelectSubcategory = (sub: string) => {
+    // Tapping the already-selected subcategory deselects it.
+    onSelectSubcategory(sub === subcategory ? undefined : sub);
+  };
+
+  const handleSelectSubjectRole = (role: string) => {
+    onSelectSubjectRole(role as SubjectRole);
+  };
 
   return (
     <View className="gap-4">
@@ -95,43 +180,31 @@ export function AskForm({
         accessibilityLabel={t('home.inputPlaceholder')}
       />
 
-      {/* Category selector — required by the API; 'general' is the default */}
-      <View className="gap-2">
-        <Text className="font-inter-medium text-sm text-text-secondary">
-          {t('home.categoryLabel')}
-        </Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          contentContainerClassName="gap-2 pr-2"
-        >
-          {HORARY_CATEGORIES.map((cat) => {
-            const selected = cat === category;
-            return (
-              <TouchableOpacity
-                key={cat}
-                onPress={() => onSelectCategory(cat)}
-                className={`px-4 min-h-10 rounded-full items-center justify-center border ${
-                  selected
-                    ? 'bg-accent-gold border-accent-gold'
-                    : 'bg-bg-card border-border'
-                }`}
-                accessibilityRole="button"
-                accessibilityState={{ selected }}
-              >
-                <Text
-                  className={`font-inter-medium text-sm ${
-                    selected ? 'text-text-inverse' : 'text-text-primary'
-                  }`}
-                >
-                  {t(`categories.${cat}`)}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
+      {/* Category — required by API */}
+      <ChipScrollRow
+        items={categoryItems}
+        selected={category}
+        onSelect={handleSelectCategory}
+        sectionLabel={t('home.categoryLabel')}
+      />
+
+      {/* Subcategory — shown when the selected category has sub-options */}
+      {subcategoryItems.length > 0 && (
+        <ChipScrollRow
+          items={subcategoryItems}
+          selected={subcategory ?? ''}
+          onSelect={handleSelectSubcategory}
+          sectionLabel={t('home.subCategoryLabel')}
+        />
+      )}
+
+      {/* Subject role — whose perspective */}
+      <ChipScrollRow
+        items={subjectRoleItems}
+        selected={subjectRole}
+        onSelect={handleSelectSubjectRole}
+        sectionLabel={t('home.subjectRoleLabel')}
+      />
 
       {/* Override chip — visible when user has manually picked a city */}
       {showOverrideChip && override && (
@@ -154,8 +227,8 @@ export function AskForm({
         </View>
       )}
 
-      {/* GPS row — tappable to open picker */}
-      {showGpsRow && (
+      {/* GPS / home-city row — tappable to open picker */}
+      {!showOverrideChip && (
         <TouchableOpacity
           onPress={onOpenLocationPicker}
           disabled={!onOpenLocationPicker}

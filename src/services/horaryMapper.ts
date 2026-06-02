@@ -81,12 +81,17 @@ function generateId(): string {
 // engine can cast the chart.
 export function buildAnalysisRequest(
   request: HoraryRequest,
-  language: string
+  language: string,
+  zodiacType: 'Tropic' | 'Sidereal' = 'Tropic'
 ): HoraryAnalysisRequest {
   const dt = new Date(request.timestamp);
   return {
     question: request.question,
     category: request.category,
+    ...(request.subcategory ? { subcategory: request.subcategory } : {}),
+    ...(request.subject_role && request.subject_role !== 'self'
+      ? { subject_role: request.subject_role }
+      : {}),
     question_time: {
       year: dt.getFullYear(),
       month: dt.getMonth() + 1,
@@ -98,6 +103,9 @@ export function buildAnalysisRequest(
       longitude: request.longitude,
       timezone: request.timezone,
     },
+    ...(zodiacType !== 'Tropic'
+      ? { chart_options: { zodiac_type: zodiacType } }
+      : {}),
     include_timing: true,
     options: { language },
   };

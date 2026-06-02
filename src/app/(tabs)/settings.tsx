@@ -7,7 +7,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
-import { Globe, Key, MapPin } from 'lucide-react-native';
+import { Globe, Key, MapPin, Star } from 'lucide-react-native';
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -37,9 +37,13 @@ import { useSettingsStore } from '@/stores/settingsStore';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { secureKeyService } from '@/services/secureKeyService';
 import { useDebugTrigger } from '@/hooks/useDebugTrigger';
-import { MONTHLY_QUESTION_LIMIT } from '@/constants/config';
+import {
+  MONTHLY_QUESTION_LIMIT,
+  ZODIAC_TYPES,
+  type SupportedLocale,
+  type ZodiacType,
+} from '@/constants/config';
 import { colors, typography } from '@/constants/theme';
-import type { SupportedLocale } from '@/constants/config';
 import type { LocationOverride } from '@/types/location';
 
 export default function SettingsScreen() {
@@ -52,6 +56,8 @@ export default function SettingsScreen() {
   const setLocationSource = useSettingsStore((s) => s.setLocationSource);
   const homeLocation = useSettingsStore((s) => s.homeLocation);
   const setHomeLocation = useSettingsStore((s) => s.setHomeLocation);
+  const zodiacType = useSettingsStore((s) => s.zodiacType);
+  const setZodiacType = useSettingsStore((s) => s.setZodiacType);
   const monthlyCount = useQuestionsStore((s) => s.monthlyCount);
 
   const [apiKeyInput, setApiKeyInput] = useState('');
@@ -177,18 +183,21 @@ export default function SettingsScreen() {
   const s3Op = useSharedValue(0);
   const s4Y = useSharedValue(20);
   const s4Op = useSharedValue(0);
+  const s5Y = useSharedValue(20);
+  const s5Op = useSharedValue(0);
 
   useEffect(() => {
     const spring = { damping: 12, stiffness: 90 };
     const fade = { duration: 350 };
-    // Order matches visual layout: title, language, location, timezone, usage, key.
+    // Order: title, language, location, zodiac, timezone, usage, key.
     const sections: [SharedValue<number>, SharedValue<number>, number][] = [
       [titleY, titleOp, 0],
       [s0Y, s0Op, 80],
       [s4Y, s4Op, 160],
-      [s1Y, s1Op, 240],
-      [s2Y, s2Op, 320],
-      [s3Y, s3Op, 400],
+      [s5Y, s5Op, 240],
+      [s1Y, s1Op, 320],
+      [s2Y, s2Op, 400],
+      [s3Y, s3Op, 480],
     ];
     sections.forEach(([y, op, delay]) => {
       y.value = withDelay(delay, withSpring(0, spring));
@@ -220,6 +229,10 @@ export default function SettingsScreen() {
   const s4Style = useAnimatedStyle(() => ({
     opacity: s4Op.value,
     transform: [{ translateY: s4Y.value }],
+  }));
+  const s5Style = useAnimatedStyle(() => ({
+    opacity: s5Op.value,
+    transform: [{ translateY: s5Y.value }],
   }));
 
   // ── Progress bar fill ──
@@ -414,6 +427,55 @@ export default function SettingsScreen() {
                 />
               )}
             </View>
+          </Card>
+        </AnimatedView>
+
+        {/* ZODIAC TYPE */}
+        <AnimatedView style={s5Style} className="gap-2">
+          <View className="flex-row items-center gap-2">
+            <Star color={colors.accentGold} size={typography.sm} />
+            <Text
+              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+              accessibilityRole="header"
+            >
+              {t('settings.zodiacSection')}
+            </Text>
+          </View>
+          <Card elevated>
+            <Text className="font-inter text-base text-text-primary mb-3">
+              {t('settings.zodiacLabel')}
+            </Text>
+            <View className="flex-row gap-2">
+              {ZODIAC_TYPES.map((zt) => {
+                const isSelected = zodiacType === zt;
+                return (
+                  <TouchableOpacity
+                    key={zt}
+                    onPress={() => void setZodiacType(zt as ZodiacType)}
+                    className={`flex-1 min-h-11 rounded-xl items-center justify-center ${
+                      isSelected
+                        ? 'bg-accent-gold'
+                        : 'bg-bg-surface border border-border'
+                    }`}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: isSelected }}
+                  >
+                    <Text
+                      className={`font-inter-medium text-base ${
+                        isSelected ? 'text-text-inverse' : 'text-text-primary'
+                      }`}
+                    >
+                      {t(`settings.zodiac${zt}`)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+            <Text className="font-inter text-xs text-text-secondary mt-3">
+              {zodiacType === 'Sidereal'
+                ? t('settings.zodiacSiderealHint')
+                : t('settings.zodiacTropicHint')}
+            </Text>
           </Card>
         </AnimatedView>
 

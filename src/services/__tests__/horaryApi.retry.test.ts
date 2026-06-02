@@ -7,6 +7,11 @@
 import type { HoraryRequest, HoraryAnalysisEnvelope } from '@/types/horary';
 import { horaryApi } from '@/services/horaryApi';
 
+// settingsStore uses AsyncStorage (native) — mock it so Jest can load horaryApi.ts.
+jest.mock('@/stores/settingsStore', () => ({
+  useSettingsStore: { getState: () => ({ zodiacType: 'Tropic' }) },
+}));
+
 const mockPost = jest.fn();
 
 // `post` is wrapped in an arrow so mockPost is read at call time, not when

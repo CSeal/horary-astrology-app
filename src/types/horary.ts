@@ -9,9 +9,9 @@
 //     The real POST /api/v3/horary/analyze contract. Mapped to/from the app
 //     model in horaryMapper.ts so the rest of the app never sees wire shapes.
 
-import type { HoraryCategory } from '@/constants/config';
+import type { HoraryCategory, SubjectRole, ZodiacType } from '@/constants/config';
 
-export type { HoraryCategory };
+export type { HoraryCategory, SubjectRole, ZodiacType };
 export type VerdictType = 'YES' | 'NO' | 'MAYBE' | 'UNCLEAR';
 export type ConfidenceBand = 'high' | 'medium' | 'low';
 
@@ -28,6 +28,8 @@ export interface SignificatorData {
 export interface HoraryRequest {
   question: string;
   category: HoraryCategory;
+  subcategory?: string;
+  subject_role?: SubjectRole;
   latitude: number;
   longitude: number;
   timezone: string;

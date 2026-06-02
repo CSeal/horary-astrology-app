@@ -35,6 +35,7 @@ export const ASYNC_STORAGE_KEYS = {
   UPDATE_CONFIG_CACHE: 'horary_update_config_cache',
   LOCATION_SOURCE: 'horary_location_source',
   HOME_LOCATION: 'horary_home_location',
+  ZODIAC_TYPE: 'horary_zodiac_type',
 } as const;
 
 // SecureStore key
@@ -61,3 +62,37 @@ export const HORARY_CATEGORIES = [
 ] as const;
 export type HoraryCategory = (typeof HORARY_CATEGORIES)[number];
 export const DEFAULT_HORARY_CATEGORY: HoraryCategory = 'general';
+
+// Subcategories per category — sourced from GET /api/v3/horary/glossary/categories.
+// Categories without subcategories are omitted (general only has yes_no which is the default).
+export const HORARY_SUBCATEGORIES: Partial<Record<HoraryCategory, readonly string[]>> = {
+  love:         ['marriage', 'fidelity', 'rival', 'breakup', 'who_interested', 'compatibility'],
+  marriage:     ['will_marry', 'marriage_happy', 'reconciliation'],
+  career:       ['get_position', 'project_success', 'reputation', 'authority_favorable'],
+  job:          ['get_job', 'keep_job'],
+  money:        ['gain', 'debt_repaid', 'inheritance', 'should_invest', 'will_become_wealthy'],
+  health:       ['will_recover', 'is_dangerous', 'nature_of_illness', 'treatment_good', 'when_crisis'],
+  missing_item: ['will_find', 'where_is', 'who_stole', 'will_return', 'stolen_or_lost'],
+  travel:       ['safe_journey', 'profitable', 'will_return', 'should_emigrate'],
+  pregnancy:    ['will_conceive', 'will_have_children', 'boy_or_girl', 'safe_delivery'],
+  fertility:    ['will_conceive', 'ivf_success'],
+};
+
+// Subject roles — whose perspective the chart is cast for (Lilly's derived-houses doctrine).
+// 'self' is the default; other roles turn the chart for a third party.
+export const SUBJECT_ROLES = [
+  'self',
+  'spouse_partner',
+  'third_party_friend',
+  'third_party_employer',
+  'third_party_parent',
+  'third_party_child',
+  'third_party_other',
+] as const;
+export type SubjectRole = (typeof SUBJECT_ROLES)[number];
+export const DEFAULT_SUBJECT_ROLE: SubjectRole = 'self';
+
+// Zodiac type — stored in settings, shared across all questions.
+export const ZODIAC_TYPES = ['Tropic', 'Sidereal'] as const;
+export type ZodiacType = (typeof ZODIAC_TYPES)[number];
+export const DEFAULT_ZODIAC_TYPE: ZodiacType = 'Tropic';

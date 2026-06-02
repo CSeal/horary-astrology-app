@@ -8,6 +8,11 @@ import type { AxiosError } from 'axios';
 import { normalizeError, getApiKey } from '@/services/horaryApi';
 import { secureKeyService } from '@/services/secureKeyService';
 
+// settingsStore uses AsyncStorage (native) — mock it so Jest can load horaryApi.ts.
+jest.mock('@/stores/settingsStore', () => ({
+  useSettingsStore: { getState: () => ({ zodiacType: 'Tropic' }) },
+}));
+
 // secureKeyService is mocked per-test so getApiKey's priority chain is observable.
 jest.mock('../secureKeyService', () => ({
   secureKeyService: {

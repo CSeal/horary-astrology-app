@@ -5,7 +5,12 @@
 
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ASYNC_STORAGE_KEYS, type SupportedLocale } from '@/constants/config';
+import {
+  ASYNC_STORAGE_KEYS,
+  DEFAULT_ZODIAC_TYPE,
+  type SupportedLocale,
+  type ZodiacType,
+} from '@/constants/config';
 import type { LocationOverride } from '@/types/location';
 
 // Where chart coordinates come from by default when no per-question override
@@ -19,11 +24,13 @@ interface SettingsState {
   onboardingComplete: boolean;
   locationSource: LocationSource;
   homeLocation: LocationOverride | null;
+  zodiacType: ZodiacType;
   setLocale: (locale: SupportedLocale) => Promise<void>;
   setApiKeySource: (source: 'personal' | 'default') => void;
   completeOnboarding: () => Promise<void>;
   setLocationSource: (source: LocationSource) => Promise<void>;
   setHomeLocation: (location: LocationOverride | null) => Promise<void>;
+  setZodiacType: (type: ZodiacType) => Promise<void>;
   hydrate: () => Promise<void>;
 }
 
@@ -33,6 +40,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   onboardingComplete: false,
   locationSource: 'device',
   homeLocation: null,
+  zodiacType: DEFAULT_ZODIAC_TYPE,
 
   setLocale: async (locale: SupportedLocale) => {
     set({ locale });
@@ -88,14 +96,24 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     }
   },
 
+  setZodiacType: async (type: ZodiacType) => {
+    set({ zodiacType: type });
+    try {
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEYS.ZODIAC_TYPE, type);
+    } catch {
+      console.error('[settingsStore] Failed to persist zodiac type');
+    }
+  },
+
   hydrate: async () => {
     try {
-      const [storedLocale, onboardingFlag, storedSource, storedHome] =
+      const [storedLocale, onboardingFlag, storedSource, storedHome, storedZodiac] =
         await Promise.all([
           AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LANGUAGE),
           AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ONBOARDING_COMPLETE),
           AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LOCATION_SOURCE),
           AsyncStorage.getItem(ASYNC_STORAGE_KEYS.HOME_LOCATION),
+          AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ZODIAC_TYPE),
         ]);
       const update: Partial<SettingsState> = {};
       if (storedLocale === 'en' || storedLocale === 'ru') update.locale = storedLocale;
@@ -109,6 +127,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         } catch {
           // Corrupt entry — ignore and leave homeLocation null.
         }
+      }
+      if (storedZodiac === 'Tropic' || storedZodiac === 'Sidereal') {
+        update.zodiacType = storedZodiac;
       }
       set(update);
     } catch {
