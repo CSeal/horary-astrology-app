@@ -5,7 +5,7 @@
 // per-frame re-renders. Colors and sizes always from props/theme.
 
 import { useEffect } from 'react';
-import Svg, { Circle, G, Text as SvgText } from 'react-native-svg';
+import Svg, { Circle, Text as SvgText } from 'react-native-svg';
 import Animated, {
   useSharedValue,
   useAnimatedProps,
@@ -16,8 +16,8 @@ import Animated, {
 import { colors } from '@/constants/theme';
 import { PLANET_GLYPHS } from '@/constants/planets';
 
-const AnimatedG = Animated.createAnimatedComponent(G);
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const AnimatedSvgText = Animated.createAnimatedComponent(SvgText);
 
 interface PlanetOrbitProps {
   size?: number;
@@ -57,18 +57,28 @@ export function PlanetOrbit({
     );
   }, [rotation, corePulse]);
 
-  const rotationProps = useAnimatedProps(() => ({
-    // SVG rotate(angle cx cy) pins the pivot — no originX/originY needed.
-    transform: `rotate(${rotation.value} ${center} ${center})`,
-  }));
+  // Reanimated 4 validates `transform` through its RN/CSS parser which does not
+  // understand SVG's 3-arg rotate(angle cx cy). Compute planet position directly
+  // from the angle so no transform prop is needed at all.
+  const planetCircleProps = useAnimatedProps(() => {
+    const rad = (rotation.value * Math.PI) / 180;
+    return {
+      cx: center + orbitRadius * Math.cos(rad),
+      cy: center + orbitRadius * Math.sin(rad),
+    };
+  });
+
+  const planetGlyphProps = useAnimatedProps(() => {
+    const rad = (rotation.value * Math.PI) / 180;
+    return {
+      x: center + orbitRadius * Math.cos(rad),
+      y: center + orbitRadius * Math.sin(rad) + planetRadius * 0.4,
+    };
+  });
 
   const coreProps = useAnimatedProps(() => ({
     r: coreRadius * corePulse.value,
   }));
-
-  // Planet glyph position — on the orbit ring at angle 0 (rotation handles spin).
-  const planetX = center + orbitRadius;
-  const planetY = center;
 
   return (
     <Svg width={size} height={size}>
@@ -90,25 +100,21 @@ export function PlanetOrbit({
         fillOpacity={0.8}
         animatedProps={coreProps}
       />
-      {/* Rotating planet */}
-      <AnimatedG animatedProps={rotationProps}>
-        <Circle
-          cx={planetX}
-          cy={planetY}
-          r={planetRadius}
-          fill={color}
-          fillOpacity={0.9}
-        />
-        <SvgText
-          x={planetX}
-          y={planetY + planetRadius * 0.4}
-          fill={colors.textPrimary}
-          fontSize={planetRadius * 1.4}
-          textAnchor="middle"
-        >
-          {PLANET_GLYPHS.Jupiter}
-        </SvgText>
-      </AnimatedG>
+      {/* Orbiting planet — position computed from angle, no SVG transform needed */}
+      <AnimatedCircle
+        r={planetRadius}
+        fill={color}
+        fillOpacity={0.9}
+        animatedProps={planetCircleProps}
+      />
+      <AnimatedSvgText
+        fill={colors.textPrimary}
+        fontSize={planetRadius * 1.4}
+        textAnchor="middle"
+        animatedProps={planetGlyphProps}
+      >
+        {PLANET_GLYPHS.Jupiter}
+      </AnimatedSvgText>
     </Svg>
   );
 }

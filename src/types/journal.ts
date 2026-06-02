@@ -10,6 +10,8 @@ export interface JournalEntry {
   significators: SignificatorData[];
   voc_moon: boolean;
   voc_treatment?: string;
+  is_radical?: boolean;
+  radicality_summary?: string;
   timestamp: string;
   city?: string;
   latitude?: number;

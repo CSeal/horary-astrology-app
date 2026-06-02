@@ -3,7 +3,7 @@
 // Location row is tappable — opens LocationPickerSheet for manual override.
 // Override is shown as a removable chip; tap ✕ to revert to GPS.
 
-import { View, Text, TouchableOpacity } from '@/tw';
+import { View, Text, TouchableOpacity, ScrollView } from '@/tw';
 import { useTranslation } from 'react-i18next';
 import { MapPin, X } from 'lucide-react-native';
 import { Input } from '@/components/ui/Input';
@@ -13,6 +13,8 @@ import {
   MAX_QUESTION_CHARS,
   MIN_QUESTION_CHARS,
   MONTHLY_QUESTION_LIMIT,
+  HORARY_CATEGORIES,
+  type HoraryCategory,
 } from '@/constants/config';
 import type { LocationOverride } from '@/types/location';
 
@@ -22,9 +24,15 @@ interface AskFormProps {
   onSubmit: () => void;
   isLoading?: boolean;
   city?: string;
+  // Suffix shown after the city, e.g. '· GPS' or '· default'.
+  locationSourceLabel?: string;
+  // GPS still resolving and no fallback city is available yet.
   locationPending?: boolean;
-  locationDenied?: boolean;
+  // No usable coordinates at all — blocks submit and prompts to set a city.
+  locationMissing?: boolean;
   monthlyCount: number;
+  category: HoraryCategory;
+  onSelectCategory: (category: HoraryCategory) => void;
   override?: LocationOverride | null;
   onOpenLocationPicker?: () => void;
   onClearOverride?: () => void;
@@ -36,9 +44,12 @@ export function AskForm({
   onSubmit,
   isLoading = false,
   city,
+  locationSourceLabel,
   locationPending = false,
-  locationDenied = false,
+  locationMissing = false,
   monthlyCount,
+  category,
+  onSelectCategory,
   override = null,
   onOpenLocationPicker,
   onClearOverride,
@@ -47,9 +58,9 @@ export function AskForm({
   const trimmedLen = value.trim().length;
   const isValid = trimmedLen >= MIN_QUESTION_CHARS && value.length <= MAX_QUESTION_CHARS;
 
-  // With an override the user has explicitly chosen a city — submit is allowed
-  // even when GPS is pending/denied. Otherwise both must be resolved.
-  const hasLocation = override !== null || (!locationPending && !locationDenied);
+  // An override always supplies coordinates. Otherwise we need a resolved
+  // default (GPS or home city) — blocked only while pending or fully missing.
+  const hasLocation = override !== null || (!locationPending && !locationMissing);
   const canSubmit = isValid && !isLoading && hasLocation;
 
   const showOverrideChip = override !== null;
@@ -57,9 +68,11 @@ export function AskForm({
 
   const locationDisplay = locationPending
     ? t('errors.locationDetecting')
-    : locationDenied
-      ? t('errors.locationDenied')
-      : (city ?? t('home.locationLabel'));
+    : locationMissing
+      ? t('home.locationSet')
+      : `${city ?? t('home.locationLabel')}${
+          locationSourceLabel ? ` ${locationSourceLabel}` : ''
+        }`;
 
   return (
     <View className="gap-4">
@@ -81,6 +94,44 @@ export function AskForm({
         placeholder={t('home.inputPlaceholder')}
         accessibilityLabel={t('home.inputPlaceholder')}
       />
+
+      {/* Category selector — required by the API; 'general' is the default */}
+      <View className="gap-2">
+        <Text className="font-inter-medium text-sm text-text-secondary">
+          {t('home.categoryLabel')}
+        </Text>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerClassName="gap-2 pr-2"
+        >
+          {HORARY_CATEGORIES.map((cat) => {
+            const selected = cat === category;
+            return (
+              <TouchableOpacity
+                key={cat}
+                onPress={() => onSelectCategory(cat)}
+                className={`px-4 min-h-10 rounded-full items-center justify-center border ${
+                  selected
+                    ? 'bg-accent-gold border-accent-gold'
+                    : 'bg-bg-card border-border'
+                }`}
+                accessibilityRole="button"
+                accessibilityState={{ selected }}
+              >
+                <Text
+                  className={`font-inter-medium text-sm ${
+                    selected ? 'text-text-inverse' : 'text-text-primary'
+                  }`}
+                >
+                  {t(`categories.${cat}`)}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
 
       {/* Override chip — visible when user has manually picked a city */}
       {showOverrideChip && override && (
@@ -113,15 +164,17 @@ export function AskForm({
           accessibilityLabel={t('a11y.openLocationPicker')}
         >
           <MapPin
-            color={locationDenied ? colors.no : colors.accentGold}
+            color={locationMissing ? colors.no : colors.accentGold}
             size={typography.base}
           />
           <Text className="font-inter text-sm text-text-primary flex-1">
             {locationDisplay}
           </Text>
-          <Text className="font-inter text-xs text-accent-gold">
-            {t('home.changeLocation')}
-          </Text>
+          {!locationMissing && (
+            <Text className="font-inter text-xs text-accent-gold">
+              {t('home.changeLocation')}
+            </Text>
+          )}
         </TouchableOpacity>
       )}
 

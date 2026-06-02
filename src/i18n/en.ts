@@ -13,13 +13,33 @@ const en = {
     inputPlaceholder: 'Ask a sincere, specific question...',
     inputHint: 'e.g. Will I get the job offer this month?',
     submitButton: 'Ask the Stars',
+    castingChart: 'Casting your chart…',
+    categoryLabel: 'Question type',
     locationLabel: 'Detecting location...',
     locationManual: '· manual',
+    locationGps: '· GPS',
+    locationDefault: '· default',
+    locationSet: 'Tap to set your location',
     changeLocation: 'Change',
     questionCounter: 'Questions this month: {{count}} / {{limit}}',
     questionLimitBanner:
       "You've used your {{limit}} free questions this month. Unlimited access is coming soon.",
     charCount: '{{count}} / {{max}}',
+  },
+
+  // Horary question categories (POST /api/v3/horary/analyze)
+  categories: {
+    general: 'General',
+    love: 'Love',
+    marriage: 'Marriage',
+    career: 'Career',
+    job: 'Job',
+    money: 'Money',
+    health: 'Health',
+    pregnancy: 'Pregnancy',
+    fertility: 'Fertility',
+    missing_item: 'Lost item',
+    travel: 'Travel',
   },
 
   // Location picker (bottom sheet for manual override)
@@ -42,6 +62,7 @@ const en = {
     summaryHeaderUnclear: 'What the Chart Shows:',
     significatorsHeader: 'Significators',
     significatorsToggle: 'The Planets Say',
+    radicalityNote: 'This chart is not radical — the sky is not yet ready to answer this question. Wait a while and ask again.',
     vocNote:
       "The Moon is void-of-course. This often means 'nothing will come of the matter' — but the chart still shows the situation as it stands.",
     lowConfidenceNote:
@@ -73,6 +94,17 @@ const en = {
     languageRu: 'Русский',
     timezoneSection: 'TIMEZONE',
     timezoneLabel: 'Detected Timezone',
+    locationSection: 'LOCATION',
+    locationSourceLabel: 'Location source',
+    locationSourceDevice: 'Device GPS',
+    locationSourceManual: 'Set city',
+    locationDeviceHint:
+      'Uses GPS when you ask; falls back to your default city if GPS is unavailable.',
+    locationManualHint: 'Always uses your selected city for every question.',
+    locationCityLabel: 'Default city',
+    locationNoCity: 'No city selected yet',
+    locationChooseCity: 'Choose city',
+    locationChangeCity: 'Change',
     apiKeySection: 'API KEY',
     apiKeyLabel: 'astrology-api.io Key',
     apiKeyPlaceholder: 'Enter your API key',

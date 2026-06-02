@@ -5,6 +5,9 @@
 
 // NativeWind v5: must be imported at the app entry so react-native-css
 // registers all design tokens (@theme) and utility classes before first render.
+// global.css lives at the project root (outside src/), so the @/ alias can't
+// reach it — a relative import is the only option here.
+// eslint-disable-next-line no-restricted-imports
 import '../../global.css';
 
 import { useEffect, useState } from 'react';

@@ -96,4 +96,19 @@ describe('geocodingService.search', () => {
     const [, options] = (globalThis.fetch as jest.Mock).mock.calls[0];
     expect(options.signal).toBe(controller.signal);
   });
+
+  it('forwards a Photon-supported language verbatim', async () => {
+    mockFetchOk([]);
+    await geocodingService.search('Berlin', 'en');
+    const [url] = (globalThis.fetch as jest.Mock).mock.calls[0];
+    expect(url).toContain('lang=en');
+  });
+
+  it('maps unsupported languages (ru) to "default" — Photon 400s on ru', async () => {
+    mockFetchOk([]);
+    await geocodingService.search('Москва', 'ru');
+    const [url] = (globalThis.fetch as jest.Mock).mock.calls[0];
+    expect(url).toContain('lang=default');
+    expect(url).not.toContain('lang=ru');
+  });
 });

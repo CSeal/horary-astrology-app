@@ -1,11 +1,23 @@
 // src/services/horaryApi.ts
-// Axios instance + POST /horary/ask + retry logic + error normalization.
+// Axios instance + POST /api/v3/horary/analyze + retry logic + error normalization.
 // API key priority: SecureStore → EXPO_PUBLIC_ASTROLOGY_API_KEY env var
+// App↔wire mapping lives in horaryMapper.ts; this file is transport only.
 
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { secureKeyService } from '@/services/secureKeyService';
-import { API_BASE_URL, API_TIMEOUT } from '@/constants/config';
-import type { HoraryRequest, HoraryResponse, HoraryAPIError } from '@/types/horary';
+import { API_BASE_URL, API_TIMEOUT, HORARY_ENDPOINT } from '@/constants/config';
+import i18n from '@/i18n/index';
+import {
+  buildAnalysisRequest,
+  normalizeAnalysisResponse,
+} from '@/services/horaryMapper';
+import type {
+  HoraryRequest,
+  HoraryResponse,
+  HoraryAnalysisRequest,
+  HoraryAnalysisEnvelope,
+  HoraryAPIError,
+} from '@/types/horary';
 
 const MAX_RETRIES = 3;
 const BACKOFF_BASE_MS = 1000;
@@ -99,23 +111,40 @@ apiInstance.interceptors.response.use(
 );
 
 async function askWithRetry(
-  request: HoraryRequest,
+  apiRequest: HoraryAnalysisRequest,
   attempt = 1
-): Promise<HoraryResponse> {
+): Promise<HoraryAnalysisEnvelope> {
   try {
-    const response = await apiInstance.post<HoraryResponse>('/horary/ask', request);
+    const response = await apiInstance.post<HoraryAnalysisEnvelope>(
+      HORARY_ENDPOINT,
+      apiRequest
+    );
     return response.data;
   } catch (error: unknown) {
     const apiError = error as HoraryAPIError;
     if (apiError.retryable && attempt < MAX_RETRIES) {
       const delay = BACKOFF_BASE_MS * Math.pow(2, attempt - 1); // 1s, 2s, 4s
       await new Promise((resolve) => setTimeout(resolve, delay));
-      return askWithRetry(request, attempt + 1);
+      return askWithRetry(apiRequest, attempt + 1);
     }
     throw apiError;
   }
 }
 
 export const horaryApi = {
-  ask: (request: HoraryRequest): Promise<HoraryResponse> => askWithRetry(request),
+  ask: async (request: HoraryRequest): Promise<HoraryResponse> => {
+    const language = i18n.language === 'ru' ? 'ru' : 'en';
+    const apiRequest = buildAnalysisRequest(request, language);
+    const envelope = await askWithRetry(apiRequest);
+    // The analysis lives under `data`; a malformed envelope is a server fault.
+    if (!envelope?.data) {
+      const malformed: HoraryAPIError = {
+        code: 'UNKNOWN',
+        message: 'The server returned an unexpected response. Please try again.',
+        retryable: false,
+      };
+      throw malformed;
+    }
+    return normalizeAnalysisResponse(envelope.data, request);
+  },
 };

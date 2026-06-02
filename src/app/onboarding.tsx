@@ -22,9 +22,14 @@ import { AnimatedView, SafeAreaView, ScrollView, View, Text, TouchableOpacity } 
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { Button } from '@/components/ui/Button';
 import { PlanetGlyph } from '@/components/svg/PlanetGlyph';
+import {
+  LocationPickerSheet,
+  type LocationPickerSheetRef,
+} from '@/components/LocationPickerSheet';
 import { locationService } from '@/services/locationService';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { colors, typography } from '@/constants/theme';
+import type { LocationOverride } from '@/types/location';
 
 const TOTAL_STEPS = 3;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -125,9 +130,11 @@ export default function OnboardingScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const completeOnboarding = useSettingsStore((s) => s.completeOnboarding);
+  const setHomeLocation = useSettingsStore((s) => s.setHomeLocation);
   const [step, setStep] = useState(0);
   const [busy, setBusy] = useState(false);
   const directionRef = useRef<'forward' | 'back'>('forward');
+  const pickerRef = useRef<LocationPickerSheetRef>(null);
 
   const finish = useCallback(async () => {
     await completeOnboarding();
@@ -145,6 +152,21 @@ export default function OnboardingScreen() {
       await finish();
     }
   }, [finish]);
+
+  // "Continue without location" → pick a default city instead of using GPS.
+  const handleSkipLocation = useCallback(() => {
+    pickerRef.current?.present();
+  }, []);
+
+  // City chosen in the picker becomes the persisted home location (source =
+  // 'manual'); onboarding then completes.
+  const handlePickHome = useCallback(
+    async (loc: LocationOverride) => {
+      await setHomeLocation(loc);
+      await finish();
+    },
+    [setHomeLocation, finish]
+  );
 
   const next = useCallback(() => {
     directionRef.current = 'forward';
@@ -275,7 +297,7 @@ export default function OnboardingScreen() {
                 <Button
                   label={t('onboarding.step3SkipButton')}
                   variant="secondary"
-                  onPress={finish}
+                  onPress={handleSkipLocation}
                   disabled={busy}
                 />
               </View>
@@ -296,6 +318,13 @@ export default function OnboardingScreen() {
           </View>
         </ScrollView>
       </SafeAreaView>
+
+      <LocationPickerSheet
+        ref={pickerRef}
+        override={null}
+        onPick={handlePickHome}
+        onUseGps={handleAllowLocation}
+      />
     </CosmosBackground>
   );
 }

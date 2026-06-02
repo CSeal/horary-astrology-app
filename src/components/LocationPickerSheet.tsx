@@ -133,6 +133,10 @@ export function LocationPickerSheet({
     <BottomSheet
       ref={sheetRef}
       snapPoints={snapPoints}
+      // gorhom v5 defaults enableDynamicSizing to true; with our flex-1 content
+      // that measures as ~0 height and the sheet opens collapsed. Force the
+      // fixed 75% snap point instead.
+      enableDynamicSizing={false}
       enablePanDownToClose
       index={-1}
       backdropComponent={renderBackdrop}

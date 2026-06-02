@@ -7,7 +7,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
-import { Globe, Key } from 'lucide-react-native';
+import { Globe, Key, MapPin } from 'lucide-react-native';
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -29,6 +29,10 @@ import {
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { DebugSheet, type DebugSheetRef } from '@/components/DebugSheet';
+import {
+  LocationPickerSheet,
+  type LocationPickerSheetRef,
+} from '@/components/LocationPickerSheet';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { secureKeyService } from '@/services/secureKeyService';
@@ -36,6 +40,7 @@ import { useDebugTrigger } from '@/hooks/useDebugTrigger';
 import { MONTHLY_QUESTION_LIMIT } from '@/constants/config';
 import { colors, typography } from '@/constants/theme';
 import type { SupportedLocale } from '@/constants/config';
+import type { LocationOverride } from '@/types/location';
 
 export default function SettingsScreen() {
   const { t, i18n } = useTranslation();
@@ -43,6 +48,10 @@ export default function SettingsScreen() {
   const setLocale = useSettingsStore((s) => s.setLocale);
   const apiKeySource = useSettingsStore((s) => s.apiKeySource);
   const setApiKeySource = useSettingsStore((s) => s.setApiKeySource);
+  const locationSource = useSettingsStore((s) => s.locationSource);
+  const setLocationSource = useSettingsStore((s) => s.setLocationSource);
+  const homeLocation = useSettingsStore((s) => s.homeLocation);
+  const setHomeLocation = useSettingsStore((s) => s.setHomeLocation);
   const monthlyCount = useQuestionsStore((s) => s.monthlyCount);
 
   const [apiKeyInput, setApiKeyInput] = useState('');
@@ -50,6 +59,38 @@ export default function SettingsScreen() {
   const [timezone] = useState<string>(
     () => Intl.DateTimeFormat().resolvedOptions().timeZone
   );
+
+  // Home-location picker (sets the default/fallback city).
+  const homePickerRef = useRef<LocationPickerSheetRef>(null);
+
+  const handleSelectDevice = useCallback(() => {
+    void setLocationSource('device');
+  }, [setLocationSource]);
+
+  // Switching to "manual" only makes sense with a city: reuse the saved one,
+  // otherwise open the picker so the user can choose.
+  const handleSelectManual = useCallback(() => {
+    if (homeLocation) {
+      void setLocationSource('manual');
+    } else {
+      homePickerRef.current?.present();
+    }
+  }, [homeLocation, setLocationSource]);
+
+  const handleOpenHomePicker = useCallback(() => {
+    homePickerRef.current?.present();
+  }, []);
+
+  const handlePickHome = useCallback(
+    (loc: LocationOverride) => {
+      void setHomeLocation(loc); // also flips source → 'manual'
+    },
+    [setHomeLocation]
+  );
+
+  const handleHomeUseGps = useCallback(() => {
+    void setLocationSource('device');
+  }, [setLocationSource]);
 
   // Hidden debug mode: tap the version label 7× to open the developer sheet.
   const debugSheetRef = useRef<DebugSheetRef>(null);
@@ -134,16 +175,20 @@ export default function SettingsScreen() {
   const s2Op = useSharedValue(0);
   const s3Y = useSharedValue(20);
   const s3Op = useSharedValue(0);
+  const s4Y = useSharedValue(20);
+  const s4Op = useSharedValue(0);
 
   useEffect(() => {
     const spring = { damping: 12, stiffness: 90 };
     const fade = { duration: 350 };
+    // Order matches visual layout: title, language, location, timezone, usage, key.
     const sections: [SharedValue<number>, SharedValue<number>, number][] = [
       [titleY, titleOp, 0],
       [s0Y, s0Op, 80],
-      [s1Y, s1Op, 160],
-      [s2Y, s2Op, 240],
-      [s3Y, s3Op, 320],
+      [s4Y, s4Op, 160],
+      [s1Y, s1Op, 240],
+      [s2Y, s2Op, 320],
+      [s3Y, s3Op, 400],
     ];
     sections.forEach(([y, op, delay]) => {
       y.value = withDelay(delay, withSpring(0, spring));
@@ -171,6 +216,10 @@ export default function SettingsScreen() {
   const s3Style = useAnimatedStyle(() => ({
     opacity: s3Op.value,
     transform: [{ translateY: s3Y.value }],
+  }));
+  const s4Style = useAnimatedStyle(() => ({
+    opacity: s4Op.value,
+    transform: [{ translateY: s4Y.value }],
   }));
 
   // ── Progress bar fill ──
@@ -266,6 +315,104 @@ export default function SettingsScreen() {
                   {t('settings.languageRu')}
                 </Text>
               </TouchableOpacity>
+            </View>
+          </Card>
+        </AnimatedView>
+
+        {/* LOCATION */}
+        <AnimatedView style={s4Style} className="gap-2">
+          <View className="flex-row items-center gap-2">
+            <MapPin color={colors.accentGold} size={typography.sm} />
+            <Text
+              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+              accessibilityRole="header"
+            >
+              {t('settings.locationSection')}
+            </Text>
+          </View>
+          <Card elevated>
+            <Text className="font-inter text-base text-text-primary mb-3">
+              {t('settings.locationSourceLabel')}
+            </Text>
+            <View className="flex-row gap-2">
+              <TouchableOpacity
+                onPress={handleSelectDevice}
+                className={`flex-1 min-h-11 rounded-xl items-center justify-center ${
+                  locationSource === 'device'
+                    ? 'bg-accent-gold'
+                    : 'bg-bg-surface border border-border'
+                }`}
+                accessibilityRole="button"
+                accessibilityState={{ selected: locationSource === 'device' }}
+              >
+                <Text
+                  className={`font-inter-medium text-base ${
+                    locationSource === 'device'
+                      ? 'text-text-inverse'
+                      : 'text-text-primary'
+                  }`}
+                >
+                  {t('settings.locationSourceDevice')}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSelectManual}
+                className={`flex-1 min-h-11 rounded-xl items-center justify-center ${
+                  locationSource === 'manual'
+                    ? 'bg-accent-gold'
+                    : 'bg-bg-surface border border-border'
+                }`}
+                accessibilityRole="button"
+                accessibilityState={{ selected: locationSource === 'manual' }}
+              >
+                <Text
+                  className={`font-inter-medium text-base ${
+                    locationSource === 'manual'
+                      ? 'text-text-inverse'
+                      : 'text-text-primary'
+                  }`}
+                >
+                  {t('settings.locationSourceManual')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text className="font-inter text-xs text-text-secondary mt-3">
+              {locationSource === 'manual'
+                ? t('settings.locationManualHint')
+                : t('settings.locationDeviceHint')}
+            </Text>
+
+            {/* Default city row */}
+            <View className="mt-4 pt-4 border-t border-border">
+              <Text className="font-inter text-sm text-text-secondary mb-2">
+                {t('settings.locationCityLabel')}
+              </Text>
+              {homeLocation ? (
+                <View className="flex-row items-center gap-2">
+                  <MapPin color={colors.accentGold} size={typography.base} />
+                  <Text className="font-inter text-base text-text-primary flex-1">
+                    {homeLocation.city}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={handleOpenHomePicker}
+                    className="min-h-11 px-3 items-center justify-center"
+                    accessibilityRole="button"
+                    accessibilityLabel={t('settings.locationChangeCity')}
+                  >
+                    <Text className="font-inter-medium text-sm text-accent-gold">
+                      {t('settings.locationChangeCity')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <Button
+                  label={t('settings.locationChooseCity')}
+                  variant="secondary"
+                  size="sm"
+                  onPress={handleOpenHomePicker}
+                />
+              )}
             </View>
           </Card>
         </AnimatedView>
@@ -375,6 +522,12 @@ export default function SettingsScreen() {
       </ScrollView>
     </SafeAreaView>
     <DebugSheet ref={debugSheetRef} />
+    <LocationPickerSheet
+      ref={homePickerRef}
+      override={homeLocation}
+      onPick={handlePickHome}
+      onUseGps={handleHomeUseGps}
+    />
     </>
   );
 }

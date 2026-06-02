@@ -2,7 +2,9 @@
 // App-wide configuration constants.
 // API keys are NEVER stored here — see secureKeyService.ts and .env.local.example
 
-export const API_BASE_URL = 'https://astrology-api.io';
+// Real API lives on the api. subdomain (the bare domain is the marketing site).
+export const API_BASE_URL = 'https://api.astrology-api.io';
+export const HORARY_ENDPOINT = '/api/v3/horary/analyze';
 export const API_TIMEOUT = 10000; // 10 seconds
 
 export const MONTHLY_QUESTION_LIMIT = 5;
@@ -31,6 +33,8 @@ export const ASYNC_STORAGE_KEYS = {
   LANGUAGE: 'horary_language',
   ONBOARDING_COMPLETE: 'horary_onboarding_complete',
   UPDATE_CONFIG_CACHE: 'horary_update_config_cache',
+  LOCATION_SOURCE: 'horary_location_source',
+  HOME_LOCATION: 'horary_home_location',
 } as const;
 
 // SecureStore key
@@ -39,3 +43,21 @@ export const SECURE_STORE_KEY_API = 'horary_api_key';
 // Supported locales
 export const SUPPORTED_LOCALES = ['en', 'ru'] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
+
+// Horary question categories — required by POST /api/v3/horary/analyze.
+// 'general' is the catch-all default shown first in the picker.
+export const HORARY_CATEGORIES = [
+  'general',
+  'love',
+  'marriage',
+  'career',
+  'job',
+  'money',
+  'health',
+  'pregnancy',
+  'fertility',
+  'missing_item',
+  'travel',
+] as const;
+export type HoraryCategory = (typeof HORARY_CATEGORIES)[number];
+export const DEFAULT_HORARY_CATEGORY: HoraryCategory = 'general';

@@ -4,7 +4,7 @@
 // interceptor that normally normalizes errors is a no-op here, so post is
 // made to reject directly with already-normalized HoraryAPIError shapes.
 
-import type { HoraryRequest, HoraryResponse } from '@/types/horary';
+import type { HoraryRequest, HoraryAnalysisEnvelope } from '@/types/horary';
 import { horaryApi } from '@/services/horaryApi';
 
 const mockPost = jest.fn();
@@ -26,20 +26,23 @@ jest.mock('axios', () => ({
 
 const request: HoraryRequest = {
   question: 'Will the deal close this week?',
+  category: 'general',
   latitude: 51.5074,
   longitude: -0.1278,
   timezone: 'Europe/London',
   timestamp: '2026-05-28T12:00:00.000Z',
 };
 
-const response: HoraryResponse = {
-  id: 'r1',
-  verdict: 'YES',
-  confidence_band: 'high',
-  summary: 'Test.',
-  significators: [],
-  voc_moon: false,
-  chart_time: '2026-05-28T12:00:00.000Z',
+// Live API wraps the analysis in a success envelope under `data`; horaryApi.ask
+// unwraps it and normalizes into the app HoraryResponse.
+const response: HoraryAnalysisEnvelope = {
+  success: true,
+  data: {
+    category: 'general',
+    judgment: { answer: 'yes', confidence_band: 'high', reasoning: 'Test.' },
+    significators: [],
+    lunar_analysis: { is_void_of_course: false },
+  },
 };
 
 const retryableError = { code: 'API_5XX', message: 'server', retryable: true };
@@ -57,7 +60,9 @@ describe('horaryApi.ask — retry/backoff', () => {
 
   it('resolves on first success without retrying', async () => {
     mockPost.mockResolvedValueOnce({ data: response });
-    await expect(horaryApi.ask(request)).resolves.toEqual(response);
+    const result = await horaryApi.ask(request);
+    expect(result.verdict).toBe('YES'); // 'yes' → YES via normalizer
+    expect(result.chart_time).toBe(request.timestamp);
     expect(mockPost).toHaveBeenCalledTimes(1);
   });
 
@@ -68,7 +73,8 @@ describe('horaryApi.ask — retry/backoff', () => {
 
     const promise = horaryApi.ask(request);
     await jest.advanceTimersByTimeAsync(1000); // first backoff = 1s
-    await expect(promise).resolves.toEqual(response);
+    const result = await promise;
+    expect(result.verdict).toBe('YES');
     expect(mockPost).toHaveBeenCalledTimes(2);
   });
 

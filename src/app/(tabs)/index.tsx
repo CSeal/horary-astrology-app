@@ -4,7 +4,7 @@
 // Header + form rise in gently on mount.
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { ActivityIndicator, Linking } from 'react-native';
+import { Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react-native';
 import {
@@ -18,6 +18,7 @@ import { AnimatedView, SafeAreaView, ScrollView, View, Text } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { AskForm } from '@/components/AskForm';
 import { Banner } from '@/components/ui/Banner';
+import { PlanetOrbit } from '@/components/svg/PlanetOrbit';
 import {
   LocationPickerSheet,
   type LocationPickerSheetRef,
@@ -25,7 +26,12 @@ import {
 import { useHoraryQuery } from '@/hooks/useHoraryQuery';
 import { useLocation } from '@/hooks/useLocation';
 import { useQuestionsStore } from '@/stores/questionsStore';
-import { MONTHLY_QUESTION_LIMIT } from '@/constants/config';
+import { useSettingsStore } from '@/stores/settingsStore';
+import {
+  MONTHLY_QUESTION_LIMIT,
+  DEFAULT_HORARY_CATEGORY,
+  type HoraryCategory,
+} from '@/constants/config';
 import { colors, typography } from '@/constants/theme';
 import type { HoraryAPIError } from '@/types/horary';
 import type { LocationOverride } from '@/types/location';
@@ -36,14 +42,34 @@ export default function HomeScreen() {
   const [dismissedLimit, setDismissedLimit] = useState(false);
   const [dismissedError, setDismissedError] = useState(false);
   const [override, setOverride] = useState<LocationOverride | null>(null);
+  const [category, setCategory] = useState<HoraryCategory>(DEFAULT_HORARY_CATEGORY);
 
   const { location, permissionStatus } = useLocation();
   const monthlyCount = useQuestionsStore((s) => s.monthlyCount);
+  const locationSource = useSettingsStore((s) => s.locationSource);
+  const homeLocation = useSettingsStore((s) => s.homeLocation);
 
-  // The mutation's `city` is what's persisted to the journal entry. When the
-  // user has set a manual override, that's the city used for the chart — so
-  // pass it to the mutation; otherwise fall back to the GPS-resolved city.
-  const journalCity = override?.city ?? location?.city;
+  // Resolve the default location (used when there's no per-question override):
+  //   1. source = 'manual' + home city  → home city (GPS ignored by choice)
+  //   2. GPS location available          → GPS
+  //   3. GPS unavailable + home city     → home city (auto-fallback)
+  const manualActive = locationSource === 'manual' && homeLocation !== null;
+  let resolvedDefault: LocationOverride | typeof location = null;
+  let defaultSource: 'gps' | 'home' | null = null;
+  if (manualActive) {
+    resolvedDefault = homeLocation;
+    defaultSource = 'home';
+  } else if (location) {
+    resolvedDefault = location;
+    defaultSource = 'gps';
+  } else if (homeLocation) {
+    resolvedDefault = homeLocation;
+    defaultSource = 'home';
+  }
+
+  // The mutation's `city` is what's persisted to the journal entry. Override
+  // wins (explicit per-question pick); otherwise the resolved default's city.
+  const journalCity = override?.city ?? resolvedDefault?.city;
   const mutation = useHoraryQuery(journalCity);
 
   const pickerRef = useRef<LocationPickerSheetRef>(null);
@@ -58,8 +84,18 @@ export default function HomeScreen() {
     : null;
 
   const limitReached = monthlyCount >= MONTHLY_QUESTION_LIMIT;
-  const locationPending = permissionStatus === 'loading';
-  const locationDenied = permissionStatus === 'denied';
+  // Pending only while GPS is still resolving AND nothing else is available yet.
+  const locationPending =
+    permissionStatus === 'loading' && !override && !resolvedDefault;
+  // Nothing usable resolved and GPS is done trying → user must set a city.
+  const locationMissing =
+    !override && !resolvedDefault && permissionStatus !== 'loading';
+  const locationSourceLabel =
+    defaultSource === 'gps'
+      ? t('home.locationGps')
+      : defaultSource === 'home'
+        ? t('home.locationDefault')
+        : undefined;
 
   const openSettings = useCallback(() => {
     Linking.openSettings().catch(() => {
@@ -68,20 +104,21 @@ export default function HomeScreen() {
   }, []);
 
   const handleSubmit = useCallback(() => {
-    // Override supplies coords; timezone always comes from the device (Intl).
-    // If neither override nor GPS is available we can't build a request.
-    const coords = override ?? location;
+    // Coords come from the override or the resolved default (GPS / home city).
+    // Timezone always comes from the device (Intl) — never overridden.
+    const coords = override ?? resolvedDefault;
     if (!coords) return;
     const timezone = location?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
     setDismissedError(false);
     mutation.mutate({
       question: question.trim(),
+      category,
       latitude: coords.latitude,
       longitude: coords.longitude,
       timezone,
       timestamp: new Date().toISOString(),
     });
-  }, [location, override, mutation, question]);
+  }, [location, override, resolvedDefault, mutation, question, category]);
 
   // Per-question scope — clear override after successful submission so the
   // next question defaults back to GPS.
@@ -154,7 +191,7 @@ export default function HomeScreen() {
             />
           )}
 
-          {locationDenied && (
+          {locationMissing && (
             <View>
               <Banner
                 message={t('errors.locationDenied')}
@@ -176,10 +213,10 @@ export default function HomeScreen() {
           )}
 
           {mutation.isPending ? (
-            <View className="items-center justify-center py-12 gap-4">
-              <ActivityIndicator color={colors.accentGold} size="large" />
+            <View className="items-center justify-center py-12 gap-6">
+              <PlanetOrbit size={140} />
               <Text className="font-cormorant-medium text-lg text-text-primary">
-                {t('home.title')}
+                {t('home.castingChart')}
               </Text>
             </View>
           ) : (
@@ -189,10 +226,13 @@ export default function HomeScreen() {
                 onChangeText={setQuestion}
                 onSubmit={handleSubmit}
                 isLoading={mutation.isPending}
-                city={location?.city}
+                city={resolvedDefault?.city}
+                locationSourceLabel={locationSourceLabel}
                 locationPending={locationPending}
-                locationDenied={locationDenied}
+                locationMissing={locationMissing}
                 monthlyCount={monthlyCount}
+                category={category}
+                onSelectCategory={setCategory}
                 override={override}
                 onOpenLocationPicker={handleOpenPicker}
                 onClearOverride={handleClearOverride}

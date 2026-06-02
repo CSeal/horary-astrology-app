@@ -10,13 +10,32 @@ const ru = {
     inputPlaceholder: 'Задай искренний, конкретный вопрос...',
     inputHint: 'например: Получу ли я работу в этом месяце?',
     submitButton: 'Спроси звёзды',
+    castingChart: 'Строим карту…',
+    categoryLabel: 'Тип вопроса',
     locationLabel: 'Определение местоположения...',
     locationManual: '· вручную',
+    locationGps: '· GPS',
+    locationDefault: '· по умолчанию',
+    locationSet: 'Нажмите, чтобы указать местоположение',
     changeLocation: 'Изменить',
     questionCounter: 'Вопросов в этом месяце: {{count}} / {{limit}}',
     questionLimitBanner:
       'Вы использовали {{limit}} бесплатных вопросов этого месяца. Безлимитный доступ скоро появится.',
     charCount: '{{count}} / {{max}}',
+  },
+
+  categories: {
+    general: 'Общий',
+    love: 'Любовь',
+    marriage: 'Брак',
+    career: 'Карьера',
+    job: 'Работа',
+    money: 'Деньги',
+    health: 'Здоровье',
+    pregnancy: 'Беременность',
+    fertility: 'Зачатие',
+    missing_item: 'Пропажа',
+    travel: 'Путешествие',
   },
 
   locationPicker: {
@@ -37,6 +56,7 @@ const ru = {
     summaryHeaderUnclear: 'Что показывает карта:',
     significatorsHeader: 'Сигнификаторы',
     significatorsToggle: 'Планеты говорят',
+    radicalityNote: 'Карта нерадикальна — небо ещё не готово отвечать на этот вопрос. Подожди немного и спроси снова.',
     vocNote:
       'Луна в void-of-course. Обычно это означает «ничего не произойдёт» — но карта всё равно показывает текущую ситуацию.',
     lowConfidenceNote:
@@ -66,6 +86,17 @@ const ru = {
     languageRu: 'Русский',
     timezoneSection: 'ЧАСОВОЙ ПОЯС',
     timezoneLabel: 'Определённый часовой пояс',
+    locationSection: 'МЕСТОПОЛОЖЕНИЕ',
+    locationSourceLabel: 'Источник местоположения',
+    locationSourceDevice: 'Устройство (GPS)',
+    locationSourceManual: 'Указать город',
+    locationDeviceHint:
+      'Использует GPS при вопросе; если GPS недоступен — берёт город по умолчанию.',
+    locationManualHint: 'Всегда использует выбранный город для каждого вопроса.',
+    locationCityLabel: 'Город по умолчанию',
+    locationNoCity: 'Город ещё не выбран',
+    locationChooseCity: 'Выбрать город',
+    locationChangeCity: 'Изменить',
     apiKeySection: 'API КЛЮЧ',
     apiKeyLabel: 'Ключ astrology-api.io',
     apiKeyPlaceholder: 'Введите ваш API ключ',

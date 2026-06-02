@@ -28,6 +28,8 @@ function buildJournalEntry(
     significators: response.significators,
     voc_moon: response.voc_moon,
     voc_treatment: response.voc_treatment,
+    is_radical: response.is_radical,
+    radicality_summary: response.radicality_summary,
     timestamp: new Date().toISOString(),
     city,
     latitude: request.latitude,
@@ -57,8 +59,9 @@ export function useHoraryQuery(city?: string) {
       await incrementMonthlyCount();
       router.replace(`/result/${entry.id}` as never);
     },
-    onError: (_error: HoraryAPIError) => {
-      router.back();
-    },
+    // No navigation on error: the request runs inline on Home (loading replaces
+    // the form), so the Home screen surfaces mutation.error as a banner and the
+    // form returns when isPending clears. Calling router.back() here threw
+    // "GO_BACK was not handled" because Home is the root tab — nothing to pop.
   });
 }

@@ -159,6 +159,18 @@ export default function ResultScreen() {
             />
           </AnimatedView>
 
+          {entry.is_radical === false && (
+            <View className="flex-row items-start gap-2">
+              <Info color={colors.unclear} size={typography.base} />
+              <View className="flex-1">
+                <Banner
+                  message={entry.radicality_summary ?? t('verdict.radicalityNote')}
+                  type="warning"
+                />
+              </View>
+            </View>
+          )}
+
           {entry.voc_moon && (
             <View className="flex-row items-start gap-2">
               <Info color={colors.maybe} size={typography.base} />
@@ -168,7 +180,7 @@ export default function ResultScreen() {
             </View>
           )}
 
-          {entry.confidence_band === 'low' && (
+          {entry.confidence_band === 'low' && entry.is_radical !== false && (
             <Banner message={t('verdict.lowConfidenceNote')} type="warning" />
           )}
 

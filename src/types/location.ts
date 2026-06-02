@@ -1,6 +1,8 @@
 // src/types/location.ts
-// Manual location override — set per-question via LocationPickerSheet.
-// Never persisted across submissions or sessions.
+// Manually-picked location. Two distinct uses share this shape:
+//   1. Per-question override (Home) — ephemeral, cleared after each submission.
+//   2. Home location (settings) — persisted; the default/fallback when GPS is
+//      unavailable or the source is set to 'manual'. See settingsStore.
 
 export interface LocationOverride {
   latitude: number;
