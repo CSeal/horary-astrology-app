@@ -13,7 +13,7 @@ import {
   withDelay,
 } from 'react-native-reanimated';
 import type { SignificatorData } from '@/types/horary';
-import { PLANET_GLYPHS, PLANET_ROLES } from '@/constants/planets';
+import { PLANET_GLYPHS } from '@/constants/planets';
 
 interface SignificatorRowProps {
   data: SignificatorData;
@@ -30,7 +30,9 @@ const DIGNITY_BADGE_CLASS: Record<string, string> = {
 export function SignificatorRow({ data, index = 0 }: SignificatorRowProps) {
   const { t } = useTranslation();
   const glyph = PLANET_GLYPHS[data.planet] ?? data.planet.slice(0, 2);
-  const roleLabel = PLANET_ROLES[data.role] ?? data.role;
+  // Fall back to API value if planet/role isn't in translations yet.
+  const planetName = t(`planets.${data.planet}`, { defaultValue: data.planet });
+  const roleLabel = t(`significatorRoles.${data.role}`, { defaultValue: data.role });
   const showDignityBadge = data.dignity !== null && data.dignity !== 'peregrine';
 
   const delay = Math.min(index * 60, 400);
@@ -62,7 +64,7 @@ export function SignificatorRow({ data, index = 0 }: SignificatorRowProps) {
       <View className="flex-1">
         <View className="flex-row items-center">
           <Text className="font-inter-medium text-base text-text-primary">
-            {data.planet}
+            {planetName}
           </Text>
           {data.retrograde && (
             <Text className="font-inter text-sm text-no ml-1">{' ℞'}</Text>

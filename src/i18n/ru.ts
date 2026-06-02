@@ -198,6 +198,31 @@ const ru = {
     finish: 'Начать спрашивать',
   },
 
+  planets: {
+    Sun: 'Солнце',
+    Moon: 'Луна',
+    Mercury: 'Меркурий',
+    Venus: 'Венера',
+    Mars: 'Марс',
+    Jupiter: 'Юпитер',
+    Saturn: 'Сатурн',
+    Uranus: 'Уран',
+    Neptune: 'Нептун',
+    Pluto: 'Плутон',
+    NorthNode: 'Сев. узел',
+    SouthNode: 'Юж. узел',
+    Chiron: 'Хирон',
+    Ascendant: 'Асцендент',
+    Midheaven: 'МС',
+  },
+
+  significatorRoles: {
+    querent: 'Вы (вопрошающий)',
+    quesited: 'Цель (вопрошаемое)',
+    moon: 'Луна',
+    additional: 'Дополнительный',
+  },
+
   verdictTypes: {
     YES: 'ДА',
     NO: 'НЕТ',

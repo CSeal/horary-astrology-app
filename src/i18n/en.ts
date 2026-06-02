@@ -209,6 +209,33 @@ const en = {
     finish: 'Start Asking',
   },
 
+  // Planet names
+  planets: {
+    Sun: 'Sun',
+    Moon: 'Moon',
+    Mercury: 'Mercury',
+    Venus: 'Venus',
+    Mars: 'Mars',
+    Jupiter: 'Jupiter',
+    Saturn: 'Saturn',
+    Uranus: 'Uranus',
+    Neptune: 'Neptune',
+    Pluto: 'Pluto',
+    NorthNode: 'North Node',
+    SouthNode: 'South Node',
+    Chiron: 'Chiron',
+    Ascendant: 'Ascendant',
+    Midheaven: 'Midheaven',
+  },
+
+  // Significator roles
+  significatorRoles: {
+    querent: 'You (querent)',
+    quesited: 'The goal (quesited)',
+    moon: 'The Moon',
+    additional: 'Additional',
+  },
+
   // Verdict types
   verdictTypes: {
     YES: 'YES',

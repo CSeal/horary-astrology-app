@@ -87,7 +87,7 @@ export function VerdictCard({ verdict, confidence, summary }: VerdictCardProps) 
   }));
 
   const filled = CONFIDENCE_FILLED[confidence];
-  const verdictLabel = verdict === 'UNCLEAR' ? t('verdict.chartUnclear') : verdict;
+  const verdictLabel = t(`verdictTypes.${verdict}` as const);
 
   return (
     <AnimatedView

@@ -4,6 +4,7 @@
 // Import View/Text from '@/tw' (NOT react-native) for className support.
 
 import { View, Text } from '@/tw';
+import { useTranslation } from 'react-i18next';
 import type { VerdictType, ConfidenceBand } from '@/types/horary';
 
 interface VerdictBadgeProps {
@@ -19,13 +20,16 @@ const VERDICT_CLASSES: Record<VerdictType, string> = {
 };
 
 export function VerdictBadge({ verdict, size = 'sm' }: VerdictBadgeProps) {
+  const { t } = useTranslation();
   const sizeClass = size === 'lg' ? 'px-4 py-2' : 'px-2.5 py-1';
   const textClass =
     size === 'lg' ? 'text-xl font-inter-semibold' : 'text-xs font-inter-semibold';
 
   return (
     <View className={`${VERDICT_CLASSES[verdict]} ${sizeClass} rounded-full`}>
-      <Text className={`${textClass} text-text-inverse`}>{verdict}</Text>
+      <Text className={`${textClass} text-text-inverse`}>
+        {t(`verdictTypes.${verdict}` as const)}
+      </Text>
     </View>
   );
 }
