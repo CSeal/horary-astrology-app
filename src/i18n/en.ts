@@ -9,7 +9,7 @@ const en = {
 
   // Home screen
   home: {
-    title: 'Ask the Stars',
+    title: 'Ask',
     inputPlaceholder: 'Ask a sincere, specific question...',
     inputHint: 'e.g. Will I get the job offer this month?',
     submitButton: 'Ask the Stars',
