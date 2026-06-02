@@ -7,6 +7,7 @@
 import { useEffect } from 'react';
 import Svg, { Circle, Text as SvgText } from 'react-native-svg';
 import Animated, {
+  cancelAnimation,
   useSharedValue,
   useAnimatedProps,
   withRepeat,
@@ -40,22 +41,23 @@ export function PlanetOrbit({
 
   useEffect(() => {
     rotation.value = withRepeat(
-      withTiming(360, {
-        duration: 3000,
-        easing: Easing.inOut(Easing.ease),
-      }),
+      withTiming(360, { duration: 3000, easing: Easing.inOut(Easing.ease) }),
       -1,
       false
     );
     corePulse.value = withRepeat(
-      withTiming(1.15, {
-        duration: 1500,
-        easing: Easing.inOut(Easing.ease),
-      }),
+      withTiming(1.15, { duration: 1500, easing: Easing.inOut(Easing.ease) }),
       -1,
       true
     );
-  }, [rotation, corePulse]);
+    // Cancel infinite loops on unmount so Reanimated stops sending
+    // updates to the detached SVG nodes (prevents onAnimatedValueUpdate warning).
+    return () => {
+      cancelAnimation(rotation);
+      cancelAnimation(corePulse);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // SharedValues are stable refs — must NOT be in deps (Reanimated rule 3)
 
   // Reanimated 4 validates `transform` through its RN/CSS parser which does not
   // understand SVG's 3-arg rotate(angle cx cy). Compute planet position directly
