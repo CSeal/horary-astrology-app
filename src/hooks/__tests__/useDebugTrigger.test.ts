@@ -1,5 +1,5 @@
 // src/hooks/__tests__/useDebugTrigger.test.ts
-// The 7-tap-in-3s activation gesture. The hook measures the window with
+// The 20-tap-in-4s activation gesture. The hook measures the window with
 // Date.now() (not setTimeout), so time is driven by spying on Date.now.
 
 import { renderHook, act } from '@testing-library/react-native';
@@ -8,7 +8,7 @@ import { useDebugTrigger } from '@/hooks/useDebugTrigger';
 
 jest.mock('expo-haptics', () => ({
   impactAsync: jest.fn().mockResolvedValue(undefined),
-  ImpactFeedbackStyle: { Light: 'light', Heavy: 'heavy' },
+  ImpactFeedbackStyle: { Light: 'light', Medium: 'medium', Heavy: 'heavy' },
 }));
 
 const mockedImpact = Haptics.impactAsync as jest.Mock;
@@ -36,37 +36,44 @@ function setup() {
 }
 
 describe('useDebugTrigger', () => {
-  it('fires onTriggered after 7 rapid taps', () => {
+  it('fires onTriggered after 20 rapid taps', () => {
     const { onTriggered, tap } = setup();
-    for (let i = 0; i < 7; i++) tap();
+    for (let i = 0; i < 20; i++) tap();
     expect(onTriggered).toHaveBeenCalledTimes(1);
   });
 
   it('does not fire if a pause longer than the window breaks the streak', () => {
     const { onTriggered, tap } = setup();
-    for (let i = 0; i < 4; i++) tap();
-    advance(3_500); // exceeds the 3s window → next tap resets the streak
-    for (let i = 0; i < 3; i++) tap();
+    for (let i = 0; i < 10; i++) tap();
+    advance(4_500); // exceeds the 4s window → next tap resets the streak
+    for (let i = 0; i < 10; i++) tap();
     expect(onTriggered).not.toHaveBeenCalled();
   });
 
-  it('plays a Light haptic on the 6th tap without firing yet', () => {
+  it('plays a Medium haptic on tap 15 (dots appear) without firing', () => {
     const { onTriggered, tap } = setup();
-    for (let i = 0; i < 6; i++) tap();
+    for (let i = 0; i < 15; i++) tap();
+    expect(mockedImpact).toHaveBeenLastCalledWith('medium');
+    expect(onTriggered).not.toHaveBeenCalled();
+  });
+
+  it('plays a Light haptic on tap 19 without firing yet', () => {
+    const { onTriggered, tap } = setup();
+    for (let i = 0; i < 19; i++) tap();
     expect(mockedImpact).toHaveBeenLastCalledWith('light');
     expect(onTriggered).not.toHaveBeenCalled();
   });
 
-  it('plays a Heavy haptic and fires on the 7th tap', () => {
+  it('plays a Heavy haptic and fires on the 20th tap', () => {
     const { onTriggered, tap } = setup();
-    for (let i = 0; i < 7; i++) tap();
+    for (let i = 0; i < 20; i++) tap();
     expect(mockedImpact).toHaveBeenLastCalledWith('heavy');
     expect(onTriggered).toHaveBeenCalledTimes(1);
   });
 
-  it('re-arms after firing so a second 7-tap run fires again', () => {
+  it('re-arms after firing so a second 20-tap run fires again', () => {
     const { onTriggered, tap } = setup();
-    for (let i = 0; i < 14; i++) tap();
+    for (let i = 0; i < 40; i++) tap();
     expect(onTriggered).toHaveBeenCalledTimes(2);
   });
 });
