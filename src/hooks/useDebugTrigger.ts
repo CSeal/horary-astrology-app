@@ -8,7 +8,7 @@
 // and out of this hook. If DEBUG_PIN is unset the gesture still fires, but the
 // sheet's PIN gate can never be satisfied, so debug mode stays unreachable.
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 
 const REQUIRED_TAPS = 7;
@@ -17,6 +17,9 @@ const TAP_WINDOW_MS = 3000;
 export function useDebugTrigger(onTriggered: () => void) {
   const tapCountRef = useRef(0);
   const lastTapRef = useRef(0);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Reactive count for the UI progress indicator (0 = not started).
+  const [tapCount, setTapCount] = useState(0);
 
   const registerTap = useCallback(() => {
     const now = Date.now();
@@ -29,6 +32,14 @@ export function useDebugTrigger(onTriggered: () => void) {
     tapCountRef.current += 1;
 
     const count = tapCountRef.current;
+    setTapCount(count);
+
+    // Auto-clear the progress indicator after the tap window expires.
+    if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+    resetTimerRef.current = setTimeout(() => {
+      tapCountRef.current = 0;
+      setTapCount(0);
+    }, TAP_WINDOW_MS);
 
     if (count === REQUIRED_TAPS - 1) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
@@ -36,9 +47,11 @@ export function useDebugTrigger(onTriggered: () => void) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
       tapCountRef.current = 0;
       lastTapRef.current = 0;
+      setTapCount(0);
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
       onTriggered();
     }
   }, [onTriggered]);
 
-  return { registerTap };
+  return { registerTap, tapCount, requiredTaps: REQUIRED_TAPS };
 }

@@ -100,7 +100,7 @@ export default function SettingsScreen() {
 
   // Hidden debug mode: tap the version label 7× to open the developer sheet.
   const debugSheetRef = useRef<DebugSheetRef>(null);
-  const { registerTap } = useDebugTrigger(() =>
+  const { registerTap, tapCount, requiredTaps } = useDebugTrigger(() =>
     debugSheetRef.current?.present()
   );
   const appVersion = Constants.expoConfig?.version ?? '1.0.0';
@@ -273,6 +273,19 @@ export default function SettingsScreen() {
             <Text className="font-inter text-xs text-text-secondary mt-1">
               {t('settings.appVersion', { version: appVersion })}
             </Text>
+            {/* Progress dots — appear after first tap, disappear after 3s idle */}
+            {tapCount > 0 && (
+              <View className="flex-row gap-1 mt-1.5">
+                {Array.from({ length: requiredTaps }).map((_, i) => (
+                  <View
+                    key={i}
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      i < tapCount ? 'bg-accent-gold' : 'bg-text-disabled'
+                    }`}
+                  />
+                ))}
+              </View>
+            )}
           </TouchableOpacity>
         </AnimatedView>
 

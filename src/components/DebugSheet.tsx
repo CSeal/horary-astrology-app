@@ -165,7 +165,16 @@ export function DebugSheet({ ref }: DebugSheetProps) {
 
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} opacity={0.7} />
+      <BottomSheetBackdrop
+        {...props}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        opacity={0.7}
+        // Tap on backdrop must NOT close the sheet — the sheet is hard to open
+        // (7-tap gesture) and the user might tap the dim area accidentally
+        // while trying to interact with the PIN input. Swipe-down still works.
+        pressBehavior="none"
+      />
     ),
     []
   );
