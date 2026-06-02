@@ -11,8 +11,9 @@
 import { useCallback, useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 
-const REQUIRED_TAPS = 7;
-const TAP_WINDOW_MS = 3000;
+const REQUIRED_TAPS = 20;
+const TAP_WINDOW_MS = 4000; // wider window for 20 taps
+const SHOW_DOTS_FROM = 15;  // dots appear on this tap and beyond
 
 export function useDebugTrigger(onTriggered: () => void) {
   const tapCountRef = useRef(0);
@@ -41,7 +42,11 @@ export function useDebugTrigger(onTriggered: () => void) {
       setTapCount(0);
     }, TAP_WINDOW_MS);
 
-    if (count === REQUIRED_TAPS - 1) {
+    if (count === SHOW_DOTS_FROM) {
+      // Dots appear — medium feedback signals "you're in the final stretch".
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    } else if (count === REQUIRED_TAPS - 1) {
+      // One tap left — light tick.
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     } else if (count >= REQUIRED_TAPS) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
@@ -53,5 +58,5 @@ export function useDebugTrigger(onTriggered: () => void) {
     }
   }, [onTriggered]);
 
-  return { registerTap, tapCount, requiredTaps: REQUIRED_TAPS };
+  return { registerTap, tapCount, requiredTaps: REQUIRED_TAPS, showDotsFrom: SHOW_DOTS_FROM };
 }
