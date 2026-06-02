@@ -90,7 +90,10 @@ export function DebugSheet({ ref }: DebugSheetProps) {
   useEffect(() => {
     if (ref) {
       const handle: DebugSheetRef = {
-        present: () => sheetRef.current?.expand(),
+        // Delay expand so the 7-tap gesture's final touch fully resolves before
+        // GestureHandler starts tracking — otherwise the finger lift is
+        // interpreted as a swipe-down and the sheet closes immediately.
+        present: () => setTimeout(() => sheetRef.current?.expand(), 350),
         dismiss: () => sheetRef.current?.close(),
       };
       if (typeof ref === 'function') ref(handle);
