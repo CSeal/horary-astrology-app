@@ -2,6 +2,9 @@
 // Hidden developer debug menu. Reached only via the 7-tap version-label gesture
 // (useDebugTrigger) followed by the build-time PIN (DEBUG_PIN).
 // All actions mutate LOCAL device state only. No server-side bypass exists.
+//
+// NOTE: Zustand state is in-memory and persists across Fast Refresh in the same
+// Metro session. Use the "Lock" button or full app restart to re-show the PIN gate.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Switch } from 'react-native';
@@ -42,6 +45,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
 
   const isActive = useDebugStore((s) => s.isActive);
   const activate = useDebugStore((s) => s.activate);
+  const deactivate = useDebugStore((s) => s.deactivate);
   const mockMode = useDebugStore((s) => s.mockMode);
   const setMockMode = useDebugStore((s) => s.setMockMode);
   const mockVerdict = useDebugStore((s) => s.mockVerdict);
@@ -86,6 +90,11 @@ export function DebugSheet({ ref }: DebugSheetProps) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
     }
   }, [pinInput, activate]);
+
+  const handleLock = useCallback(() => {
+    deactivate();
+    sheetRef.current?.close();
+  }, [deactivate]);
 
   const handleResetCounter = useCallback(async () => {
     await resetMonthlyCount();
@@ -141,7 +150,6 @@ export function DebugSheet({ ref }: DebugSheetProps) {
         contentContainerStyle={{ padding: 20, gap: 24 }}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Title */}
         <Text className="font-cormorant-medium text-2xl text-text-primary">
           ⚙ {t('debug.title')}
         </Text>
@@ -202,31 +210,29 @@ export function DebugSheet({ ref }: DebugSheetProps) {
               title={t('debug.stateSection')}
               hint={t('debug.stateSectionHint')}
             >
-              <DebugItem
-                label={t('debug.resetCounter')}
+              <DebugRow
                 description={t('debug.resetCounterHint')}
-              >
-                <Button
-                  label={t('debug.resetCounter')}
-                  variant="secondary"
-                  size="sm"
-                  onPress={handleResetCounter}
-                />
-              </DebugItem>
-
-              <View className="h-px bg-border" />
-
-              <DebugItem
-                label={t('debug.clearJournal')}
+                action={
+                  <Button
+                    label={t('debug.resetCounter')}
+                    variant="secondary"
+                    size="sm"
+                    onPress={handleResetCounter}
+                  />
+                }
+              />
+              <Divider />
+              <DebugRow
                 description={t('debug.clearJournalHint')}
-              >
-                <Button
-                  label={t('debug.clearLabel')}
-                  variant="destructive"
-                  size="sm"
-                  onPress={handleClearJournal}
-                />
-              </DebugItem>
+                action={
+                  <Button
+                    label={t('debug.clearJournal')}
+                    variant="destructive"
+                    size="sm"
+                    onPress={handleClearJournal}
+                  />
+                }
+              />
             </DebugSection>
 
             {/* NAVIGATION */}
@@ -234,31 +240,29 @@ export function DebugSheet({ ref }: DebugSheetProps) {
               title={t('debug.navigationSection')}
               hint={t('debug.navigationSectionHint')}
             >
-              <DebugItem
-                label={t('debug.resetOnboarding')}
+              <DebugRow
                 description={t('debug.resetOnboardingHint')}
-              >
-                <Button
-                  label={t('debug.resetOnboarding')}
-                  variant="secondary"
-                  size="sm"
-                  onPress={handleResetOnboarding}
-                />
-              </DebugItem>
-
-              <View className="h-px bg-border" />
-
-              <DebugItem
-                label={t('debug.triggerForceUpdate')}
+                action={
+                  <Button
+                    label={t('debug.resetOnboarding')}
+                    variant="secondary"
+                    size="sm"
+                    onPress={handleResetOnboarding}
+                  />
+                }
+              />
+              <Divider />
+              <DebugRow
                 description={t('debug.triggerForceUpdateHint')}
-              >
-                <Button
-                  label={t('debug.triggerForceUpdate')}
-                  variant="secondary"
-                  size="sm"
-                  onPress={handleForceUpdate}
-                />
-              </DebugItem>
+                action={
+                  <Button
+                    label={t('debug.triggerForceUpdate')}
+                    variant="secondary"
+                    size="sm"
+                    onPress={handleForceUpdate}
+                  />
+                }
+              />
             </DebugSection>
 
             {/* MOCK API */}
@@ -272,30 +276,23 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                 value={mockMode}
                 onValueChange={setMockMode}
               />
-
               {mockMode && (
                 <>
-                  <View className="h-px bg-border" />
+                  <Divider />
                   <View className="flex-row flex-wrap gap-2">
                     {VERDICTS.map((v) => {
-                      const isSelected = mockVerdict === v;
+                      const sel = mockVerdict === v;
                       return (
                         <TouchableOpacity
                           key={v}
                           onPress={() => setMockVerdict(v)}
                           className={`px-4 min-h-10 rounded-full items-center justify-center border ${
-                            isSelected
-                              ? 'bg-accent-gold border-accent-gold'
-                              : 'bg-bg-surface border-border'
+                            sel ? 'bg-accent-gold border-accent-gold' : 'bg-bg-surface border-border'
                           }`}
                           accessibilityRole="button"
-                          accessibilityState={{ selected: isSelected }}
+                          accessibilityState={{ selected: sel }}
                         >
-                          <Text
-                            className={`font-inter-medium text-sm ${
-                              isSelected ? 'text-text-inverse' : 'text-text-primary'
-                            }`}
-                          >
+                          <Text className={`font-inter-medium text-sm ${sel ? 'text-text-inverse' : 'text-text-primary'}`}>
                             {t(`verdictTypes.${v}`)}
                           </Text>
                         </TouchableOpacity>
@@ -318,6 +315,14 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                 onValueChange={setSkipMinLoading}
               />
             </DebugSection>
+
+            {/* LOCK — re-show PIN gate (needed after Fast Refresh) */}
+            <Button
+              label={t('debug.lockLabel')}
+              variant="destructive"
+              size="sm"
+              onPress={handleLock}
+            />
 
           </View>
         )}
@@ -342,9 +347,9 @@ function DebugSection({
       <Text className="text-xs font-inter-semibold text-accent-gold tracking-widest">
         {title}
       </Text>
-      {hint && (
+      {hint ? (
         <Text className="font-inter text-xs text-text-secondary">{hint}</Text>
-      )}
+      ) : null}
       <Card elevated>
         <View className="gap-4">{children}</View>
       </Card>
@@ -352,32 +357,30 @@ function DebugSection({
   );
 }
 
-// Row: label + description on the left, control (Button) on the right.
-function DebugItem({
-  label,
+// Вертикальный ряд: описание → кнопка на полную ширину.
+function DebugRow({
   description,
-  children,
+  action,
 }: {
-  label: string;
-  description?: string;
-  children: React.ReactNode;
+  description: string;
+  action: React.ReactNode;
 }) {
   return (
-    <View className="flex-row items-center gap-3">
-      <View className="flex-1 gap-0.5">
-        <Text className="font-inter text-base text-text-primary">{label}</Text>
-        {description && (
-          <Text className="font-inter text-xs text-text-secondary leading-snug">
-            {description}
-          </Text>
-        )}
-      </View>
-      <View>{children}</View>
+    <View className="gap-2">
+      <Text className="font-inter text-xs text-text-secondary leading-relaxed">
+        {description}
+      </Text>
+      {action}
     </View>
   );
 }
 
-// Row: label + description + Switch toggle.
+// Разделитель между рядами внутри карточки.
+function Divider() {
+  return <View className="h-px bg-border" />;
+}
+
+// Ряд тогла: label + Switch в одну строку, описание снизу.
 function DebugToggleRow({
   label,
   description,
@@ -390,9 +393,9 @@ function DebugToggleRow({
   onValueChange: (v: boolean) => void;
 }) {
   return (
-    <View className="gap-1">
+    <View className="gap-1.5">
       <View className="flex-row items-center justify-between gap-3">
-        <Text className="font-inter text-base text-text-primary flex-1">{label}</Text>
+        <Text className="font-inter-medium text-base text-text-primary flex-1">{label}</Text>
         <Switch
           value={value}
           onValueChange={onValueChange}
@@ -400,9 +403,9 @@ function DebugToggleRow({
           thumbColor={colors.textPrimary}
         />
       </View>
-      {description && (
+      {description ? (
         <Text className="font-inter text-xs text-text-secondary">{description}</Text>
-      )}
+      ) : null}
     </View>
   );
 }

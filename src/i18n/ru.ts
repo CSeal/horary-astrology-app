@@ -245,6 +245,7 @@ const ru = {
     clearJournalHint: 'Безвозвратно удаляет все сохранённые гадания с этого устройства.',
     clearJournalConfirm: 'Очистить все записи журнала?',
     clearLabel: 'Очистить',
+    lockLabel: 'Заблокировать режим разработчика',
     navigationSection: 'НАВИГАЦИЯ',
     navigationSectionHint: 'Переход к конкретным состояниям приложения без ручных шагов.',
     resetOnboarding: 'Сбросить онбординг',

@@ -23,6 +23,7 @@ interface DebugState {
   forceUpdateOverride: boolean;
 
   activate: () => void;
+  deactivate: () => void;
   setMockMode: (on: boolean) => void;
   setMockVerdict: (verdict: VerdictType) => void;
   setSkipMinLoading: (on: boolean) => void;
@@ -37,6 +38,7 @@ export const useDebugStore = create<DebugState>((set) => ({
   forceUpdateOverride: false,
 
   activate: () => set({ isActive: true }),
+  deactivate: () => set({ isActive: false, mockMode: false }),
   setMockMode: (on) => set({ mockMode: on }),
   setMockVerdict: (verdict) => set({ mockVerdict: verdict }),
   setSkipMinLoading: (on) => set({ skipMinLoading: on }),

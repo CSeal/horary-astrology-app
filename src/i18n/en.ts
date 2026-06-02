@@ -261,6 +261,7 @@ const en = {
     clearJournalHint: 'Permanently deletes all readings saved on this device.',
     clearJournalConfirm: 'Clear all journal entries?',
     clearLabel: 'Clear',
+    lockLabel: 'Lock debug mode',
     navigationSection: 'NAVIGATION',
     navigationSectionHint: 'Navigate to specific app states without manual steps.',
     resetOnboarding: 'Reset onboarding',
