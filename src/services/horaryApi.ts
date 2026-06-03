@@ -5,7 +5,7 @@
 
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { secureKeyService } from '@/services/secureKeyService';
-import { API_BASE_URL, API_TIMEOUT, HORARY_ENDPOINT } from '@/constants/config';
+import { API_BASE_URL, API_TIMEOUT, HORARY_ENDPOINT, SUPPORTED_LOCALES } from '@/constants/config';
 import i18n from '@/i18n/index';
 import { useSettingsStore } from '@/stores/settingsStore';
 import {
@@ -134,7 +134,9 @@ async function askWithRetry(
 
 export const horaryApi = {
   ask: async (request: HoraryRequest): Promise<HoraryResponse> => {
-    const language = i18n.language === 'ru' ? 'ru' : 'en';
+    const language = (SUPPORTED_LOCALES as readonly string[]).includes(i18n.language)
+      ? i18n.language
+      : 'en';
     const zodiacType = useSettingsStore.getState().zodiacType;
     const apiRequest = buildAnalysisRequest(request, language, zodiacType);
     const envelope = await askWithRetry(apiRequest);

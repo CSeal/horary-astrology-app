@@ -161,14 +161,9 @@ export function AskForm({
 
   return (
     <View className="gap-4">
-      <View>
-        <Text className="font-inter-semibold text-lg text-text-primary mb-1">
-          {t('home.title')}
-        </Text>
-        <Text className="font-inter text-sm text-text-secondary">
-          {t('home.inputHint')}
-        </Text>
-      </View>
+      <Text className="font-inter text-sm text-text-secondary">
+        {t('home.inputHint')}
+      </Text>
 
       <Input
         value={value}

@@ -36,6 +36,7 @@ import {
 import { useSettingsStore } from '@/stores/settingsStore';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { secureKeyService } from '@/services/secureKeyService';
+import { AppLogo } from '@/components/svg/AppLogo';
 import { useDebugTrigger } from '@/hooks/useDebugTrigger';
 import {
   MONTHLY_QUESTION_LIMIT,
@@ -45,6 +46,15 @@ import {
 } from '@/constants/config';
 import { colors, typography } from '@/constants/theme';
 import type { LocationOverride } from '@/types/location';
+
+const LANGUAGES: { code: SupportedLocale; flag: string; label: string }[] = [
+  { code: 'en', flag: '🇬🇧', label: 'English' },
+  { code: 'ru', flag: '🇷🇺', label: 'Русский' },
+  { code: 'de', flag: '🇩🇪', label: 'Deutsch' },
+  { code: 'fr', flag: '🇫🇷', label: 'Français' },
+  { code: 'pt', flag: '🇧🇷', label: 'Português' },
+  { code: 'es', flag: '🇪🇸', label: 'Español' },
+];
 
 export default function SettingsScreen() {
   const { t, i18n } = useTranslation();
@@ -269,13 +279,16 @@ export default function SettingsScreen() {
             onPress={registerTap}
             activeOpacity={1}
             accessibilityRole="text"
+            className="w-full items-center gap-1 mt-6"
           >
-            <Text className="font-inter text-xs text-text-secondary mt-1">
+            <AppLogo size={48} />
+            <Text className="font-cormorant-bold text-3xl text-accent-gold">AstraSk</Text>
+            <Text className="font-inter text-xs text-text-secondary">
               {t('settings.appVersion', { version: appVersion })}
             </Text>
             {/* Progress dots — only appear from tap 15, show final 5 taps */}
             {tapCount >= showDotsFrom && (
-              <View className="flex-row gap-1 mt-1.5">
+              <View className="flex-row gap-1 mt-1">
                 {Array.from({ length: requiredTaps - showDotsFrom + 1 }).map((_, i) => (
                   <View
                     key={i}
@@ -304,43 +317,31 @@ export default function SettingsScreen() {
             <Text className="font-inter text-base text-text-primary mb-3">
               {t('settings.languageLabel')}
             </Text>
-            <View className="flex-row gap-2">
-              <TouchableOpacity
-                onPress={() => handleLocaleChange('en')}
-                className={`flex-1 min-h-11 rounded-xl items-center justify-center ${
-                  locale === 'en'
-                    ? 'bg-accent-gold'
-                    : 'bg-bg-surface border border-border'
-                }`}
-                accessibilityRole="button"
-                accessibilityState={{ selected: locale === 'en' }}
-              >
-                <Text
-                  className={`font-inter-medium text-base ${
-                    locale === 'en' ? 'text-text-inverse' : 'text-text-primary'
-                  }`}
-                >
-                  {t('settings.languageEn')}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => handleLocaleChange('ru')}
-                className={`flex-1 min-h-11 rounded-xl items-center justify-center ${
-                  locale === 'ru'
-                    ? 'bg-accent-gold'
-                    : 'bg-bg-surface border border-border'
-                }`}
-                accessibilityRole="button"
-                accessibilityState={{ selected: locale === 'ru' }}
-              >
-                <Text
-                  className={`font-inter-medium text-base ${
-                    locale === 'ru' ? 'text-text-inverse' : 'text-text-primary'
-                  }`}
-                >
-                  {t('settings.languageRu')}
-                </Text>
-              </TouchableOpacity>
+            <View className="flex-row flex-wrap gap-2">
+              {LANGUAGES.map(({ code, flag, label }) => {
+                const active = locale === code;
+                return (
+                  <TouchableOpacity
+                    key={code}
+                    onPress={() => handleLocaleChange(code)}
+                    className={`w-[48%] min-h-11 rounded-xl flex-row items-center justify-center gap-2 ${
+                      active ? 'bg-accent-gold' : 'bg-bg-surface border border-border'
+                    }`}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: active }}
+                    accessibilityLabel={label}
+                  >
+                    <Text className="text-base">{flag}</Text>
+                    <Text
+                      className={`font-inter-medium text-sm ${
+                        active ? 'text-text-inverse' : 'text-text-primary'
+                      }`}
+                    >
+                      {label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           </Card>
         </AnimatedView>

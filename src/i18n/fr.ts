@@ -1,0 +1,330 @@
+// src/i18n/fr.ts
+// Chaînes en français. Tous les textes JSX doivent référencer ces clés via t('key').
+// Aucune chaîne en dur dans les composants.
+
+const fr = {
+  // App name
+  appName: 'AstraSk',
+  appTagline: 'Posez une question sincère. Le ciel répondra.',
+
+  // Home screen
+  home: {
+    title: 'Demander aux étoiles',
+    inputPlaceholder: 'Posez une question sincère et précise...',
+    inputHint: "p. ex. Vais-je recevoir l'offre d'emploi ce mois-ci ?",
+    submitButton: 'Demander aux étoiles',
+    castingChart: 'Lecture du ciel…',
+    categoryLabel: 'Type de question',
+    subCategoryLabel: 'Précisez votre question',
+    subjectRoleLabel: 'Question pour',
+    locationLabel: 'Détection de la localisation...',
+    locationManual: '· manuel',
+    locationGps: '· GPS',
+    locationDefault: '· défaut',
+    locationSet: 'Toucher pour définir la localisation',
+    changeLocation: 'Modifier',
+    questionCounter: 'Demandes aux étoiles : {{count}} / {{limit}}',
+    questionLimitBanner:
+      'Vous avez utilisé vos {{limit}} questions gratuites ce mois-ci. Un accès illimité arrive bientôt.',
+    charCount: '{{count}} / {{max}}',
+  },
+
+  // Subcategories per category
+  subcategories: {
+    will_conceive: 'Vais-je concevoir ?',
+    will_have_children: 'Aurai-je des enfants ?',
+    boy_or_girl: 'Garçon ou fille ?',
+    safe_delivery: 'Accouchement sans risque ?',
+    ivf_success: 'La FIV réussira-t-elle ?',
+    marriage: 'Y aura-t-il un mariage ?',
+    fidelity: 'Le partenaire est-il fidèle ?',
+    rival: 'Y a-t-il un rival ?',
+    breakup: 'Allons-nous nous séparer ?',
+    who_interested: "Qui est le plus intéressé ?",
+    compatibility: 'Sommes-nous compatibles ?',
+    will_marry: 'Allons-nous nous marier ?',
+    marriage_happy: 'Mariage heureux ?',
+    reconciliation: 'Allons-nous nous réconcilier ?',
+    get_position: 'Vais-je obtenir le poste ?',
+    project_success: 'Le projet réussira-t-il ?',
+    reputation: 'Quelle est ma réputation ?',
+    authority_favorable: "L'autorité est-elle favorable ?",
+    get_job: "Vais-je obtenir l'emploi ?",
+    keep_job: 'Vais-je garder mon emploi ?',
+    gain: "Vais-je recevoir de l'argent ?",
+    debt_repaid: 'La dette sera-t-elle remboursée ?',
+    inheritance: 'Vais-je recevoir un héritage ?',
+    should_invest: 'Devrais-je investir ?',
+    will_become_wealthy: 'Vais-je devenir riche ?',
+    will_recover: 'Vais-je guérir ?',
+    is_dangerous: 'La maladie est-elle dangereuse ?',
+    nature_of_illness: 'Nature de la maladie ?',
+    treatment_good: 'Le traitement est-il bon ?',
+    when_crisis: 'Quand est la crise ?',
+    will_find: 'Vais-je le trouver ?',
+    where_is: 'Où est-il ?',
+    who_stole: "Qui l'a volé ?",
+    will_return: 'Sera-t-il rendu ?',
+    stolen_or_lost: 'Volé ou simplement perdu ?',
+    safe_journey: 'Voyage sans risque ?',
+    profitable: 'Voyage profitable ?',
+    should_emigrate: 'Devrais-je émigrer ?',
+    yes_no: 'Oui / Non général',
+  },
+
+  // Subject roles — whose perspective the question is asked from
+  subjectRoles: {
+    self: 'Pour moi-même',
+    spouse_partner: 'Pour le partenaire',
+    third_party_friend: "Pour un ami",
+    third_party_employer: "Pour l'employeur",
+    third_party_parent: 'Pour un parent',
+    third_party_child: 'Pour un enfant',
+    third_party_other: "Pour une autre personne",
+  },
+
+  // Horary question categories (POST /api/v3/horary/analyze)
+  categories: {
+    general: 'Général',
+    love: 'Amour',
+    marriage: 'Mariage',
+    career: 'Carrière',
+    job: 'Emploi',
+    money: 'Finances',
+    health: 'Santé',
+    pregnancy: 'Grossesse',
+    fertility: 'Fertilité',
+    missing_item: 'Objet perdu',
+    travel: 'Voyage',
+  },
+
+  // Location picker (bottom sheet for manual override)
+  locationPicker: {
+    title: 'Définir la localisation',
+    detected: 'Détecté par GPS',
+    hint: "Utilisez votre localisation actuelle — pas la ville de la personne concernée par votre question.",
+    search: 'Rechercher une ville...',
+    searching: 'Recherche en cours...',
+    noResults: 'Aucune ville trouvée.',
+    error: 'Recherche impossible pour le moment. Vérifiez votre connexion.',
+    useGps: 'Utiliser la localisation GPS',
+    attribution: 'Données © contributeurs OpenStreetMap',
+  },
+
+  // Verdict screen
+  verdict: {
+    title: 'Les étoiles parlent',
+    summaryHeader: 'Les planètes disent :',
+    summaryHeaderUnclear: 'Ce que montre le thème :',
+    significatorsHeader: 'Significateurs',
+    significatorsToggle: 'Les planètes disent',
+    radicalityNote: "Ce thème horaire n'est pas radical — le ciel n'est pas encore prêt à répondre à cette question. Attendez un moment et posez-la à nouveau.",
+    vocNote:
+      "La Lune est vide de course. Cela signifie souvent « rien ne se passera » — mais le thème montre néanmoins la situation telle qu'elle se présente.",
+    lowConfidenceNote:
+      'Le thème montre des indications mixtes — traitez cette réponse comme une tendance générale, non comme une certitude.',
+    chartUnclear: 'Thème peu clair',
+    backButton: 'Retour',
+  },
+
+  // Journal screen
+  journal: {
+    title: 'Chroniques',
+    emptyTitle: 'Le parchemin est vide.',
+    emptySubtitle: 'Posez votre première question pour commencer vos chroniques.',
+    emptyButton: 'Demander aux étoiles',
+    deleteConfirmTitle: 'Supprimer cette consultation ?',
+    deleteConfirmMessage: 'Cette action est irréversible.',
+    deleteConfirm: 'Supprimer',
+    deleteCancel: 'Annuler',
+    deleteAction: 'Supprimer',
+  },
+
+  // Settings screen
+  settings: {
+    title: 'Mon almanach',
+    appVersion: 'Version {{version}}',
+    languageSection: 'LANGUE',
+    languageLabel: "Langue de l'application",
+    zodiacSection: 'ZODIAQUE',
+    zodiacLabel: 'Type de zodiaque',
+    zodiacTropic: 'Tropical',
+    zodiacSidereal: 'Sidéral',
+    zodiacTropicHint: "Standard de l'astrologie occidentale. Les planètes sont positionnées par rapport aux saisons.",
+    zodiacSiderealHint: 'Astrologie védique (Jyotish). Utilise les positions stellaires réelles (~23° de décalage).',
+    timezoneSection: 'FUSEAU HORAIRE',
+    timezoneLabel: 'Fuseau horaire détecté',
+    timezoneHint: "Lecture seule — défini par votre appareil. Tous les thèmes sont calculés pour ce fuseau horaire.",
+    locationSection: 'LOCALISATION',
+    locationSourceLabel: 'Source de localisation',
+    locationSourceDevice: "GPS de l'appareil",
+    locationSourceManual: 'Définir une ville',
+    locationDeviceHint:
+      "Utilise le GPS lors de la demande ; utilise votre ville par défaut si le GPS est indisponible.",
+    locationManualHint: 'Utilise toujours votre ville sélectionnée pour chaque question.',
+    locationCityLabel: 'Ville par défaut',
+    locationNoCity: 'Aucune ville sélectionnée',
+    locationChooseCity: 'Choisir une ville',
+    locationChangeCity: 'Modifier',
+    apiKeySection: 'CLÉ API',
+    apiKeyLabel: 'Clé astrology-api.io',
+    apiKeyPlaceholder: 'Entrez votre clé API',
+    apiKeySourcePersonal: 'Utilisée : clé personnelle',
+    apiKeySourceDefault: "Utilisée : clé par défaut de l'application",
+    apiKeyRemove: 'Supprimer la clé',
+    apiKeySave: 'Enregistrer la clé',
+    questionCountSection: 'UTILISATION',
+    questionCountLabel: 'Demandes aux étoiles',
+    questionCountReset: 'Réinitialisation le {{date}}',
+  },
+
+  // Onboarding
+  onboarding: {
+    step1Title: 'AstraSk',
+    step1Subtitle: 'Posez une question sincère. Le ciel répondra.',
+    step2Title: "Le chemin d'une question",
+    step2Point1: 'Posez une question sincère et précise',
+    step2Point2: 'Le ciel dresse votre thème horaire',
+    step2Point3: 'Recevez votre verdict instantanément',
+    step3Title: 'Autoriser la localisation',
+    step3Body:
+      "Votre localisation exacte au moment de la demande fait partie du thème horaire. Nous l'utilisons uniquement pour dresser votre thème.",
+    step3Privacy: 'Nous ne stockons ni ne partageons jamais vos données de localisation.',
+    step3Button: 'Autoriser la localisation',
+    step3SkipButton: 'Continuer sans localisation',
+    step4Title: 'Votre clé API',
+    step4Body:
+      "Avez-vous votre propre clé astrology-api.io ? Vous pouvez ignorer cette étape pour l'instant.",
+    step4Skip: 'Ignorer',
+    step4Enter: 'Entrer la clé',
+    step2HowAsk: 'Demander',
+    step2HowCast: 'Thème',
+    step2HowVerdict: 'Verdict',
+    getStarted: 'Commencer le voyage',
+    next: 'Suivant',
+    back: 'Retour',
+    skip: 'Ignorer',
+    finish: 'Demander aux étoiles',
+  },
+
+  // Planet names
+  planets: {
+    Sun: 'Soleil',
+    Moon: 'Lune',
+    Mercury: 'Mercure',
+    Venus: 'Vénus',
+    Mars: 'Mars',
+    Jupiter: 'Jupiter',
+    Saturn: 'Saturne',
+    Uranus: 'Uranus',
+    Neptune: 'Neptune',
+    Pluto: 'Pluton',
+    NorthNode: 'Nœud Nord',
+    SouthNode: 'Nœud Sud',
+    Chiron: 'Chiron',
+    Ascendant: 'Ascendant',
+    Midheaven: 'Milieu du ciel',
+  },
+
+  // Significator roles
+  significatorRoles: {
+    querent: 'Vous (quérant)',
+    quesited: "L'objectif (questionné)",
+    moon: 'La Lune',
+    additional: 'Supplémentaire',
+  },
+
+  // Verdict types
+  verdictTypes: {
+    YES: 'OUI',
+    NO: 'NON',
+    MAYBE: 'PEUT-ÊTRE',
+    UNCLEAR: 'INCERTAIN',
+  },
+
+  // Confidence bands
+  confidence: {
+    high: 'ÉLEVÉE',
+    medium: 'MOYENNE',
+    low: 'FAIBLE',
+  },
+
+  // Dignity labels
+  dignity: {
+    domicile: 'Domicile',
+    exaltation: 'Exaltation',
+    detriment: 'Détriment',
+    fall: 'Chute',
+  },
+
+  // Error messages
+  errors: {
+    noInternet: 'Pas de connexion Internet. Vérifiez votre réseau et réessayez.',
+    apiError: "Quelque chose s'est mal passé. Veuillez réessayer.",
+    timeout: 'Le serveur a mis trop de temps à répondre. Veuillez réessayer.',
+    locationDenied: 'Accès à la localisation requis — touchez pour ouvrir les paramètres.',
+    locationDetecting: 'Détection de votre localisation...',
+    emptyQuestion: 'Veuillez saisir une question avant de demander.',
+    questionTooShort: 'Votre question doit contenir au moins {{min}} caractères.',
+    questionTooLong: 'Votre question ne peut pas dépasser {{max}} caractères.',
+    rateLimited: "Vous avez atteint la limite de l'API. Veuillez attendre avant de demander à nouveau.",
+    asyncStorageError: 'Impossible de charger les données sauvegardées.',
+    storageError: 'Impossible de sauvegarder vos données.',
+    geocodeError: 'Recherche de villes impossible. Vérifiez votre connexion.',
+  },
+
+  // Developer debug mode (hidden behind PIN)
+  debug: {
+    title: 'Mode développeur',
+    pinHint: 'Entrez le PIN développeur pour continuer.',
+    pinError: 'PIN incorrect.',
+    unlock: 'Déverrouiller',
+    stateSection: 'ÉTAT',
+    stateSectionHint: "Réinitialise uniquement les données locales de l'appareil — aucun effet côté serveur.",
+    resetCounter: 'Réinitialiser le compteur mensuel → 0',
+    resetCounterHint: "Permet de tester le flux de demande sans atteindre la limite mensuelle.",
+    clearJournal: 'Effacer toutes les entrées du journal',
+    clearJournalHint: 'Supprime définitivement toutes les consultations sauvegardées sur cet appareil.',
+    clearJournalConfirm: 'Effacer toutes les entrées du journal ?',
+    clearLabel: 'Effacer',
+    lockLabel: 'Verrouiller le mode debug',
+    maybeOnlyHint: "PEUT-ÊTRE est uniquement disponible en mode simulation — l'API réelle renvoie oui / non / incertain / redemander_plus_tard.",
+    navigationSection: 'NAVIGATION',
+    navigationSectionHint: "Naviguer vers des états spécifiques de l'application sans étapes manuelles.",
+    resetOnboarding: "Réinitialiser l'introduction",
+    resetOnboardingHint: "Affiche le flux de premier démarrage au prochain redémarrage de l'application.",
+    triggerForceUpdate: "Déclencher l'écran de mise à jour obligatoire",
+    triggerForceUpdateHint: "Simule un verrou de mise à jour obligatoire — utile pour tester l'interface du verrou.",
+    mockApiSection: 'API SIMULÉE',
+    mockApiSectionHint: "Contourne l'API réelle — aucune requête réseau ni crédit consommé.",
+    mockApiToggle: "Simuler les réponses de l'API",
+    mockApiToggleHint: 'Renvoie immédiatement un verdict fictif. Choisissez le verdict ci-dessous.',
+    performanceSection: 'PERFORMANCES',
+    performanceSectionHint: "Ajuster le comportement temporel pour une itération UI plus rapide.",
+    skipLoadingDelay: 'Ignorer le délai de chargement minimal',
+    skipLoadingDelayHint: "Supprime l'attente artificielle de 1,5 s pour que le résultat apparaisse immédiatement.",
+  },
+
+  // Force-update gate
+  forceUpdate: {
+    title: 'Mise à jour requise',
+    body: "Une mise à jour critique est disponible. Veuillez mettre à jour l'application pour continuer à utiliser AstraSk.",
+    cta: 'Mettre à jour maintenant',
+  },
+
+  // Accessibility labels
+  a11y: {
+    askButton: 'Demander aux étoiles. Soumettre votre question horaire.',
+    verdictCard: 'Verdict {{verdict}}. Confiance : {{confidence}}.',
+    journalEntry: 'Verdict {{verdict}} pour la question : {{question}}. Date : {{date}}.',
+    homeTab: 'Demander',
+    journalTab: 'Chroniques',
+    settingsTab: 'Almanach',
+    backButton: 'Retour',
+    settingsIcon: 'Ouvrir les paramètres',
+    openLocationPicker: 'Modifier la localisation',
+    clearOverride: 'Réinitialiser sur la localisation GPS',
+  },
+} as const;
+
+export default fr;

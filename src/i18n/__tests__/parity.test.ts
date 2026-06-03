@@ -1,10 +1,13 @@
 // src/i18n/__tests__/parity.test.ts
-// Locks in the invariant that en.ts and ru.ts stay structurally identical:
-// same key set, no untranslated placeholders, and matching {{interpolation}}
-// tokens. This silently breaks on the next string edit without a test.
+// Locks in the invariant that all language files stay structurally identical
+// to en.ts: same key set, no empty values, and matching {{interpolation}} tokens.
 
 import en from '@/i18n/en';
 import ru from '@/i18n/ru';
+import de from '@/i18n/de';
+import fr from '@/i18n/fr';
+import pt from '@/i18n/pt';
+import es from '@/i18n/es';
 
 type Dict = Record<string, unknown>;
 
@@ -28,33 +31,44 @@ function placeholders(value: string): string[] {
 }
 
 const flatEn = flatten(en as unknown as Dict);
-const flatRu = flatten(ru as unknown as Dict);
 
-describe('i18n parity (en ↔ ru)', () => {
+const LOCALES = [
+  { code: 'ru', flat: flatten(ru as unknown as Dict) },
+  { code: 'de', flat: flatten(de as unknown as Dict) },
+  { code: 'fr', flat: flatten(fr as unknown as Dict) },
+  { code: 'pt', flat: flatten(pt as unknown as Dict) },
+  { code: 'es', flat: flatten(es as unknown as Dict) },
+];
+
+describe('i18n parity (all locales ↔ en)', () => {
   it('has identical key sets in both directions', () => {
     const enKeys = Object.keys(flatEn).sort();
-    const ruKeys = Object.keys(flatRu).sort();
-    const missingInRu = enKeys.filter((k) => !(k in flatRu));
-    const missingInEn = ruKeys.filter((k) => !(k in flatEn));
-    expect(missingInRu).toEqual([]);
-    expect(missingInEn).toEqual([]);
+    for (const { code, flat } of LOCALES) {
+      const keys = Object.keys(flat).sort();
+      const missingInLocale = enKeys.filter((k) => !(k in flat));
+      const missingInEn = keys.filter((k) => !(k in flatEn));
+      expect({ code, missingInLocale }).toEqual({ code, missingInLocale: [] });
+      expect({ code, missingInEn }).toEqual({ code, missingInEn: [] });
+    }
   });
 
   it('has no empty string values', () => {
-    const emptyEn = Object.entries(flatEn).filter(([, v]) => v.trim() === '');
-    const emptyRu = Object.entries(flatRu).filter(([, v]) => v.trim() === '');
-    expect(emptyEn).toEqual([]);
-    expect(emptyRu).toEqual([]);
+    for (const { code, flat } of LOCALES) {
+      const empty = Object.entries(flat).filter(([, v]) => v.trim() === '');
+      expect({ code, empty }).toEqual({ code, empty: [] });
+    }
   });
 
   it('uses identical {{placeholder}} tokens for every shared key', () => {
-    const mismatches = Object.keys(flatEn)
-      .filter((k) => k in flatRu)
-      .filter(
-        (k) =>
-          JSON.stringify(placeholders(flatEn[k])) !==
-          JSON.stringify(placeholders(flatRu[k]))
-      );
-    expect(mismatches).toEqual([]);
+    for (const { code, flat } of LOCALES) {
+      const mismatches = Object.keys(flatEn)
+        .filter((k) => k in flat)
+        .filter(
+          (k) =>
+            JSON.stringify(placeholders(flatEn[k])) !==
+            JSON.stringify(placeholders(flat[k]))
+        );
+      expect({ code, mismatches }).toEqual({ code, mismatches: [] });
+    }
   });
 });

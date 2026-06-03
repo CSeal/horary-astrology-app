@@ -9,11 +9,11 @@ const en = {
 
   // Home screen
   home: {
-    title: 'Ask',
+    title: 'Ask the Stars',
     inputPlaceholder: 'Ask a sincere, specific question...',
     inputHint: 'e.g. Will I get the job offer this month?',
     submitButton: 'Ask the Stars',
-    castingChart: 'Casting your chart…',
+    castingChart: 'Reading the sky…',
     categoryLabel: 'Question type',
     subCategoryLabel: 'Specify your question',
     subjectRoleLabel: 'Asking for',
@@ -23,7 +23,7 @@ const en = {
     locationDefault: '· default',
     locationSet: 'Tap to set your location',
     changeLocation: 'Change',
-    questionCounter: 'Questions this month: {{count}} / {{limit}}',
+    questionCounter: 'Queries to the stars: {{count}} / {{limit}}',
     questionLimitBanner:
       "You've used your {{limit}} free questions this month. Unlimited access is coming soon.",
     charCount: '{{count}} / {{max}}',
@@ -113,7 +113,7 @@ const en = {
 
   // Verdict screen
   verdict: {
-    title: 'The Answer',
+    title: 'The Stars Speak',
     summaryHeader: 'The Planets Say:',
     summaryHeaderUnclear: 'What the Chart Shows:',
     significatorsHeader: 'Significators',
@@ -129,10 +129,10 @@ const en = {
 
   // Journal screen
   journal: {
-    title: 'Journal',
-    emptyTitle: 'No readings yet.',
-    emptySubtitle: 'Ask your first question to begin your journal.',
-    emptyButton: 'Ask a Question',
+    title: 'Chronicles',
+    emptyTitle: 'The scroll is empty.',
+    emptySubtitle: 'Ask your first question to begin your chronicle.',
+    emptyButton: 'Ask the Stars',
     deleteConfirmTitle: 'Delete this reading?',
     deleteConfirmMessage: 'This cannot be undone.',
     deleteConfirm: 'Delete',
@@ -142,12 +142,10 @@ const en = {
 
   // Settings screen
   settings: {
-    title: 'Settings',
+    title: 'My Almanac',
     appVersion: 'Version {{version}}',
     languageSection: 'LANGUAGE',
     languageLabel: 'App Language',
-    languageEn: 'English',
-    languageRu: 'Русский',
     zodiacSection: 'ZODIAC',
     zodiacLabel: 'Zodiac type',
     zodiacTropic: 'Tropical',
@@ -176,7 +174,7 @@ const en = {
     apiKeyRemove: 'Remove key',
     apiKeySave: 'Save Key',
     questionCountSection: 'USAGE',
-    questionCountLabel: 'Questions this month',
+    questionCountLabel: 'Queries to the stars',
     questionCountReset: 'Resets {{date}}',
   },
 
@@ -184,7 +182,7 @@ const en = {
   onboarding: {
     step1Title: 'AstraSk',
     step1Subtitle: 'Ask a sincere question. The sky will answer.',
-    step2Title: 'How It Works',
+    step2Title: 'The Path of a Question',
     step2Point1: 'Ask a sincere, specific question',
     step2Point2: 'The sky casts your horary chart',
     step2Point3: 'Receive your verdict instantly',
@@ -200,13 +198,13 @@ const en = {
     step4Skip: 'Skip',
     step4Enter: 'Enter Key',
     step2HowAsk: 'Ask',
-    step2HowCast: 'Cast',
+    step2HowCast: 'Chart',
     step2HowVerdict: 'Verdict',
-    getStarted: 'Get Started',
+    getStarted: 'Begin the Journey',
     next: 'Next',
     back: 'Back',
     skip: 'Skip',
-    finish: 'Start Asking',
+    finish: 'Ask the Stars',
   },
 
   // Planet names
@@ -320,8 +318,8 @@ const en = {
     verdictCard: '{{verdict}} verdict. Confidence: {{confidence}}.',
     journalEntry: '{{verdict}} verdict for question: {{question}}. Date: {{date}}.',
     homeTab: 'Ask',
-    journalTab: 'Journal',
-    settingsTab: 'Settings',
+    journalTab: 'Chronicles',
+    settingsTab: 'Almanac',
     backButton: 'Go back',
     settingsIcon: 'Open settings',
     openLocationPicker: 'Change location',

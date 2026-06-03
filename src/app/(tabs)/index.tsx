@@ -190,7 +190,7 @@ export default function HomeScreen() {
           >
             <Sparkles color={colors.accentGold} size={typography.xl} />
             <Text className="font-cormorant-medium text-2xl text-text-primary">
-              {t('appName')}
+              {t('home.title')}
             </Text>
           </AnimatedView>
 

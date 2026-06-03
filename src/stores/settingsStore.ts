@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   ASYNC_STORAGE_KEYS,
   DEFAULT_ZODIAC_TYPE,
+  SUPPORTED_LOCALES,
   type SupportedLocale,
   type ZodiacType,
 } from '@/constants/config';
@@ -116,7 +117,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
           AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ZODIAC_TYPE),
         ]);
       const update: Partial<SettingsState> = {};
-      if (storedLocale === 'en' || storedLocale === 'ru') update.locale = storedLocale;
+      if (SUPPORTED_LOCALES.includes(storedLocale as SupportedLocale)) update.locale = storedLocale as SupportedLocale;
       if (onboardingFlag === '1') update.onboardingComplete = true;
       if (storedSource === 'device' || storedSource === 'manual') {
         update.locationSource = storedSource;

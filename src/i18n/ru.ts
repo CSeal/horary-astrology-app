@@ -6,11 +6,11 @@ const ru = {
   appTagline: 'Задай искренний вопрос. Небо ответит.',
 
   home: {
-    title: 'Спросить',
+    title: 'Спроси звёзды',
     inputPlaceholder: 'Задай искренний, конкретный вопрос...',
     inputHint: 'например: Получу ли я работу в этом месяце?',
     submitButton: 'Спроси звёзды',
-    castingChart: 'Строим карту…',
+    castingChart: 'Небо читает карту…',
     categoryLabel: 'Тип вопроса',
     subCategoryLabel: 'Уточните вопрос',
     subjectRoleLabel: 'Спрашиваю за',
@@ -20,7 +20,7 @@ const ru = {
     locationDefault: '· по умолчанию',
     locationSet: 'Нажмите, чтобы указать местоположение',
     changeLocation: 'Изменить',
-    questionCounter: 'Вопросов в этом месяце: {{count}} / {{limit}}',
+    questionCounter: 'Вопросов к звёздам: {{count}} / {{limit}}',
     questionLimitBanner:
       'Вы использовали {{limit}} бесплатных вопросов этого месяца. Безлимитный доступ скоро появится.',
     charCount: '{{count}} / {{max}}',
@@ -105,7 +105,7 @@ const ru = {
   },
 
   verdict: {
-    title: 'Ответ',
+    title: 'Небеса отвечают',
     summaryHeader: 'Планеты говорят:',
     summaryHeaderUnclear: 'Что показывает карта:',
     significatorsHeader: 'Сигнификаторы',
@@ -120,10 +120,10 @@ const ru = {
   },
 
   journal: {
-    title: 'Журнал',
-    emptyTitle: 'Записей пока нет.',
-    emptySubtitle: 'Задай первый вопрос, чтобы начать свой журнал.',
-    emptyButton: 'Задать вопрос',
+    title: 'Хроники',
+    emptyTitle: 'Свиток пуст.',
+    emptySubtitle: 'Задай первый вопрос, чтобы начать свою летопись.',
+    emptyButton: 'Спросить звёзды',
     deleteConfirmTitle: 'Удалить эту запись?',
     deleteConfirmMessage: 'Это действие необратимо.',
     deleteConfirm: 'Удалить',
@@ -132,12 +132,10 @@ const ru = {
   },
 
   settings: {
-    title: 'Настройки',
+    title: 'Мой альманах',
     appVersion: 'Версия {{version}}',
     languageSection: 'ЯЗЫК',
     languageLabel: 'Язык приложения',
-    languageEn: 'English',
-    languageRu: 'Русский',
     zodiacSection: 'ЗОДИАК',
     zodiacLabel: 'Тип зодиака',
     zodiacTropic: 'Тропический',
@@ -166,14 +164,14 @@ const ru = {
     apiKeyRemove: 'Удалить ключ',
     apiKeySave: 'Сохранить ключ',
     questionCountSection: 'ИСПОЛЬЗОВАНИЕ',
-    questionCountLabel: 'Вопросов в этом месяце',
+    questionCountLabel: 'Вопросов к звёздам',
     questionCountReset: 'Сбросится {{date}}',
   },
 
   onboarding: {
     step1Title: 'AstraSk',
     step1Subtitle: 'Задай искренний вопрос. Небо ответит.',
-    step2Title: 'Как это работает',
+    step2Title: 'Путь вопроса',
     step2Point1: 'Задай искренний, конкретный вопрос',
     step2Point2: 'Небо строит твою гороскопическую карту',
     step2Point3: 'Получи ответ мгновенно',
@@ -189,13 +187,13 @@ const ru = {
     step4Skip: 'Пропустить',
     step4Enter: 'Ввести ключ',
     step2HowAsk: 'Спроси',
-    step2HowCast: 'Построим',
+    step2HowCast: 'Карта',
     step2HowVerdict: 'Ответ',
-    getStarted: 'Начать',
+    getStarted: 'Открыть путь',
     next: 'Далее',
     back: 'Назад',
     skip: 'Пропустить',
-    finish: 'Начать спрашивать',
+    finish: 'Спросить звёзды',
   },
 
   planets: {
@@ -299,9 +297,9 @@ const ru = {
     askButton: 'Спроси звёзды. Отправить гороскопический вопрос.',
     verdictCard: 'Приговор {{verdict}}. Уверенность: {{confidence}}.',
     journalEntry: 'Приговор {{verdict}} для вопроса: {{question}}. Дата: {{date}}.',
-    homeTab: 'Спросить',
-    journalTab: 'Журнал',
-    settingsTab: 'Настройки',
+    homeTab: 'Спроси',
+    journalTab: 'Хроники',
+    settingsTab: 'Альманах',
     backButton: 'Назад',
     settingsIcon: 'Открыть настройки',
     openLocationPicker: 'Изменить местоположение',

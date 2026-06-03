@@ -13,6 +13,16 @@ import { Button } from '@/components/ui/Button';
 import { useJournal } from '@/hooks/useJournal';
 import { colors, typography } from '@/constants/theme';
 import type { JournalEntry } from '@/types/journal';
+import { SUPPORTED_LOCALES, type SupportedLocale } from '@/constants/config';
+
+const DATE_LOCALE_MAP: Record<SupportedLocale, string> = {
+  en: 'en-US',
+  ru: 'ru-RU',
+  de: 'de-DE',
+  fr: 'fr-FR',
+  pt: 'pt-BR',
+  es: 'es-ES',
+};
 
 interface MonthGroup {
   label: string;
@@ -41,7 +51,7 @@ function groupByMonth(entries: JournalEntry[], locale: string): MonthGroup[] {
     const [yearStr, monthStr] = key.split('-');
     const reference = new Date(Number(yearStr), Number(monthStr), 1);
     const label = reference
-      .toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US', {
+      .toLocaleDateString(DATE_LOCALE_MAP[locale as SupportedLocale] ?? 'en-US', {
         month: 'long',
         year: 'numeric',
       })

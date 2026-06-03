@@ -42,7 +42,7 @@ export const ASYNC_STORAGE_KEYS = {
 export const SECURE_STORE_KEY_API = 'horary_api_key';
 
 // Supported locales
-export const SUPPORTED_LOCALES = ['en', 'ru'] as const;
+export const SUPPORTED_LOCALES = ['en', 'ru', 'de', 'fr', 'pt', 'es'] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 // Horary question categories — required by POST /api/v3/horary/analyze.

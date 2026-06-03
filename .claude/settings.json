@@ -17,7 +17,10 @@
       "Bash(cp /tmp/horary-init/tsconfig.json /Users/user/Dev/react-native/horary-astrology-v1-app/tsconfig.json)",
       "Bash(cp /tmp/horary-init/app.json /Users/user/Dev/react-native/horary-astrology-v1-app/app.json)",
       "Bash(npm install *)",
-      "Bash(npx expo *)"
+      "Bash(npx expo *)",
+      "Bash(curl -s -X POST https://api.astrology-api.io/api/v3/horary/chart -H 'Authorization: Bearer REDACTED_KEY_1' -H 'Content-Type: application/json' -d '{\"question\":\"Will I get the job?\",\"question_time\":{\"year\":2026,\"month\":6,\"day\":3,\"hour\":12,\"minute\":0,\"second\":0,\"city\":\"London\",\"country_code\":\"GB\"},\"options\":{\"language\":\"en\"}}')",
+      "Bash(curl -s -X POST https://api.astrology-api.io/api/v3/horary/ask -H 'Authorization: Bearer REDACTED_KEY_1' -H 'Content-Type: application/json' -d '{\"question\":\"Will I get the job?\",\"category\":\"job\",\"question_time\":{\"year\":2026,\"month\":6,\"day\":3,\"hour\":12,\"minute\":0,\"second\":0,\"city\":\"London\",\"country_code\":\"GB\"},\"options\":{\"language\":\"en\"}}')",
+      "Bash(curl -s -X POST https://api.astrology-api.io/api/v3/horary/ask -H 'Content-Type: application/json' -H 'Authorization: Bearer REDACTED_KEY_1' -d '{ *)"
     ]
   }
 }
