@@ -20,7 +20,20 @@
       "Bash(npx expo *)",
       "Bash(curl -s -X POST https://api.astrology-api.io/api/v3/horary/chart -H 'Authorization: Bearer REDACTED_KEY_1' -H 'Content-Type: application/json' -d '{\"question\":\"Will I get the job?\",\"question_time\":{\"year\":2026,\"month\":6,\"day\":3,\"hour\":12,\"minute\":0,\"second\":0,\"city\":\"London\",\"country_code\":\"GB\"},\"options\":{\"language\":\"en\"}}')",
       "Bash(curl -s -X POST https://api.astrology-api.io/api/v3/horary/ask -H 'Authorization: Bearer REDACTED_KEY_1' -H 'Content-Type: application/json' -d '{\"question\":\"Will I get the job?\",\"category\":\"job\",\"question_time\":{\"year\":2026,\"month\":6,\"day\":3,\"hour\":12,\"minute\":0,\"second\":0,\"city\":\"London\",\"country_code\":\"GB\"},\"options\":{\"language\":\"en\"}}')",
-      "Bash(curl -s -X POST https://api.astrology-api.io/api/v3/horary/ask -H 'Content-Type: application/json' -H 'Authorization: Bearer REDACTED_KEY_1' -d '{ *)"
+      "Bash(curl -s -X POST https://api.astrology-api.io/api/v3/horary/ask -H 'Content-Type: application/json' -H 'Authorization: Bearer REDACTED_KEY_1' -d '{ *)",
+      "Bash(xargs cat -n)",
+      "Bash(curl -s -X POST https://api.astrology-api.io/api/v3/horary/analyze -H 'Authorization: Bearer REDACTED_KEY_2' -H 'Content-Type: application/json' -d '{ *)",
+      "Bash(curl -s \"https://api.astrology-api.io/openapi.json\")",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -X POST https://api.astrology-api.io/api/v3/horary/analyze -H 'Authorization: Bearer REDACTED_KEY_2' -H 'Content-Type: application/json' -d '{}')",
+      "Bash(curl -s --max-time 60 https://api.astrology-api.io/api/v3/openapi.json -o /tmp/astro-openapi.json)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(awk '/fertility-analysis/{f=1} f{print} /^---/{if\\(f && ++c>1\\) exit}' /Users/user/Dev/react-native/horary-astrology-v1-app/docs/deps/astrology-api-scan-2026-06-03.md)",
+      "WebFetch(domain:www.renaissanceastrology.com)",
+      "WebFetch(domain:www.skyscript.co.uk)",
+      "Bash(grep \"^## \\\\`/orchestrate:market\\\\|^## \\\\`/orchestrate:implement\\\\|^## \\\\`/orchestrate:store\\\\|^## \\\\`/orchestrate:screenshots\\\\|^## \\\\`/orchestrate:aso\\\\|^## \\\\`/orchestrate:prototype\" /Users/user/Dev/react-native/horary-astrology-v1-app/docs/orchestration/command-contracts.md)",
+      "Bash(git -C /Users/user/Dev/react-native/horary-astrology-v1-app diff --stat HEAD)",
+      "Bash(git -C /Users/user/Dev/react-native/horary-astrology-v1-app diff docs/api-integration-spec.md)"
     ]
   }
 }

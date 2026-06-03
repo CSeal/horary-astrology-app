@@ -479,22 +479,26 @@ zodiacType ('Sidereal' only) → chart_options.zodiac_type
 ### Response normalizer (`horaryMapper.ts:normalizeAnalysisResponse`)
 
 ```
-Wire field                          → App field              Status
-────────────────────────────────────────────────────────────────────
-judgment.answer                     → verdict                ✅
-judgment.confidence_band            → confidence_band        ✅
-judgment.interpretation/reasoning   → summary                ✅
-judgment.voc_treatment              → voc_treatment          ✅
-significators[].dignity_info.sign   → significators[].sign   ✅
-significators[].dignity_info.*      → dignity/retrograde     ✅
-lunar_analysis.is_void_of_course    → voc_moon               ✅
-radicality.is_radical               → is_radical             ✅
-radicality.summary                  → radicality_summary     ✅
-aspect_perfections[]                → aspects[]              ❌ NOT EXTRACTED
-ai_answer.summary (ask only)        → summary (preferred)    ❌ NOT USED
-lunar_analysis.moon_sign            → (not in app model)     ❌ NOT MAPPED
-radicality.score                    → (not in app model)     ❌ NOT MAPPED
-timing[]                            → (not in app model)     ❌ NOT MAPPED
+Wire field                                   → App field                   Status
+───────────────────────────────────────────────────────────────────────────────────
+judgment.answer                              → verdict                     ✅
+judgment.confidence_band                     → confidence_band             ✅
+judgment.interpretation/reasoning            → summary                     ✅
+judgment.voc_treatment                       → voc_treatment               ✅
+significators[].dignity_info.sign            → significators[].sign        ✅
+significators[].dignity_info.essential_*     → dignity / retrograde        ✅
+lunar_analysis.is_void_of_course             → voc_moon                   ✅
+radicality.is_radical                        → is_radical                  ✅
+radicality.summary                           → radicality_summary          ✅
+aspect_perfections[]                         → aspects[]                   ❌ NOT EXTRACTED
+ai_answer.summary (ask only)                 → summary (preferred)         ❌ NOT USED
+significators[].dignity_info.dignity_score   → (not in SignificatorData)   ❌ NOT MAPPED
+significators[].dignity_info.domicile_ruler  → (not in SignificatorData)   ❌ NOT MAPPED
+radicality.flags[] (show_to_client=true)     → (not in app model)          ❌ NOT MAPPED
+chart_data (planetary_positions, cusps)      → (not in HoraryResponse)     ❌ NOT MAPPED
+lunar_analysis.moon_sign                     → (not in app model)          ❌ NOT MAPPED
+radicality.score                             → (not in app model)          ❌ NOT MAPPED
+timing[]                                     → (not in app model)          ❌ NOT MAPPED
 ```
 
 ---
@@ -513,15 +517,18 @@ timing[]                            → (not in app model)     ❌ NOT MAPPED
 
 ### Known mapper bugs (tracked in todo)
 
-1. `aspect_perfections[]` — not extracted, `aspects` always empty in app model
-2. `ai_answer.summary` — not used even when calling `/ask`; currently uses `judgment.interpretation`
-3. `WireLunarSequence` — only `is_void_of_course` extracted; rich Moon data unused
-4. `radicality.score` — present in wire response but not in app model
+1. `aspect_perfections[]` — not extracted; `aspects` always `undefined` in app model. `JournalEntry` also missing `aspects` field. Blocks `AspectRow` component.
+2. `ai_answer.summary` — not used even when calling `/ask`; currently falls back to `judgment.interpretation`.
+3. `WireLunarSequence` — only `is_void_of_course` extracted; `moon_sign`, `applying_aspects`, VOC exception signs unused.
+4. `radicality.score` — present in wire response (`WireRadicality.score: number`) but absent from `HoraryResponse` app model.
+5. `dignity_score` / `domicile_ruler` — present in `WireDignityInfo` but not propagated to `SignificatorData`; `SignificatorData` needs two new optional fields.
+6. `radicality.flags[]` — typed as `WireRadicalityFlag[]` in wire model (incl. `show_to_client: boolean`), but not extracted or filtered; `HoraryResponse` has no `radicality_flags` field.
 
 ### Architecture decisions pending
 
-- **`/ask` vs `/analyze` as primary endpoint** — `/ask` simplifies UX (no category chips), auto-detects language, returns richer `ai_answer`. Decision needed before next implementation sprint.
-- **`pregnancy`/`fertility` routing** — use specialized `/fertility-analysis` (2 credits, richer data) or keep on `/analyze`?
+- **`/ask` vs `/analyze` as primary endpoint** — resolved: `/analyze` (1 credit) is the MVP default. `/ask` (10 credits) reserved as a future premium option.
+- **`pregnancy`/`fertility` routing** — ✅ **Resolved 2026-06-03 (Compound V pre-flight):** Keep on `/analyze` for MVP. Switch to `/fertility-analysis` only when a dedicated fertility detail screen is designed. Rationale: (1) `/fertility-analysis` accepts no `category`/`subcategory` (`additionalProperties:false`) — subcategory context (`boy_or_girl`, `ivf_success`) is lost entirely; (2) response has no `judgment`/`confidence_band`/`significators[]` — structurally incompatible with `VerdictCard`/`JournalEntry`/mapper (13+ files to change); (3) `fertility_score 0-100` is a pseudo-medical vendor metric, not a traditional astrology concept — must not be shown as-is; (4) live response contract not yet verified (wire types in `horary.ts:479-492` are provisional). Upgrade prerequisites: dedicated fertility screen design, `fertility_score` display decision, `WireFertilitySignAnalysis.fertility` type fix (`semi-fruitful` → `semi_fruitful`), one live API call to verify contract. See `docs/superpowers/expert/2026-06-03-fertility-routing.md` and `docs/superpowers/library-audit/2026-06-03-fertility-analysis-endpoint.md`.
+- **Arabic Parts** — `/chart` endpoint no longer needed for Arabic Parts; `POST /data/positions/enhanced` (§13.1) returns `traditional_points` (Part of Fortune, Part of Spirit). Use that instead.
 
 ---
 
