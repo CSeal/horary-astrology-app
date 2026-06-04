@@ -29,7 +29,9 @@
     "test:table": "jest --reporters=./scripts/test-reporter.js",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "generate:icon": "node scripts/generate-icon.js",
+    "build:privacy": "node scripts/build-privacy.js"
   },
   "jest": {
     "preset": "jest-expo",
@@ -94,7 +96,9 @@
     "@types/semver": "^7.7.1",
     "eslint": "^9.39.4",
     "eslint-config-expo": "~55.0.1",
+    "marked": "^9.1.6",
     "postcss": "^8.5.15",
+    "sharp": "^0.33.5",
     "tailwindcss": "^4.3.0",
     "typescript": "~5.9.2"
   },
