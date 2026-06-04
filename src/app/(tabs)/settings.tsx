@@ -7,14 +7,13 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
-import { Globe, Key, MapPin, Star, Clock, BarChart3 } from 'lucide-react-native';
+import { Globe, Key, MapPin, Star, Clock } from 'lucide-react-native';
 import {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
   withDelay,
-  Easing,
   type SharedValue,
 } from 'react-native-reanimated';
 import {
@@ -34,12 +33,10 @@ import {
   type LocationPickerSheetRef,
 } from '@/components/LocationPickerSheet';
 import { useSettingsStore } from '@/stores/settingsStore';
-import { useQuestionsStore } from '@/stores/questionsStore';
 import { secureKeyService } from '@/services/secureKeyService';
 import { AppLogo } from '@/components/svg/AppLogo';
 import { useDebugTrigger } from '@/hooks/useDebugTrigger';
 import {
-  MONTHLY_QUESTION_LIMIT,
   ZODIAC_TYPES,
   type SupportedLocale,
   type ZodiacType,
@@ -68,8 +65,6 @@ export default function SettingsScreen() {
   const setHomeLocation = useSettingsStore((s) => s.setHomeLocation);
   const zodiacType = useSettingsStore((s) => s.zodiacType);
   const setZodiacType = useSettingsStore((s) => s.setZodiacType);
-  const monthlyCount = useQuestionsStore((s) => s.monthlyCount);
-
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [savingKey, setSavingKey] = useState(false);
   const [timezone] = useState<string>(
@@ -175,20 +170,13 @@ export default function SettingsScreen() {
     );
   }, [setApiKeySource, t]);
 
-  const fillPct = Math.min(
-    100,
-    Math.round((monthlyCount / MONTHLY_QUESTION_LIMIT) * 100)
-  );
-
-  // ── Card stagger (4 sections + title) ──
+  // ── Card stagger (sections + title) ──
   const titleY = useSharedValue(20);
   const titleOp = useSharedValue(0);
   const s0Y = useSharedValue(20);
   const s0Op = useSharedValue(0);
   const s1Y = useSharedValue(20);
   const s1Op = useSharedValue(0);
-  const s2Y = useSharedValue(20);
-  const s2Op = useSharedValue(0);
   const s3Y = useSharedValue(20);
   const s3Op = useSharedValue(0);
   const s4Y = useSharedValue(20);
@@ -206,8 +194,7 @@ export default function SettingsScreen() {
       [s4Y, s4Op, 160],
       [s5Y, s5Op, 240],
       [s1Y, s1Op, 320],
-      [s2Y, s2Op, 400],
-      [s3Y, s3Op, 480],
+      [s3Y, s3Op, 400],
     ];
     sections.forEach(([y, op, delay]) => {
       y.value = withDelay(delay, withSpring(0, spring));
@@ -228,10 +215,6 @@ export default function SettingsScreen() {
     opacity: s1Op.value,
     transform: [{ translateY: s1Y.value }],
   }));
-  const s2Style = useAnimatedStyle(() => ({
-    opacity: s2Op.value,
-    transform: [{ translateY: s2Y.value }],
-  }));
   const s3Style = useAnimatedStyle(() => ({
     opacity: s3Op.value,
     transform: [{ translateY: s3Y.value }],
@@ -245,23 +228,6 @@ export default function SettingsScreen() {
     transform: [{ translateY: s5Y.value }],
   }));
 
-  // ── Progress bar fill ──
-  const barWidth = useSharedValue(0);
-
-  useEffect(() => {
-    barWidth.value = withDelay(
-      500,
-      withTiming(fillPct, {
-        duration: 700,
-        easing: Easing.out(Easing.ease),
-      })
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fillPct]);
-
-  const barStyle = useAnimatedStyle(() => ({
-    width: `${barWidth.value}%`,
-  }));
 
   return (
     <>
@@ -511,44 +477,6 @@ export default function SettingsScreen() {
             <Text className="font-inter text-xs text-text-secondary">
               {t('settings.timezoneHint')}
             </Text>
-          </Card>
-        </AnimatedView>
-
-        {/* USAGE */}
-        <AnimatedView style={s2Style} className="gap-2">
-          <View className="flex-row items-center gap-2">
-            <BarChart3 color={colors.accentGold} size={typography.sm} />
-            <Text
-              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
-              accessibilityRole="header"
-            >
-              {t('settings.questionCountSection')}
-            </Text>
-          </View>
-          <Card elevated>
-            <Text className="font-inter text-base text-text-primary mb-2">
-              {t('settings.questionCountLabel')}
-            </Text>
-            <Text className="font-inter text-sm text-text-secondary mb-3">
-              {t('home.questionCounter', {
-                count: monthlyCount,
-                limit: MONTHLY_QUESTION_LIMIT,
-              })}
-            </Text>
-            <View
-              className="h-2 rounded-full bg-bg-surface overflow-hidden"
-              accessibilityRole="progressbar"
-              accessibilityValue={{
-                min: 0,
-                max: MONTHLY_QUESTION_LIMIT,
-                now: monthlyCount,
-              }}
-            >
-              <AnimatedView
-                className="h-full bg-accent-gold rounded-full"
-                style={barStyle}
-              />
-            </View>
           </Card>
         </AnimatedView>
 

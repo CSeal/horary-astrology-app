@@ -23,9 +23,7 @@ const de = {
     locationDefault: '· Standard',
     locationSet: 'Tippen, um Standort festzulegen',
     changeLocation: 'Ändern',
-    questionCounter: 'Anfragen an die Sterne: {{count}} / {{limit}}',
-    questionLimitBanner:
-      'Du hast deine {{limit}} kostenlosen Fragen diesen Monat aufgebraucht. Unbegrenzter Zugang kommt bald.',
+    questionLimitBanner: 'Du hast dein monatliches Fragenlimit erreicht. Unbegrenzter Zugang kommt bald.',
     charCount: '{{count}} / {{max}}',
   },
 
@@ -173,9 +171,6 @@ const de = {
     apiKeySourceDefault: 'Verwendet: App-Standard',
     apiKeyRemove: 'Schlüssel entfernen',
     apiKeySave: 'Schlüssel speichern',
-    questionCountSection: 'NUTZUNG',
-    questionCountLabel: 'Anfragen an die Sterne',
-    questionCountReset: 'Zurückgesetzt am {{date}}',
   },
 
   // Onboarding
@@ -281,8 +276,6 @@ const de = {
     unlock: 'Entsperren',
     stateSection: 'ZUSTAND',
     stateSectionHint: 'Setzt nur lokale Gerätedaten zurück — keine serverseitigen Auswirkungen.',
-    resetCounter: 'Monatszähler zurücksetzen → 0',
-    resetCounterHint: 'Ermöglicht das Testen des Frageablaufs ohne das monatliche Limit zu erreichen.',
     clearJournal: 'Alle Journaleinträge löschen',
     clearJournalHint: 'Löscht dauerhaft alle auf diesem Gerät gespeicherten Deutungen.',
     clearJournalConfirm: 'Alle Journaleinträge löschen?',

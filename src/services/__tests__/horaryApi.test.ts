@@ -67,6 +67,16 @@ describe('normalizeError', () => {
     expect(result.retryable).toBe(false);
   });
 
+  it('maps 429 → LIMIT_EXCEEDED, not retryable, surfacing the API message', () => {
+    const result = normalizeError(
+      makeAxiosError({ status: 429, data: { message: 'Monthly limit reached' } })
+    );
+    expect(result.code).toBe('LIMIT_EXCEEDED');
+    expect(result.retryable).toBe(false);
+    expect(result.message).toBe('Monthly limit reached');
+    expect(result.originalStatus).toBe(429);
+  });
+
   it('maps a 4xx → API_4XX, not retryable, surfacing the API message', () => {
     const result = normalizeError(
       makeAxiosError({ status: 422, data: { message: 'Invalid question' } })

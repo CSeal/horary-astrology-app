@@ -80,7 +80,6 @@ export function DebugSheet({ ref }: DebugSheetProps) {
   const setSkipMinLoading = useDebugStore((s) => s.setSkipMinLoading);
   const triggerForceUpdate = useDebugStore((s) => s.triggerForceUpdate);
 
-  const resetMonthlyCount = useQuestionsStore((s) => s.resetMonthlyCount);
   const clearAllEntries = useQuestionsStore((s) => s.clearAllEntries);
 
   const [pinInput, setPinInput] = useState('');
@@ -132,11 +131,6 @@ export function DebugSheet({ ref }: DebugSheetProps) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
     }
   }, [pinInput, activate]);
-
-  const handleResetCounter = useCallback(async () => {
-    await resetMonthlyCount();
-    flashStatus(t('debug.resetCounter'));
-  }, [resetMonthlyCount, flashStatus, t]);
 
   const handleClearJournal = useCallback(() => {
     Alert.alert(t('debug.clearJournalConfirm'), '', [
@@ -258,18 +252,6 @@ export function DebugSheet({ ref }: DebugSheetProps) {
               hint={t('debug.stateSectionHint')}
               icon={<Archive color={colors.accentGold} size={13} />}
             >
-              <DebugRow
-                description={t('debug.resetCounterHint')}
-                action={
-                  <Button
-                    label={t('debug.resetCounter')}
-                    variant="secondary"
-                    size="sm"
-                    onPress={handleResetCounter}
-                  />
-                }
-              />
-              <Divider />
               <DebugRow
                 description={t('debug.clearJournalHint')}
                 action={

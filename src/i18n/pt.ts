@@ -23,9 +23,7 @@ const pt = {
     locationDefault: '· padrão',
     locationSet: 'Toque para definir sua localização',
     changeLocation: 'Alterar',
-    questionCounter: 'Consultas às estrelas: {{count}} / {{limit}}',
-    questionLimitBanner:
-      'Você usou suas {{limit}} perguntas gratuitas deste mês. Acesso ilimitado em breve.',
+    questionLimitBanner: 'Você atingiu o limite mensal de perguntas. Acesso ilimitado em breve.',
     charCount: '{{count}} / {{max}}',
   },
 
@@ -177,9 +175,6 @@ const pt = {
     apiKeySourceDefault: 'Usando: padrão do app',
     apiKeyRemove: 'Remover chave',
     apiKeySave: 'Salvar chave',
-    questionCountSection: 'USO',
-    questionCountLabel: 'Consultas às estrelas',
-    questionCountReset: 'Reinicia em {{date}}',
   },
 
   // Onboarding
@@ -286,8 +281,6 @@ const pt = {
     unlock: 'Desbloquear',
     stateSection: 'ESTADO',
     stateSectionHint: 'Reinicia apenas os dados locais do dispositivo — sem efeitos no servidor.',
-    resetCounter: 'Reiniciar contador mensal → 0',
-    resetCounterHint: 'Permite testar o fluxo de perguntas sem atingir o limite mensal.',
     clearJournal: 'Limpar todas as entradas do diário',
     clearJournalHint: 'Exclui permanentemente todas as leituras salvas neste dispositivo.',
     clearJournalConfirm: 'Limpar todas as entradas do diário?',

@@ -321,20 +321,21 @@ The following features are explicitly deferred to Phase 2 or later. No code, stu
 
 | Feature | Phase | Notes |
 |---|---|---|
-| IAP / Subscription paywall | Phase 2 | → see `docs/monetization-spec.md` |
-| Restore Purchases | Phase 2 | → see `docs/monetization-spec.md` |
-| Chart wheel visualization | Phase 2 | SVG planetary wheel showing full horary chart. |
-| Aspects table (detailed technical breakdown) | Phase 2 | Table of all aspects, dignities, and house positions. |
-| Share result (image card export) | Phase 2 | Social sharing of verdict as image. Share button is shown as placeholder on Verdict Screen but non-functional (or hidden). |
-| Push notifications / daily prompts | Phase 2 | Requires notification permission + backend scheduling. |
-| Practitioner mode | Phase 3 | Full radicality details, traditional terminology, expanded significator view. |
-| Offline ephemeris | Phase 3 | Swiss Ephemeris bundled locally for offline chart casting. |
-| Cloud sync / user accounts | Phase 3 | Server-side journal storage and cross-device sync. |
-| Community / peer review | Phase 3 | Crowdsourced verification of readings. |
-| Multiple saved profiles | Phase 3 | Asking on behalf of other people. |
-| Apple Watch complication | Phase 3 | Widget / watch extension. |
-| Social comparison features | Phase 3 | Sharing, following, community leaderboards. |
-| Manual location entry (city search) | Phase 2 | Full fallback when GPS is denied. MVP shows error state only. |
+| IAP / Subscription paywall | Phase 3 (Monetization) | → see `docs/monetization-spec.md` |
+| Restore Purchases | Phase 3 (Monetization) | → see `docs/monetization-spec.md` |
+| Chart wheel visualization | Phase 2 (Retention) | SVG planetary wheel showing full horary chart. |
+| Aspects table (detailed technical breakdown) | Phase 2 (Retention) | Table of all aspects, dignities, and house positions. |
+| Share result (image card export) | Phase 2 (Retention) | Social sharing of verdict as image. Share button is shown as placeholder on Verdict Screen but non-functional (or hidden). |
+| Push notifications / daily prompts | Phase 2 (Retention) | Requires notification permission + backend scheduling. |
+| Journal outcome tracking | Phase 2 (Retention) | "Came true / Didn't happen / Pending" per journal entry. |
+| Manual location entry (city search) | Phase 2 (Retention) | Full fallback when GPS is denied. MVP shows error state only. |
+| Practitioner mode | Phase 3 (Monetization) | Full radicality details, traditional terminology, expanded significator view. |
+| Offline ephemeris | Phase 3 (Monetization) | Swiss Ephemeris bundled locally for offline chart casting. |
+| Cloud sync / user accounts | Phase 3 (Monetization) | Server-side journal storage and cross-device sync. |
+| Community / peer review | Phase 3 (Monetization) | Crowdsourced verification of readings. |
+| Multiple saved profiles | Phase 3 (Monetization) | Asking on behalf of other people. |
+| Apple Watch complication | Phase 3 (Monetization) | Widget / watch extension. |
+| Social comparison features | Phase 3 (Monetization) | Sharing, following, community leaderboards. |
 | Birth chart / natal features | Never (different product) | Out of scope entirely. |
 
 ---

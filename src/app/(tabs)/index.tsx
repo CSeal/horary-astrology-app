@@ -25,10 +25,8 @@ import {
 } from '@/components/LocationPickerSheet';
 import { useHoraryQuery } from '@/hooks/useHoraryQuery';
 import { useLocation } from '@/hooks/useLocation';
-import { useQuestionsStore } from '@/stores/questionsStore';
 import { useSettingsStore } from '@/stores/settingsStore';
 import {
-  MONTHLY_QUESTION_LIMIT,
   DEFAULT_HORARY_CATEGORY,
   DEFAULT_SUBJECT_ROLE,
   type HoraryCategory,
@@ -54,7 +52,6 @@ export default function HomeScreen() {
   }, []);
 
   const { location, permissionStatus } = useLocation();
-  const monthlyCount = useQuestionsStore((s) => s.monthlyCount);
   const locationSource = useSettingsStore((s) => s.locationSource);
   const homeLocation = useSettingsStore((s) => s.homeLocation);
 
@@ -84,15 +81,14 @@ export default function HomeScreen() {
   const pickerRef = useRef<LocationPickerSheetRef>(null);
 
   const lastError = mutation.error as HoraryAPIError | null | undefined;
-  const errorMessage = lastError
+  const isLimitExceeded = lastError?.code === 'LIMIT_EXCEEDED';
+  const errorMessage = lastError && !isLimitExceeded
     ? lastError.code === 'NETWORK_ERROR'
       ? t('errors.noInternet')
       : lastError.code === 'TIMEOUT'
         ? t('errors.timeout')
         : t('errors.apiError')
     : null;
-
-  const limitReached = monthlyCount >= MONTHLY_QUESTION_LIMIT;
   // Pending only while GPS is still resolving AND nothing else is available yet.
   const locationPending =
     permissionStatus === 'loading' && !override && !resolvedDefault;
@@ -119,6 +115,7 @@ export default function HomeScreen() {
     if (!coords) return;
     const timezone = location?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
     setDismissedError(false);
+    setDismissedLimit(false);
     mutation.mutate({
       question: question.trim(),
       category,
@@ -213,13 +210,12 @@ export default function HomeScreen() {
             </View>
           )}
 
-          {limitReached && !dismissedLimit && (
+          {isLimitExceeded && !dismissedLimit && (
             <Banner
-              message={t('home.questionLimitBanner', {
-                limit: MONTHLY_QUESTION_LIMIT,
-              })}
+              message={t('home.questionLimitBanner')}
               type="warning"
               onDismiss={() => setDismissedLimit(true)}
+              // TODO Phase 3: replace this banner with a paywall modal (RevenueCat entitlement gate)
             />
           )}
 
@@ -241,7 +237,6 @@ export default function HomeScreen() {
                 locationSourceLabel={locationSourceLabel}
                 locationPending={locationPending}
                 locationMissing={locationMissing}
-                monthlyCount={monthlyCount}
                 category={category}
                 onSelectCategory={handleSelectCategory}
                 subcategory={subcategory}

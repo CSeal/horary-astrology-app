@@ -169,39 +169,42 @@ Sprint C (Screens)        Sprint D (Polish)
 
 ---
 
-## Phase 2 — Post-Store Launch
+## Phase 2 — Retention
 
 **Trigger**: Phase 2 unlocks after 3+ months post-launch with confirmed 30%+ 7-day retention and >85% question-to-verdict conversion.
 
-**Theme**: Monetization, chart depth, and sharing.
+**Theme**: Keep users coming back — chart depth, social sharing, outcome tracking, and push notifications.
 
 | Feature | Library / Approach | Est. Effort |
 |---|---|---|
-| IAP / Subscription (RevenueCat) | `react-native-purchases` | 2 sprints |
-| Paywall screen at 5/5 questions | Replace "coming soon" banner | 0.5 sprints |
 | Chart wheel visualization | `react-native-svg` (already installed) | 1.5 sprints |
 | Detailed aspects table | New screen, new API fields | 1 sprint |
 | Share result as image card | `react-native-view-shot` + Share Sheet | 1 sprint |
 | Push notifications (optional, opt-in) | `expo-notifications` | 1 sprint |
+| Journal outcome tracking ("came true") | AsyncStorage update, journal screen | 0.5 sprints |
 | Manual location entry (city search) | Geocoding API | 1 sprint |
 | Crash reporter (Sentry) | `@sentry/react-native` | 0.5 sprints |
+| Journal export / import | Share-to-Files, cross-device safety net | 0.5 sprints |
 
 ---
 
-## Phase 3 — Growth
+## Phase 3 — Monetization
 
-**Trigger**: Phase 3 unlocks after reaching 5,000 MAU and evidence of strong practitioner engagement.
+**Trigger**: Phase 3 unlocks after Phase 2 retention KPIs are met and IAP infrastructure is approved by legal/finance.
 
-**Theme**: Practitioner depth, offline capability, community.
+**Theme**: Convert retained users into paying subscribers — IAP, paywall, and premium depth features.
 
-| Feature | Notes |
-|---|---|
-| Practitioner Mode toggle | Full radicality details, Latin terms, expanded significators |
-| Offline ephemeris | Bundle Swiss Ephemeris data files |
-| Cloud sync / user accounts | Server-side journal, Apple Sign-In, Google Sign-In |
-| Community peer verification | Outcome tagging, accuracy scores |
-| Multiple saved profiles | Client work / family member profiles |
-| Apple Watch complication | WatchOS companion app |
+| Feature | Library / Approach | Est. Effort |
+|---|---|---|
+| IAP / Subscription (RevenueCat) | `react-native-purchases` | 2 sprints |
+| Paywall screen (replaces "coming soon" banner) | Bottom sheet + RevenueCat entitlements | 0.5 sprints |
+| Restore Purchases | RevenueCat SDK | 0.5 sprints |
+| Practitioner Mode toggle | Full radicality details, Latin terms, expanded significators | 1 sprint |
+| Offline ephemeris | Bundle Swiss Ephemeris data files | 2 sprints |
+| Cloud sync / user accounts | Server-side journal, Apple Sign-In, Google Sign-In | 3 sprints |
+| Community peer verification | Outcome tagging, accuracy scores | 2 sprints |
+| Multiple saved profiles | Client work / family member profiles | 1 sprint |
+| Apple Watch complication | WatchOS companion app | 2 sprints |
 
 ---
 

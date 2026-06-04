@@ -23,9 +23,7 @@ const fr = {
     locationDefault: '· défaut',
     locationSet: 'Toucher pour définir la localisation',
     changeLocation: 'Modifier',
-    questionCounter: 'Demandes aux étoiles : {{count}} / {{limit}}',
-    questionLimitBanner:
-      'Vous avez utilisé vos {{limit}} questions gratuites ce mois-ci. Un accès illimité arrive bientôt.',
+    questionLimitBanner: 'Vous avez atteint votre limite mensuelle de questions. Un accès illimité arrive bientôt.',
     charCount: '{{count}} / {{max}}',
   },
 
@@ -173,9 +171,6 @@ const fr = {
     apiKeySourceDefault: "Utilisée : clé par défaut de l'application",
     apiKeyRemove: 'Supprimer la clé',
     apiKeySave: 'Enregistrer la clé',
-    questionCountSection: 'UTILISATION',
-    questionCountLabel: 'Demandes aux étoiles',
-    questionCountReset: 'Réinitialisation le {{date}}',
   },
 
   // Onboarding
@@ -281,8 +276,6 @@ const fr = {
     unlock: 'Déverrouiller',
     stateSection: 'ÉTAT',
     stateSectionHint: "Réinitialise uniquement les données locales de l'appareil — aucun effet côté serveur.",
-    resetCounter: 'Réinitialiser le compteur mensuel → 0',
-    resetCounterHint: "Permet de tester le flux de demande sans atteindre la limite mensuelle.",
     clearJournal: 'Effacer toutes les entrées du journal',
     clearJournalHint: 'Supprime définitivement toutes les consultations sauvegardées sur cet appareil.',
     clearJournalConfirm: 'Effacer toutes les entrées du journal ?',

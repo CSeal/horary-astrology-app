@@ -1,6 +1,6 @@
 // src/components/AskForm.tsx
 // Multiline question input + category/subcategory/subject_role selectors +
-// location row + monthly counter + primary CTA.
+// location row + primary CTA.
 // Category chips use ChipScrollRow (auto-center on select + icons).
 // Subcategory chips appear when the selected category has sub-options.
 // Subject role chips let the user specify whose perspective is being asked.
@@ -21,7 +21,6 @@ import { colors, typography } from '@/constants/theme';
 import {
   MAX_QUESTION_CHARS,
   MIN_QUESTION_CHARS,
-  MONTHLY_QUESTION_LIMIT,
   HORARY_CATEGORIES,
   HORARY_SUBCATEGORIES,
   SUBJECT_ROLES,
@@ -67,7 +66,6 @@ interface AskFormProps {
   locationSourceLabel?: string;
   locationPending?: boolean;
   locationMissing?: boolean;
-  monthlyCount: number;
   category: HoraryCategory;
   onSelectCategory: (category: HoraryCategory) => void;
   subcategory?: string;
@@ -88,7 +86,6 @@ export function AskForm({
   locationSourceLabel,
   locationPending = false,
   locationMissing = false,
-  monthlyCount,
   category,
   onSelectCategory,
   subcategory,
@@ -254,12 +251,6 @@ export function AskForm({
         accessibilityLabel={t('a11y.askButton')}
       />
 
-      <Text className="font-inter text-xs text-text-secondary text-center">
-        {t('home.questionCounter', {
-          count: monthlyCount,
-          limit: MONTHLY_QUESTION_LIMIT,
-        })}
-      </Text>
     </View>
   );
 }

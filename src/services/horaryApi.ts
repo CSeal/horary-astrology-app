@@ -61,6 +61,16 @@ export function normalizeError(error: AxiosError): HoraryAPIError {
   const status = error.response.status;
   const apiMessage = (error.response.data as { message?: string })?.message;
 
+  if (status === 429) {
+    return {
+      code: 'LIMIT_EXCEEDED',
+      message: apiMessage ?? 'You have reached your monthly question limit.',
+      retryable: false,
+      originalStatus: 429,
+      originalMessage: apiMessage,
+    };
+  }
+
   if (status >= 400 && status < 500) {
     return {
       code: 'API_4XX',

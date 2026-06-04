@@ -104,7 +104,7 @@ This document defines what is built in each phase. Phase 1 (this build) is the M
 
 **Theme**: Pre-launch growth mechanics, API field completeness, and viral sharing.
 **Trigger**: Ships after Phase 1 QA passes and before App Store submission.
-**Monetization note**: IAP, RevenueCat, and subscriptions remain Phase 2. Phase 1.5 contains zero payment infrastructure.
+**Monetization note**: IAP, RevenueCat, and subscriptions are Phase 3 (Monetization). Phase 1.5 contains zero payment infrastructure.
 
 | FR | Feature | Effort | Why Phase 1.5 |
 |---|---|---|---|
@@ -118,17 +118,19 @@ This document defines what is built in each phase. Phase 1 (this build) is the M
 
 ---
 
-## Phase 2 — Post-Store Launch
+## Phase 2 — Retention
 
-**Theme**: Monetization, chart depth, and sharing.
+**Theme**: Keep users coming back — chart depth, social sharing, outcome tracking, and push notifications.
 
 **Trigger**: Phase 2 unlocks after 3+ months post-launch with data confirming 30%+ 7-day retention and >85% question-to-verdict conversion.
 
 ---
 
-### IAP / Subscription
+### Journal Outcome Tracking
 
-→ Full spec in `docs/monetization-spec.md`. Run `/orchestrate:monetization` when Phase 2 KPI gates are met.
+- "Came true / Didn't happen / Pending" badge on each journal entry
+- Outcome can be set any time after a reading; default is "Pending"
+- Outcome data informs long-term AI accuracy signals (Phase 3 use)
 
 ### Chart Wheel Visualization
 
@@ -163,11 +165,19 @@ This document defines what is built in each phase. Phase 1 (this build) is the M
 
 ---
 
-## Phase 3 — Growth
+## Phase 3 — Monetization
 
-**Theme**: Practitioner depth, offline capability, and community.
+**Theme**: Convert retained users into paying subscribers — IAP, paywall, and premium depth features.
 
-**Trigger**: Phase 3 unlocks after reaching 5,000 MAU and evidence of strong Secondary ICP (practitioner) engagement.
+**Trigger**: Phase 3 unlocks after Phase 2 retention KPIs are met and IAP infrastructure is approved by legal/finance.
+
+### IAP / Subscription
+
+→ Full spec in `docs/monetization-spec.md`. Run `/orchestrate:monetization` when Phase 3 KPI gates are met.
+
+---
+
+### Premium Depth Features (unlock with subscription)
 
 ---
 

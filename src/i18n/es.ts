@@ -23,9 +23,7 @@ const es = {
     locationDefault: '· predeterminado',
     locationSet: 'Toca para establecer tu ubicación',
     changeLocation: 'Cambiar',
-    questionCounter: 'Consultas a las estrellas: {{count}} / {{limit}}',
-    questionLimitBanner:
-      'Has usado tus {{limit}} preguntas gratuitas de este mes. Acceso ilimitado próximamente.',
+    questionLimitBanner: 'Has alcanzado tu límite mensual de preguntas. Acceso ilimitado próximamente.',
     charCount: '{{count}} / {{max}}',
   },
 
@@ -177,9 +175,6 @@ const es = {
     apiKeySourceDefault: 'Usando: predeterminada de la app',
     apiKeyRemove: 'Eliminar clave',
     apiKeySave: 'Guardar clave',
-    questionCountSection: 'USO',
-    questionCountLabel: 'Consultas a las estrellas',
-    questionCountReset: 'Se reinicia el {{date}}',
   },
 
   // Onboarding
@@ -287,9 +282,6 @@ const es = {
     stateSection: 'ESTADO',
     stateSectionHint:
       'Reinicia solo los datos locales del dispositivo — sin efectos en el servidor.',
-    resetCounter: 'Reiniciar contador mensual → 0',
-    resetCounterHint:
-      'Permite probar el flujo de preguntas sin alcanzar el límite mensual.',
     clearJournal: 'Borrar todas las entradas del diario',
     clearJournalHint:
       'Elimina permanentemente todas las lecturas guardadas en este dispositivo.',

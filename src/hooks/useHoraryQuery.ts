@@ -40,7 +40,6 @@ function buildJournalEntry(
 export function useHoraryQuery(city?: string) {
   const router = useRouter();
   const addEntry = useQuestionsStore((s) => s.addEntry);
-  const incrementMonthlyCount = useQuestionsStore((s) => s.incrementMonthlyCount);
 
   return useMutation<HoraryResponse, HoraryAPIError, HoraryRequest>({
     mutationFn: (request: HoraryRequest) => {
@@ -56,7 +55,6 @@ export function useHoraryQuery(city?: string) {
     onSuccess: async (data: HoraryResponse, variables: HoraryRequest) => {
       const entry = buildJournalEntry(variables, data, city);
       await addEntry(entry);
-      await incrementMonthlyCount();
       router.replace(`/result/${entry.id}` as never);
     },
     // No navigation on error: the request runs inline on Home (loading replaces

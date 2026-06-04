@@ -33,7 +33,22 @@
       "WebFetch(domain:www.skyscript.co.uk)",
       "Bash(grep \"^## \\\\`/orchestrate:market\\\\|^## \\\\`/orchestrate:implement\\\\|^## \\\\`/orchestrate:store\\\\|^## \\\\`/orchestrate:screenshots\\\\|^## \\\\`/orchestrate:aso\\\\|^## \\\\`/orchestrate:prototype\" /Users/user/Dev/react-native/horary-astrology-v1-app/docs/orchestration/command-contracts.md)",
       "Bash(git -C /Users/user/Dev/react-native/horary-astrology-v1-app diff --stat HEAD)",
-      "Bash(git -C /Users/user/Dev/react-native/horary-astrology-v1-app diff docs/api-integration-spec.md)"
+      "Bash(git -C /Users/user/Dev/react-native/horary-astrology-v1-app diff docs/api-integration-spec.md)",
+      "WebFetch(domain:apps.apple.com)",
+      "WebFetch(domain:play.google.com)",
+      "WebFetch(domain:www.lunarguideapp.com)",
+      "WebFetch(domain:kimola.com)",
+      "WebFetch(domain:asoworld.com)",
+      "WebFetch(domain:www.autviz.com)",
+      "WebFetch(domain:oraclesanctum.com)",
+      "WebFetch(domain:www.rustore.ru)",
+      "WebFetch(domain:www.appbrain.com)",
+      "Edit(/.claude/skills/orchestrate-monetization/**)",
+      "Bash(sed -n '22,28p' src/i18n/ru.ts)",
+      "Bash(sed -n '22,28p' src/i18n/de.ts)",
+      "Bash(sed -n '25,30p' src/i18n/fr.ts)",
+      "Bash(sed -n '25,30p' src/i18n/pt.ts)",
+      "Bash(sed -n '25,30p' src/i18n/es.ts)"
     ]
   }
 }

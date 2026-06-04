@@ -7,7 +7,6 @@ export const API_BASE_URL = 'https://api.astrology-api.io';
 export const HORARY_ENDPOINT = '/api/v3/horary/analyze';
 export const API_TIMEOUT = 10000; // 10 seconds
 
-export const MONTHLY_QUESTION_LIMIT = 5;
 export const LOADING_MIN_DURATION = 1500; // 1.5 seconds minimum loading display
 export const MAX_QUESTION_CHARS = 280;
 export const MIN_QUESTION_CHARS = 5;
@@ -28,8 +27,6 @@ export const DEBUG_PIN = process.env.EXPO_PUBLIC_DEBUG_PIN ?? null;
 // AsyncStorage keys — never overlap with other apps
 export const ASYNC_STORAGE_KEYS = {
   JOURNAL: 'horary_journal',
-  QUESTION_COUNT: 'horary_question_count',
-  QUESTION_RESET_DATE: 'horary_question_reset_date',
   LANGUAGE: 'horary_language',
   ONBOARDING_COMPLETE: 'horary_onboarding_complete',
   UPDATE_CONFIG_CACHE: 'horary_update_config_cache',

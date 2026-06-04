@@ -1,19 +1,19 @@
 ---
 created_by: claude-sonnet-4-6
 updated_by: claude-sonnet-4-6
-source_inputs: [docs/growth-features-spec.md (T1-01), docs/mvp-scope.md (Phase 2 IAP), docs/prd-v1.md, docs/kpi-and-economics.md]
+source_inputs: [docs/growth-features-spec.md (T1-01), docs/mvp-scope.md (Phase 3 IAP), docs/prd-v1.md, docs/kpi-and-economics.md]
 reviewed_by: owner-pending
 ---
 
 # Monetization Spec — AstraSk Horary Astrology App
 
 **Stage**: Pending — run `/orchestrate:monetization` to populate this document.
-**Phase**: Phase 2 (post-launch, after 3+ months of engagement data)
-**Gate**: Phase 2 unlocks after 30%+ 7-day retention AND >85% question-to-verdict conversion confirmed.
+**Phase**: Phase 3 — Monetization (after Phase 2 Retention KPIs are met)
+**Gate**: Phase 3 unlocks after 30%+ 7-day retention AND >85% question-to-verdict conversion confirmed.
 
 > This document is the single source of truth for all monetization work.
-> No monetization code, stubs, or IAP infrastructure should appear in Phase 1 or Phase 1.5.
-> The only Phase 1 artifact is the "coming soon" banner shown at 5/5 question limit (already implemented in questionsStore).
+> No monetization code, stubs, or IAP infrastructure should appear in Phase 1, Phase 1.5, or Phase 2 (Retention).
+> The only Phase 1 artifact is the "coming soon" banner shown when the API returns 429 (LIMIT_EXCEEDED).
 
 ---
 
@@ -35,7 +35,7 @@ reviewed_by: owner-pending
 | Name | Subscription / unlimited plan |
 | Competitor coverage | Co-Star, Nebula, Nummi, TimePassages — all have unlimited subscription |
 | Priority justification | HIGH parity gap: every top competitor has this. Without it, users who hit the 5/month limit have zero upgrade path. Direct revenue and retention blocker. |
-| Phase | **Phase 2** |
+| Phase | **Phase 3** |
 | Effort | L (1–2 weeks) |
 
 ### Implementation sketch (to be fully specced by `/orchestrate:monetization`)
@@ -71,7 +71,7 @@ The paywall sheet UI **must be designed** (as a non-functional screen) before Ap
 |---|---|
 | Name | Push notification reminders |
 | Competitor coverage | Co-Star (daily transits push), Nebula (daily horoscope push), The Pattern (behaviorally triggered) |
-| Phase | **Phase 2** |
+| Phase | **Phase 2 (Retention)** |
 | Effort | M (1–3 days) |
 
 ### Implementation sketch
@@ -94,7 +94,7 @@ The paywall sheet UI **must be designed** (as a non-functional screen) before Ap
 
 | Field | Value |
 |---|---|
-| Phase | **Phase 2** |
+| Phase | **Phase 2 (Retention)** |
 | Effort | M |
 
 - Deep-link schema: `astrask://invite?ref=<referrer_id>&utm_campaign=friend`
@@ -109,7 +109,7 @@ The paywall sheet UI **must be designed** (as a non-functional screen) before Ap
 
 | Field | Value |
 |---|---|
-| Phase | **Phase 2** |
+| Phase | **Phase 2 (Retention)** |
 | Effort | M |
 
 - `Intent.ACTION_SEND` with `setPackage("com.instagram.android")`
@@ -122,7 +122,7 @@ The paywall sheet UI **must be designed** (as a non-functional screen) before Ap
 
 | Field | Value |
 |---|---|
-| Phase | **Phase 2** |
+| Phase | **Phase 2 (Retention)** |
 | Effort | S |
 
 - Custom modal before `requestReview()`: "Are you enjoying AstraSk?"
@@ -132,7 +132,7 @@ The paywall sheet UI **must be designed** (as a non-functional screen) before Ap
 
 ---
 
-## KPI Gates for Phase 2 Unlock
+## KPI Gates for Phase 3 Unlock
 
 From `docs/kpi-and-economics.md`:
 - 7-day retention ≥ 30%
@@ -154,9 +154,9 @@ The agent will:
 1. Run Compound V pre-flight (library audit: RevenueCat SDK, StoreKit 2, Google Play Billing)
 2. Produce a full implementation spec with partition map
 3. Design the paywall sheet UI prompt for the HTML prototype
-4. Create the Phase 2 coding sprint plan
+4. Create the Phase 3 coding sprint plan
 
 ---
 
 *End of monetization-spec.md*
-*To be populated by `/orchestrate:monetization` when Phase 2 is ready.*
+*To be populated by `/orchestrate:monetization` when Phase 3 is ready.*

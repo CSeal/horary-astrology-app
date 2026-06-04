@@ -23,9 +23,7 @@ const en = {
     locationDefault: '· default',
     locationSet: 'Tap to set your location',
     changeLocation: 'Change',
-    questionCounter: 'Queries to the stars: {{count}} / {{limit}}',
-    questionLimitBanner:
-      "You've used your {{limit}} free questions this month. Unlimited access is coming soon.",
+    questionLimitBanner: "You've reached your monthly question limit. Unlimited access is coming soon.",
     charCount: '{{count}} / {{max}}',
   },
 
@@ -173,9 +171,6 @@ const en = {
     apiKeySourceDefault: 'Using: app default',
     apiKeyRemove: 'Remove key',
     apiKeySave: 'Save Key',
-    questionCountSection: 'USAGE',
-    questionCountLabel: 'Queries to the stars',
-    questionCountReset: 'Resets {{date}}',
   },
 
   // Onboarding
@@ -281,8 +276,6 @@ const en = {
     unlock: 'Unlock',
     stateSection: 'STATE',
     stateSectionHint: 'Resets local on-device data only — no server side effects.',
-    resetCounter: 'Reset monthly counter → 0',
-    resetCounterHint: 'Lets you test the ask flow without hitting the monthly limit.',
     clearJournal: 'Clear all journal entries',
     clearJournalHint: 'Permanently deletes all readings saved on this device.',
     clearJournalConfirm: 'Clear all journal entries?',

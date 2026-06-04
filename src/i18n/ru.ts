@@ -20,9 +20,7 @@ const ru = {
     locationDefault: '· по умолчанию',
     locationSet: 'Нажмите, чтобы указать местоположение',
     changeLocation: 'Изменить',
-    questionCounter: 'Вопросов к звёздам: {{count}} / {{limit}}',
-    questionLimitBanner:
-      'Вы использовали {{limit}} бесплатных вопросов этого месяца. Безлимитный доступ скоро появится.',
+    questionLimitBanner: 'Вы достигли месячного лимита вопросов. Безлимитный доступ скоро появится.',
     charCount: '{{count}} / {{max}}',
   },
 
@@ -163,9 +161,6 @@ const ru = {
     apiKeySourceDefault: 'Используется: ключ приложения',
     apiKeyRemove: 'Удалить ключ',
     apiKeySave: 'Сохранить ключ',
-    questionCountSection: 'ИСПОЛЬЗОВАНИЕ',
-    questionCountLabel: 'Вопросов к звёздам',
-    questionCountReset: 'Сбросится {{date}}',
   },
 
   onboarding: {
@@ -263,8 +258,6 @@ const ru = {
     unlock: 'Разблокировать',
     stateSection: 'СОСТОЯНИЕ',
     stateSectionHint: 'Сбрасывает только локальные данные устройства, без серверных эффектов.',
-    resetCounter: 'Сбросить счётчик вопросов → 0',
-    resetCounterHint: 'Позволяет тестировать поток вопросов без ограничения месяца.',
     clearJournal: 'Очистить все записи журнала',
     clearJournalHint: 'Безвозвратно удаляет все сохранённые гадания с этого устройства.',
     clearJournalConfirm: 'Очистить все записи журнала?',
