@@ -11,6 +11,7 @@ import { CosmosBackground } from '@/components/CosmosBackground';
 import { JournalItem } from '@/components/JournalItem';
 import { Button } from '@/components/ui/Button';
 import { useJournal } from '@/hooks/useJournal';
+import { useQuestionsStore } from '@/stores/questionsStore';
 import { colors, typography } from '@/constants/theme';
 import type { JournalEntry } from '@/types/journal';
 import type { SupportedLocale } from '@/constants/config';
@@ -64,6 +65,7 @@ export default function JournalScreen() {
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const { entries, deleteEntry } = useJournal();
+  const updateOutcome = useQuestionsStore((s) => s.updateOutcome);
 
   const groups = useMemo(
     () => groupByMonth(entries, i18n.language),
@@ -127,6 +129,10 @@ export default function JournalScreen() {
                         onPress={() => router.push(`/result/${entry.id}`)}
                         onDelete={() => {
                           void deleteEntry(entry.id);
+                        }}
+                        outcome={entry.outcome}
+                        onOutcome={(oc) => {
+                          void updateOutcome(entry.id, oc);
                         }}
                       />
                     );

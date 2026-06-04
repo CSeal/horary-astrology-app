@@ -40,6 +40,17 @@ export const journalService = {
     await journalService.save(updated);
   },
 
+  async updateOutcome(
+    id: string,
+    outcome: JournalEntry['outcome']
+  ): Promise<void> {
+    const existing = await journalService.getAll();
+    const index = existing.findIndex((e) => e.id === id);
+    if (index === -1) return; // unknown id — no-op
+    existing[index] = { ...existing[index], outcome };
+    await journalService.save(existing);
+  },
+
   async clear(): Promise<void> {
     try {
       await AsyncStorage.removeItem(ASYNC_STORAGE_KEYS.JOURNAL);

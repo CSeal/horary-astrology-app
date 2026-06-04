@@ -164,6 +164,11 @@ const ru = {
     deleteConfirm: 'Удалить',
     deleteCancel: 'Отмена',
     deleteAction: 'Удалить',
+    // Phase 2a — outcome tracking
+    outcomeLabel: 'Исход',
+    outcomeCameTrue: 'Сбылось',
+    outcomeDidNot: 'Не сбылось',
+    outcomePending: 'В ожидании',
   },
 
   settings: {

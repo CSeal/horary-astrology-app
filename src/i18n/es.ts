@@ -174,6 +174,11 @@ const es = {
     deleteConfirm: 'Eliminar',
     deleteCancel: 'Cancelar',
     deleteAction: 'Eliminar',
+    // Phase 2a — outcome tracking (TODO: translate to Spanish)
+    outcomeLabel: 'Outcome',
+    outcomeCameTrue: 'Came true',
+    outcomeDidNot: "Didn't happen",
+    outcomePending: 'Pending',
   },
 
   // Settings screen

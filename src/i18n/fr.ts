@@ -173,6 +173,11 @@ const fr = {
     deleteConfirm: 'Supprimer',
     deleteCancel: 'Annuler',
     deleteAction: 'Supprimer',
+    // Phase 2a — outcome tracking (TODO: translate to French)
+    outcomeLabel: 'Outcome',
+    outcomeCameTrue: 'Came true',
+    outcomeDidNot: "Didn't happen",
+    outcomePending: 'Pending',
   },
 
   // Settings screen

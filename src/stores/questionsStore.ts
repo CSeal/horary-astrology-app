@@ -12,6 +12,7 @@ interface QuestionsState {
   addEntry: (entry: JournalEntry) => Promise<void>;
   deleteEntry: (id: string) => Promise<void>;
   hydrate: () => Promise<void>;
+  updateOutcome: (id: string, outcome: JournalEntry['outcome']) => Promise<void>;
   // Debug-only — wipe all entries. Not part of normal app flow.
   clearAllEntries: () => Promise<void>;
 }
@@ -27,6 +28,12 @@ export const useQuestionsStore = create<QuestionsState>((set) => ({
 
   deleteEntry: async (id: string) => {
     await journalService.deleteEntry(id);
+    const updated = await journalService.getAll();
+    set({ entries: updated });
+  },
+
+  updateOutcome: async (id: string, outcome: JournalEntry['outcome']) => {
+    await journalService.updateOutcome(id, outcome);
     const updated = await journalService.getAll();
     set({ entries: updated });
   },

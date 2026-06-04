@@ -174,6 +174,11 @@ const pt = {
     deleteConfirm: 'Excluir',
     deleteCancel: 'Cancelar',
     deleteAction: 'Excluir',
+    // Phase 2a — outcome tracking (TODO: translate to Portuguese)
+    outcomeLabel: 'Outcome',
+    outcomeCameTrue: 'Came true',
+    outcomeDidNot: "Didn't happen",
+    outcomePending: 'Pending',
   },
 
   // Settings screen

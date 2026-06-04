@@ -173,6 +173,11 @@ const de = {
     deleteConfirm: 'Löschen',
     deleteCancel: 'Abbrechen',
     deleteAction: 'Löschen',
+    // Phase 2a — outcome tracking (TODO: translate to German)
+    outcomeLabel: 'Outcome',
+    outcomeCameTrue: 'Came true',
+    outcomeDidNot: "Didn't happen",
+    outcomePending: 'Pending',
   },
 
   // Settings screen

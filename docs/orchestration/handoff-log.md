@@ -256,3 +256,51 @@ p1_issues:
 artifacts: [docs/qa-summary.md, docs/demo-readiness.md, src/hooks/useDebugTrigger.ts, src/components/AnimatedSplash.tsx, docs/features/testing.md]
 test_result: "11 suites / 84 tests PASS (grew from 10/71 at Stage6-QA — reviewPromptService.test.ts added, horaryMapper.test.ts grew 14→20). Jest exits cleanly, no worker force-exit."
 blockers: []
+
+## Stage6b-StoreProp — 2026-06-04
+status: COMPLETE
+gate6b: PASS
+artifacts:
+  - docs/privacy-policy.md
+  - docs/apple-privacy-labels.md
+  - docs/play-data-safety.md
+  - docs/reviewer-notes.md
+  - docs/store-drafts/en.md
+  - docs/store-drafts/ru.md
+  - docs/store-drafts/de.md
+  - docs/store-drafts/fr.md
+  - docs/store-drafts/es.md
+  - docs/store-drafts/pt.md
+  - docs/app-icon-spec.md
+  - scripts/generate-icon.js
+  - scripts/build-privacy.js
+  - .github/workflows/deploy-privacy.yml
+  - package.json (patched — generate:icon + build:privacy scripts added; sharp + marked added to devDependencies)
+data_collection_audit:
+  location: "yes, per-request + journal city name, sent to astrology-api.io per request (HTTPS), not linked to identity"
+  journal_entries: "yes, AsyncStorage device-only, not shared, user-generated content"
+  locale_preference: "yes, AsyncStorage device-only, not shared, not linked"
+  location_source_preference: "yes, AsyncStorage device-only, not shared, not linked"
+  zodiac_type_preference: "yes, AsyncStorage device-only, not shared, not linked"
+  onboarding_flag: "yes, AsyncStorage device-only, not shared, not linked"
+  install_date: "yes, AsyncStorage device-only (review prompt timing), not shared, not linked"
+  review_prompt_state: "yes, AsyncStorage device-only, not shared, not linked"
+  api_key: "yes (if user-supplied), SecureStore encrypted, sent to astrology-api.io as Bearer token, not shared with others"
+  no_analytics: true
+  no_crash_reporter: true
+  no_advertising: true
+owner_actions_required:
+  - "npm install (installs sharp + marked from devDependencies)"
+  - "npm run generate:icon  → assets/icon.png + assets/adaptive-icon.png (verify visually, then copy to assets/images/)"
+  - "npm run build:privacy  → public/privacy-policy.html (verify content)"
+  - "git push → GitHub Actions deploys privacy policy to GitHub Pages"
+  - "Insert privacy policy URL into docs/reviewer-notes.md ([PRIVACY_POLICY_URL])"
+  - "Insert privacy policy URL into docs/play-data-safety.md ([PRIVACY_POLICY_URL])"
+  - "Insert demo API key into docs/reviewer-notes.md ([DEMO_API_KEY])"
+  - "Set demo PIN in debug mode and insert into docs/reviewer-notes.md ([DEMO_PIN])"
+  - "Insert contact email into docs/privacy-policy.md ([OWNER_EMAIL])"
+  - "Add entertainment disclaimer string to Settings screen (see docs/reviewer-notes.md Section 2)"
+  - "Verify iOS Subtitle char count for es.md (adjusted to 29 chars)"
+  - "Verify all store-drafts character counts before entering into App Store Connect / Play Console"
+next_stage: /orchestrate:screenshots → then App Store Connect submission
+blockers: []

@@ -22,6 +22,7 @@ jest.mock('../../services/journalService', () => ({
     getAll: jest.fn().mockResolvedValue([]),
     addEntry: jest.fn().mockResolvedValue(undefined),
     deleteEntry: jest.fn().mockResolvedValue(undefined),
+    updateOutcome: jest.fn().mockResolvedValue(undefined),
     clear: jest.fn().mockResolvedValue(undefined),
   },
 }));
@@ -56,6 +57,30 @@ describe('questionsStore — hydrate', () => {
   it('sets empty entries when nothing is stored', async () => {
     await useQuestionsStore.getState().hydrate();
     expect(useQuestionsStore.getState().entries).toEqual([]);
+  });
+});
+
+describe('questionsStore — updateOutcome', () => {
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    await AsyncStorage.clear();
+    useQuestionsStore.setState({ entries: [entry('x')] });
+  });
+
+  it('calls journalService.updateOutcome and refreshes entries', async () => {
+    const updated = { ...entry('x'), outcome: 'came_true' as const };
+    (journalService.getAll as jest.Mock).mockResolvedValueOnce([updated]);
+    await useQuestionsStore.getState().updateOutcome('x', 'came_true');
+    expect(journalService.updateOutcome).toHaveBeenCalledWith('x', 'came_true');
+    expect(useQuestionsStore.getState().entries[0].outcome).toBe('came_true');
+  });
+
+  it('updateOutcome to null clears the outcome field', async () => {
+    const cleared = { ...entry('x'), outcome: null };
+    (journalService.getAll as jest.Mock).mockResolvedValueOnce([cleared]);
+    await useQuestionsStore.getState().updateOutcome('x', null);
+    expect(journalService.updateOutcome).toHaveBeenCalledWith('x', null);
+    expect(useQuestionsStore.getState().entries[0].outcome).toBeNull();
   });
 });
 

@@ -79,4 +79,29 @@ describe('journalService', () => {
     await expect(journalService.getAll()).resolves.toEqual([]);
     err.mockRestore();
   });
+
+  // Phase 2a — outcome tracking
+  it('updateOutcome persists the outcome to AsyncStorage', async () => {
+    await journalService.addEntry(entry('a'));
+    await journalService.updateOutcome('a', 'came_true');
+    const all = await journalService.getAll();
+    expect(all[0].outcome).toBe('came_true');
+  });
+
+  it('updateOutcome can set outcome to null (clear)', async () => {
+    await journalService.addEntry({ ...entry('b'), outcome: 'came_true' });
+    await journalService.updateOutcome('b', null);
+    const all = await journalService.getAll();
+    expect(all[0].outcome).toBeNull();
+  });
+
+  it('updateOutcome on unknown id is a no-op and does not throw', async () => {
+    await journalService.addEntry(entry('c'));
+    await expect(
+      journalService.updateOutcome('nonexistent', 'pending')
+    ).resolves.toBeUndefined();
+    const all = await journalService.getAll();
+    expect(all).toHaveLength(1);
+    expect(all[0].outcome).toBeUndefined();
+  });
 });

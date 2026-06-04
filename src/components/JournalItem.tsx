@@ -9,7 +9,7 @@ import ReanimatedSwipeable, {
 } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { RectButton } from 'react-native-gesture-handler';
 import { Trash2 } from 'lucide-react-native';
-import { AnimatedView, TouchableOpacity, View, Text } from '@/tw';
+import { AnimatedView, TouchableOpacity, View, Text, Pressable } from '@/tw';
 import { useTranslation } from 'react-i18next';
 import {
   useSharedValue,
@@ -27,6 +27,8 @@ interface JournalItemProps {
   onPress: () => void;
   onDelete: () => void;
   index?: number;
+  outcome?: JournalEntry['outcome'];
+  onOutcome?: (outcome: JournalEntry['outcome']) => void;
 }
 
 const VERDICT_BORDER_CLASS: Record<JournalEntry['verdict'], string> = {
@@ -43,11 +45,35 @@ function formatDate(iso: string, locale: string): string {
   });
 }
 
+type OutcomeValue = NonNullable<JournalEntry['outcome']>;
+
+type OutcomeButton = { value: OutcomeValue; labelKey: string; activeClass: string };
+
+const OUTCOME_BUTTONS: OutcomeButton[] = [
+  {
+    value: 'came_true',
+    labelKey: 'journal.outcomeCameTrue',
+    activeClass: 'text-yes-green',
+  },
+  {
+    value: 'did_not_happen',
+    labelKey: 'journal.outcomeDidNot',
+    activeClass: 'text-no-red',
+  },
+  {
+    value: 'pending',
+    labelKey: 'journal.outcomePending',
+    activeClass: 'text-accent-gold',
+  },
+];
+
 export function JournalItem({
   entry,
   onPress,
   onDelete,
   index = 0,
+  outcome,
+  onOutcome,
 }: JournalItemProps) {
   const { t, i18n } = useTranslation();
   const date = formatDate(entry.timestamp, i18n.language);
@@ -139,6 +165,37 @@ export function JournalItem({
           <Text className="font-inter text-xs text-text-secondary mt-1">
             {t(`confidence.${entry.confidence_band}` as const)}
           </Text>
+
+          <View className="flex-row gap-2 mt-3">
+            {OUTCOME_BUTTONS.map((btn) => {
+              const isActive = outcome === btn.value;
+              return (
+                <Pressable
+                  key={btn.value}
+                  onPress={(e) => {
+                    e.stopPropagation?.();
+                    onOutcome?.(isActive ? null : btn.value);
+                  }}
+                  className={`flex-1 py-1.5 rounded-lg items-center border ${
+                    isActive
+                      ? 'border-transparent bg-white/10'
+                      : 'border-white/10 bg-transparent'
+                  }`}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(btn.labelKey as Parameters<typeof t>[0])}
+                  accessibilityState={{ selected: isActive }}
+                >
+                  <Text
+                    className={`font-inter text-xs ${
+                      isActive ? btn.activeClass : 'text-text-disabled'
+                    }`}
+                  >
+                    {t(btn.labelKey as Parameters<typeof t>[0])}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
         </TouchableOpacity>
       </ReanimatedSwipeable>
     </AnimatedView>

@@ -30,6 +30,9 @@ export interface JournalEntry {
   voc_degrees_to_sign_change?: number;
   voc_next_sign?: string;
   voc_exception_sign?: string | null;
+  // Phase 2a — outcome tracking. Optional for backward compatibility with
+  // entries saved before this field existed.
+  outcome?: 'came_true' | 'did_not_happen' | 'pending' | null;
   timestamp: string;
   city?: string;
   latitude?: number;

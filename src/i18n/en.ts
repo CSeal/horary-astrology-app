@@ -175,6 +175,11 @@ const en = {
     deleteConfirm: 'Delete',
     deleteCancel: 'Cancel',
     deleteAction: 'Delete',
+    // Phase 2a — outcome tracking
+    outcomeLabel: 'Outcome',
+    outcomeCameTrue: 'Came true',
+    outcomeDidNot: "Didn't happen",
+    outcomePending: 'Pending',
   },
 
   // Settings screen
