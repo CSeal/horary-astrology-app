@@ -199,6 +199,12 @@ const ru = {
     apiKeyRemove: 'Удалить ключ',
     apiKeySave: 'Сохранить ключ',
     apiKeyEdit: 'Изменить',
+    shareSection: 'ПОДЕЛИТЬСЯ',
+    inviteFriend: 'Пригласить друга',
+    rateApp: 'Оценить AstraSk',
+    inviteFriendTitle: 'Поделиться AstraSk',
+    inviteShareText:
+      'Я использую AstraSk для мгновенных ответов хорарной астрологии. Попробуй бесплатно:',
   },
 
   onboarding: {

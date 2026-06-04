@@ -209,6 +209,12 @@ const fr = {
     apiKeyRemove: 'Supprimer la clé',
     apiKeySave: 'Enregistrer la clé',
     apiKeyEdit: 'Modifier',
+    shareSection: 'PARTAGER & INVITER',
+    inviteFriend: 'Inviter un ami',
+    rateApp: 'Noter AstraSk',
+    inviteFriendTitle: 'Partager AstraSk',
+    inviteShareText:
+      'J\'utilise AstraSk pour des réponses instantanées en astrologie horaire. Essaie gratuitement :',
   },
 
   // Onboarding

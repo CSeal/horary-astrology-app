@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { horaryApi } from '@/services/horaryApi';
 import { mockHoraryApi } from '@/services/mockHoraryApi';
+import { reviewPromptService } from '@/services/reviewPromptService';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { useDebugStore } from '@/stores/debugStore';
 import { LOADING_MIN_DURATION } from '@/constants/config';
@@ -63,6 +64,15 @@ export function useHoraryQuery(city?: string) {
       const entry = buildJournalEntry(variables, data, city);
       await addEntry(entry);
       router.replace(`/result/${entry.id}` as never);
+
+      // FR-G02 — best-effort review prompt. Deferred 2s so the verdict reveal
+      // animation completes first; never awaited so it can't block navigation.
+      const entriesCount = useQuestionsStore.getState().entries.length;
+      setTimeout(() => {
+        reviewPromptService.maybePrompt(entriesCount, data.verdict).catch(() => {
+          /* review prompt is best-effort — swallow all errors */
+        });
+      }, 2000);
     },
     // No navigation on error: the request runs inline on Home (loading replaces
     // the form), so the Home screen surfaces mutation.error as a banner and the

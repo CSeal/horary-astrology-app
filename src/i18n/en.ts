@@ -211,6 +211,13 @@ const en = {
     apiKeyRemove: 'Remove key',
     apiKeySave: 'Save Key',
     apiKeyEdit: 'Edit',
+    // Phase 1.5 growth — share & invite (FR-G03)
+    shareSection: 'SHARE & INVITE',
+    inviteFriend: 'Invite a friend',
+    rateApp: 'Rate AstraSk',
+    inviteFriendTitle: 'Share AstraSk',
+    inviteShareText:
+      'I use AstraSk to get instant horary astrology answers. Try it free:',
   },
 
   // Onboarding

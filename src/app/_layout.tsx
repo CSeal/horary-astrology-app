@@ -33,6 +33,7 @@ import { useDebugStore } from '@/stores/debugStore';
 import { AnimatedSplash } from '@/components/AnimatedSplash';
 import { ForceUpdateScreen } from '@/components/ForceUpdateScreen';
 import { checkForUpdate, UpdateCheckResult } from '@/services/updateCheckService';
+import { reviewPromptService } from '@/services/reviewPromptService';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   /* splash auto-hide may have already happened */
@@ -79,7 +80,13 @@ export default function RootLayout() {
     let cancelled = false;
     async function prepare() {
       try {
-        await Promise.all([hydrateSettings(), hydrateQuestions()]);
+        // initInstallDate is idempotent and best-effort — stamp it alongside
+        // store hydration so the review-prompt eligibility clock starts on day 1.
+        await Promise.all([
+          hydrateSettings(),
+          hydrateQuestions(),
+          reviewPromptService.initInstallDate().catch(() => {}),
+        ]);
       } finally {
         if (!cancelled) setStoresHydrated(true);
       }

@@ -4,10 +4,20 @@
 // Four cards stagger in from below; the monthly progress bar fills with timing.
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Share, Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
-import { Globe, Key, MapPin, Star, Clock, Pencil } from 'lucide-react-native';
+import {
+  Globe,
+  Key,
+  MapPin,
+  Star,
+  Clock,
+  Pencil,
+  Share2,
+  Heart,
+  ChevronRight,
+} from 'lucide-react-native';
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -38,6 +48,8 @@ import { AppLogo } from '@/components/svg/AppLogo';
 import { useDebugTrigger } from '@/hooks/useDebugTrigger';
 import {
   ZODIAC_TYPES,
+  APP_STORE_URL_INVITE,
+  APP_STORE_REVIEW_URL,
   type SupportedLocale,
   type ZodiacType,
 } from '@/constants/config';
@@ -159,6 +171,27 @@ export default function SettingsScreen() {
     setEditingKey(false);
   }, []);
 
+  // FR-G03 — invite a friend via the native share sheet (UTM-tagged store link).
+  const handleInviteFriend = useCallback(async () => {
+    try {
+      await Share.share(
+        {
+          message: `${t('settings.inviteShareText')}\n${APP_STORE_URL_INVITE}`,
+          url: APP_STORE_URL_INVITE,
+        },
+        { dialogTitle: t('settings.inviteFriendTitle') }
+      );
+    } catch {
+      /* user dismissed the sheet or sharing is unavailable */
+    }
+  }, [t]);
+
+  // "Rate AstraSk" — direct App Store deep link (compliant for a button tap;
+  // distinct from the event-driven StoreReview.requestReview() prompt).
+  const handleRateApp = useCallback(() => {
+    Linking.openURL(APP_STORE_REVIEW_URL).catch(() => {});
+  }, []);
+
   const handleClearKey = useCallback(() => {
     Alert.alert(
       t('settings.apiKeyRemove'),
@@ -189,6 +222,8 @@ export default function SettingsScreen() {
   const s0Op = useSharedValue(0);
   const s1Y = useSharedValue(20);
   const s1Op = useSharedValue(0);
+  const s2Y = useSharedValue(20);
+  const s2Op = useSharedValue(0);
   const s3Y = useSharedValue(20);
   const s3Op = useSharedValue(0);
   const s4Y = useSharedValue(20);
@@ -199,14 +234,15 @@ export default function SettingsScreen() {
   useEffect(() => {
     const spring = { damping: 12, stiffness: 90 };
     const fade = { duration: 350 };
-    // Order: title, language, location, zodiac, timezone, usage, key.
+    // Order: title, language, location, zodiac, timezone, share, key.
     const sections: [SharedValue<number>, SharedValue<number>, number][] = [
       [titleY, titleOp, 0],
       [s0Y, s0Op, 80],
       [s4Y, s4Op, 160],
       [s5Y, s5Op, 240],
       [s1Y, s1Op, 320],
-      [s3Y, s3Op, 400],
+      [s2Y, s2Op, 400],
+      [s3Y, s3Op, 480],
     ];
     sections.forEach(([y, op, delay]) => {
       y.value = withDelay(delay, withSpring(0, spring));
@@ -226,6 +262,10 @@ export default function SettingsScreen() {
   const s1Style = useAnimatedStyle(() => ({
     opacity: s1Op.value,
     transform: [{ translateY: s1Y.value }],
+  }));
+  const s2Style = useAnimatedStyle(() => ({
+    opacity: s2Op.value,
+    transform: [{ translateY: s2Y.value }],
   }));
   const s3Style = useAnimatedStyle(() => ({
     opacity: s3Op.value,
@@ -489,6 +529,48 @@ export default function SettingsScreen() {
             <Text className="font-inter text-xs text-text-secondary">
               {t('settings.timezoneHint')}
             </Text>
+          </Card>
+        </AnimatedView>
+
+        {/* SHARE & INVITE */}
+        <AnimatedView style={s2Style} className="gap-2">
+          <View className="flex-row items-center gap-2">
+            <Share2 color={colors.accentGold} size={typography.sm} />
+            <Text
+              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+              accessibilityRole="header"
+            >
+              {t('settings.shareSection')}
+            </Text>
+          </View>
+          <Card elevated>
+            <TouchableOpacity
+              onPress={handleInviteFriend}
+              className="flex-row items-center gap-3 min-h-12"
+              accessibilityRole="button"
+              accessibilityLabel={t('settings.inviteFriend')}
+            >
+              <Share2 color={colors.accentViolet} size={typography.lg} />
+              <Text className="flex-1 font-inter text-base text-text-primary">
+                {t('settings.inviteFriend')}
+              </Text>
+              <ChevronRight color={colors.textSecondary} size={typography.base} />
+            </TouchableOpacity>
+
+            <View className="h-px bg-border my-1" />
+
+            <TouchableOpacity
+              onPress={handleRateApp}
+              className="flex-row items-center gap-3 min-h-12"
+              accessibilityRole="button"
+              accessibilityLabel={t('settings.rateApp')}
+            >
+              <Heart color={colors.accentViolet} size={typography.lg} />
+              <Text className="flex-1 font-inter text-base text-text-primary">
+                {t('settings.rateApp')}
+              </Text>
+              <ChevronRight color={colors.textSecondary} size={typography.base} />
+            </TouchableOpacity>
           </Card>
         </AnimatedView>
 

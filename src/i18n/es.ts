@@ -213,6 +213,12 @@ const es = {
     apiKeyRemove: 'Eliminar clave',
     apiKeySave: 'Guardar clave',
     apiKeyEdit: 'Editar',
+    shareSection: 'COMPARTIR E INVITAR',
+    inviteFriend: 'Invitar a un amigo',
+    rateApp: 'Valorar AstraSk',
+    inviteFriendTitle: 'Compartir AstraSk',
+    inviteShareText:
+      'Uso AstraSk para respuestas instantáneas de astrología horaria. Pruébalo gratis:',
   },
 
   // Onboarding

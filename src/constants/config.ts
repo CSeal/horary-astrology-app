@@ -33,7 +33,26 @@ export const ASYNC_STORAGE_KEYS = {
   LOCATION_SOURCE: 'horary_location_source',
   HOME_LOCATION: 'horary_home_location',
   ZODIAC_TYPE: 'horary_zodiac_type',
+  // Growth (Phase 1.5) — review-prompt eligibility tracking
+  INSTALL_DATE: 'horary_install_date',
+  REVIEW_PROMPT_STATE: 'horary_review_prompt_state',
 } as const;
+
+// App Store / Play Store links (Phase 1.5 growth — invite + rate).
+// APP_STORE_ID is a placeholder until the app is registered in App Store Connect;
+// replace '000000000' with the real numeric ID before launch.
+export const APP_STORE_ID = '000000000';
+export const APP_STORE_URL = `https://apps.apple.com/app/id${APP_STORE_ID}`;
+// Direct "write a review" deep link — compliant for a user-tapped Rate row
+// (distinct from the event-driven StoreReview.requestReview() prompt).
+export const APP_STORE_REVIEW_URL = `${APP_STORE_URL}?action=write-review`;
+// UTM-tagged invite link for post-launch attribution analysis.
+export const APP_STORE_URL_INVITE = `${APP_STORE_URL}?utm_source=invite&utm_medium=share&utm_campaign=friend`;
+
+// Review-prompt eligibility thresholds (see reviewPromptService.ts).
+export const REVIEW_MIN_ENTRIES = 3;
+export const REVIEW_MIN_DAYS_SINCE_INSTALL = 7;
+export const REVIEW_MIN_DAYS_BETWEEN_PROMPTS = 180;
 
 // SecureStore key
 export const SECURE_STORE_KEY_API = 'horary_api_key';

@@ -209,6 +209,12 @@ const de = {
     apiKeyRemove: 'Schlüssel entfernen',
     apiKeySave: 'Schlüssel speichern',
     apiKeyEdit: 'Bearbeiten',
+    shareSection: 'TEILEN & EINLADEN',
+    inviteFriend: 'Freund einladen',
+    rateApp: 'AstraSk bewerten',
+    inviteFriendTitle: 'AstraSk teilen',
+    inviteShareText:
+      'Ich nutze AstraSk für sofortige Antworten der horären Astrologie. Probier es kostenlos:',
   },
 
   // Onboarding
