@@ -10,6 +10,8 @@
 // eslint-disable-next-line no-restricted-imports
 import '../../global.css';
 
+// eslint-disable-next-line no-restricted-imports
+import * as Sentry from '@sentry/react-native';
 import { useEffect, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -38,6 +40,15 @@ import { reviewPromptService } from '@/services/reviewPromptService';
 SplashScreen.preventAutoHideAsync().catch(() => {
   /* splash auto-hide may have already happened */
 });
+
+// Initialise Sentry as early as possible. No-op when DSN is absent (dev / CI builds).
+if (process.env.EXPO_PUBLIC_SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+    // Disable in development so errors still surface in the Metro console.
+    enabled: !__DEV__,
+  });
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {

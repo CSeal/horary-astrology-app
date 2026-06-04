@@ -35,6 +35,10 @@
     },
     "plugins": [
       "./plugins/withAutoSigning",
+      ["@sentry/react-native", {
+        "organization": "astrask",
+        "project": "astrask-horary"
+      }],
       "expo-dev-client",
       [
         "expo-router",
