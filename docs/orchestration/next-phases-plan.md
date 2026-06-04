@@ -330,17 +330,24 @@ npx expo install @sentry/react-native
 
 ### Предусловие
 - Этапы 0–4 завершены
-- `APP_STORE_ID` заменён на реальный numeric ID
+- `APP_STORE_ID` заменён на реальный numeric ID (`src/constants/config.ts`)
 - App Store Connect account готов
+- Есть demo API key, email, debug PIN, GitHub username
 
 ### Действия
-1. Запустить `/orchestrate:qa` — финальный прогон
-2. Запустить `/orchestrate:screenshots` — 30 PNG (5 × 6 локалей), нужен dev build
-3. Загрузить `docs/store-metadata.md` в App Store Connect
-4. Загрузить скриншоты
-5. Загрузить privacy policy на GitHub Pages
-6. Заполнить Apple Privacy Labels из `docs/apple-privacy-labels.md`
-7. Submit for review
+1. **`/store:finalize`** ← **ОБЯЗАТЕЛЬНО первым**
+   - Собирает email / demo API key / debug PIN / GitHub username
+   - Заполняет плейсхолдеры в `docs/privacy-policy.md`, `docs/reviewer-notes.md`, `docs/play-data-safety.md`
+   - Запускает `npm run generate:icon` + `npm run build:privacy`
+   - Добавляет entertainment disclaimer в Settings screen
+   - Предлагает коммит
+2. `git push` → GitHub Actions деплоит privacy policy на Pages
+3. Запустить `/orchestrate:qa` — финальный прогон
+4. Запустить `/orchestrate:screenshots` — 30 PNG (5 × 6 локалей), нужен dev build
+5. Загрузить store-drafts в App Store Connect (из `docs/store-drafts/`)
+6. Загрузить скриншоты
+7. Заполнить Apple Privacy Labels из `docs/apple-privacy-labels.md`
+8. Submit for review
 
 ---
 
