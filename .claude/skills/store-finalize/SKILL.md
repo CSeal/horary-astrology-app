@@ -3,7 +3,7 @@ name: store-finalize
 description: >
   Fill all store-submission placeholders, run icon/privacy scripts, add Settings
   disclaimer, then commit. Run once before the first App Store / Play Store upload.
-  Requires: App Store Connect account exists, demo API key, contact email.
+  Requires: App Store Connect account exists, contact email, debug PIN.
 version: 1.0.0
 ---
 
@@ -29,15 +29,15 @@ Verify these files exist (created by Stage 6b):
 
 If any are missing: stop and report "Run /orchestrate:store-prep first."
 
-Check `docs/reviewer-notes.md` for the string `[DEMO_API_KEY]`.
+Check `docs/privacy-policy.md` for the string `[OWNER_EMAIL]`.
 If NOT found (already replaced): warn "Looks like /store:finalize was already run.
 Placeholders appear filled. Continue anyway? (yes/no)" — stop if user says no.
 
 ---
 
-## Step 2 — Interview the owner (4 questions)
+## Step 2 — Interview the owner (3 questions)
 
-Ask all 4 in a SINGLE message using AskUserQuestion tool with 4 questions:
+Ask all 3 in a SINGLE message using AskUserQuestion tool with 3 questions:
 
 Q1 header: "Contact email"
   question: "What email should appear in the privacy policy as the contact address?"
@@ -45,15 +45,11 @@ Q1 header: "Contact email"
   — ideally use the user's email from memory if available: 19mann84@gmail.com
   — if that matches, offer it as the first option
 
-Q2 header: "Demo API key"
-  question: "Paste a demo API key for App Store reviewers (from astrology-api.io dashboard). Reviewers use this to test the app without needing their own key."
-  options: two options — "I'll paste it as Other" + "Skip for now (add manually later)"
-
-Q3 header: "Debug PIN"
-  question: "What 4-6 digit PIN should be used to unlock developer debug mode? (Shown to App Store reviewer so they can access the debug menu.)"
+Q2 header: "Debug PIN"
+  question: "What 4-6 digit PIN should reviewers use to unlock Mock Mode? (Entered after tapping the version label 20 times.)"
   options: "1234 (simple, reviewer-friendly)", "0000", "I'll enter a custom PIN as Other"
 
-Q4 header: "GitHub username"
+Q3 header: "GitHub username"
   question: "What is your GitHub username? Used to generate the Privacy Policy URL (https://<username>.github.io/<repo>/privacy-policy.html)."
   options: provide 2-3 common options or let user type via Other
 
@@ -64,7 +60,7 @@ Q4 header: "GitHub username"
 Read `package.json` → extract the `"name"` field (repo slug).
 Construct: `https://<github_username>.github.io/<repo_name>/privacy-policy.html`
 
-If Q4 was skipped: use placeholder `[GITHUB_USERNAME]` and note it in the report.
+If Q3 was skipped: use placeholder `[GITHUB_USERNAME]` and note it in the report.
 
 ---
 
@@ -75,8 +71,7 @@ Replace in files (use Edit tool):
 | Placeholder | Value | Files |
 |---|---|---|
 | `[OWNER_EMAIL]` | Q1 answer | `docs/privacy-policy.md` |
-| `[DEMO_API_KEY]` | Q2 answer | `docs/reviewer-notes.md` |
-| `[DEMO_PIN]` | Q3 answer | `docs/reviewer-notes.md` |
+| `[DEMO_PIN]` | Q2 answer | `docs/reviewer-notes.md` |
 | `[PRIVACY_POLICY_URL]` | derived in Step 3 | `docs/reviewer-notes.md`, `docs/play-data-safety.md` |
 
 If any answer was "skip": leave the placeholder as-is and add it to the
@@ -147,7 +142,7 @@ Propose commit message:
 ```
 chore(store): finalize submission artifacts — fill placeholders, add disclaimer
 
-- Fill [OWNER_EMAIL], [DEMO_API_KEY], [DEMO_PIN], [PRIVACY_POLICY_URL] in
+- Fill [OWNER_EMAIL], [DEMO_PIN], [PRIVACY_POLICY_URL] in
   docs/privacy-policy.md, docs/reviewer-notes.md, docs/play-data-safety.md
 - Add entertainment disclaimer to Settings screen (i18n: en + ru + fallbacks)
 - Run generate:icon → assets/icon.png + assets/adaptive-icon.png

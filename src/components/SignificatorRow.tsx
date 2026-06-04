@@ -27,6 +27,14 @@ const DIGNITY_BADGE_CLASS: Record<string, string> = {
   fall: 'bg-no',
 };
 
+const CONDITION_PILL_CLASS: Record<string, string> = {
+  combust: 'bg-no/15 text-no',
+  cazimi: 'bg-accent-gold/20 text-accent-gold',
+  under_beams: 'bg-bg-surface text-text-secondary',
+};
+
+const CONDITION_ORDER = ['combust', 'cazimi', 'under_beams'] as const;
+
 export function SignificatorRow({ data, index = 0 }: SignificatorRowProps) {
   const { t } = useTranslation();
   const glyph = PLANET_GLYPHS[data.planet] ?? data.planet.slice(0, 2);
@@ -34,6 +42,9 @@ export function SignificatorRow({ data, index = 0 }: SignificatorRowProps) {
   const planetName = t(`planets.${data.planet}`, { defaultValue: data.planet });
   const roleLabel = t(`significatorRoles.${data.role}`, { defaultValue: data.role });
   const showDignityBadge = data.dignity !== null && data.dignity !== 'peregrine';
+  const conditionPills = CONDITION_ORDER.filter((c) =>
+    data.accidentalConditions?.includes(c)
+  );
 
   const delay = Math.min(index * 60, 400);
   const enterY = useSharedValue(20);
@@ -69,6 +80,14 @@ export function SignificatorRow({ data, index = 0 }: SignificatorRowProps) {
           {data.retrograde && (
             <Text className="font-inter text-sm text-no ml-1">{' ℞'}</Text>
           )}
+          {conditionPills.map((condition) => (
+            <Text
+              key={condition}
+              className={`font-inter text-[9px] px-1.5 py-0.5 rounded-full ml-1 ${CONDITION_PILL_CLASS[condition]}`}
+            >
+              {t(`conditions.${condition}`)}
+            </Text>
+          ))}
         </View>
         <Text className="font-inter text-xs text-text-secondary italic">
           {roleLabel}

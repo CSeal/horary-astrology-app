@@ -28,6 +28,7 @@ export interface SignificatorData {
   house: number;
   dignity: 'domicile' | 'exaltation' | 'detriment' | 'fall' | 'peregrine' | null;
   retrograde: boolean;
+  accidentalConditions?: string[];  // full list, e.g. ['combust', 'angular', 'under_beams']
   aspect?: string | null;
 }
 
@@ -48,6 +49,8 @@ export interface ReadingTiming {
   time_unit: 'days' | 'weeks' | 'months' | 'years';
   value: number;
   explanation: string;
+  confidence?: 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
+  basedOn?: string;
 }
 
 export interface HoraryRequest {
@@ -86,6 +89,33 @@ export interface HoraryResponse {
   voc_exception_sign?: string | null; // full sign name when a Lilly exception applies
   // Phase 2b — chart wheel render data, mapped from chart_data when present.
   chart_wheel?: ChartWheelData;
+  // Phase 2c — full API coverage
+  reception?: {
+    hasMutual: boolean;
+    hasOneWay: boolean;
+    type: string | null;
+    description: string;
+  };
+  perfectionPath?: {
+    enablesPerfection: boolean;
+    preventsPerfection: boolean;
+    hasDirectAspect: boolean;
+    summary: string;
+  };
+  keyFactors?: string[];
+  radicalityFlags?: {
+    name: string;
+    severity: 'severe' | 'moderate' | 'mild';
+    message: string;
+  }[];
+  moonToQuesited?: {
+    aspectType: string;
+    planet: string;
+    degreesToPerfection: number | null;
+    isApplying: boolean;
+  };
+  interveningPathCharacter?: 'direct' | 'supported' | 'challenged' | 'mixed';
+  testimonyScore?: { positive: number; negative: number; neutral: number };
   chart_time: string;
   location_display?: string;
 }
@@ -419,7 +449,7 @@ export interface WireAIClassification {
 }
 
 // Minimal request body for POST /horary/ask — no category required (AI auto-classifies).
-// Costs 10 credits vs 1 credit for /analyze — not suitable as the default MVP endpoint.
+// Costs 10 credits vs 2 credits for /analyze — not suitable as the default MVP endpoint.
 export interface AskHoraryApiRequest {
   question: string;
   question_time: DateTimeLocation;

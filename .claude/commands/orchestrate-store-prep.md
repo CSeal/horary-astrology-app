@@ -12,7 +12,7 @@ Must run BEFORE App Store Connect submission.
 Call Agent:
 - subagent_type: "horary-store-prep-agent"
 - model: "sonnet"
-- prompt: "Run Stage 6b — produce all App Store submission documents. Today's date: [current date]. Owner must fill: demo API key in reviewer-notes.md ([DEMO_API_KEY]), contact email in privacy-policy.md ([OWNER_EMAIL]), privacy policy URL after GitHub Pages deploy ([PRIVACY_POLICY_URL])."
+- prompt: "Run Stage 6b — produce all App Store submission documents. Today's date: [current date]. Owner must fill: contact email in privacy-policy.md ([OWNER_EMAIL]), privacy policy URL after GitHub Pages deploy ([PRIVACY_POLICY_URL]). Reviewers use Mock Mode (debug PIN) — no demo API key required."
 
 Wait for completion. Read handoff-log.md — confirm Stage6b-StoreProp COMPLETE.
 
@@ -24,7 +24,6 @@ Report to owner:
    - [ ] Run `npm run build:privacy` → public/privacy-policy.html generated
    - [ ] `git push` → GitHub Actions deploys privacy policy to GitHub Pages
    - [ ] Insert privacy policy URL into docs/reviewer-notes.md ([PRIVACY_POLICY_URL])
-   - [ ] Insert demo API key into docs/reviewer-notes.md ([DEMO_API_KEY])
    - [ ] Insert contact email into docs/privacy-policy.md ([OWNER_EMAIL])
    - [ ] Review entertainment disclaimer text in docs/reviewer-notes.md
 3. "When all owner actions complete → proceed to App Store Connect + Play Console submission."

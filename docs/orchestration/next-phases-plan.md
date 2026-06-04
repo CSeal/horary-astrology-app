@@ -17,8 +17,15 @@ date: 2026-06-04
 | M-cycle (market research + growth spec + API audit + doc refresh) | `ea3b8ee` | ✅ |
 | Phase 1.5 Verdict C+ (FR-G04–G07 + two screens + Settings redesign) | `6aeae17` | ✅ |
 | Phase 1.5 Growth G02+G03 (review prompt + invite/rate) | `ecdb629` | ✅ |
+| STAGE 0 — QA re-run (P1 fixes + baseline 94 tests) | `17649a8` | ✅ |
+| STAGE 1 — Store Prep (11 submission docs) | `90cd73f` | ✅ |
+| STAGE 2 — Outcome Tracking (came_true/did_not/pending) | `e960185` | ✅ |
+| /store:finalize skill + plan translated to English | `aa503db` + `7364382` | ✅ |
+| STAGE 3 — Chart Wheel SVG (HoraryChartWheel, 12 houses + planets) | `f1e0101` | ✅ |
+| STAGE 4a — Location Fallback (GPS denied → LocationPickerSheet) | `7d5a364` | ✅ |
+| STAGE 4b — Sentry crash reporting | `0c67e9f` | ✅ |
 
-**Current baseline:** typecheck ✓ lint ✓ jest 84/84
+**Current baseline:** typecheck ✓ lint ✓ jest 94/94
 
 ### Deferred (do not do now)
 - FR-G01 Share Card — requires dev build + physical device (guide: `docs/features/share-reading-G01-deferred.md`)
@@ -43,33 +50,41 @@ Simple rule: **code complexity → model**.
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  STAGE 0: QA re-run (must be first)                 │  ~20 min
+│  STAGE 0: QA re-run (must be first)            ✅   │
 └──────────────────────┬──────────────────────────────┘
                        │
           ┌────────────┴────────────┐
           ▼                         ▼
 ┌─────────────────┐       ┌─────────────────────────┐
 │  STAGE 1:       │       │  STAGE 2:               │
-│  Stage 6b       │       │  Outcome Tracking       │  in parallel
-│  Store Prep     │       │  (Phase 2a)             │
+│  Store Prep  ✅ │       │  Outcome Tracking   ✅  │  parallel
 └────────┬────────┘       └───────────┬─────────────┘
          │                            │
          │                  ┌─────────▼──────────────┐
-         │                  │  STAGE 3:              │
-         │                  │  Chart Wheel           │  after 2
-         │                  │  (Phase 2b)            │
+         │                  │  STAGE 3:          ✅  │
+         │                  │  Chart Wheel SVG        │
          │                  └─────────┬──────────────┘
          │                            │
-         │                  ┌─────────▼──────────────┐
-         │                  │  STAGE 4:              │
-         │                  │  Manual Location +     │  after 3
-         │                  │  Sentry (small ones)   │
-         │                  └─────────┬──────────────┘
-         │                            │
-         └────────────┬───────────────┘
-                      ▼
+         │             ┌──────────────┴──────────┐
+         │             ▼                          ▼
+         │   ┌──────────────────┐    ┌────────────────────┐
+         │   │  STAGE 4a:   ✅  │    │  STAGE 4b:     ✅  │  parallel
+         │   │  Location        │    │  Sentry            │
+         │   └──────────┬───────┘    └─────────┬──────────┘
+         │              └──────────┬────────────┘
+         │                         │
+         │              ┌──────────▼──────────────────┐
+         │              │  STAGE 5:                   │
+         │              │  Full API Coverage          │  ← NEXT
+         │              │  (reception, perfection,    │
+         │              │   key factors, accidentals) │
+         │              └──────────┬──────────────────┘
+         │                         │
+         └─────────────┬───────────┘
+                       ▼
           ┌───────────────────────┐
           │  FINAL:               │
+          │  /store:finalize      │
           │  Final QA run         │
           │  + Store upload       │
           └───────────────────────┘
@@ -149,7 +164,7 @@ Prepare all text artifacts for App Store / Play Store. Upload comes later
 - [ ] App name ≤ 30 characters in all locales
 - [ ] Keywords ≤ 100 characters (comma-separated)
 - [ ] Privacy policy includes: data collection, location use, API key storage, retention
-- [ ] Reviewer notes contain demo API key or instructions on how to test without one
+- [ ] Reviewer notes contain Mock Mode instructions with [DEMO_PIN] placeholder
 - [ ] Apple 4.3(b) compliance: description of functional purpose (not fortune-telling)
 - [ ] Age rating: 4+ with justification (no violence, gambling, user-generated content)
 
@@ -325,6 +340,361 @@ npx expo install @sentry/react-native
 
 ---
 
+## STAGE 5 — Full API Coverage (Phase 2c)
+
+> 🤖 **5a — Types + Mapper: Sonnet** — type changes + mapping logic (4–5 files, no UI).
+> 🤖 **5b — UI + Integration: Sonnet** — new components + existing component updates + i18n (12–15 files).
+> Sequential: 5b depends on 5a's types.
+
+### Why
+
+API audit (2026-06-04) found 3 fully-unmapped blocks and several partially-mapped ones.
+Implementing these fields completes the horary interpretation UX — users see not just YES/NO
+but WHY (reception, key factors, perfection path) and HOW CERTAIN (timing confidence, accidental conditions).
+
+### Prerequisites
+- STAGE 4a + 4b completed (current state — ✅ already done)
+
+---
+
+### 5a — Types + Mapper (Sonnet, ~5 files)
+
+#### New fields in `HoraryResponse` (`src/types/horary.ts`)
+
+```ts
+// Reception between significators
+reception?: {
+  hasMutual: boolean;
+  hasOneWay: boolean;
+  type: string | null;       // e.g. 'mutual_domicile'
+  description: string;
+};
+// How the question perfects or fails (translation/collection/prohibition/frustration)
+perfectionPath?: {
+  enablesPerfection: boolean;
+  preventsPerfection: boolean;
+  hasDirectAspect: boolean;
+  summary: string;
+};
+// Key deciding astrological factors (3-5 items)
+keyFactors?: string[];
+// Triggered radicality flags shown to client (show_to_client=true, is_present=true)
+radicalityFlags?: Array<{
+  name: string;
+  severity: 'severe' | 'moderate' | 'mild';
+  message: string;
+}>;
+// Moon's direct aspect to the outcome significator (quesited)
+moonToQuesited?: {
+  aspectType: string;
+  planet: string;
+  degreesToPerfection: number | null;
+  isApplying: boolean;
+};
+// Intervening events path character
+interveningPathCharacter?: 'direct' | 'supported' | 'challenged' | 'mixed';
+```
+
+#### Updated fields
+
+```ts
+// SignificatorData — add full accidental conditions list
+interface SignificatorData {
+  // ...existing fields...
+  accidentalConditions?: string[];  // e.g. ['combust', 'angular', 'under_beams']
+}
+
+// ReadingTiming — add timing confidence + source
+interface ReadingTiming {
+  // ...existing fields...
+  confidence?: 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
+  basedOn?: string;  // e.g. 'Moon applying to Jupiter by trine'
+}
+```
+
+#### `JournalEntry` additions (`src/types/journal.ts`)
+
+Same new fields as `HoraryResponse` (persisted to AsyncStorage):
+- `reception?`, `perfectionPath?`, `keyFactors?`, `radicalityFlags?`
+- `moonToQuesited?`, `interveningPathCharacter?`
+
+#### `horaryMapper.ts` — new mapping functions
+
+```ts
+// raw.reception_analysis → HoraryResponse.reception
+function mapReception(r: WireReceptionAnalysis | undefined): HoraryResponse['reception']
+
+// raw.secondary_perfection → HoraryResponse.perfectionPath
+function mapPerfectionPath(s: WireSecondaryPerfection | null | undefined): HoraryResponse['perfectionPath']
+
+// raw.judgment.key_factors → string[]
+// raw.radicality.considerations (show_to_client=true, is_present=true) → radicalityFlags
+// raw.lunar_analysis.moon_to_quesited → moonToQuesited
+// raw.lunar_analysis.intervening_analysis?.path_character → interveningPathCharacter
+// raw.significators[].dignity_info.accidental_conditions → full list in SignificatorData
+// raw.timing[0].confidence + based_on → ReadingTiming
+```
+
+All added to `normalizeAnalysisResponse`.
+
+#### `useHoraryQuery.ts`
+
+Add all new fields to `buildJournalEntry`.
+
+#### Acceptance checks (5a)
+- [ ] tsc --noEmit: 0 errors
+- [ ] eslint src/: 0 errors
+- [ ] jest: all mapper tests green + new mapper tests for reception, perfectionPath, keyFactors, radicalityFlags, moonToQuesited, accidentalConditions, timing.confidence
+
+---
+
+### 5b — UI Components + Integration (Sonnet, ~14 files)
+
+#### New components
+
+**`src/components/ReceptionBlock.tsx`**
+```
+┌────────────────────────────────────────────────────┐
+│ ♄ ↔ ♃   Mutual Reception                [MUTUAL]  │
+│ Saturn in Pisces (Jupiter's domicile) ↔            │
+│ Jupiter in Capricorn (Saturn's exaltation)         │
+└────────────────────────────────────────────────────┘
+```
+- Shows `description` text from API
+- Badge: `MUTUAL` (gold) / `ONE-WAY` (violet) / hidden when both false
+- Only renders when `reception.hasMutual || reception.hasOneWay`
+
+**`src/components/PerfectionPathBlock.tsx`**
+```
+┌────────────────────────────────────────────────────┐
+│ Perfection Path              [ENABLES] / [BLOCKS]  │
+│ "Translation of light via Venus enables the        │
+│  aspect between Sun and Moon to perfect."          │
+└────────────────────────────────────────────────────┘
+```
+- Badge: `ENABLES` (yes-green) when `enablesPerfection`, `BLOCKS` (no-red) when `preventsPerfection`
+- Shows `summary` text
+- `hasDirectAspect=true` → no badge (direct aspect, no translation/collection needed)
+- Only renders when `perfectionPath` present and `summary` non-empty
+
+**`src/components/KeyFactorsBlock.tsx`**
+```
+┌────────────────────────────────────────────────────┐
+│ KEY FACTORS                                        │
+│ • Moon applying to Jupiter by trine (3.2°)         │
+│ • Sun in domicile (Leo)                            │
+│ • Saturn in 7th house — caution                   │
+└────────────────────────────────────────────────────┘
+```
+- Bullet list, each item on a new line
+- Font: `font-inter text-sm text-text-primary`
+- Only renders when `keyFactors?.length > 0`
+
+**`src/components/RadicalityFlagsBlock.tsx`**
+```
+┌────────────────────────────────────────────────────┐
+│ RADICALITY CHECKS                    [3 of 8]      │
+│ ⚠ Late Ascendant (28°)          [SEVERE]           │
+│ ⚠ Saturn in 7th house           [MODERATE]        │
+│ • Via Combusta Moon: no                            │
+└────────────────────────────────────────────────────┘
+```
+- Show only `is_present=true AND show_to_client=true` flags
+- Severity badge: severe → bg-no, moderate → bg-maybe, mild → bg-bg-surface
+- Collapsible: show 2 by default, "show all (N)" toggle if >2
+- Only renders when `radicalityFlags?.length > 0`
+
+#### Updated components
+
+**`src/components/SignificatorRow.tsx`**
+- After the retrograde `℞` marker, show small condition pills: `☿ combust`, `☿ cazimi`, `under ☀`
+- Conditions to show: `combust`, `cazimi`, `under_beams` (skip internal ones: angular/succedent/cadent — too technical)
+- Colors: `combust` → `text-no`, `cazimi` → `text-accent-gold`, `under_beams` → `text-text-secondary`
+
+**`src/components/TimingBlock.tsx`**
+- Add confidence pill below the estimate: `[HIGH CONFIDENCE]` / `[MEDIUM]` / `[LOW]`
+- Confidence color: high/very_high → yes-green, medium → maybe, low/very_low → no
+- Add `basedOn` footnote in `font-mono text-[10px] text-text-secondary` if present
+
+**`src/components/VocMoonBanner.tsx`**
+- Add `vocTreatment?: string` prop
+- When `vocTreatment === 'mitigated'`: show note "Moon VOC mitigated by applying aspect"
+- When `vocTreatment === 'full_negation'`: show note "Moon VOC — chart tends to denial"
+- When `vocTreatment === 'ignored_due_to_aspect'`: show note "Moon VOC disregarded — direct aspect perfects"
+- Style: `font-inter text-xs text-text-secondary italic` below existing tags
+
+#### Screen: `src/app/(tabs)/result/[id]/full.tsx`
+
+Add sections in this order (each conditional on data presence):
+
+```
+[existing: Timing]
+[existing: Significators]
+[NEW: Key Factors]       ← if keyFactors?.length
+[existing: Aspects]
+[NEW: Reception]         ← if reception?.hasMutual || hasOneWay
+[NEW: Perfection Path]   ← if perfectionPath?.summary
+[NEW: Radicality Flags]  ← if radicalityFlags?.length
+[existing: Chart Wheel]
+```
+
+Moon-to-quesited + interveningPathCharacter: pass as additional props to a new
+`MoonPathBlock` component (or inline in the Moon section of the Verdict screen — see below).
+
+#### Screen: `src/app/(tabs)/result/[id]/index.tsx`
+
+- Pass `vocTreatment={entry.voc_treatment}` to `<VocMoonBanner>`
+- Add `moonToQuesited` and `interveningPathCharacter` to VocMoonBanner area as mini-tags:
+  - "Moon → {planet} {aspectType} in {deg}°" when moonToQuesited present
+  - Path character badge: `DIRECT` (gold) / `SUPPORTED` (green) / `CHALLENGED` (red) / `MIXED` (maybe)
+
+#### i18n keys (`src/i18n/en.ts` + `ru.ts` + de/fr/es/pt fallback)
+
+```ts
+// Reception
+'verdict.receptionTitle': 'Reception',
+'verdict.receptionMutual': 'MUTUAL',
+'verdict.receptionOneWay': 'ONE-WAY',
+
+// Perfection path
+'verdict.perfectionTitle': 'Perfection Path',
+'verdict.perfectionEnables': 'ENABLES',
+'verdict.perfectionBlocks': 'BLOCKS',
+
+// Key factors
+'verdict.keyFactorsTitle': 'Key Factors',
+
+// Radicality flags
+'verdict.radicalityChecksTitle': 'Radicality Checks',
+'verdict.radicalityShowAll': 'show all ({{count}})',
+'verdict.radicalityShowFewer': 'show fewer',
+
+// Timing confidence
+'verdict.timingConfidence.very_high': 'Very High',
+'verdict.timingConfidence.high': 'High',
+'verdict.timingConfidence.medium': 'Medium',
+'verdict.timingConfidence.low': 'Low',
+'verdict.timingConfidence.very_low': 'Very Low',
+'verdict.timingBasedOn': 'Based on: {{text}}',
+
+// Accidental conditions
+'conditions.combust': 'combust',
+'conditions.cazimi': 'cazimi',
+'conditions.under_beams': 'under beams',
+
+// VoC treatment
+'verdict.vocTreatmentMitigated': 'VOC mitigated by applying aspect',
+'verdict.vocTreatmentNegation': 'VOC — chart leans toward denial',
+'verdict.vocTreatmentIgnored': 'VOC disregarded — direct aspect perfects',
+
+// Moon to quesited
+'verdict.moonToQuesited': '☽ → {{planet}} {{aspect}} ({{deg}}°)',
+
+// Path character
+'verdict.pathDirect': 'DIRECT',
+'verdict.pathSupported': 'SUPPORTED',
+'verdict.pathChallenged': 'CHALLENGED',
+'verdict.pathMixed': 'MIXED',
+```
+
+#### Tests
+
+- Mapper tests: `reception_analysis → reception`, `secondary_perfection → perfectionPath`,
+  `key_factors → keyFactors`, `considerations → radicalityFlags` (filter logic),
+  `moon_to_quesited → moonToQuesited`, `accidental_conditions → accidentalConditions`,
+  `timing[0].confidence → confidence`
+- Update `mockHoraryApi.ts` mock response to include all new fields with realistic values
+- Component tests: `ReceptionBlock`, `PerfectionPathBlock`, `KeyFactorsBlock`, `RadicalityFlagsBlock`
+
+#### Acceptance checks (5b)
+- [ ] ReceptionBlock renders when `hasMutual` or `hasOneWay` — hidden otherwise
+- [ ] PerfectionPathBlock renders with correct ENABLES/BLOCKS badge
+- [ ] KeyFactorsBlock renders bullet list
+- [ ] RadicalityFlagsBlock collapses to 2 items, expands on tap
+- [ ] SignificatorRow shows combust/cazimi/under_beams pill (NOT angular/succedent/cadent)
+- [ ] TimingBlock shows confidence pill + basedOn footnote when present
+- [ ] VocMoonBanner shows voc_treatment note when present
+- [ ] full.tsx shows new sections in correct order, each conditional
+- [ ] index.tsx passes vocTreatment + moonToQuesited to relevant banners
+- [ ] Old entries (missing new fields) gracefully hidden — no crashes
+- [ ] i18n: all keys in en.ts + ru.ts, other locales fallback to English
+- [ ] tsc --noEmit: 0 errors
+- [ ] eslint src/: 0 errors
+- [ ] jest: all tests green (minimum 94, new mapper + component tests added)
+- [ ] Mock data updated: mockHoraryApi returns realistic reception + perfectionPath + keyFactors
+
+---
+
+## STAGE 5c — Testimony Score Bar (Phase 2c addendum)
+> 🤖 **Model: Opus** — small but visual: bar geometry + proportional fill math.
+
+### Why
+`judgment.testimony_score { positive, negative, neutral }` is currently skipped.
+A proportional ⊕/⊖ bar gives astrologers at a glance how many testimonies voted
+for vs against the verdict. Visually informative, not just a number.
+
+### Prerequisites
+- STAGE 5b completed (✅ — types/mapper/UI already in place)
+
+### New field in `HoraryResponse` + `JournalEntry`
+
+```ts
+testimonyScore?: { positive: number; negative: number; neutral: number };
+```
+
+### Mapper (`horaryMapper.ts`)
+
+```ts
+testimonyScore: raw.judgment?.testimony_score ?? undefined,
+```
+
+### New component: `src/components/TestimonyBar.tsx`
+
+```
+⊕ 7  ████████████░░░░░░  ⊖ 3  ○ 2
+      ←— proportional bar —→
+```
+
+- Three-segment horizontal bar: positive (yes-green) / neutral (bg-surface) / negative (no-red)
+- Segment widths are proportional to their count vs total
+- Left label `⊕ N` (yes-green), right label `⊖ N` (no-red), neutral `○ N` (text-secondary) underneath
+- Only renders when `positive + negative + neutral > 0`
+- Container: `bg-bg-card rounded-xl px-4 py-3`
+- Bar height: `h-2 rounded-full overflow-hidden`
+- Title: `font-inter-semibold text-[11px] text-accent-gold uppercase tracking-[2px]`
+  using key `verdict.testimonyTitle`
+
+### Placement
+
+Add to `src/app/(tabs)/result/[id]/index.tsx` — after `ChartStrengthBar`, before VocMoon:
+
+```tsx
+{entry.testimonyScore && (
+  <TestimonyBar score={entry.testimonyScore} />
+)}
+```
+
+### i18n keys (en + ru + de/fr/es/pt fallback)
+
+```ts
+verdict.testimonyTitle: 'Testimonies'   // ru: 'Свидетельства'
+verdict.testimonyPositive: '⊕ {{n}}'
+verdict.testimonyNegative: '⊖ {{n}}'
+verdict.testimonyNeutral: '○ {{n}} neutral'  // ru: '○ {{n}} нейтральных'
+```
+
+### Tests
+- mapper: `testimony_score` → `testimonyScore` round-trip
+- component: renders correct segment proportions; hides when all-zero
+
+### Acceptance checks
+- [ ] Bar visible on verdict screen for new readings
+- [ ] Segments proportional to counts
+- [ ] Hidden gracefully when testimony_score absent (old entries)
+- [ ] tsc + lint + jest all green
+
+---
+
 ## STAGE FINAL — Final QA + Store Upload
 > 🤖 **Model: Sonnet** — runs commands + uploads artifacts. QA agent (`horary-qa-agent`) is already configured.
 
@@ -332,11 +702,11 @@ npx expo install @sentry/react-native
 - Stages 0–4 completed
 - `APP_STORE_ID` replaced with real numeric ID (`src/constants/config.ts`)
 - App Store Connect account ready
-- Demo API key, email, debug PIN, GitHub username available
+- Email, debug PIN, GitHub username available
 
 ### Actions
 1. **`/store:finalize`** ← **MUST be first**
-   - Collects email / demo API key / debug PIN / GitHub username
+   - Collects email / debug PIN / GitHub username
    - Fills placeholders in `docs/privacy-policy.md`, `docs/reviewer-notes.md`, `docs/play-data-safety.md`
    - Runs `npm run generate:icon` + `npm run build:privacy`
    - Adds entertainment disclaimer to Settings screen
@@ -354,23 +724,27 @@ npx expo install @sentry/react-native
 ## Dependencies between stages (graph)
 
 ```
-STAGE 0 (QA re-run)
-  ├──► STAGE 1 (Store Prep)     ← independent of 2/3/4, only depends on 0
-  └──► STAGE 2 (Outcome Track)  ← in parallel with 1
-         └──► STAGE 3 (Chart Wheel)
-                └──► STAGE 4a (Location)
-                └──► STAGE 4b (Sentry)
-                       └──► FINAL (requires: App Store ID + dev build for screenshots)
+STAGE 0 (QA re-run)              ✅
+  ├──► STAGE 1 (Store Prep)      ✅
+  └──► STAGE 2 (Outcome Track)   ✅
+         └──► STAGE 3 (Chart Wheel)        ✅
+                └──► STAGE 4a (Location)   ✅
+                └──► STAGE 4b (Sentry)     ✅
+                       └──► STAGE 5a (Types + Mapper)  ← NEXT
+                                └──► STAGE 5b (UI + Integration)
+                                       └──► FINAL (requires: App Store ID + dev build)
 ```
 
 ### In parallel (can run simultaneously)
 - STAGE 1 and STAGE 2 — different files, no conflicts
 - STAGE 4a and STAGE 4b — different files, no conflicts
+- STAGE 5a and STAGE 5b — **CANNOT** be parallel (5b depends on 5a's types)
 
 ### Strictly sequential
 - STAGE 0 → everything else (fresh baseline needed)
 - STAGE 2 → STAGE 3 (Outcome changes `JournalEntry` — Chart Wheel also adds a field)
-- STAGE 3 → FINAL (chart_data needed in new entries for screenshots)
+- STAGE 5a → STAGE 5b (UI needs the new types from 5a)
+- STAGE 5b → FINAL (new fields needed in new entries for screenshots)
 
 ---
 

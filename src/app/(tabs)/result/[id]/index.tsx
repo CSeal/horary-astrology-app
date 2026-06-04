@@ -27,12 +27,35 @@ import {
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { VerdictCard } from '@/components/VerdictCard';
 import { ChartStrengthBar } from '@/components/ChartStrengthBar';
+import { TestimonyBar } from '@/components/TestimonyBar';
 import { VocMoonBanner } from '@/components/VocMoonBanner';
 import { TimingTeaser } from '@/components/TimingTeaser';
 import { Banner } from '@/components/ui/Banner';
 import { Button } from '@/components/ui/Button';
 import { useJournal } from '@/hooks/useJournal';
 import { colors, typography } from '@/constants/theme';
+
+const PATH_CHARACTER_PILL_CLASS: Record<string, string> = {
+  direct: 'bg-accent-gold/20',
+  supported: 'bg-yes/20',
+  challenged: 'bg-no/20',
+  mixed: 'bg-maybe/20',
+};
+
+const PATH_CHARACTER_TEXT_CLASS: Record<string, string> = {
+  direct: 'text-accent-gold',
+  supported: 'text-yes',
+  challenged: 'text-no',
+  mixed: 'text-maybe',
+};
+
+const pathCharacterStyle = (character: string) =>
+  `rounded-full px-2 py-0.5 ${PATH_CHARACTER_PILL_CLASS[character] ?? 'bg-bg-surface'}`;
+
+const pathCharacterTextStyle = (character: string) =>
+  `font-inter-semibold text-[10px] ${PATH_CHARACTER_TEXT_CLASS[character] ?? 'text-text-secondary'}`;
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export default function ResultScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -147,6 +170,10 @@ export default function ResultScreen() {
               />
             )}
 
+            {entry.testimonyScore && (
+              <TestimonyBar score={entry.testimonyScore} />
+            )}
+
             {notRadical && (
               <Banner
                 message={entry.radicality_summary ?? t('verdict.radicalityNote')}
@@ -160,7 +187,32 @@ export default function ResultScreen() {
                 degreesToChange={entry.voc_degrees_to_sign_change}
                 nextSign={entry.voc_next_sign}
                 exceptionSign={entry.voc_exception_sign}
+                vocTreatment={entry.voc_treatment}
               />
+            )}
+
+            {entry.moonToQuesited && (
+              <View className="flex-row items-center flex-wrap gap-2 px-1">
+                <Text className="font-mono text-[11px] text-text-secondary">
+                  {t('verdict.moonToQuesited', {
+                    planet: entry.moonToQuesited.planet,
+                    aspect: entry.moonToQuesited.aspectType,
+                    deg:
+                      entry.moonToQuesited.degreesToPerfection != null
+                        ? entry.moonToQuesited.degreesToPerfection.toFixed(1)
+                        : '—',
+                  })}
+                </Text>
+                {entry.interveningPathCharacter && (
+                  <View className={pathCharacterStyle(entry.interveningPathCharacter)}>
+                    <Text
+                      className={pathCharacterTextStyle(entry.interveningPathCharacter)}
+                    >
+                      {t(`verdict.path${capitalize(entry.interveningPathCharacter)}`)}
+                    </Text>
+                  </View>
+                )}
+              </View>
             )}
 
             {entry.confidence_band === 'low' && !notRadical && (

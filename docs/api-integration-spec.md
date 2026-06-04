@@ -126,7 +126,7 @@ Confirmed minimal schema (no `category`, no `options`, no `chart_options` requir
 | `options.language` | No | Force output language; omit = auto-detect from question text |
 | `chart_options.zodiac_type` | No | `Tropic` (default) or `Sidereal` |
 
-> ⚠️ **Cost: 10 credits/call.** Much higher than `/analyze` (1 credit). Avoid as the default MVP endpoint.
+> ⚠️ **Cost: 10 credits/call.** Much higher than `/analyze` (2 credits). Avoid as the default MVP endpoint.
 
 ### Response (extends standard analysis, see §5)
 
@@ -511,7 +511,7 @@ timing[]                                     → (not in app model)          ❌
 |---|---|---|
 | 1 | ✅ Resolved | `chart_data` contains `planetary_positions[]` + `house_cusps` + `ascendant_sign`. Fully typed as `WireChartData`. |
 | 2 | ✅ Resolved | `considerations[]` items: `{name, is_present, severity, message, value}`. Always 8 items; `is_present=false` when not triggered. |
-| 3 | ✅ Updated | `/ask` = **10 credits** (confirmed from live response 2026-06-03). Earlier test showed 2 — likely plan-tier difference. `/analyze` = 1 credit. This makes `/analyze` the clear MVP primary endpoint. `/aspects`, `/chart` costs still unconfirmed. |
+| 3 | ✅ Updated | `/ask` = **10 credits** (confirmed from live response 2026-06-03). `/analyze` = **2 credits** (confirmed from pricing page; earlier live test showed 1 — likely plan-tier difference). This makes `/analyze` the clear MVP primary endpoint. `/aspects`, `/chart` costs still unconfirmed. |
 | 4 | ✅ Resolved | `/analyze` accepts all 11 categories: `pregnancy`, `fertility`, `love`, `marriage`, `career`, `job`, `money`, `health`, `missing_item`, `travel`, `general`. Confirmed from API enum 2026-06-03. `HORARY_CATEGORIES` in config.ts is correct. |
 | 5 | ✅ Resolved | All endpoints return `{success, data, metadata, warnings, pagination}` envelope. |
 
@@ -526,7 +526,7 @@ timing[]                                     → (not in app model)          ❌
 
 ### Architecture decisions pending
 
-- **`/ask` vs `/analyze` as primary endpoint** — resolved: `/analyze` (1 credit) is the MVP default. `/ask` (10 credits) reserved as a future premium option.
+- **`/ask` vs `/analyze` as primary endpoint** — resolved: `/analyze` (2 credits) is the MVP default. `/ask` (10 credits) reserved as a future premium option.
 - **`pregnancy`/`fertility` routing** — ✅ **Resolved 2026-06-03 (Compound V pre-flight):** Keep on `/analyze` for MVP. Switch to `/fertility-analysis` only when a dedicated fertility detail screen is designed. Rationale: (1) `/fertility-analysis` accepts no `category`/`subcategory` (`additionalProperties:false`) — subcategory context (`boy_or_girl`, `ivf_success`) is lost entirely; (2) response has no `judgment`/`confidence_band`/`significators[]` — structurally incompatible with `VerdictCard`/`JournalEntry`/mapper (13+ files to change); (3) `fertility_score 0-100` is a pseudo-medical vendor metric, not a traditional astrology concept — must not be shown as-is; (4) live response contract not yet verified (wire types in `horary.ts:479-492` are provisional). Upgrade prerequisites: dedicated fertility screen design, `fertility_score` display decision, `WireFertilitySignAnalysis.fertility` type fix (`semi-fruitful` → `semi_fruitful`), one live API call to verify contract. See `docs/superpowers/expert/2026-06-03-fertility-routing.md` and `docs/superpowers/library-audit/2026-06-03-fertility-analysis-endpoint.md`.
 - **Arabic Parts** — `/chart` endpoint no longer needed for Arabic Parts; `POST /data/positions/enhanced` (§13.1) returns `traditional_points` (Part of Fortune, Part of Spirit). Use that instead.
 

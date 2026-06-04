@@ -76,8 +76,8 @@ Include:
 1. App description for reviewer: "AstraSk is a horary astrology calculator that uses traditional astrological methods (William Lilly, 17th century) combined with modern AI interpretation to analyze user questions. It provides educational/entertainment content, not professional advice."
 2. Entertainment disclaimer language (to add to app Settings → About)
 3. Demo access instructions:
-   - Test API key: [DEMO_API_KEY — owner to fill in a key with limited credits]
-   - OR: how to enable mock mode for reviewer: Settings → About → tap version label 7 times → enter PIN [DEMO_PIN — owner to set]
+   - Mock Mode access: reviewers tap version label 20× → enter PIN [DEMO_PIN] → enable Mock API → test all features
+   - BYOK model: no shared demo key — users provide their own astrology-api.io key; reviewers use Mock Mode
    - Step-by-step walkthrough: how to ask a question and get a verdict
 4. Age rating justification: 4+ (no violence, no mature content, astrology as entertainment)
    - NOTE: pregnancy/fertility categories exist — justify as: educational tool for traditional astrological technique, same as "lunar calendar" apps rated 4+
@@ -235,7 +235,6 @@ owner_run_required:
   - npm run build:privacy  → public/privacy-policy.html
   - git push → GitHub Actions deploys privacy policy to GitHub Pages
   - Insert privacy policy URL into reviewer-notes.md ([PRIVACY_POLICY_URL])
-  - Insert demo API key into reviewer-notes.md ([DEMO_API_KEY])
   - Insert contact email into privacy-policy.md ([OWNER_EMAIL])
 next_stage: /orchestrate:screenshots → then App Store Connect submission
 ```

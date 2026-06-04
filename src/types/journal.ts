@@ -5,6 +5,7 @@ import type {
   SignificatorData,
   AspectPerfectionData,
   ReadingTiming,
+  HoraryResponse,
 } from '@/types/horary';
 
 // Re-exported under the documented name; structurally identical to ReadingTiming.
@@ -50,6 +51,14 @@ export interface JournalEntry {
   // Phase 2b — chart wheel render data. Optional for backward compatibility
   // with entries saved before this field existed.
   chart_wheel?: ChartWheelData;
+  // Phase 2c — full API coverage. All optional for backward compatibility.
+  reception?: HoraryResponse['reception'];
+  perfectionPath?: HoraryResponse['perfectionPath'];
+  keyFactors?: string[];
+  radicalityFlags?: HoraryResponse['radicalityFlags'];
+  moonToQuesited?: HoraryResponse['moonToQuesited'];
+  interveningPathCharacter?: HoraryResponse['interveningPathCharacter'];
+  testimonyScore?: { positive: number; negative: number; neutral: number };
   timestamp: string;
   city?: string;
   latitude?: number;

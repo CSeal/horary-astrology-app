@@ -152,6 +152,7 @@ describe('normalizeAnalysisResponse', () => {
       house: 1,
       dignity: 'domicile',
       retrograde: true,
+      accidentalConditions: ['retrograde', 'combust'],
     });
     // Unknown essential dignity → null; no retrograde condition → false.
     expect(quesited.dignity).toBeNull();
@@ -248,6 +249,8 @@ describe('normalizeAnalysisResponse', () => {
       time_unit: 'weeks',
       value: 3,
       explanation: 'Perfects in 4°.',
+      confidence: 'medium',
+      basedOn: 'perfection',
     });
   });
 
@@ -293,7 +296,313 @@ describe('normalizeAnalysisResponse', () => {
     expect(out.chart_wheel?.ascendantSign).toBe('Can');
     expect(out.chart_wheel?.houseSigns).toHaveLength(12);
   });
+
+  // ── Phase 2c — full API coverage ──
+
+  it('omits reception when no mutual/one-way reception present', () => {
+    const out = normalizeAnalysisResponse(wireResponse(), baseRequest);
+    expect(out.reception).toBeUndefined();
+    const raw = wireResponse({
+      reception_analysis: {
+        has_mutual_reception: false,
+        has_one_way_reception: false,
+        reception_type: null,
+        description: 'No reception.',
+      },
+    });
+    expect(normalizeAnalysisResponse(raw, baseRequest).reception).toBeUndefined();
+  });
+
+  it('maps reception when mutual or one-way reception is present', () => {
+    const raw = wireResponse({
+      reception_analysis: {
+        has_mutual_reception: true,
+        has_one_way_reception: false,
+        reception_type: 'mutual_domicile',
+        description: 'Mutual reception by domicile.',
+      },
+    });
+    expect(normalizeAnalysisResponse(raw, baseRequest).reception).toEqual({
+      hasMutual: true,
+      hasOneWay: false,
+      type: 'mutual_domicile',
+      description: 'Mutual reception by domicile.',
+    });
+  });
+
+  it('omits perfectionPath when secondary_perfection is null or summary empty', () => {
+    expect(
+      normalizeAnalysisResponse(wireResponse(), baseRequest).perfectionPath
+    ).toBeUndefined();
+    const raw = wireResponse({
+      secondary_perfection: {
+        translation: emptyTranslation(),
+        collection: emptyCollection(),
+        prohibition: emptyProhibition(),
+        frustration: emptyFrustration(),
+        enables_perfection: false,
+        prevents_perfection: false,
+        has_direct_aspect: false,
+        summary: '',
+      },
+    });
+    expect(
+      normalizeAnalysisResponse(raw, baseRequest).perfectionPath
+    ).toBeUndefined();
+  });
+
+  it('maps perfectionPath when secondary_perfection has a summary', () => {
+    const raw = wireResponse({
+      secondary_perfection: {
+        translation: emptyTranslation(),
+        collection: emptyCollection(),
+        prohibition: emptyProhibition(),
+        frustration: emptyFrustration(),
+        enables_perfection: true,
+        prevents_perfection: false,
+        has_direct_aspect: true,
+        summary: 'Translation of light by Mercury.',
+      },
+    });
+    expect(normalizeAnalysisResponse(raw, baseRequest).perfectionPath).toEqual({
+      enablesPerfection: true,
+      preventsPerfection: false,
+      hasDirectAspect: true,
+      summary: 'Translation of light by Mercury.',
+    });
+  });
+
+  it('maps key_factors → keyFactors and omits when empty', () => {
+    const out = normalizeAnalysisResponse(wireResponse(), baseRequest);
+    expect(out.keyFactors).toBeUndefined();
+    const raw = wireResponse({
+      judgment: {
+        answer: 'yes',
+        confidence_band: 'high',
+        reasoning: 'r',
+        key_factors: ['Applying trine', 'Strong querent'],
+      },
+    });
+    expect(normalizeAnalysisResponse(raw, baseRequest).keyFactors).toEqual([
+      'Applying trine',
+      'Strong querent',
+    ]);
+  });
+
+  it('maps radicalityFlags from the typed flags list, filtering show_to_client', () => {
+    const raw = wireResponse({
+      radicality: {
+        is_radical: true,
+        score: 70,
+        recommendation: 'proceed',
+        summary: 'OK.',
+        considerations: [
+          {
+            name: 'late_ascendant',
+            is_present: true,
+            severity: 'medium',
+            message: 'Ascendant in late degrees.',
+            value: 28,
+          },
+        ],
+        flags: [
+          {
+            type: 'late_ascendant',
+            severity: 'moderate',
+            show_to_client: true,
+            weight_applied: 1,
+          },
+          {
+            type: 'ascendant_ruler_combust',
+            severity: 'severe',
+            show_to_client: false,
+            weight_applied: 2,
+          },
+        ],
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.radicalityFlags).toEqual([
+      {
+        name: 'late_ascendant',
+        severity: 'moderate',
+        message: 'Ascendant in late degrees.',
+      },
+    ]);
+  });
+
+  it('falls back to considerations for radicalityFlags when flags are absent', () => {
+    const raw = wireResponse({
+      radicality: {
+        is_radical: true,
+        score: 65,
+        recommendation: 'proceed',
+        summary: 'OK.',
+        considerations: [
+          {
+            name: 'early_ascendant',
+            is_present: true,
+            severity: 'high',
+            message: 'Too early to judge.',
+            value: 2,
+          },
+          {
+            name: 'moon_voc',
+            is_present: false,
+            severity: 'low',
+            message: 'Moon not void.',
+            value: null,
+          },
+        ],
+      },
+    });
+    expect(normalizeAnalysisResponse(raw, baseRequest).radicalityFlags).toEqual([
+      {
+        name: 'early_ascendant',
+        severity: 'severe',
+        message: 'Too early to judge.',
+      },
+    ]);
+  });
+
+  it('omits radicalityFlags when none are present/visible', () => {
+    expect(
+      normalizeAnalysisResponse(wireResponse(), baseRequest).radicalityFlags
+    ).toBeUndefined();
+    const raw = wireResponse({
+      radicality: {
+        is_radical: true,
+        score: 80,
+        recommendation: 'proceed',
+        summary: 'OK.',
+        considerations: [
+          {
+            name: 'moon_voc',
+            is_present: false,
+            severity: 'low',
+            message: 'Not void.',
+            value: null,
+          },
+        ],
+        flags: [],
+      },
+    });
+    expect(
+      normalizeAnalysisResponse(raw, baseRequest).radicalityFlags
+    ).toBeUndefined();
+  });
+
+  it('omits moonToQuesited when absent and maps it when present', () => {
+    expect(
+      normalizeAnalysisResponse(wireResponse(), baseRequest).moonToQuesited
+    ).toBeUndefined();
+    const raw = wireResponse({
+      lunar_analysis: {
+        is_void_of_course: false,
+        moon_to_quesited: {
+          aspect_type: 'trine',
+          event_order: 1,
+          is_applying: true,
+          orb: 3,
+          planet: 'Jupiter',
+          degrees_to_perfection: 3,
+        },
+        intervening_analysis: {
+          benefic_aspects: 1,
+          challenging_aspects: 0,
+          harmonious_aspects: 1,
+          malefic_aspects: 0,
+          path_character: 'supported',
+          sign_changes: 0,
+          total_intervening: 1,
+        },
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.moonToQuesited).toEqual({
+      aspectType: 'trine',
+      planet: 'Jupiter',
+      degreesToPerfection: 3,
+      isApplying: true,
+    });
+    expect(out.interveningPathCharacter).toBe('supported');
+  });
+
+  describe('testimony_score mapping', () => {
+    it('passes testimony_score through when present', () => {
+      const score = { positive: 5, negative: 2, neutral: 1 };
+      const raw = wireResponse({
+        judgment: {
+          answer: 'yes',
+          confidence_band: 'high',
+          reasoning: 'r',
+          testimony_score: score,
+        },
+      });
+      expect(normalizeAnalysisResponse(raw, baseRequest).testimonyScore).toEqual(
+        score
+      );
+    });
+
+    it('returns undefined when testimony_score absent', () => {
+      const out = normalizeAnalysisResponse(wireResponse(), baseRequest);
+      expect(out.testimonyScore).toBeUndefined();
+    });
+  });
 });
+
+function emptyTranslation() {
+  return {
+    has_translation: false,
+    translator: null,
+    separated_from: null,
+    applying_to: null,
+    separation_aspect: null,
+    applying_aspect: null,
+    separation_orb: null,
+    degrees_to_perfection: null,
+    quality: null,
+    reason: null,
+  };
+}
+
+function emptyCollection() {
+  return {
+    has_collection: false,
+    collector: null,
+    querent_aspect: null,
+    quesited_aspect: null,
+    querent_degrees: null,
+    quesited_degrees: null,
+    quality: null,
+    reason: null,
+  };
+}
+
+function emptyProhibition() {
+  return {
+    has_prohibition: false,
+    prohibitor: null,
+    prohibits_which: null,
+    prohibition_aspect: null,
+    prohibitor_degrees: null,
+    main_aspect_degrees: null,
+    prohibitor_nature: null,
+    severity: null,
+    reason: null,
+  };
+}
+
+function emptyFrustration() {
+  return {
+    has_frustration: false,
+    frustrated_planet: null,
+    degrees_to_sign_change: null,
+    degrees_to_perfection: null,
+    frustration_type: null,
+    reason: null,
+  };
+}
 
 function chartData(overrides: Partial<WireChartData> = {}): WireChartData {
   return {

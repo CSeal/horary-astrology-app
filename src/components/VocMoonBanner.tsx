@@ -11,7 +11,14 @@ interface VocMoonBannerProps {
   degreesToChange?: number;
   nextSign?: string;
   exceptionSign?: string | null;
+  vocTreatment?: string;
 }
+
+const VOC_TREATMENT_KEY: Record<string, string> = {
+  full_negation: 'verdict.vocTreatmentNegation',
+  mitigated: 'verdict.vocTreatmentMitigated',
+  ignored_due_to_aspect: 'verdict.vocTreatmentIgnored',
+};
 
 function MiniTag({ label, value }: { label: string; value: string }) {
   return (
@@ -27,9 +34,11 @@ export function VocMoonBanner({
   degreesToChange,
   nextSign,
   exceptionSign,
+  vocTreatment,
 }: VocMoonBannerProps) {
   const { t } = useTranslation();
   const hasDetail = Boolean(sign);
+  const treatmentKey = vocTreatment ? VOC_TREATMENT_KEY[vocTreatment] : undefined;
 
   return (
     <View className="bg-maybe/10 border border-maybe/30 rounded-xl px-4 py-3">
@@ -63,6 +72,12 @@ export function VocMoonBanner({
       {exceptionSign && (
         <Text className="font-inter text-xs text-text-secondary mt-3 pt-2.5 border-t border-border leading-relaxed">
           {t('verdict.vocExceptionNote', { sign: exceptionSign })}
+        </Text>
+      )}
+
+      {treatmentKey && (
+        <Text className="font-inter text-xs text-text-secondary italic mt-2">
+          {t(treatmentKey)}
         </Text>
       )}
     </View>

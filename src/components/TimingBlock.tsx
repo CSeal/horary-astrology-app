@@ -14,6 +14,17 @@ interface TimingBlockProps {
 
 const SCALE_COLUMNS = ['days', 'weeks', 'months'] as const;
 
+const CONFIDENCE_PILL_CLASS: Record<
+  NonNullable<JournalTiming['confidence']>,
+  string
+> = {
+  very_high: 'bg-yes/15 text-yes',
+  high: 'bg-yes/15 text-yes',
+  medium: 'bg-maybe/15 text-maybe',
+  low: 'bg-no/15 text-no',
+  very_low: 'bg-no/15 text-no',
+};
+
 export function TimingBlock({ timing }: TimingBlockProps) {
   const { t } = useTranslation();
 
@@ -34,6 +45,22 @@ export function TimingBlock({ timing }: TimingBlockProps) {
       {!!timing.explanation && (
         <Text className="font-inter text-xs text-text-secondary mt-2 leading-relaxed">
           {timing.explanation}
+        </Text>
+      )}
+
+      {timing.confidence && (
+        <View className="flex-row mt-2">
+          <Text
+            className={`font-inter-semibold text-[10px] px-2 py-0.5 rounded-full ${CONFIDENCE_PILL_CLASS[timing.confidence]}`}
+          >
+            {t(`verdict.timingConfidence.${timing.confidence}`)}
+          </Text>
+        </View>
+      )}
+
+      {!!timing.basedOn && (
+        <Text className="font-mono text-[10px] text-text-secondary mt-1">
+          {t('verdict.timingBasedOn', { text: timing.basedOn })}
         </Text>
       )}
 

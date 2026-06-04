@@ -134,6 +134,8 @@ const en = {
     chartStrengthBorderline:
       'Borderline radical — the chart is fit to judge, but not strongly so.',
     chartStrengthWeak: 'The chart is weak — read the verdict with caution.',
+    testimonyTitle: 'Testimonies',
+    testimonyNeutral: '○ {{n}} neutral',
     vocMoonTitle: 'Moon is Void of Course',
     vocVoidPill: 'VOID',
     vocSignLabel: 'Sign',
@@ -156,6 +158,44 @@ const en = {
     seeFullReading: 'See the full reading',
     fullReadingHint: 'Significators · Perfections · Timing',
     askAgain: '✦ Ask again when ready',
+    receptionTitle: 'Reception',
+    receptionMutual: 'MUTUAL',
+    receptionOneWay: 'ONE-WAY',
+    perfectionTitle: 'Perfection Path',
+    perfectionEnables: 'ENABLES',
+    perfectionBlocks: 'BLOCKS',
+    keyFactorsTitle: 'Key Factors',
+    radicalityChecksTitle: 'Radicality Checks',
+    radicalityShowAll: 'show all ({{count}})',
+    radicalityShowFewer: 'show fewer',
+    radicalitySeverity: {
+      severe: 'severe',
+      moderate: 'moderate',
+      mild: 'mild',
+    },
+    timingBasedOn: 'Based on: {{text}}',
+    timingConfidence: {
+      very_high: 'Very High Confidence',
+      high: 'High Confidence',
+      medium: 'Medium Confidence',
+      low: 'Low Confidence',
+      very_low: 'Very Low Confidence',
+    },
+    vocTreatmentMitigated: 'VOC mitigated by applying aspect',
+    vocTreatmentNegation: 'VOC — chart leans toward denial',
+    vocTreatmentIgnored: 'VOC disregarded — direct aspect perfects',
+    moonToQuesited: '☽ → {{planet}} {{aspect}} ({{deg}}°)',
+    pathDirect: 'DIRECT',
+    pathSupported: 'SUPPORTED',
+    pathChallenged: 'CHALLENGED',
+    pathMixed: 'MIXED',
+  },
+
+  // Accidental conditions (significator condition pills)
+  conditions: {
+    combust: 'combust',
+    cazimi: 'cazimi',
+    under_beams: 'under ☀',
   },
 
   // Aspect type names (used in AspectRow)

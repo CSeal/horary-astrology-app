@@ -64,41 +64,24 @@ settings: {
 
 ---
 
-## Section 3: Demo Access Instructions
+## Section 3: Reviewer Access — Mock Mode
 
-Apple reviewers need a way to test the app without consuming real API credits or requiring a personal account.
+AstraSk uses a Bring Your Own Key (BYOK) model: each user provides their own astrology-api.io API key. There is no shared demo key.
 
-### Option A — Demo API Key (Recommended)
+Use the built-in Mock Mode to test all app features without any API key:
 
-Enter the following in the API Key field during review:
+1. Open the app and complete onboarding (tap "Next" twice, then allow or skip location)
+2. Go to the **Settings** tab (rightmost tab, almanac icon)
+3. Tap the version label at the bottom (e.g. "v 1.0.0") **20 times** within 4 seconds
+4. A PIN prompt appears — enter: **[DEMO_PIN]**
+5. Developer Mode unlocks
+6. Enable **"Mock API responses"** toggle
+7. Choose a verdict (YES / NO / UNCLEAR)
+8. Go to **Home** tab → ask any question → full verdict flow runs with simulated data
 
-**Test API Key:** [DEMO_API_KEY]
+All screens are accessible in Mock Mode: verdict, full reading, journal, chart wheel, outcome tracking.
 
-To enter the key:
-1. Open the app
-2. Complete the 3-step onboarding (tap "Next" twice, then "Allow Location" or "Continue without location")
-3. Go to Settings tab (rightmost tab, almanac icon)
-4. Scroll to the "API KEY" section
-5. Tap the key input field
-6. Enter the demo API key: [DEMO_API_KEY]
-7. Tap "Save Key"
-8. Return to the Home tab and ask a question
-
-The key has limited credits — sufficient for 3-5 test questions.
-
-### Option B — Mock Mode (No API Key Required)
-
-If Option A is unavailable, use the built-in Mock API mode:
-
-1. Open the app and complete onboarding
-2. Go to Settings tab
-3. Tap the version label (e.g., "Version 1.0.0") **7 times** in quick succession
-4. A PIN prompt will appear. Enter PIN: **[DEMO_PIN]**
-5. Developer Mode will unlock
-6. In Developer Mode, enable "Mock API responses" toggle
-7. Select your desired verdict type (YES / NO / MAYBE / UNCLEAR)
-8. Return to the Home tab
-9. Ask any question — the app will return an instant mock verdict with no network request
+> **Note:** The BYOK model means no account registration is required — users get their own key from astrology-api.io.
 
 ### Step-by-Step Test Walkthrough
 

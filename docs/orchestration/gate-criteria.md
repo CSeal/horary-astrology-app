@@ -137,7 +137,7 @@
 - Must-not:
   - Age rating must NOT claim app is for children under 13
 - Owner actions required after Gate 6b (blockers for actual submission):
-  - Insert real demo API key in reviewer-notes.md ([DEMO_API_KEY])
+  - Verify Mock Mode PIN is set in reviewer-notes.md ([DEMO_PIN])
   - Insert contact email in privacy-policy.md ([OWNER_EMAIL])
   - Run npm run generate:icon → verify icon visually
   - Run npm run build:privacy + git push → GitHub Pages deploy

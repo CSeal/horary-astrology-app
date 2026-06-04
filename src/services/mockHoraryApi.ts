@@ -78,6 +78,8 @@ const TIMING_BY_VERDICT: Record<VerdictType, ReadingTiming | undefined> = {
     value: 3,
     explanation:
       '[MOCK] Jupiter perfects its trine to the Sun in 4°10′. In a cardinal sign and angular house, each degree counts as days-to-weeks.',
+    confidence: 'high',
+    basedOn: '[MOCK] Moon applying to Jupiter by trine',
   },
   NO: undefined,
   MAYBE: {
@@ -85,6 +87,8 @@ const TIMING_BY_VERDICT: Record<VerdictType, ReadingTiming | undefined> = {
     value: 2,
     explanation:
       '[MOCK] The applying aspect is wide and the Moon is slow — expect the matter to unfold gradually.',
+    confidence: 'low',
+    basedOn: '[MOCK] Wide applying aspect with a slow Moon',
   },
   UNCLEAR: undefined,
 };
@@ -105,6 +109,7 @@ function buildSignificators(verdict: VerdictType): SignificatorData[] {
       house: 1,
       dignity: 'domicile',
       retrograde: false,
+      accidentalConditions: ['angular'],
       aspect: verdict === 'YES' ? 'trine' : 'square',
     },
     {
@@ -114,6 +119,7 @@ function buildSignificators(verdict: VerdictType): SignificatorData[] {
       house: 7,
       dignity: 'domicile',
       retrograde: verdict === 'NO',
+      accidentalConditions: verdict === 'NO' ? ['combust'] : ['cazimi'],
       aspect: verdict === 'YES' ? 'trine' : null,
     },
     {
@@ -127,6 +133,175 @@ function buildSignificators(verdict: VerdictType): SignificatorData[] {
     },
   ];
 }
+
+const RECEPTION_BY_VERDICT: Record<
+  VerdictType,
+  NonNullable<HoraryResponse['reception']>
+> = {
+  YES: {
+    hasMutual: true,
+    hasOneWay: false,
+    type: 'mutual_domicile',
+    description:
+      "[MOCK] Jupiter in Cancer (Moon's domicile) and Moon in Pisces (Jupiter's domicile) — mutual reception by domicile.",
+  },
+  NO: {
+    hasMutual: false,
+    hasOneWay: true,
+    type: 'one_way_exaltation',
+    description:
+      '[MOCK] Saturn receives Mars by exaltation, but Mars offers nothing in return — one-way reception.',
+  },
+  MAYBE: {
+    hasMutual: false,
+    hasOneWay: true,
+    type: 'one_way_triplicity',
+    description:
+      '[MOCK] Venus receives the Moon by triplicity — a mild, one-way reception.',
+  },
+  UNCLEAR: {
+    hasMutual: false,
+    hasOneWay: false,
+    type: null,
+    description: '[MOCK] No reception between the significators.',
+  },
+};
+
+const PERFECTION_BY_VERDICT: Record<
+  VerdictType,
+  NonNullable<HoraryResponse['perfectionPath']>
+> = {
+  YES: {
+    enablesPerfection: true,
+    preventsPerfection: false,
+    hasDirectAspect: true,
+    summary:
+      '[MOCK] Direct applying trine between Moon and Jupiter (3.2°) perfects the question.',
+  },
+  NO: {
+    enablesPerfection: false,
+    preventsPerfection: true,
+    hasDirectAspect: false,
+    summary:
+      '[MOCK] Prohibition: Saturn perfects its square before the main aspect can complete.',
+  },
+  MAYBE: {
+    enablesPerfection: true,
+    preventsPerfection: false,
+    hasDirectAspect: false,
+    summary:
+      '[MOCK] Translation of light via Venus enables the aspect to perfect, though indirectly.',
+  },
+  UNCLEAR: {
+    enablesPerfection: false,
+    preventsPerfection: false,
+    hasDirectAspect: false,
+    summary: '[MOCK] No clear path to perfection in this chart.',
+  },
+};
+
+const KEY_FACTORS_BY_VERDICT: Record<VerdictType, string[]> = {
+  YES: [
+    '[MOCK] Moon applies to Jupiter by trine (3.2°) — strong applying aspect',
+    '[MOCK] Jupiter in Cancer — exaltation, strong and dignified',
+    '[MOCK] Moon as querent significator in angular house',
+  ],
+  NO: [
+    '[MOCK] Significators separating — the matter is past its peak',
+    '[MOCK] Saturn prohibits the perfecting aspect',
+    '[MOCK] Quesited significator combust the Sun',
+  ],
+  MAYBE: [
+    '[MOCK] Perfection only via translation of light — conditional',
+    '[MOCK] Mixed testimony from the benefics and malefics',
+  ],
+  UNCLEAR: [
+    '[MOCK] Chart not radical — testimony cannot be trusted',
+  ],
+};
+
+const RADICALITY_FLAGS_BY_VERDICT: Record<
+  VerdictType,
+  NonNullable<HoraryResponse['radicalityFlags']>
+> = {
+  YES: [],
+  NO: [
+    {
+      name: 'saturn_in_7th',
+      severity: 'moderate',
+      message: '[MOCK] Saturn in 7th house — caution on the astrologer',
+    },
+  ],
+  MAYBE: [
+    {
+      name: 'late_ascendant',
+      severity: 'severe',
+      message: '[MOCK] Late Ascendant (28°) — question may be premature',
+    },
+    {
+      name: 'saturn_in_7th',
+      severity: 'moderate',
+      message: '[MOCK] Saturn in 7th house — caution on the astrologer',
+    },
+    {
+      name: 'via_combusta_moon',
+      severity: 'mild',
+      message: '[MOCK] Moon in Via Combusta — turbulent matter',
+    },
+  ],
+  UNCLEAR: [
+    {
+      name: 'moon_voc',
+      severity: 'severe',
+      message: '[MOCK] Moon void of course — nothing comes of the matter',
+    },
+  ],
+};
+
+const MOON_TO_QUESITED_BY_VERDICT: Record<
+  VerdictType,
+  NonNullable<HoraryResponse['moonToQuesited']> | undefined
+> = {
+  YES: {
+    aspectType: 'trine',
+    planet: 'Jupiter',
+    degreesToPerfection: 3.2,
+    isApplying: true,
+  },
+  NO: {
+    aspectType: 'square',
+    planet: 'Saturn',
+    degreesToPerfection: 5.4,
+    isApplying: true,
+  },
+  MAYBE: {
+    aspectType: 'sextile',
+    planet: 'Venus',
+    degreesToPerfection: null,
+    isApplying: false,
+  },
+  UNCLEAR: undefined,
+};
+
+const PATH_CHARACTER_BY_VERDICT: Record<
+  VerdictType,
+  NonNullable<HoraryResponse['interveningPathCharacter']> | undefined
+> = {
+  YES: 'supported',
+  NO: 'challenged',
+  MAYBE: 'mixed',
+  UNCLEAR: undefined,
+};
+
+const TESTIMONY_SCORE_BY_VERDICT: Record<
+  VerdictType,
+  NonNullable<HoraryResponse['testimonyScore']>
+> = {
+  YES: { positive: 7, negative: 2, neutral: 1 },
+  NO: { positive: 2, negative: 6, neutral: 2 },
+  MAYBE: { positive: 4, negative: 4, neutral: 3 },
+  UNCLEAR: { positive: 3, negative: 3, neutral: 4 },
+};
 
 export const mockHoraryApi = {
   ask(request: HoraryRequest, verdict: VerdictType): Promise<HoraryResponse> {
@@ -144,6 +319,13 @@ export const mockHoraryApi = {
           : undefined,
       radicality_score: SCORE_BY_VERDICT[verdict],
       timing: TIMING_BY_VERDICT[verdict],
+      reception: RECEPTION_BY_VERDICT[verdict],
+      perfectionPath: PERFECTION_BY_VERDICT[verdict],
+      keyFactors: KEY_FACTORS_BY_VERDICT[verdict],
+      radicalityFlags: RADICALITY_FLAGS_BY_VERDICT[verdict],
+      moonToQuesited: MOON_TO_QUESITED_BY_VERDICT[verdict],
+      interveningPathCharacter: PATH_CHARACTER_BY_VERDICT[verdict],
+      testimonyScore: TESTIMONY_SCORE_BY_VERDICT[verdict],
       ...(verdict === 'UNCLEAR'
         ? {
             voc_moon_sign: 'Cancer 26°',

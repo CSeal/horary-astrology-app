@@ -18,6 +18,10 @@ import { CosmosBackground } from '@/components/CosmosBackground';
 import { SignificatorRow } from '@/components/SignificatorRow';
 import { AspectRow } from '@/components/AspectRow';
 import { TimingBlock } from '@/components/TimingBlock';
+import { KeyFactorsBlock } from '@/components/KeyFactorsBlock';
+import { ReceptionBlock } from '@/components/ReceptionBlock';
+import { PerfectionPathBlock } from '@/components/PerfectionPathBlock';
+import { RadicalityFlagsBlock } from '@/components/RadicalityFlagsBlock';
 import { ChartWheel } from '@/components/svg/ChartWheel';
 import { Button } from '@/components/ui/Button';
 import { useJournal } from '@/hooks/useJournal';
@@ -112,6 +116,16 @@ export default function FullReadingScreen() {
             ))}
           </View>
 
+          {entry.keyFactors && entry.keyFactors.length > 0 && (
+            <>
+              <SectionHeader
+                label={t('verdict.keyFactorsTitle')}
+                count={entry.keyFactors.length}
+              />
+              <KeyFactorsBlock factors={entry.keyFactors} />
+            </>
+          )}
+
           {aspects.length > 0 && (
             <>
               <SectionHeader
@@ -147,6 +161,31 @@ export default function FullReadingScreen() {
                   />
                 </TouchableOpacity>
               )}
+            </>
+          )}
+
+          {entry.reception &&
+            (entry.reception.hasMutual || entry.reception.hasOneWay) && (
+              <>
+                <SectionHeader label={t('verdict.receptionTitle')} />
+                <ReceptionBlock reception={entry.reception} />
+              </>
+            )}
+
+          {entry.perfectionPath?.summary && (
+            <>
+              <SectionHeader label={t('verdict.perfectionTitle')} />
+              <PerfectionPathBlock perfectionPath={entry.perfectionPath} />
+            </>
+          )}
+
+          {entry.radicalityFlags && entry.radicalityFlags.length > 0 && (
+            <>
+              <SectionHeader
+                label={t('verdict.radicalityChecksTitle')}
+                count={entry.radicalityFlags.length}
+              />
+              <RadicalityFlagsBlock flags={entry.radicalityFlags} />
             </>
           )}
 
