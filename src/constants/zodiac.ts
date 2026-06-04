@@ -20,6 +20,13 @@ export const ZODIAC_SIGNS = [
 
 export type ZodiacSign = (typeof ZODIAC_SIGNS)[number];
 
+// Unicode zodiac glyphs for the chart wheel outer ring.
+export const ZODIAC_GLYPHS: Record<ZodiacSign, string> = {
+  Aries: '♈', Taurus: '♉', Gemini: '♊', Cancer: '♋',
+  Leo: '♌', Virgo: '♍', Libra: '♎', Scorpio: '♏',
+  Sagittarius: '♐', Capricorn: '♑', Aquarius: '♒', Pisces: '♓',
+};
+
 // Wire abbreviation → full English sign name.
 export const SIGN_BY_ABBREV: Record<string, ZodiacSign> = {
   Ari: 'Aries',

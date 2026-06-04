@@ -127,6 +127,7 @@ const pt = {
     // Phase 1.5 — C+ verdict layout
     backJournal: 'Crônicas',
     fullReadingTitle: 'Leitura Completa',
+    chartTitle: 'Horary Chart', // TODO i18n: translate to pt
     chartStrengthLabel: 'Força do Mapa',
     chartStrengthStrong: 'Um mapa forte — bem adequado para julgar.',
     chartStrengthBorderline: 'Radicalidade limítrofe — o mapa é adequado para julgar, mas não fortemente.',

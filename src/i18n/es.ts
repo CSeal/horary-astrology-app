@@ -127,6 +127,7 @@ const es = {
     // Phase 1.5 — C+ verdict layout
     backJournal: 'Crónicas',
     fullReadingTitle: 'Lectura Completa',
+    chartTitle: 'Horary Chart', // TODO i18n: translate to es
     chartStrengthLabel: 'Fuerza de la Carta',
     chartStrengthStrong: 'Una carta fuerte — bien dispuesta para juzgar.',
     chartStrengthBorderline: 'Radicalidad límite — la carta es apta para juzgar, pero no con fuerza.',

@@ -126,6 +126,7 @@ const de = {
     // Phase 1.5 — C+ verdict layout
     backJournal: 'Chroniken',
     fullReadingTitle: 'Vollständige Deutung',
+    chartTitle: 'Horary Chart', // TODO i18n: translate to de
     chartStrengthLabel: 'Horoskop-Stärke',
     chartStrengthStrong: 'Ein starkes Horoskop — gut geeignet zur Beurteilung.',
     chartStrengthBorderline: 'Grenzwertig radikal — das Horoskop ist zur Beurteilung geeignet, aber nicht eindeutig.',

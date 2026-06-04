@@ -38,6 +38,7 @@ function buildJournalEntry(
     voc_degrees_to_sign_change: response.voc_degrees_to_sign_change,
     voc_next_sign: response.voc_next_sign,
     voc_exception_sign: response.voc_exception_sign,
+    chart_wheel: response.chart_wheel,
     timestamp: new Date().toISOString(),
     city,
     latitude: request.latitude,

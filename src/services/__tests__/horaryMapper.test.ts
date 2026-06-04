@@ -6,10 +6,12 @@
 import {
   buildAnalysisRequest,
   normalizeAnalysisResponse,
+  mapChartWheel,
 } from '@/services/horaryMapper';
 import type {
   HoraryRequest,
   HoraryAnalysisResponse,
+  WireChartData,
 } from '@/types/horary';
 
 const baseRequest: HoraryRequest = {
@@ -276,5 +278,87 @@ describe('normalizeAnalysisResponse', () => {
     const out = normalizeAnalysisResponse(wireResponse(), baseRequest);
     expect(out.voc_moon_sign).toBeUndefined();
     expect(out.voc_next_sign).toBeUndefined();
+  });
+
+  // ── Phase 2b — chart wheel ──
+
+  it('omits chart_wheel when chart_data is absent', () => {
+    const out = normalizeAnalysisResponse(wireResponse(), baseRequest);
+    expect(out.chart_wheel).toBeUndefined();
+  });
+
+  it('maps chart_data → chart_wheel when present', () => {
+    const raw = wireResponse({ chart_data: chartData() });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.chart_wheel?.ascendantSign).toBe('Can');
+    expect(out.chart_wheel?.houseSigns).toHaveLength(12);
+  });
+});
+
+function chartData(overrides: Partial<WireChartData> = {}): WireChartData {
+  return {
+    subject_data: { name: '', year: 2026, month: 5, day: 28, hour: 9, minute: 30 },
+    house_system: 'R',
+    ascendant_sign: 'Can',
+    planetary_positions: [
+      {
+        name: 'Sun',
+        sign: 'Gem',
+        degree: 7.2,
+        absolute_longitude: 67.2,
+        house: 12,
+        is_retrograde: false,
+      },
+      {
+        name: 'Mercury',
+        sign: 'Gem',
+        degree: 15,
+        absolute_longitude: 75,
+        house: 12,
+        is_retrograde: true,
+      },
+    ],
+    // Intentionally out of key order to verify numeric sorting.
+    house_cusps: {
+      '2': 'Leo',
+      '1': 'Can',
+      '3': 'Vir',
+      '4': 'Lib',
+      '5': 'Sco',
+      '6': 'Sag',
+      '7': 'Cap',
+      '8': 'Aqu',
+      '9': 'Pis',
+      '10': 'Ari',
+      '11': 'Tau',
+      '12': 'Gem',
+    },
+    ...overrides,
+  };
+}
+
+describe('mapChartWheel', () => {
+  it('produces the ascendant sign', () => {
+    expect(mapChartWheel(chartData()).ascendantSign).toBe('Can');
+  });
+
+  it('produces 12 house signs in numeric house order', () => {
+    const out = mapChartWheel(chartData());
+    expect(out.houseSigns).toEqual([
+      'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag',
+      'Cap', 'Aqu', 'Pis', 'Ari', 'Tau', 'Gem',
+    ]);
+  });
+
+  it('maps planet longitude, retrograde flag and house', () => {
+    const [sun, mercury] = mapChartWheel(chartData()).planets;
+    expect(sun).toEqual({
+      name: 'Sun',
+      absoluteLongitude: 67.2,
+      isRetrograde: false,
+      house: 12,
+    });
+    expect(mercury.isRetrograde).toBe(true);
+    expect(mercury.absoluteLongitude).toBe(75);
   });
 });

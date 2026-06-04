@@ -13,6 +13,7 @@
 //   /horary/glossary/categories, /horary/glossary/considerations
 
 import type { HoraryCategory, SubjectRole, ZodiacType } from '@/constants/config';
+import type { ChartWheelData } from '@/types/journal';
 
 export type { HoraryCategory, SubjectRole, ZodiacType };
 export type VerdictType = 'YES' | 'NO' | 'MAYBE' | 'UNCLEAR';
@@ -83,6 +84,8 @@ export interface HoraryResponse {
   voc_degrees_to_sign_change?: number;
   voc_next_sign?: string;            // full sign name, e.g. "Gemini"
   voc_exception_sign?: string | null; // full sign name when a Lilly exception applies
+  // Phase 2b — chart wheel render data, mapped from chart_data when present.
+  chart_wheel?: ChartWheelData;
   chart_time: string;
   location_display?: string;
 }

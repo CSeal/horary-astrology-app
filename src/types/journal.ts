@@ -10,6 +10,20 @@ import type {
 // Re-exported under the documented name; structurally identical to ReadingTiming.
 export type JournalTiming = ReadingTiming;
 
+// Phase 2b — chart wheel data. Drives the SVG horary chart wheel render.
+export interface ChartPlanet {
+  name: string;
+  absoluteLongitude: number;
+  isRetrograde: boolean;
+  house: number;
+}
+
+export interface ChartWheelData {
+  ascendantSign: string;         // 3-letter abbrev e.g. 'Can'
+  houseSigns: string[];          // 12 elements, houseSigns[0] = house 1 sign (3-letter)
+  planets: ChartPlanet[];
+}
+
 export interface JournalEntry {
   id: string;
   question: string;
@@ -33,6 +47,9 @@ export interface JournalEntry {
   // Phase 2a — outcome tracking. Optional for backward compatibility with
   // entries saved before this field existed.
   outcome?: 'came_true' | 'did_not_happen' | 'pending' | null;
+  // Phase 2b — chart wheel render data. Optional for backward compatibility
+  // with entries saved before this field existed.
+  chart_wheel?: ChartWheelData;
   timestamp: string;
   city?: string;
   latitude?: number;

@@ -126,6 +126,7 @@ const en = {
     // Phase 1.5 — C+ verdict layout
     backJournal: 'Journal',
     fullReadingTitle: 'Full Reading',
+    chartTitle: 'Horary Chart',
     chartStrengthLabel: 'Chart Strength',
     chartStrengthStrong: 'A strong chart — well-fit to judge.',
     chartStrengthBorderline:

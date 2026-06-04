@@ -5,16 +5,25 @@
 
 import Svg, { Circle, Line, Text as SvgText } from 'react-native-svg';
 import { colors } from '@/constants/theme';
+import { HoraryChartWheel } from '@/components/svg/HoraryChartWheel';
+import type { ChartWheelData } from '@/types/journal';
 
 interface ChartWheelProps {
   size?: number;
   label?: string;
+  // When present, renders the real horary chart wheel; otherwise the placeholder.
+  data?: ChartWheelData;
 }
 
 export function ChartWheel({
   size = 200,
   label = 'Chart wheel — Phase 2',
+  data,
 }: ChartWheelProps) {
+  if (data) {
+    return <HoraryChartWheel data={data} size={size} />;
+  }
+
   const center = size / 2;
   const outerR = size * 0.48;
   const innerR = size * 0.32;

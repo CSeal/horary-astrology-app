@@ -118,6 +118,7 @@ const ru = {
     // Phase 1.5 — C+ verdict layout
     backJournal: 'Хроники',
     fullReadingTitle: 'Полный разбор',
+    chartTitle: 'Хорарная Карта',
     chartStrengthLabel: 'Сила карты',
     chartStrengthStrong: 'Сильная карта — подходит для суждения.',
     chartStrengthBorderline: 'Пограничная радикальность — карта пригодна для суждения, но не вполне уверенно.',

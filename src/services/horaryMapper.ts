@@ -18,7 +18,9 @@ import type {
   WireAspectPerfection,
   WireLunarSequence,
   WireTiming,
+  WireChartData,
 } from '@/types/horary';
+import type { ChartWheelData } from '@/types/journal';
 import { expandSign, nextSign } from '@/constants/zodiac';
 
 // Wire judgment.answer → app verdict.
@@ -132,6 +134,24 @@ function mapVocDetail(
   };
 }
 
+// chart_data → ChartWheelData for the SVG chart wheel. house_cusps is a
+// string-keyed map ("1".."12"); sorting numerically yields the 12 signs in
+// house order.
+export function mapChartWheel(raw: WireChartData): ChartWheelData {
+  return {
+    ascendantSign: raw.ascendant_sign,
+    houseSigns: Object.keys(raw.house_cusps)
+      .sort((a, b) => +a - +b)
+      .map((k) => raw.house_cusps[k]),
+    planets: raw.planetary_positions.map((p) => ({
+      name: p.name,
+      absoluteLongitude: p.absolute_longitude,
+      isRetrograde: p.is_retrograde,
+      house: p.house,
+    })),
+  };
+}
+
 // Client-side id: the wire response carries no stable id, but the journal keys
 // entries by it. Time + randomness is collision-safe for a single device.
 function generateId(): string {
@@ -199,6 +219,7 @@ export function normalizeAnalysisResponse(
     radicality_score: raw.radicality?.score,
     timing: mapTiming(raw.timing),
     ...mapVocDetail(raw.lunar_analysis),
+    chart_wheel: raw.chart_data ? mapChartWheel(raw.chart_data) : undefined,
     chart_time: request.timestamp,
     location_display: locationDisplay,
   };

@@ -126,6 +126,7 @@ const fr = {
     // Phase 1.5 — C+ verdict layout
     backJournal: 'Chroniques',
     fullReadingTitle: 'Lecture complète',
+    chartTitle: 'Horary Chart', // TODO i18n: translate to fr
     chartStrengthLabel: 'Force du thème',
     chartStrengthStrong: 'Un thème solide — bien apte à être jugé.',
     chartStrengthBorderline: 'Radicalité limite — le thème est apte à être jugé, mais sans grande force.',

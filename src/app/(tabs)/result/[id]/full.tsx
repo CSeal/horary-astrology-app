@@ -18,6 +18,7 @@ import { CosmosBackground } from '@/components/CosmosBackground';
 import { SignificatorRow } from '@/components/SignificatorRow';
 import { AspectRow } from '@/components/AspectRow';
 import { TimingBlock } from '@/components/TimingBlock';
+import { ChartWheel } from '@/components/svg/ChartWheel';
 import { Button } from '@/components/ui/Button';
 import { useJournal } from '@/hooks/useJournal';
 import { colors, typography } from '@/constants/theme';
@@ -146,6 +147,15 @@ export default function FullReadingScreen() {
                   />
                 </TouchableOpacity>
               )}
+            </>
+          )}
+
+          {entry.chart_wheel && (
+            <>
+              <SectionHeader label={t('verdict.chartTitle')} />
+              <View className="items-center py-2">
+                <ChartWheel data={entry.chart_wheel} size={300} />
+              </View>
             </>
           )}
         </ScrollView>
