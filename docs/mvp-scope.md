@@ -98,6 +98,26 @@ This document defines what is built in each phase. Phase 1 (this build) is the M
 
 ---
 
+---
+
+## Phase 1.5 — Growth Features
+
+**Theme**: Pre-launch growth mechanics, API field completeness, and viral sharing.
+**Trigger**: Ships after Phase 1 QA passes and before App Store submission.
+**Monetization note**: IAP, RevenueCat, and subscriptions remain Phase 2. Phase 1.5 contains zero payment infrastructure.
+
+| FR | Feature | Effort | Why Phase 1.5 |
+|---|---|---|---|
+| FR-G01 | Share verdict as image card (Instagram Stories + native share sheet) | M | Primary viral mechanic — each share exposes the app to new users with a branded card. Peak emotional moment on the result screen = highest share probability. |
+| FR-G02 | 5-star review prompt (expo-store-review, event-driven) | S | App Store rating directly affects organic search rank and install conversion. Getting to 4.5+ stars amplifies all ASO effort. |
+| FR-G03 | Invite a Friend row in Settings (native Share.share + UTM link) | S | Zero-friction growth: no backend, no new deps. UTM tagging gives attribution data post-launch. |
+| FR-G04 | Aspect perfections inline display (top-3 applying aspects + "Show all") | S | Bug fix: `aspect_perfections[]` is already in the API response but never mapped or displayed. High practitioner value. |
+| FR-G05 | Timing indication section (timing[] from API response) | M | High user value: "when?" is the second most common question after "will it happen?". API already computes timing on every call — it is not being surfaced. |
+| FR-G06 | Radicality score bar ("Chart Strength" 0–100, replaces boolean badge) | S | UX improvement: a numeric bar communicates chart quality more clearly than a boolean "Radical/Not Radical" label. |
+| FR-G07 | Moon analysis details (moon sign, degrees to sign change, VOC exception) | S | Practitioner parity: lunar data is returned by the API but never rendered beyond the basic VOC flag. |
+
+---
+
 ## Phase 2 — Post-Store Launch
 
 **Theme**: Monetization, chart depth, and sharing.
@@ -106,14 +126,9 @@ This document defines what is built in each phase. Phase 1 (this build) is the M
 
 ---
 
-### IAP / Subscription (RevenueCat)
+### IAP / Subscription
 
-- Library: `react-native-purchases` (RevenueCat SDK)
-- Products: `horary_unlimited_monthly` ($4.99/month)
-- Platforms: App Store (StoreKit 2), Google Play Billing v5
-- Features: Paywall screen at 5/5 question limit, subscribe CTA, restore purchases flow
-- Estimated implementation: 2 sprints (2 weeks)
-- Gate: IAP submission requires separate App Store review pass
+→ Full spec in `docs/monetization-spec.md`. Run `/orchestrate:monetization` when Phase 2 KPI gates are met.
 
 ### Chart Wheel Visualization
 

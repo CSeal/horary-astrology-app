@@ -1,6 +1,6 @@
 ---
 created_by: claude-sonnet
-updated_by: claude-sonnet
+updated_by: claude-sonnet-4-6
 source_inputs: [CLAUDE.md, gate-criteria.md]
 reviewed_by: owner-pending
 ---
@@ -132,7 +132,7 @@ blockers: []
 status: COMPLETE
 artifacts: [src/components/svg/StarField.tsx, src/components/svg/PlanetOrbit.tsx, src/components/svg/PlanetGlyph.tsx, src/components/svg/VerdictStar.tsx, src/components/svg/ChartWheel.tsx, src/components/CosmosBackground.tsx, src/app/(tabs)/settings.tsx, src/app/onboarding.tsx, src/components/ui/ErrorBanner.tsx, src/components/ui/EmptyState.tsx, src/components/ui/SkeletonItem.tsx, src/app/_layout.tsx, src/i18n/en.ts, src/i18n/ru.ts]
 key_decisions:
-  starfield: "60 SVG Circle elements (react-native-svg) animated via Reanimated useSharedValue + withRepeat(withTiming(opacity, 2-5s), -1, true) — UI thread only, no per-frame re-renders. Particle layout is deterministic via seeded LCG so positions stay stable across re-renders. Fill color = colors.textPrimary from theme.ts."
+  starfield: "60 SVG Circle elements (react-native-svg) animated via Reanimated useSharedValue + withRepeat(withTiming(opacity, 2-5s), -1, true) — UI thread only, no per-render re-renders. Particle layout is deterministic via seeded LCG so positions stay stable across re-renders. Fill color = colors.textPrimary from theme.ts."
   cosmos_background: "Now renders StarField sized to useWindowDimensions() inside an absolute layer with bg-bg-surface/20 overlay for subtle vignette. CosmosBackground accepts children for compositing."
   planet_orbit: "Single shared rotation value drives a transform string on Animated G; corePulse drives the central radius via animatedProps on Circle. 3s revolution + 1.5s pulse, both Reanimated withRepeat."
   planet_glyph: "Rewritten as SVG Text element (was RN Text). Accepts PlanetKey enum ('sun'|'moon'|...) mapped onto PLANET_GLYPHS keys; color prop defaults to colors.textPrimary."
@@ -183,4 +183,47 @@ p1_issues:
   - docs/features/testing.md baseline stale (documents 9/54, actual is 10/71)
 artifacts: [docs/qa-summary.md, docs/demo-readiness.md]
 test_result: "10 suites / 71 tests PASS (baseline was 9/54 — suite grew, no regression)"
+blockers: []
+
+## StageM1-MarketResearch — 2026-06-04
+status: COMPLETE
+gateM1: PASS
+artifacts: [docs/competitor-research.md, docs/aso-brief.md]
+reviews_mined: 60+
+keywords_identified: 50
+key_findings:
+  - Horary Chart (iOS) price increased $15.99 → $23.99, rating dropped to 3.8 — market opportunity widening
+  - Lunaton added tarot/runes in 2026 — diluting its horary positioning, leaving pure-horary niche open
+  - New competitor: Horary Astrology Pro (Android) — most feature-complete Android horary app; lacks AI interpretation, Russian, premium UI
+  - Top competitor pain points confirmed: complexity, no explanation, slow answers, expensive, no Russian
+  - 7 AstraSk differentiators identified and documented (AI interpretation, instant answer, Russian, free tier, beginner UX, journal, premium UI)
+  - 50 keywords ranked across 5 groups: English horary, technique, use-case, broad, Russian
+  - 5 app name candidates generated; Candidate A recommended ("AstraSk: Horary Chart" / "Ask. Get an Instant Answer.")
+  - Apple 4.3(b) compliance requirements documented and addressed in all ASO copy
+next_stage: StageM2-GrowthSpec || StageM3-APIAudit
+blockers: []
+
+## StageM2-GrowthSpec — 2026-06-04
+status: COMPLETE
+gateM2: PASS
+artifacts: [docs/viral-features-spec.md, docs/growth-features-spec.md]
+next_stage: StageM4-DocRefresh (after StageM3 also COMPLETE)
+blockers: []
+
+## StageM3-APIAudit — 2026-06-04
+status: COMPLETE
+gateM3: PASS
+artifacts: [docs/api-gap-spec.md]
+gaps_identified: 10
+gaps_specced_phase15: 8
+next_stage: StageM4-DocRefresh (after StageM2 also COMPLETE)
+blockers: []
+
+## StageM4-DocRefresh — 2026-06-04
+status: COMPLETE
+gateM4: PASS
+artifacts: [docs/prd-v1.md, docs/mvp-scope.md, docs/design-prompts/prototype-update-v2.md, docs/INDEX.md]
+prd_frs_added: FR-G01 through FR-G07
+prototype_brief: docs/design-prompts/prototype-update-v2.md
+next_stage: /orchestrate:design (prototype update) OR /orchestrate:implement-growth (feature implementation)
 blockers: []

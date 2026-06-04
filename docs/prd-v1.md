@@ -321,8 +321,8 @@ The following features are explicitly deferred to Phase 2 or later. No code, stu
 
 | Feature | Phase | Notes |
 |---|---|---|
-| IAP / Subscription paywall | Phase 2 | RevenueCat + react-native-purchases. Only placeholder "coming soon" banner in MVP. |
-| Restore Purchases | Phase 2 | Dependent on IAP implementation. |
+| IAP / Subscription paywall | Phase 2 | → see `docs/monetization-spec.md` |
+| Restore Purchases | Phase 2 | → see `docs/monetization-spec.md` |
 | Chart wheel visualization | Phase 2 | SVG planetary wheel showing full horary chart. |
 | Aspects table (detailed technical breakdown) | Phase 2 | Table of all aspects, dignities, and house positions. |
 | Share result (image card export) | Phase 2 | Social sharing of verdict as image. Share button is shown as placeholder on Verdict Screen but non-functional (or hidden). |
@@ -400,6 +400,98 @@ The following features are explicitly deferred to Phase 2 or later. No code, stu
 
 ---
 
-*Document version: 1.0*
+---
+
+## Phase 1.5 — Growth Features
+
+**Source**: StageM2-GrowthSpec (viral-features-spec.md, growth-features-spec.md) + StageM3-APIAudit (api-gap-spec.md)
+**Theme**: Pre-launch growth mechanics + API field completeness. Ships before App Store launch, after MVP QA passes.
+
+---
+
+### FR-G01: Share Verdict as Image Card
+
+**Story**: As a user who got a meaningful answer, I want to share my verdict on Instagram Stories.
+
+**Acceptance Criteria**:
+- [ ] Tapping "Share" on the result screen captures the verdict card as an image
+- [ ] Instagram Stories intent opens if the Instagram app is installed
+- [ ] Falls back to the native share sheet otherwise
+- [ ] Share card contains: verdict type, question excerpt (40 chars max), app name
+
+---
+
+### FR-G02: 5-Star Review Prompt
+
+**Story**: As a user who has used the app 3+ times, I want to be invited to rate it.
+
+**Acceptance Criteria**:
+- [ ] Prompt appears after 3rd reading AND 7+ days since install AND 180+ days since last prompt
+- [ ] Uses `expo-store-review` (OS-native dialog, no custom UI)
+- [ ] AsyncStorage tracks prompt state (`install_date`, `review_prompt_state`)
+- [ ] Does NOT fire on error readings or limit-reached readings
+- [ ] Does NOT fire after NO or UNCLEAR verdicts
+
+---
+
+### FR-G03: Invite a Friend
+
+**Story**: As a happy user, I want to share the app with friends.
+
+**Acceptance Criteria**:
+- [ ] "Invite a Friend" button present in the Settings screen under a "Share & Invite" section
+- [ ] Opens native share sheet with pre-composed text and UTM-tagged App Store link
+- [ ] No referral backend required at Phase 1.5
+
+---
+
+### FR-G04: Aspect Perfections Inline Display
+
+**Story**: As a user viewing my verdict, I want to see the key applying aspects.
+
+**Acceptance Criteria**:
+- [ ] Top-3 applying aspects shown below significators on the result screen
+- [ ] Each row shows: planet1, aspect type, planet2, orb, applying/separating badge
+- [ ] "Show all" expand control appears when more than 3 aspects are present
+
+---
+
+### FR-G05: Timing Indication
+
+**Story**: As a user wondering "when?", I want to see timing hints in my reading.
+
+**Acceptance Criteria**:
+- [ ] Timing section appears when the `timing[]` array is non-null in the API response
+- [ ] Each timing item shows: value + unit, explanation, confidence chip
+- [ ] API call includes `include_timing: true` parameter (already sent per horaryMapper.ts)
+
+---
+
+### FR-G06: Radicality Score
+
+**Story**: As a user, I want to know how reliable my chart reading is.
+
+**Acceptance Criteria**:
+- [ ] `radicality_score` (0–100) shown as a "Chart Strength" mini progress bar on the verdict screen
+- [ ] Replaces or supplements the boolean "Radical" badge
+- [ ] Score color: gold ≥ 70, amber 50–69, red < 50
+- [ ] Score extracted from `radicality.score` API response field
+
+---
+
+### FR-G07: Moon Analysis Details
+
+**Story**: As a practitioner, I want to see full moon data in my reading.
+
+**Acceptance Criteria**:
+- [ ] Moon sign and degrees to sign change shown below the void-of-course note when `lunar_rich` data is present
+- [ ] VOC exception sign displayed when mitigated (e.g., "mitigated in Taurus")
+- [ ] Only shown when non-null `lunar_rich` data is present in the API response
+
+---
+
+*Document version: 1.1*
+*Updated by: StageM4-DocRefresh (2026-06-04)*
+*Phase 1.5 source: StageM2-GrowthSpec + StageM3-APIAudit*
 *Stage: Stage2-PRD*
 *Gate linkage: Gate 3 (PRD Approval)*

@@ -67,3 +67,41 @@ Critical caveat (Skyscript): **"Always form your judgement upon the majority of 
 - [Anthony Louis: Will the baby be a boy or a girl?](https://tonylouis.wordpress.com/2018/03/31/will-the-baby-be-a-boy-or-a-girl/)
 - [Apple Dev Forum 737999 — astrology app rejection (4.3 Spam)](https://developer.apple.com/forums/thread/737999) — fetched 2026-06-03
 - [Apple App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)
+
+---
+
+## Updated 2026-06-04 — ASO + Virality
+
+### App Store 4.3(b) rejection risk — reusable decision matrix
+
+| App type | 4.3(b) risk level | Mitigation |
+|---|---|---|
+| Generic horoscope / daily forecast | High — saturated category | Must show unique feature set |
+| Tarot / oracle card reader | High — explicit in 4.3(b) text | Needs unique UI + genuine content depth |
+| **Traditional horary astrology** | **Medium — niche technique** | **Differentiate: named classical method (Lilly/CA), question-specific chart, medieval significator logic** |
+| Natal chart calculator only | Medium | Common but established utility |
+| Astrology education (technique reference) | Lower | "Education" category lowers scrutiny |
+
+Key constraint: 4.3(b) is enforced at App Review time AND can be used for removal post-approval. The "unique, high-quality experience" standard is a living judgment call, not a one-time gate.
+
+Source: [Apple Review Guidelines 4.3](https://developer.apple.com/app-store/review/guidelines/), [Apple Dev Forum 737999](https://developer.apple.com/forums/thread/737999), [iMore rejection report](https://www.imore.com/apple-rejects-developers-horoscope-app-says-app-store-has-enough)
+
+### ASO metadata limits (canonical)
+
+| Field | iOS App Store | Google Play |
+|---|---|---|
+| Title | 30 chars | 30 chars |
+| Subtitle / Short description | 30 chars | 80 chars |
+| Keyword field | 100 chars (hidden, comma-no-space) | N/A (algorithm infers from description) |
+| Long description | Not indexed for keywords | Indexed |
+| Each locale | Independent 30+30+100 allocation | Independent allocation |
+
+Rule: words in title/subtitle do NOT need to be repeated in the keyword field — Apple double-indexes them.
+
+Source: [Apple Review Guidelines 2.3.7](https://developer.apple.com/app-store/review/guidelines/), [ASOMobile keyword guide](https://asomobile.net/en/blog/lesson-3-text-optimization-for-the-app-store/), [Appalize iOS keyword field rules](https://www.appalize.com/blog/keyword-research/ios-keyword-field-rules-character-limits-optimization/)
+
+### Review prompt throttle — SKStoreReviewController
+
+Hard system limit: 3 prompts per app per device per 365-day rolling window. Silent swallow after limit reached. No API to check remaining count. Must track client-side.
+
+Source: [ASO Maniac review popup guide](https://asomaniac.com/blog/app-store-review-popup), [Apple Dev Forum 115193](https://developer.apple.com/forums/thread/115193)

@@ -132,6 +132,7 @@ _Maintained by `doc-writer` agent. Add new feature docs via `/doc:feature <name>
 | [growth-features-spec.md](growth-features-spec.md) | Prioritized growth feature list with effort/impact | Created by StageM2 |
 | [api-gap-spec.md](api-gap-spec.md) | API field gap table and mapper patch specs | Created by StageM3 |
 | [design-prompts/prototype-update-v2.md](design-prompts/prototype-update-v2.md) | Design prompt for horary-design-agent to update prototype | Created by StageM4 |
+| [monetization-spec.md](monetization-spec.md) | Phase 2 IAP / subscription spec — RevenueCat, paywall UX, push notifications | Run /orchestrate:monetization |
 
 ## App Store Submission
 
