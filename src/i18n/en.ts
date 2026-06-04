@@ -25,6 +25,8 @@ const en = {
     changeLocation: 'Change',
     questionLimitBanner: "You've reached your monthly question limit. Unlimited access is coming soon.",
     charCount: '{{count}} / {{max}}',
+    locationDeniedPickCity: 'Location access denied — pick a city to continue',
+    chooseCity: 'Choose city',
   },
 
   // Subcategories per category

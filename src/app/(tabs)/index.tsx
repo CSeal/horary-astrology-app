@@ -4,7 +4,6 @@
 // Header + form rise in gently on mount.
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react-native';
 import {
@@ -14,7 +13,7 @@ import {
   withTiming,
   withDelay,
 } from 'react-native-reanimated';
-import { AnimatedView, SafeAreaView, ScrollView, View, Text } from '@/tw';
+import { AnimatedView, SafeAreaView, ScrollView, View, Text, Pressable } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { AskForm } from '@/components/AskForm';
 import { Banner } from '@/components/ui/Banner';
@@ -101,12 +100,6 @@ export default function HomeScreen() {
       : defaultSource === 'home'
         ? t('home.locationDefault')
         : undefined;
-
-  const openSettings = useCallback(() => {
-    Linking.openSettings().catch(() => {
-      /* fail silently */
-    });
-  }, []);
 
   const handleSubmit = useCallback(() => {
     // Coords come from the override or the resolved default (GPS / home city).
@@ -200,14 +193,19 @@ export default function HomeScreen() {
           )}
 
           {locationMissing && (
-            <View>
-              <Banner
-                message={t('errors.locationDenied')}
-                type="warning"
-                onDismiss={openSettings}
-                dismissLabel={t('a11y.settingsIcon')}
-              />
-            </View>
+            <Pressable
+              onPress={handleOpenPicker}
+              className="flex-row items-center justify-between bg-bg-surface rounded-xl px-4 py-3 border border-border"
+              accessibilityRole="button"
+              accessibilityLabel={t('home.chooseCity')}
+            >
+              <Text className="font-inter text-sm text-text-secondary">
+                {t('home.locationDeniedPickCity')}
+              </Text>
+              <Text className="font-inter-medium text-sm text-accent-gold">
+                {t('home.chooseCity')}
+              </Text>
+            </Pressable>
           )}
 
           {isLimitExceeded && !dismissedLimit && (

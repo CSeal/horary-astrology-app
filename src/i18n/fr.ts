@@ -25,6 +25,8 @@ const fr = {
     changeLocation: 'Modifier',
     questionLimitBanner: 'Vous avez atteint votre limite mensuelle de questions. Un accès illimité arrive bientôt.',
     charCount: '{{count}} / {{max}}',
+    locationDeniedPickCity: 'Location access denied — pick a city to continue', // TODO i18n: translate to fr
+    chooseCity: 'Choose city', // TODO i18n: translate to fr
   },
 
   // Subcategories per category

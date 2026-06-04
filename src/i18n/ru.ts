@@ -22,6 +22,8 @@ const ru = {
     changeLocation: 'Изменить',
     questionLimitBanner: 'Вы достигли месячного лимита вопросов. Безлимитный доступ скоро появится.',
     charCount: '{{count}} / {{max}}',
+    locationDeniedPickCity: 'Доступ к геолокации запрещён — выберите город',
+    chooseCity: 'Выбрать город',
   },
 
   subcategories: {
