@@ -31,7 +31,7 @@ npm run test:table 2>&1
 
 The unit suite is a **must-pass** gate — `--passWithNoTests` is NOT allowed.
 The build fails QA if any test fails, or if the suite has regressed below its
-baseline. Current baseline: **9 suites / 54 tests** (see docs/features/testing.md).
+baseline. Current baseline: **11 suites / 84 tests** (see docs/features/testing.md).
 
 Coverage focus areas that MUST stay green:
 

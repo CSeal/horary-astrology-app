@@ -50,8 +50,8 @@ Written and updated by `doc-writer` agent via `/doc:feature <name>`.
 | [features/animations.md](features/animations.md) | CosmosBackground, StarField, PlanetOrbit, VerdictStar | Done |
 | [features/force-update.md](features/force-update.md) | Force-update gate (remote config + version enforcement) | Done |
 | [features/location-override.md](features/location-override.md) | Manual city override (per-question) via bottom sheet + Photon geocoding | Done |
-| [features/debug-mode.md](features/debug-mode.md) | Hidden developer debug menu (7-tap + PIN gate, mock API, state resets) | Done |
-| [features/testing.md](features/testing.md) | Unit/integration test suite (9 suites / 54 tests) + Stage 6 QA gate | Done |
+| [features/debug-mode.md](features/debug-mode.md) | Hidden developer debug menu (20-tap + PIN gate, mock API, state resets) | Done |
+| [features/testing.md](features/testing.md) | Unit/integration test suite (11 suites / 84 tests) + Stage 6 QA gate | Done |
 
 ---
 

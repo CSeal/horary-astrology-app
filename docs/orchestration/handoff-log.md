@@ -227,3 +227,32 @@ prd_frs_added: FR-G01 through FR-G07
 prototype_brief: docs/design-prompts/prototype-update-v2.md
 next_stage: /orchestrate:design (prototype update) OR /orchestrate:implement-growth (feature implementation)
 blockers: []
+
+## Stage6b-QARerun — 2026-06-04
+status: COMPLETE
+gate7: PASS
+gate8: PASS
+scope: "Full QA re-run covering Phase 1 MVP + Phase 1.5 Growth (Verdict C+ two-screen layout, FR-G02 review prompt, FR-G03 invite/rate, FR-G04–G07 API field surfacing). Supersedes Stage6-QA entry."
+automated_checks:
+  expo_doctor: "19/19 PASS"
+  tsc: "PASS — 0 errors"
+  eslint: "0 errors, 0 warnings (clean — previous P1 warnings resolved)"
+  jest: "11 suites / 84 tests PASS"
+smoke_tests: "8/8 PASS (Home, VerdictCard, horaryApi, questionsStore, i18n, Settings, ResultScreen C+ Screen1, FullReading C+ Screen2)"
+anti_patterns:
+  StyleSheet_create: "0 instances (AnimatedSplash.tsx converted to plain object literal)"
+  hardcoded_hex: "1 in _layout.tsx comment only — not live code, no violation"
+  typescript_any: "0 violations"
+p0_issues: none
+warnings_resolved_same_session:
+  - "StyleSheet.create in AnimatedSplash.tsx → plain object literal composing with animated-style array"
+  - "Jest worker force-exit (timer leak) → useDebugTrigger now clears reset timer on unmount; --detectOpenHandles reports 0 open handles"
+  - "withMinDuration 'not wired' → false positive; it IS wired in useHoraryQuery.ts (gated by debug skipMinLoading)"
+  - "docs/features/testing.md baseline stale → updated to 11/84 across testing.md, INDEX.md, horary-qa-agent.md, horary-cleanup-agent.md, orchestrate-stage6.md"
+p1_issues:
+  - secureKeyService.ts low coverage (expected — thin SecureStore wrapper)
+  - npm audit 13 moderate vulns (all transitive Expo SDK 55, not actionable)
+  - FR-G01 share card deferred (see docs/features/share-reading-G01-deferred.md)
+artifacts: [docs/qa-summary.md, docs/demo-readiness.md, src/hooks/useDebugTrigger.ts, src/components/AnimatedSplash.tsx, docs/features/testing.md]
+test_result: "11 suites / 84 tests PASS (grew from 10/71 at Stage6-QA — reviewPromptService.test.ts added, horaryMapper.test.ts grew 14→20). Jest exits cleanly, no worker force-exit."
+blockers: []

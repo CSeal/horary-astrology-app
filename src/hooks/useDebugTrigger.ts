@@ -8,7 +8,7 @@
 // and out of this hook. If DEBUG_PIN is unset the gesture still fires, but the
 // sheet's PIN gate can never be satisfied, so debug mode stays unreachable.
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
 
 const REQUIRED_TAPS = 20;
@@ -21,6 +21,15 @@ export function useDebugTrigger(onTriggered: () => void) {
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Reactive count for the UI progress indicator (0 = not started).
   const [tapCount, setTapCount] = useState(0);
+
+  // Clear any pending reset timer on unmount so it can't fire setState after
+  // the component is gone (also prevents a leaked timer handle in tests).
+  useEffect(
+    () => () => {
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+    },
+    []
+  );
 
   const registerTap = useCallback(() => {
     const now = Date.now();

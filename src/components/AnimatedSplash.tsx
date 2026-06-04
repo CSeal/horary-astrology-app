@@ -12,7 +12,7 @@
 //   'exit':            exitProgress 0→1 over 380ms, then onComplete() via runOnJS.
 
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, useWindowDimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -37,6 +37,20 @@ const GLYPH_INITIAL_SCALE = 0.82;
 
 const INTRO_DURATION = 900; // ms — after this, intro is considered done
 const EXIT_DURATION  = 380; // ms — master fade-out duration
+
+// Full-screen centered overlay. Plain style object (not StyleSheet.create) so it
+// composes with the Reanimated animated style array. Color comes from theme.ts.
+const CONTAINER_STYLE = {
+  position: 'absolute' as const,
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: colors.bgBase,
+  alignItems: 'center' as const,
+  justifyContent: 'center' as const,
+  zIndex: 9999,
+};
 
 const STAR_SEEDS = [
   { xf: 0.07, yf: 0.08, r: 2.5, delay:   0 },
@@ -191,7 +205,7 @@ export function AnimatedSplash({ appReady, onComplete }: AnimatedSplashProps) {
   }));
 
   return (
-    <Animated.View style={[StyleSheet.absoluteFill, styles.container, bgStyle]}>
+    <Animated.View style={[CONTAINER_STYLE, bgStyle]}>
       {STAR_SEEDS.map((seed, i) => (
         <StarDot
           key={i}
@@ -203,7 +217,7 @@ export function AnimatedSplash({ appReady, onComplete }: AnimatedSplashProps) {
         />
       ))}
 
-      <Animated.View style={[styles.glyphWrapper, glyphStyle]}>
+      <Animated.View style={glyphStyle}>
         <Svg width={220} height={220} viewBox="0 0 220 220">
           <Circle cx={110} cy={110} r={100} fill={colors.accentGold} opacity={0.05} />
           <Circle cx={110} cy={110} r={78}  fill={colors.accentGold} opacity={0.08} />
@@ -236,13 +250,3 @@ export function AnimatedSplash({ appReady, onComplete }: AnimatedSplashProps) {
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.bgBase,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: 9999,
-  },
-  glyphWrapper: {},
-});

@@ -48,7 +48,7 @@ Record: expo doctor failures, TS error count, lint error count, test suite/test 
 - expo doctor: 0 failures
 - tsc: 0 errors
 - lint: 0 errors
-- jest: ≥ 9 suites / ≥ 54 tests, all passing
+- jest: ≥ 11 suites / ≥ 84 tests, all passing
 
 If a baseline is already green, mark it PASS and skip that fix step entirely — do not touch what already works.
 

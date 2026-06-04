@@ -6,7 +6,7 @@
 
 Unit/integration test coverage for AstraSk's production-critical logic. Scope was chosen via a superpowers-v brainstorm (code-archaeology + domain-expert + library-audit): test the pure functions and async state machines that drive user-facing behaviour, and skip native bridges, navigation, and Reanimated worklets (low unit-test ROI).
 
-**Baseline: 9 suites / 54 tests.** This count is a QA gate — see [Orchestration gate](#orchestration-gate).
+**Baseline: 11 suites / 84 tests.** This count is a QA gate — see [Orchestration gate](#orchestration-gate).
 
 ---
 
@@ -39,15 +39,17 @@ Jest config lives inline in [package.json](../../package.json):
 
 | File | Target | Tests | Notes |
 |---|---|---|---|
-| [horaryApi.test.ts](../../src/services/__tests__/horaryApi.test.ts) | `normalizeError`, `getApiKey` | 11 | Pure error-mapping matrix + API-key priority chain |
+| [horaryApi.test.ts](../../src/services/__tests__/horaryApi.test.ts) | `normalizeError`, `getApiKey` | 12 | Pure error-mapping matrix + API-key priority chain |
 | [horaryApi.retry.test.ts](../../src/services/__tests__/horaryApi.retry.test.ts) | `askWithRetry` | 4 | axios mocked, fake timers for backoff |
 | [updateCheckService.test.ts](../../src/services/__tests__/updateCheckService.test.ts) | `checkForUpdate` | 7 | 3-tier fallback state machine |
 | [journalService.test.ts](../../src/services/__tests__/journalService.test.ts) | journal CRUD | 6 | Round-trip + 500-entry prune + corrupt JSON |
-| [geocodingService.test.ts](../../src/services/__tests__/geocodingService.test.ts) | `search` | 6 | Photon mapping + filter + AbortSignal |
-| [questionsStore.test.ts](../../src/stores/__tests__/questionsStore.test.ts) | counter + hydrate | 9 | Monthly rollover + debug reset/clear |
+| [geocodingService.test.ts](../../src/services/__tests__/geocodingService.test.ts) | `search` | 8 | Photon mapping + filter + AbortSignal |
+| [questionsStore.test.ts](../../src/stores/__tests__/questionsStore.test.ts) | hydrate + CRUD | 3 | hydrate / clearAllEntries / entries shape (quota now server-enforced) |
 | [parity.test.ts](../../src/i18n/__tests__/parity.test.ts) | en ↔ ru | 3 | Key set + placeholders + no-empty |
-| [useDebugTrigger.test.ts](../../src/hooks/__tests__/useDebugTrigger.test.ts) | 7-tap gesture | 5 | `renderHook` + `Date.now` spy |
+| [useDebugTrigger.test.ts](../../src/hooks/__tests__/useDebugTrigger.test.ts) | 20-tap gesture | 6 | `renderHook` + `Date.now` spy |
 | [withMinDuration.test.ts](../../src/hooks/__tests__/withMinDuration.test.ts) | loading floor | 3 | Pre-existing timing helper |
+| [horaryMapper.test.ts](../../src/services/__tests__/horaryMapper.test.ts) | wire → `JournalEntry` | 20 | API field mapping incl. FR-G04–G07 |
+| [reviewPromptService.test.ts](../../src/services/__tests__/reviewPromptService.test.ts) | FR-G02 review gates | 12 | Verdict tone + entry count + install age + cooldown |
 
 ---
 
@@ -86,11 +88,10 @@ The coordinates this service returns are sent straight to the horary API, so a
 mapping bug corrupts the chart. Covers `<2`-char short-circuit, `!res.ok` throw,
 display-name assembly, invalid-feature filtering, and AbortSignal pass-through.
 
-### `questionsStore.test.ts` — quota & rollover
-The monthly counter and its `hydrate` twin both implement month-rollover independently.
-Covers increment, same-month no-reset, cross-month reset, `hydrate` for all three states
-(same month / stale month / empty storage), and the debug-only `resetMonthlyCount` /
-`clearAllEntries` actions.
+### `questionsStore.test.ts` — hydrate & entries
+The monthly quota is now enforced server-side (API `429 → LIMIT_EXCEEDED`), so the store's
+remaining responsibilities are journal-entry state: `hydrate` from AsyncStorage, the
+debug-only `clearAllEntries` action, and the `entries` shape.
 
 ### `parity.test.ts` — translation drift
 Flattens `en.ts` and `ru.ts` to dot-paths and asserts identical key sets (both
@@ -98,10 +99,11 @@ directions), no empty values, and matching `{{placeholder}}` tokens. Cheap insur
 against a missing-translation key shipping after any future string edit.
 
 ### `useDebugTrigger.test.ts` — activation gesture
-The hook measures its 3s window with `Date.now()` (not `setTimeout`), so time is driven
-by a `Date.now` spy rather than fake timers. Uses `renderHook` from RNTL. Covers the
-7-tap fire, streak reset after a >3s pause, the Light (6th) / Heavy (7th) haptics, and
-re-arming after a fire.
+The hook measures its 4s rolling window with `Date.now()`, so time is driven by a
+`Date.now` spy rather than fake timers. Uses `renderHook` from RNTL. Covers the 20-tap
+fire, streak reset after a >4s pause, the Medium (15th) / Light (19th) / Heavy (20th)
+haptics, and re-arming after a fire. The hook clears its pending reset timer on unmount,
+so no timer handle leaks into the runner.
 
 ---
 
@@ -139,7 +141,7 @@ The jest suite is wired into **Stage 6 QA** as a must-pass P0 gate:
 - [orchestrate-stage6.md](../../.claude/commands/orchestrate-stage6.md) instructs the QA
   agent to run the suite **with coverage** and treats `--passWithNoTests` as disallowed.
 - [horary-qa-agent.md](../../.claude/agents/horary-qa-agent.md) Step 1 lists the focus
-  areas that must stay green and flags any drop below the **9 suites / 54 tests** baseline
+  areas that must stay green and flags any drop below the **11 suites / 84 tests** baseline
   as a P0 regression.
 
 When adding tests, update the baseline count in both that agent file and this doc.
