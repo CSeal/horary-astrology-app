@@ -124,6 +124,43 @@ const pt = {
       'O mapa mostra indicações mistas — trate esta resposta como uma tendência geral, não uma certeza.',
     chartUnclear: 'Mapa Incerto',
     backButton: 'Voltar',
+    // Phase 1.5 — C+ verdict layout
+    backJournal: 'Crônicas',
+    fullReadingTitle: 'Leitura Completa',
+    chartStrengthLabel: 'Força do Mapa',
+    chartStrengthStrong: 'Um mapa forte — bem adequado para julgar.',
+    chartStrengthBorderline: 'Radicalidade limítrofe — o mapa é adequado para julgar, mas não fortemente.',
+    chartStrengthWeak: 'O mapa está fraco — leia o veredito com cautela.',
+    vocMoonTitle: 'A Lua está Vazia de Curso',
+    vocVoidPill: 'VAZIA',
+    vocSignLabel: 'Signo',
+    vocToChangeLabel: 'Para mudança de signo',
+    vocNextLabel: 'Próximo',
+    vocExceptionNote: 'Aplica-se uma exceção. A Lua está em {{sign}} — um dos signos de Lilly onde a Lua vazia ainda pode atuar de alguma forma. Trate como atraso, não como negação.',
+    timingWhen: 'Quando isso pode acontecer?',
+    timingEstimate: '≈ {{value}} {{unit}}',
+    timingUnit: { days: 'dias', weeks: 'semanas', months: 'meses', years: 'anos' },
+    timingScale: { days: 'DIAS', weeks: 'SEM.', months: 'MESES' },
+    perfectionLabel: 'Perfeições',
+    aspectApplying: 'Aplicando',
+    aspectCaution: 'Cautela',
+    aspectPast: 'Passado',
+    aspectApplyingSub: 'aplicando · perfaz-se em {{deg}}',
+    aspectPastSub: 'separando · {{deg}} no passado',
+    showAllAspects: 'Mostrar todos os {{count}} aspectos',
+    showFewerAspects: 'Mostrar menos',
+    seeFullReading: 'Ver a leitura completa',
+    fullReadingHint: 'Significadores · Perfeições · Timing',
+    askAgain: '✦ Pergunte novamente quando estiver pronto',
+  },
+
+  // Aspect type names (used in AspectRow)
+  aspectTypes: {
+    conjunction: 'conjunção',
+    opposition: 'oposição',
+    trine: 'trígono',
+    square: 'quadratura',
+    sextile: 'sextil',
   },
 
   // Journal screen
@@ -175,6 +212,7 @@ const pt = {
     apiKeySourceDefault: 'Usando: padrão do app',
     apiKeyRemove: 'Remover chave',
     apiKeySave: 'Salvar chave',
+    apiKeyEdit: 'Editar',
   },
 
   // Onboarding

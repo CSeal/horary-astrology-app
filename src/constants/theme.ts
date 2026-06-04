@@ -27,6 +27,9 @@ export const colors = {
   unclear: '#9B93B8',
   unclearGlow: 'rgba(155,147,184,0.15)',
 
+  // Cool aspect glyph tint (sextile) — sky blue, used by AspectRow.
+  aspectCool: '#93C5FD',
+
   // Text tokens
   textPrimary: '#FFFFFF',
   textSecondary: '#C4BDD8',

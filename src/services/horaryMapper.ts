@@ -11,9 +11,15 @@ import type {
   VerdictType,
   ConfidenceBand,
   SignificatorData,
+  AspectPerfectionData,
+  ReadingTiming,
   WireSignificator,
   WireRadicality,
+  WireAspectPerfection,
+  WireLunarSequence,
+  WireTiming,
 } from '@/types/horary';
+import { expandSign, nextSign } from '@/constants/zodiac';
 
 // Wire judgment.answer → app verdict.
 // 'reask_later' maps to UNCLEAR (same badge) but sets is_radical=false so the
@@ -67,6 +73,62 @@ function mapSignificator(s: WireSignificator): SignificatorData {
     dignity: toDignity(dignityInfo?.essential_dignity),
     retrograde: dignityInfo?.accidental_conditions?.includes('retrograde') ?? false,
     aspect: null,
+  };
+}
+
+function mapAspect(a: WireAspectPerfection): AspectPerfectionData {
+  return {
+    planet1: a.planet1,
+    planet2: a.planet2,
+    aspect_type: a.aspect_type,
+    is_applying: a.is_applying,
+    orb: a.orb,
+    will_perfect: a.will_perfect,
+    degrees_to_perfection: a.degrees_to_perfection,
+  };
+}
+
+// First timing window → simplified app timing. The teaser/estimate label is
+// rendered from time_unit + value at display time so it stays localized.
+function mapTiming(timing: WireTiming[] | null | undefined): ReadingTiming | undefined {
+  const first = timing?.[0];
+  if (!first) return undefined;
+  return {
+    time_unit: first.time_unit,
+    value: first.value,
+    explanation: first.explanation ?? '',
+  };
+}
+
+// Void-of-course Moon detail for the rich verdict banner. Returns an empty
+// object when the Moon is not void or the lunar block is absent.
+function mapVocDetail(
+  lunar: WireLunarSequence | undefined
+): Pick<
+  HoraryResponse,
+  | 'voc_moon_sign'
+  | 'voc_degrees_to_sign_change'
+  | 'voc_next_sign'
+  | 'voc_exception_sign'
+> {
+  if (!lunar?.is_void_of_course) return {};
+  const signName = expandSign(lunar.moon_sign);
+  // Degree within the current sign, derived from the absolute longitude.
+  const degreeInSign =
+    lunar.moon_longitude != null
+      ? Math.floor(((lunar.moon_longitude % 30) + 30) % 30)
+      : undefined;
+  const signDisplay =
+    signName != null
+      ? degreeInSign != null
+        ? `${signName} ${degreeInSign}°`
+        : signName
+      : undefined;
+  return {
+    voc_moon_sign: signDisplay,
+    voc_degrees_to_sign_change: lunar.degrees_to_sign_change,
+    voc_next_sign: nextSign(lunar.moon_sign),
+    voc_exception_sign: expandSign(lunar.voc_exception_sign ?? undefined) ?? null,
   };
 }
 
@@ -129,10 +191,14 @@ export function normalizeAnalysisResponse(
     confidence_band: (judgment?.confidence_band as ConfidenceBand) ?? 'low',
     summary: judgment?.interpretation ?? judgment?.reasoning ?? '',
     significators: (raw.significators ?? []).map(mapSignificator),
+    aspects: (raw.aspect_perfections ?? []).map(mapAspect),
     voc_moon: raw.lunar_analysis?.is_void_of_course ?? false,
     voc_treatment: judgment?.voc_treatment,
     is_radical,
     radicality_summary,
+    radicality_score: raw.radicality?.score,
+    timing: mapTiming(raw.timing),
+    ...mapVocDetail(raw.lunar_analysis),
     chart_time: request.timestamp,
     location_display: locationDisplay,
   };

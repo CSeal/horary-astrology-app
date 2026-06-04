@@ -123,6 +123,45 @@ const en = {
       'The chart shows mixed indications — treat this answer as a general tendency, not a certainty.',
     chartUnclear: 'Chart Unclear',
     backButton: 'Back',
+    // Phase 1.5 — C+ verdict layout
+    backJournal: 'Journal',
+    fullReadingTitle: 'Full Reading',
+    chartStrengthLabel: 'Chart Strength',
+    chartStrengthStrong: 'A strong chart — well-fit to judge.',
+    chartStrengthBorderline:
+      'Borderline radical — the chart is fit to judge, but not strongly so.',
+    chartStrengthWeak: 'The chart is weak — read the verdict with caution.',
+    vocMoonTitle: 'Moon is Void of Course',
+    vocVoidPill: 'VOID',
+    vocSignLabel: 'Sign',
+    vocToChangeLabel: 'To sign change',
+    vocNextLabel: 'Next',
+    vocExceptionNote:
+      'Exception applies. The Moon is in {{sign}} — one of Lilly’s signs where a void Moon may still perform somewhat. Treat as delay, not denial.',
+    timingWhen: 'When might this happen?',
+    timingEstimate: '≈ {{value}} {{unit}}',
+    timingUnit: { days: 'days', weeks: 'weeks', months: 'months', years: 'years' },
+    timingScale: { days: 'DAYS', weeks: 'WEEKS', months: 'MONTHS' },
+    perfectionLabel: 'Perfections',
+    aspectApplying: 'Applying',
+    aspectCaution: 'Caution',
+    aspectPast: 'Past',
+    aspectApplyingSub: 'applying · perfects in {{deg}}',
+    aspectPastSub: 'separating · {{deg}} past',
+    showAllAspects: 'Show all {{count}} aspects',
+    showFewerAspects: 'Show fewer',
+    seeFullReading: 'See the full reading',
+    fullReadingHint: 'Significators · Perfections · Timing',
+    askAgain: '✦ Ask again when ready',
+  },
+
+  // Aspect type names (used in AspectRow)
+  aspectTypes: {
+    conjunction: 'conjunction',
+    opposition: 'opposition',
+    trine: 'trine',
+    square: 'square',
+    sextile: 'sextile',
   },
 
   // Journal screen
@@ -171,6 +210,7 @@ const en = {
     apiKeySourceDefault: 'Using: app default',
     apiKeyRemove: 'Remove key',
     apiKeySave: 'Save Key',
+    apiKeyEdit: 'Edit',
   },
 
   // Onboarding

@@ -21,6 +21,9 @@ interface VerdictCardProps {
   verdict: VerdictType;
   confidence: ConfidenceBand;
   summary: string;
+  // When true, render the compact badge (verdict + confidence dots) only and
+  // omit the summary text — the summary is shown separately on the screen.
+  hideSummary?: boolean;
 }
 
 const VERDICT_COLOR: Record<VerdictType, string> = {
@@ -57,7 +60,12 @@ const CONFIDENCE_FILLED: Record<ConfidenceBand, number> = {
   low: 1,
 };
 
-export function VerdictCard({ verdict, confidence, summary }: VerdictCardProps) {
+export function VerdictCard({
+  verdict,
+  confidence,
+  summary,
+  hideSummary = false,
+}: VerdictCardProps) {
   const { t } = useTranslation();
   const scale = useSharedValue(0.8);
   const opacity = useSharedValue(0);
@@ -92,7 +100,7 @@ export function VerdictCard({ verdict, confidence, summary }: VerdictCardProps) 
   return (
     <AnimatedView
       style={animatedStyle}
-      className={`rounded-3xl border p-8 items-center ${VERDICT_GLOW_BG[verdict]} ${VERDICT_BORDER[verdict]}`}
+      className={`rounded-3xl border items-center ${hideSummary ? 'px-6 pt-6 pb-5' : 'p-8'} ${VERDICT_GLOW_BG[verdict]} ${VERDICT_BORDER[verdict]}`}
       accessibilityLabel={t('a11y.verdictCard', {
         verdict: verdictLabel,
         confidence: t(`confidence.${confidence}` as const),
@@ -125,9 +133,11 @@ export function VerdictCard({ verdict, confidence, summary }: VerdictCardProps) 
         </Text>
       </View>
 
-      <Text className="font-cormorant text-base text-text-primary leading-relaxed mt-6 text-center">
-        {summary}
-      </Text>
+      {!hideSummary && (
+        <Text className="font-cormorant text-base text-text-primary leading-relaxed mt-6 text-center">
+          {summary}
+        </Text>
+      )}
     </AnimatedView>
   );
 }

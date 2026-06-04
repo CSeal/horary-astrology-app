@@ -53,7 +53,13 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="result/[id]"
+        name="result/[id]/index"
+        options={{
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="result/[id]/full"
         options={{
           href: null,
         }}

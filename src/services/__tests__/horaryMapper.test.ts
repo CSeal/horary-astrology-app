@@ -181,4 +181,100 @@ describe('normalizeAnalysisResponse', () => {
     expect(out.id.length).toBeGreaterThan(0);
     expect(out.chart_time).toBe(baseRequest.timestamp);
   });
+
+  // ── Phase 1.5 — richer verdict fields ──
+
+  it('maps radicality.score → radicality_score', () => {
+    const raw = wireResponse({
+      radicality: {
+        is_radical: true,
+        score: 58,
+        recommendation: 'proceed_with_caution',
+        summary: 'Borderline.',
+        considerations: [],
+      },
+    });
+    expect(normalizeAnalysisResponse(raw, baseRequest).radicality_score).toBe(58);
+  });
+
+  it('maps aspect_perfections → aspects', () => {
+    const raw = wireResponse({
+      aspect_perfections: [
+        {
+          planet1: 'Moon',
+          planet2: 'Venus',
+          aspect_type: 'sextile',
+          is_applying: true,
+          orb: 2.5,
+          will_perfect: true,
+          degrees_to_perfection: 2.5,
+        },
+      ],
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.aspects).toHaveLength(1);
+    expect(out.aspects?.[0]).toMatchObject({
+      planet1: 'Moon',
+      planet2: 'Venus',
+      aspect_type: 'sextile',
+      is_applying: true,
+      degrees_to_perfection: 2.5,
+    });
+  });
+
+  it('maps the first timing window → timing', () => {
+    const raw = wireResponse({
+      timing: [
+        {
+          time_unit: 'weeks',
+          value: 3,
+          confidence: 'medium',
+          based_on: 'perfection',
+          explanation: 'Perfects in 4°.',
+        },
+        {
+          time_unit: 'months',
+          value: 1,
+          confidence: 'low',
+          based_on: 'fallback',
+          explanation: 'Secondary.',
+        },
+      ],
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.timing).toEqual({
+      time_unit: 'weeks',
+      value: 3,
+      explanation: 'Perfects in 4°.',
+    });
+  });
+
+  it('leaves timing undefined when the wire timing array is empty/absent', () => {
+    expect(normalizeAnalysisResponse(wireResponse(), baseRequest).timing).toBeUndefined();
+    const raw = wireResponse({ timing: [] });
+    expect(normalizeAnalysisResponse(raw, baseRequest).timing).toBeUndefined();
+  });
+
+  it('expands voc detail (sign+degree, next sign, exception) when the Moon is void', () => {
+    const raw = wireResponse({
+      lunar_analysis: {
+        is_void_of_course: true,
+        moon_sign: 'Tau',
+        moon_longitude: 56, // 26° of Taurus (30..60)
+        degrees_to_sign_change: 4,
+        voc_exception_sign: 'Tau',
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.voc_moon_sign).toBe('Taurus 26°');
+    expect(out.voc_degrees_to_sign_change).toBe(4);
+    expect(out.voc_next_sign).toBe('Gemini');
+    expect(out.voc_exception_sign).toBe('Taurus');
+  });
+
+  it('omits voc detail when the Moon is not void', () => {
+    const out = normalizeAnalysisResponse(wireResponse(), baseRequest);
+    expect(out.voc_moon_sign).toBeUndefined();
+    expect(out.voc_next_sign).toBeUndefined();
+  });
 });

@@ -123,6 +123,43 @@ const de = {
       'Das Horoskop zeigt gemischte Hinweise — behandle diese Antwort als allgemeine Tendenz, nicht als Gewissheit.',
     chartUnclear: 'Horoskop unklar',
     backButton: 'Zurück',
+    // Phase 1.5 — C+ verdict layout
+    backJournal: 'Chroniken',
+    fullReadingTitle: 'Vollständige Deutung',
+    chartStrengthLabel: 'Horoskop-Stärke',
+    chartStrengthStrong: 'Ein starkes Horoskop — gut geeignet zur Beurteilung.',
+    chartStrengthBorderline: 'Grenzwertig radikal — das Horoskop ist zur Beurteilung geeignet, aber nicht eindeutig.',
+    chartStrengthWeak: 'Das Horoskop ist schwach — lies das Urteil mit Vorsicht.',
+    vocMoonTitle: 'Der Mond ist kurslos',
+    vocVoidPill: 'KURSLOS',
+    vocSignLabel: 'Zeichen',
+    vocToChangeLabel: 'Bis Zeichenwechsel',
+    vocNextLabel: 'Als Nächstes',
+    vocExceptionNote: 'Eine Ausnahme greift. Der Mond steht in {{sign}} — einem von Lillys Zeichen, in denen ein kursloser Mond dennoch etwas bewirken kann. Behandle es als Verzögerung, nicht als Absage.',
+    timingWhen: 'Wann könnte dies geschehen?',
+    timingEstimate: '≈ {{value}} {{unit}}',
+    timingUnit: { days: 'Tage', weeks: 'Wochen', months: 'Monate', years: 'Jahre' },
+    timingScale: { days: 'TAGE', weeks: 'WOCHEN', months: 'MONATE' },
+    perfectionLabel: 'Perfektionen',
+    aspectApplying: 'Anwendend',
+    aspectCaution: 'Vorsicht',
+    aspectPast: 'Vergangen',
+    aspectApplyingSub: 'anwendend · vollendet in {{deg}}',
+    aspectPastSub: 'trennend · {{deg}} vergangen',
+    showAllAspects: 'Alle {{count}} Aspekte anzeigen',
+    showFewerAspects: 'Weniger anzeigen',
+    seeFullReading: 'Die vollständige Deutung ansehen',
+    fullReadingHint: 'Signifikatoren · Perfektionen · Zeitpunkt',
+    askAgain: '✦ Erneut fragen, wenn bereit',
+  },
+
+  // Aspect type names (used in AspectRow)
+  aspectTypes: {
+    conjunction: 'Konjunktion',
+    opposition: 'Opposition',
+    trine: 'Trigon',
+    square: 'Quadrat',
+    sextile: 'Sextil',
   },
 
   // Journal screen
@@ -171,6 +208,7 @@ const de = {
     apiKeySourceDefault: 'Verwendet: App-Standard',
     apiKeyRemove: 'Schlüssel entfernen',
     apiKeySave: 'Schlüssel speichern',
+    apiKeyEdit: 'Bearbeiten',
   },
 
   // Onboarding

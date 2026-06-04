@@ -124,6 +124,43 @@ const es = {
       'La carta muestra indicaciones mixtas — trata esta respuesta como una tendencia general, no una certeza.',
     chartUnclear: 'Carta Incierta',
     backButton: 'Volver',
+    // Phase 1.5 — C+ verdict layout
+    backJournal: 'Crónicas',
+    fullReadingTitle: 'Lectura Completa',
+    chartStrengthLabel: 'Fuerza de la Carta',
+    chartStrengthStrong: 'Una carta fuerte — bien dispuesta para juzgar.',
+    chartStrengthBorderline: 'Radicalidad límite — la carta es apta para juzgar, pero no con fuerza.',
+    chartStrengthWeak: 'La carta es débil — interpreta el veredicto con cautela.',
+    vocMoonTitle: 'La Luna está Vacía de Curso',
+    vocVoidPill: 'VACÍA',
+    vocSignLabel: 'Signo',
+    vocToChangeLabel: 'Para cambio de signo',
+    vocNextLabel: 'Siguiente',
+    vocExceptionNote: 'Se aplica una excepción. La Luna está en {{sign}} — uno de los signos de Lilly donde una Luna vacía aún puede actuar algo. Considéralo como retraso, no negación.',
+    timingWhen: '¿Cuándo podría ocurrir esto?',
+    timingEstimate: '≈ {{value}} {{unit}}',
+    timingUnit: { days: 'días', weeks: 'semanas', months: 'meses', years: 'años' },
+    timingScale: { days: 'DÍAS', weeks: 'SEM.', months: 'MESES' },
+    perfectionLabel: 'Perfecciones',
+    aspectApplying: 'Aplicando',
+    aspectCaution: 'Precaución',
+    aspectPast: 'Pasado',
+    aspectApplyingSub: 'aplicando · perfecciona en {{deg}}',
+    aspectPastSub: 'separando · {{deg}} atrás',
+    showAllAspects: 'Mostrar los {{count}} aspectos',
+    showFewerAspects: 'Mostrar menos',
+    seeFullReading: 'Ver la lectura completa',
+    fullReadingHint: 'Significadores · Perfecciones · Tiempo',
+    askAgain: '✦ Pregunta de nuevo cuando estés listo',
+  },
+
+  // Aspect type names (used in AspectRow)
+  aspectTypes: {
+    conjunction: 'conjunción',
+    opposition: 'oposición',
+    trine: 'trígono',
+    square: 'cuadratura',
+    sextile: 'sextil',
   },
 
   // Journal screen
@@ -175,6 +212,7 @@ const es = {
     apiKeySourceDefault: 'Usando: predeterminada de la app',
     apiKeyRemove: 'Eliminar clave',
     apiKeySave: 'Guardar clave',
+    apiKeyEdit: 'Editar',
   },
 
   // Onboarding

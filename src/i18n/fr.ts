@@ -123,6 +123,43 @@ const fr = {
       'Le thème montre des indications mixtes — traitez cette réponse comme une tendance générale, non comme une certitude.',
     chartUnclear: 'Thème peu clair',
     backButton: 'Retour',
+    // Phase 1.5 — C+ verdict layout
+    backJournal: 'Chroniques',
+    fullReadingTitle: 'Lecture complète',
+    chartStrengthLabel: 'Force du thème',
+    chartStrengthStrong: 'Un thème solide — bien apte à être jugé.',
+    chartStrengthBorderline: 'Radicalité limite — le thème est apte à être jugé, mais sans grande force.',
+    chartStrengthWeak: 'Le thème est faible — lisez le verdict avec prudence.',
+    vocMoonTitle: 'La Lune est vide de course',
+    vocVoidPill: 'VIDE',
+    vocSignLabel: 'Signe',
+    vocToChangeLabel: 'Avant changement de signe',
+    vocNextLabel: 'Suivant',
+    vocExceptionNote: 'Une exception s’applique. La Lune est en {{sign}} — l’un des signes de Lilly où une Lune vide peut encore agir quelque peu. À considérer comme un retard, non comme un refus.',
+    timingWhen: 'Quand cela pourrait-il arriver ?',
+    timingEstimate: '≈ {{value}} {{unit}}',
+    timingUnit: { days: 'jours', weeks: 'semaines', months: 'mois', years: 'ans' },
+    timingScale: { days: 'JOURS', weeks: 'SEM.', months: 'MOIS' },
+    perfectionLabel: 'Perfections',
+    aspectApplying: 'Applicant',
+    aspectCaution: 'Prudence',
+    aspectPast: 'Passé',
+    aspectApplyingSub: 'applicant · se perfectionne dans {{deg}}',
+    aspectPastSub: 'séparant · {{deg}} écoulés',
+    showAllAspects: 'Afficher les {{count}} aspects',
+    showFewerAspects: 'Afficher moins',
+    seeFullReading: 'Voir la lecture complète',
+    fullReadingHint: 'Significateurs · Perfections · Timing',
+    askAgain: '✦ Reposer une question le moment venu',
+  },
+
+  // Aspect type names (used in AspectRow)
+  aspectTypes: {
+    conjunction: 'conjonction',
+    opposition: 'opposition',
+    trine: 'trigone',
+    square: 'carré',
+    sextile: 'sextile',
   },
 
   // Journal screen
@@ -171,6 +208,7 @@ const fr = {
     apiKeySourceDefault: "Utilisée : clé par défaut de l'application",
     apiKeyRemove: 'Supprimer la clé',
     apiKeySave: 'Enregistrer la clé',
+    apiKeyEdit: 'Modifier',
   },
 
   // Onboarding

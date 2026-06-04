@@ -40,6 +40,15 @@ export interface AspectPerfectionData {
   degrees_to_perfection?: number | null;
 }
 
+// Simplified timing estimate shown on the verdict / full-reading screens.
+// Derived from the first WireTiming item; the teaser label is rendered from
+// time_unit + value at display time so it stays localized.
+export interface ReadingTiming {
+  time_unit: 'days' | 'weeks' | 'months' | 'years';
+  value: number;
+  explanation: string;
+}
+
 export interface HoraryRequest {
   question: string;
   category: HoraryCategory;
@@ -64,6 +73,16 @@ export interface HoraryResponse {
   // undefined means API did not return a radicality block (old data).
   is_radical?: boolean;
   radicality_summary?: string;
+  // Chart strength 0-100 (radicality.score). undefined for old data.
+  radicality_score?: number;
+  // Timing estimate (first WireTiming entry), if the engine returned one.
+  timing?: ReadingTiming;
+  // Void-of-course Moon detail (lunar_analysis). All optional — old data and
+  // non-void charts leave them undefined.
+  voc_moon_sign?: string;            // full sign name + degree, e.g. "Taurus 26°"
+  voc_degrees_to_sign_change?: number;
+  voc_next_sign?: string;            // full sign name, e.g. "Gemini"
+  voc_exception_sign?: string | null; // full sign name when a Lilly exception applies
   chart_time: string;
   location_display?: string;
 }

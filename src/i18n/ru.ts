@@ -115,6 +115,43 @@ const ru = {
       'Карта показывает смешанные признаки — воспринимайте этот ответ как общую тенденцию, а не как определённость.',
     chartUnclear: 'Карта неясна',
     backButton: 'Назад',
+    // Phase 1.5 — C+ verdict layout
+    backJournal: 'Хроники',
+    fullReadingTitle: 'Полный разбор',
+    chartStrengthLabel: 'Сила карты',
+    chartStrengthStrong: 'Сильная карта — подходит для суждения.',
+    chartStrengthBorderline: 'Пограничная радикальность — карта пригодна для суждения, но не вполне уверенно.',
+    chartStrengthWeak: 'Карта слаба — толкуй вердикт с осторожностью.',
+    vocMoonTitle: 'Луна без курса',
+    vocVoidPill: 'БЕЗ КУРСА',
+    vocSignLabel: 'Знак',
+    vocToChangeLabel: 'До смены знака',
+    vocNextLabel: 'Далее',
+    vocExceptionNote: 'Действует исключение. Луна в знаке {{sign}} — один из знаков Лилли, где Луна без курса всё же может действовать. Расценивай как задержку, а не отказ.',
+    timingWhen: 'Когда это может произойти?',
+    timingEstimate: '≈ {{value}} {{unit}}',
+    timingUnit: { days: 'дн.', weeks: 'нед.', months: 'мес.', years: 'лет' },
+    timingScale: { days: 'ДНИ', weeks: 'НЕД.', months: 'МЕС.' },
+    perfectionLabel: 'Совершения',
+    aspectApplying: 'Сходящийся',
+    aspectCaution: 'Внимание',
+    aspectPast: 'Прошедший',
+    aspectApplyingSub: 'сходится · совершается через {{deg}}',
+    aspectPastSub: 'расходится · {{deg}} назад',
+    showAllAspects: 'Показать все аспекты ({{count}})',
+    showFewerAspects: 'Свернуть',
+    seeFullReading: 'Смотреть полный разбор',
+    fullReadingHint: 'Сигнификаторы · Совершения · Тайминг',
+    askAgain: '✦ Спросить снова, когда будешь готов',
+  },
+
+  // Aspect type names (used in AspectRow)
+  aspectTypes: {
+    conjunction: 'соединение',
+    opposition: 'оппозиция',
+    trine: 'трин',
+    square: 'квадратура',
+    sextile: 'секстиль',
   },
 
   journal: {
@@ -161,6 +198,7 @@ const ru = {
     apiKeySourceDefault: 'Используется: ключ приложения',
     apiKeyRemove: 'Удалить ключ',
     apiKeySave: 'Сохранить ключ',
+    apiKeyEdit: 'Изменить',
   },
 
   onboarding: {

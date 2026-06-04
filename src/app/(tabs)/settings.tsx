@@ -7,7 +7,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
-import { Globe, Key, MapPin, Star, Clock } from 'lucide-react-native';
+import { Globe, Key, MapPin, Star, Clock, Pencil } from 'lucide-react-native';
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -67,6 +67,7 @@ export default function SettingsScreen() {
   const setZodiacType = useSettingsStore((s) => s.setZodiacType);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [savingKey, setSavingKey] = useState(false);
+  const [editingKey, setEditingKey] = useState(false);
   const [timezone] = useState<string>(
     () => Intl.DateTimeFormat().resolvedOptions().timeZone
   );
@@ -140,12 +141,23 @@ export default function SettingsScreen() {
       await secureKeyService.setKey(trimmed);
       setApiKeySource('personal');
       setApiKeyInput('');
+      setEditingKey(false);
     } catch {
       Alert.alert(t('errors.storageError'));
     } finally {
       setSavingKey(false);
     }
   }, [apiKeyInput, setApiKeySource, t]);
+
+  const handleStartEditKey = useCallback(() => {
+    setApiKeyInput('');
+    setEditingKey(true);
+  }, []);
+
+  const handleCancelEditKey = useCallback(() => {
+    setApiKeyInput('');
+    setEditingKey(false);
+  }, []);
 
   const handleClearKey = useCallback(() => {
     Alert.alert(
@@ -500,33 +512,74 @@ export default function SettingsScreen() {
                 ? t('settings.apiKeySourcePersonal')
                 : t('settings.apiKeySourceDefault')}
             </Text>
-            <TextInput
-              value={apiKeyInput}
-              onChangeText={setApiKeyInput}
-              secureTextEntry
-              autoCapitalize="none"
-              autoCorrect={false}
-              placeholder={t('settings.apiKeyPlaceholder')}
-              placeholderTextColor={colors.textDisabled}
-              className="bg-bg-surface rounded-xl px-4 min-h-12 font-inter text-base text-text-primary border border-border"
-            />
-            <View className="mt-3 gap-2">
-              <Button
-                label={t('settings.apiKeySave')}
-                variant="primary"
-                size="sm"
-                onPress={handleSaveKey}
-                disabled={savingKey || apiKeyInput.trim().length === 0}
-              />
-              {apiKeySource === 'personal' && (
-                <Button
-                  label={t('settings.apiKeyRemove')}
-                  variant="destructive"
-                  size="sm"
-                  onPress={handleClearKey}
+
+            {editingKey ? (
+              // ── Edit mode: enter a new key ──
+              <>
+                <TextInput
+                  value={apiKeyInput}
+                  onChangeText={setApiKeyInput}
+                  secureTextEntry
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  autoFocus
+                  placeholder={t('settings.apiKeyPlaceholder')}
+                  placeholderTextColor={colors.textDisabled}
+                  className="bg-bg-surface rounded-xl px-4 min-h-12 font-inter text-base text-text-primary border border-border"
                 />
-              )}
-            </View>
+                <View className="mt-3 gap-2">
+                  <Button
+                    label={t('settings.apiKeySave')}
+                    variant="primary"
+                    size="sm"
+                    onPress={handleSaveKey}
+                    disabled={savingKey || apiKeyInput.trim().length === 0}
+                  />
+                  <Button
+                    label={t('journal.deleteCancel')}
+                    variant="secondary"
+                    size="sm"
+                    onPress={handleCancelEditKey}
+                  />
+                </View>
+              </>
+            ) : apiKeySource === 'personal' ? (
+              // ── View mode: a personal key is set ──
+              <>
+                <View className="flex-row items-center gap-2">
+                  <Text className="flex-1 font-mono text-base text-text-primary tracking-widest">
+                    {'●●●●●●●●●●●●●●●●'}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={handleStartEditKey}
+                    className="min-h-11 px-3 flex-row items-center justify-center gap-1.5"
+                    accessibilityRole="button"
+                    accessibilityLabel={t('settings.apiKeyEdit')}
+                  >
+                    <Pencil color={colors.accentGold} size={typography.base} />
+                    <Text className="font-inter-medium text-sm text-accent-gold">
+                      {t('settings.apiKeyEdit')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View className="mt-3">
+                  <Button
+                    label={t('settings.apiKeyRemove')}
+                    variant="destructive"
+                    size="sm"
+                    onPress={handleClearKey}
+                  />
+                </View>
+              </>
+            ) : (
+              // ── View mode: no personal key, default in use ──
+              <Button
+                label={t('settings.apiKeyPlaceholder')}
+                variant="secondary"
+                size="sm"
+                onPress={handleStartEditKey}
+              />
+            )}
           </Card>
         </AnimatedView>
       </ScrollView>
