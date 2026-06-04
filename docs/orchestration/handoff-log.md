@@ -166,3 +166,21 @@ p1_issues:
 final_verification: "expo doctor PASS (19/19); tsc PASS; lint 0 errors 0 warnings; jest 9 suites / 54 tests PASS"
 next_stage: Stage6-QA
 blockers: []
+
+## Stage6-QA — 2026-06-04
+status: COMPLETE
+gate7: PASS
+gate8: PASS
+p0_issues: none
+p1_issues:
+  - StyleSheet.create in AnimatedSplash.tsx (layout-only, no hex, low risk)
+  - Unused import SUPPORTED_LOCALES in journal.tsx (ESLint warning)
+  - Array<T> style warning in horary.ts (ESLint warning)
+  - Jest worker force-exit warning (timer leak, does not affect results)
+  - secureKeyService.ts 14% coverage (expected — thin SecureStore wrapper)
+  - loading_min_duration withMinDuration hook exists but not wired to mutation
+  - npm audit 13 moderate vulns (all transitive Expo SDK 55, not actionable)
+  - docs/features/testing.md baseline stale (documents 9/54, actual is 10/71)
+artifacts: [docs/qa-summary.md, docs/demo-readiness.md]
+test_result: "10 suites / 71 tests PASS (baseline was 9/54 — suite grew, no regression)"
+blockers: []

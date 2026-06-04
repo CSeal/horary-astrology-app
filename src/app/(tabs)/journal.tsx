@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/Button';
 import { useJournal } from '@/hooks/useJournal';
 import { colors, typography } from '@/constants/theme';
 import type { JournalEntry } from '@/types/journal';
-import { SUPPORTED_LOCALES, type SupportedLocale } from '@/constants/config';
+import type { SupportedLocale } from '@/constants/config';
 
 const DATE_LOCALE_MAP: Record<SupportedLocale, string> = {
   en: 'en-US',

@@ -392,7 +392,7 @@ export interface WireAIClassification {
   confidence: number;
   reasoning?: string;
   detected_language?: string;
-  alternatives?: Array<{ category: string; subcategory: string; confidence: number }> | null;
+  alternatives?: { category: string; subcategory: string; confidence: number }[] | null;
   warnings?: string[];
 }
 
