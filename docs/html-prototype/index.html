@@ -875,29 +875,29 @@
     /* ── Sparkle idle pulse (mirrors Sparkles icon pulse in index.tsx) ─────────── */
     @keyframes spk-pulse  { 0%,100% { transform:scale(1); opacity:0.7; } 50% { transform:scale(1.22); opacity:1; } }
 
-    .anim-nav    { animation: nav-enter  700ms cubic-bezier(0.16,1,0.3,1) both; }
-    .anim-up     { animation: content-up 700ms cubic-bezier(0.16,1,0.3,1) both; }
-    .anim-load   { animation: load-enter 700ms cubic-bezier(0.16,1,0.3,1) 180ms both; }
-    .anim-d100   { animation-delay:180ms; }
-    .anim-d200   { animation-delay:360ms; }
-    .anim-d280   { animation-delay:500ms; }
+    .anim-nav    { animation: nav-enter  900ms cubic-bezier(0.25,0.46,0.45,0.94) both; }
+    .anim-up     { animation: content-up 900ms cubic-bezier(0.25,0.46,0.45,0.94) both; }
+    .anim-load   { animation: load-enter 900ms cubic-bezier(0.25,0.46,0.45,0.94) 200ms both; }
+    .anim-d100   { animation-delay:200ms; }
+    .anim-d200   { animation-delay:400ms; }
+    .anim-d280   { animation-delay:560ms; }
 
     .verdict-star-svg {
       display:block; margin:0 auto 6px;
       transform-origin:50% 50%;
-      animation: star-spin 1000ms cubic-bezier(0.16,1,0.3,1) 80ms both;
+      animation: star-spin 1200ms cubic-bezier(0.25,0.46,0.45,0.94) 100ms both;
     }
     .glow-ring {
       position:absolute; inset:-8px; border-radius:20px;
       pointer-events:none; z-index:0;
-      animation: glow-burst 1400ms ease-out both;
+      animation: glow-burst 1600ms ease-out both;
     }
-    .glow-ring-2 { animation-delay:220ms; }
+    .glow-ring-2 { animation-delay:260ms; }
     .conf-dot {
       width:10px; height:10px; border-radius:50%; background:#22D3A4;
-      animation: dot-pop 450ms cubic-bezier(0.16,1,0.3,1) both;
+      animation: dot-pop 550ms cubic-bezier(0.25,0.46,0.45,0.94) both;
     }
-    .sparkle-spk { display:inline-block; animation: spk-pulse 2.2s ease-in-out 0.8s infinite; }
+    .sparkle-spk { display:inline-block; animation: spk-pulse 2.4s ease-in-out 1s infinite; }
 
     .loading-question {
       font-family: var(--font-display);
@@ -1494,26 +1494,26 @@
             <div class="verdict-compact-word">YES</div>
             <!-- Confidence dots (mirrors StaggerDot: 400/480/560ms) -->
             <div style="display:flex;align-items:center;gap:6px;justify-content:center;margin-top:10px;">
-              <div class="conf-dot" style="animation-delay:700ms;"></div>
-              <div class="conf-dot" style="animation-delay:850ms;"></div>
-              <div class="conf-dot" style="animation-delay:1000ms;"></div>
+              <div class="conf-dot" style="animation-delay:900ms;"></div>
+              <div class="conf-dot" style="animation-delay:1100ms;"></div>
+              <div class="conf-dot" style="animation-delay:1300ms;"></div>
               <span class="confidence-pill" style="margin-left:4px;">HIGH CONFIDENCE</span>
             </div>
           </div>
         </div>
 
         <!-- Chart strength bar -->
-        <div class="chart-strength-row anim-up" style="animation-delay:420ms;">
+        <div class="chart-strength-row anim-up" style="animation-delay:560ms;">
           <span class="chart-strength-label">Chart Strength</span>
           <div class="strength-track"><div class="strength-fill"></div></div>
           <span class="strength-pill">Strong</span>
         </div>
 
         <!-- AI Summary -->
-        <div class="ai-summary anim-up" style="animation-delay:600ms;">"Saturn applies to the cusp ruler with dignity. Mutual reception supports the matter. The Moon's final aspect perfects the promise."</div>
+        <div class="ai-summary anim-up" style="animation-delay:760ms;">"Saturn applies to the cusp ruler with dignity. Mutual reception supports the matter. The Moon's final aspect perfects the promise."</div>
 
         <!-- Timing teaser -->
-        <div class="timing-teaser anim-up" style="animation-delay:760ms;" onclick="showScreen('verdict-full')">
+        <div class="timing-teaser anim-up" style="animation-delay:940ms;" onclick="showScreen('verdict-full')">
           <span style="font-size:16px;">🕐</span>
           <span class="timing-teaser-text">Likely within 3 months</span>
           <span class="timing-chevron">→</span>
@@ -1523,7 +1523,7 @@
     </div>
 
     <!-- Pinned CTA -->
-    <div id="verdict-cta" class="verdict-cta-area anim-up" style="animation-delay:900ms;">
+    <div id="verdict-cta" class="verdict-cta-area anim-up" style="animation-delay:1100ms;">
       <div class="verdict-cta-hint">Significators · Aspects · Timing</div>
       <button class="btn-primary" onclick="showScreen('verdict-full')" style="font-family:var(--font-display);font-size:17px;">See Full Reading →</button>
     </div>
