@@ -4,6 +4,7 @@
 
 import en from '@/i18n/en';
 import ru from '@/i18n/ru';
+import uk from '@/i18n/uk';
 import de from '@/i18n/de';
 import fr from '@/i18n/fr';
 import pt from '@/i18n/pt';
@@ -34,6 +35,7 @@ const flatEn = flatten(en as unknown as Dict);
 
 const LOCALES = [
   { code: 'ru', flat: flatten(ru as unknown as Dict) },
+  { code: 'uk', flat: flatten(uk as unknown as Dict) },
   { code: 'de', flat: flatten(de as unknown as Dict) },
   { code: 'fr', flat: flatten(fr as unknown as Dict) },
   { code: 'pt', flat: flatten(pt as unknown as Dict) },

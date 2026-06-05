@@ -25,8 +25,8 @@ const fr = {
     changeLocation: 'Modifier',
     questionLimitBanner: 'Vous avez atteint votre limite mensuelle de questions. Un accès illimité arrive bientôt.',
     charCount: '{{count}} / {{max}}',
-    locationDeniedPickCity: 'Location access denied — pick a city to continue', // TODO i18n: translate to fr
-    chooseCity: 'Choose city', // TODO i18n: translate to fr
+    locationDeniedPickCity: 'Accès à la localisation refusé — choisissez une ville pour continuer',
+    chooseCity: 'Choisir une ville',
   },
 
   // Subcategories per category
@@ -128,13 +128,13 @@ const fr = {
     // Phase 1.5 — C+ verdict layout
     backJournal: 'Chroniques',
     fullReadingTitle: 'Lecture complète',
-    chartTitle: 'Horary Chart', // TODO i18n: translate to fr
+    chartTitle: 'Thème Horaire',
     chartStrengthLabel: 'Force du thème',
     chartStrengthStrong: 'Un thème solide — bien apte à être jugé.',
     chartStrengthBorderline: 'Radicalité limite — le thème est apte à être jugé, mais sans grande force.',
     chartStrengthWeak: 'Le thème est faible — lisez le verdict avec prudence.',
-    testimonyTitle: 'Testimonies',
-    testimonyNeutral: '○ {{n}} neutral',
+    testimonyTitle: 'Témoignages',
+    testimonyNeutral: '○ {{n}} neutre',
     vocMoonTitle: 'La Lune est vide de course',
     vocVoidPill: 'VIDE',
     vocSignLabel: 'Signe',
@@ -156,44 +156,44 @@ const fr = {
     seeFullReading: 'Voir la lecture complète',
     fullReadingHint: 'Significateurs · Perfections · Timing',
     askAgain: '✦ Reposer une question le moment venu',
-    receptionTitle: 'Reception',
-    receptionMutual: 'MUTUAL',
-    receptionOneWay: 'ONE-WAY',
-    perfectionTitle: 'Perfection Path',
-    perfectionEnables: 'ENABLES',
-    perfectionBlocks: 'BLOCKS',
-    keyFactorsTitle: 'Key Factors',
-    radicalityChecksTitle: 'Radicality Checks',
-    radicalityShowAll: 'show all ({{count}})',
-    radicalityShowFewer: 'show fewer',
+    receptionTitle: 'Réception',
+    receptionMutual: 'MUTUELLE',
+    receptionOneWay: 'UNILATÉRALE',
+    perfectionTitle: 'Chemin de Perfection',
+    perfectionEnables: 'ACTIVE',
+    perfectionBlocks: 'BLOQUE',
+    keyFactorsTitle: 'Facteurs Clés',
+    radicalityChecksTitle: 'Vérifications de Radicalité',
+    radicalityShowAll: 'afficher tous ({{count}})',
+    radicalityShowFewer: 'afficher moins',
     radicalitySeverity: {
-      severe: 'severe',
-      moderate: 'moderate',
-      mild: 'mild',
+      severe: 'Grave',
+      moderate: 'Modéré',
+      mild: 'Léger',
     },
-    timingBasedOn: 'Based on: {{text}}',
+    timingBasedOn: 'Basé sur : {{text}}',
     timingConfidence: {
-      very_high: 'Very High Confidence',
-      high: 'High Confidence',
-      medium: 'Medium Confidence',
-      low: 'Low Confidence',
-      very_low: 'Very Low Confidence',
+      very_high: 'Très Haute Confiance',
+      high: 'Haute Confiance',
+      medium: 'Confiance Moyenne',
+      low: 'Faible Confiance',
+      very_low: 'Très Faible Confiance',
     },
-    vocTreatmentMitigated: 'VOC mitigated by applying aspect',
-    vocTreatmentNegation: 'VOC — chart leans toward denial',
-    vocTreatmentIgnored: 'VOC disregarded — direct aspect perfects',
+    vocTreatmentMitigated: 'VOC atténué par aspect applicant',
+    vocTreatmentNegation: 'VOC — le thème penche vers le refus',
+    vocTreatmentIgnored: 'VOC ignoré — aspect direct se perfectionne',
     moonToQuesited: '☽ → {{planet}} {{aspect}} ({{deg}}°)',
     pathDirect: 'DIRECT',
-    pathSupported: 'SUPPORTED',
-    pathChallenged: 'CHALLENGED',
-    pathMixed: 'MIXED',
+    pathSupported: 'SOUTENU',
+    pathChallenged: 'DÉFIÉ',
+    pathMixed: 'MIXTE',
   },
 
   // Accidental conditions (significator condition pills)
   conditions: {
-    combust: 'combust',
-    cazimi: 'cazimi',
-    under_beams: 'under ☀',
+    combust: 'combustion',
+    cazimi: 'Cazimi',
+    under_beams: 'sous ☀',
   },
 
   // Aspect type names (used in AspectRow)
@@ -216,11 +216,24 @@ const fr = {
     deleteConfirm: 'Supprimer',
     deleteCancel: 'Annuler',
     deleteAction: 'Supprimer',
-    // Phase 2a — outcome tracking (TODO: translate to French)
-    outcomeLabel: 'Outcome',
-    outcomeCameTrue: 'Came true',
-    outcomeDidNot: "Didn't happen",
-    outcomePending: 'Pending',
+    // Phase 2a — outcome tracking
+    outcomeLabel: 'Résultat',
+    outcomeCameTrue: 'Avéré',
+    outcomeDidNot: "Ne s'est pas réalisé",
+    outcomePending: 'En attente',
+  },
+
+  // Outcome reminder push notifications (Stage 6c)
+  notifications: {
+    sectionTitle: 'Rappels de Résultats',
+    enabled: 'Rappels',
+    delayLabel: 'Me rappeler après',
+    delay7: '7 jours',
+    delay14: '14 jours',
+    delay30: '30 jours',
+    hint: 'Nous vous rappellerons de noter le résultat des questions sans enregistrement.',
+    permissionDenied: 'Autorisez les notifications dans les paramètres de l\'appareil pour activer les rappels.',
+    outcomeTitle: 'Qu\'est-il arrivé ?',
   },
 
   // Settings screen
@@ -397,6 +410,41 @@ const fr = {
     cta: 'Mettre à jour maintenant',
   },
 
+  // Streak badge
+  streak: {
+    badge_one: '🔥 {{count}} jour d\'affilée',
+    badge_few: '🔥 {{count}} jours d\'affilée',
+    badge_many: '🔥 {{count}} jours d\'affilée',
+    badge_other: '🔥 {{count}} jours d\'affilée',
+  },
+
+  // On this day banner
+  onThisDay: {
+    title_one: 'Ce jour, il y a un an',
+    title_few: 'Ce jour, il y a {{count}} ans',
+    title_many: 'Ce jour, il y a {{count}} ans',
+    title_other: 'Ce jour, il y a {{count}} ans',
+    markOutcome: 'noter le résultat',
+    open: 'Ouvrir →',
+  },
+
+  // Statistics screen
+  stats: {
+    title: 'Mes Statistiques',
+    totalQuestions_one: '{{count}} question',
+    totalQuestions_few: '{{count}} questions',
+    totalQuestions_many: '{{count}} questions',
+    totalQuestions_other: '{{count}} questions',
+    streakLabel: 'd\'affilée',
+    accuracyLabel: 'précision',
+    verdicts: 'Verdicts',
+    outcomes: 'Résultats',
+    outcomesSet: '{{set}} sur {{total}} suivi(s)',
+    activity: 'Activité (6 derniers mois)',
+    topCategories: 'Thèmes Principaux',
+    noData: 'Posez votre première question pour voir les statistiques ici.',
+  },
+
   // Accessibility labels
   a11y: {
     askButton: 'Demander aux étoiles. Soumettre votre question horaire.',
@@ -404,6 +452,7 @@ const fr = {
     journalEntry: 'Verdict {{verdict}} pour la question : {{question}}. Date : {{date}}.',
     homeTab: 'Demander',
     journalTab: 'Chroniques',
+    statsTab: 'Statistiques',
     settingsTab: 'Almanach',
     backButton: 'Retour',
     settingsIcon: 'Ouvrir les paramètres',

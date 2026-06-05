@@ -225,6 +225,19 @@ const en = {
     outcomePending: 'Pending',
   },
 
+  // Outcome reminder push notifications (Stage 6c)
+  notifications: {
+    sectionTitle: 'Outcome Reminders',
+    enabled: 'Reminders',
+    delayLabel: 'Remind me after',
+    delay7: '7 days',
+    delay14: '14 days',
+    delay30: '30 days',
+    hint: "We'll remind you to mark the outcome of questions without a recorded result.",
+    permissionDenied: 'Allow notifications in device Settings to enable reminders.',
+    outcomeTitle: 'What happened?',
+  },
+
   // Settings screen
   settings: {
     title: 'My Almanac',
@@ -400,6 +413,41 @@ const en = {
     cta: 'Update Now',
   },
 
+  // Streak badge (retention) — i18next plural suffixes
+  streak: {
+    badge_one: '🔥 {{count}} day in a row',
+    badge_few: '🔥 {{count}} days in a row',
+    badge_many: '🔥 {{count}} days in a row',
+    badge_other: '🔥 {{count}} days in a row',
+  },
+
+  // "On this day" recall banner — count = years ago
+  onThisDay: {
+    title_one: 'On this day, a year ago',
+    title_few: 'On this day, {{count}} years ago',
+    title_many: 'On this day, {{count}} years ago',
+    title_other: 'On this day, {{count}} years ago',
+    markOutcome: 'mark outcome',
+    open: 'Open →',
+  },
+
+  // Statistics screen
+  stats: {
+    title: 'My Statistics',
+    totalQuestions_one: '{{count}} question',
+    totalQuestions_few: '{{count}} questions',
+    totalQuestions_many: '{{count}} questions',
+    totalQuestions_other: '{{count}} questions',
+    streakLabel: 'in a row',
+    accuracyLabel: 'accuracy',
+    verdicts: 'Verdicts',
+    outcomes: 'Outcomes',
+    outcomesSet: '{{set}} of {{total}} tracked',
+    activity: 'Activity (last 6 months)',
+    topCategories: 'Top Topics',
+    noData: 'Ask your first question to see statistics here.',
+  },
+
   // Accessibility labels
   a11y: {
     askButton: 'Ask the Stars. Submit your horary question.',
@@ -407,6 +455,7 @@ const en = {
     journalEntry: '{{verdict}} verdict for question: {{question}}. Date: {{date}}.',
     homeTab: 'Ask',
     journalTab: 'Chronicles',
+    statsTab: 'Insights',
     settingsTab: 'Almanac',
     backButton: 'Go back',
     settingsIcon: 'Open settings',

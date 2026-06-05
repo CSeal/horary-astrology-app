@@ -25,8 +25,8 @@ const pt = {
     changeLocation: 'Alterar',
     questionLimitBanner: 'Você atingiu o limite mensal de perguntas. Acesso ilimitado em breve.',
     charCount: '{{count}} / {{max}}',
-    locationDeniedPickCity: 'Location access denied — pick a city to continue', // TODO i18n: translate to pt
-    chooseCity: 'Choose city', // TODO i18n: translate to pt
+    locationDeniedPickCity: 'Acesso à localização negado — escolha uma cidade para continuar',
+    chooseCity: 'Escolher cidade',
   },
 
   // Subcategories per category
@@ -129,12 +129,12 @@ const pt = {
     // Phase 1.5 — C+ verdict layout
     backJournal: 'Crônicas',
     fullReadingTitle: 'Leitura Completa',
-    chartTitle: 'Horary Chart', // TODO i18n: translate to pt
+    chartTitle: 'Mapa Horário',
     chartStrengthLabel: 'Força do Mapa',
     chartStrengthStrong: 'Um mapa forte — bem adequado para julgar.',
     chartStrengthBorderline: 'Radicalidade limítrofe — o mapa é adequado para julgar, mas não fortemente.',
     chartStrengthWeak: 'O mapa está fraco — leia o veredito com cautela.',
-    testimonyTitle: 'Testimonies',
+    testimonyTitle: 'Testemunhos',
     testimonyNeutral: '○ {{n}} neutral',
     vocMoonTitle: 'A Lua está Vazia de Curso',
     vocVoidPill: 'VAZIA',
@@ -157,44 +157,44 @@ const pt = {
     seeFullReading: 'Ver a leitura completa',
     fullReadingHint: 'Significadores · Perfeições · Timing',
     askAgain: '✦ Pergunte novamente quando estiver pronto',
-    receptionTitle: 'Reception',
-    receptionMutual: 'MUTUAL',
-    receptionOneWay: 'ONE-WAY',
-    perfectionTitle: 'Perfection Path',
-    perfectionEnables: 'ENABLES',
-    perfectionBlocks: 'BLOCKS',
-    keyFactorsTitle: 'Key Factors',
-    radicalityChecksTitle: 'Radicality Checks',
-    radicalityShowAll: 'show all ({{count}})',
-    radicalityShowFewer: 'show fewer',
+    receptionTitle: 'Recepção',
+    receptionMutual: 'MÚTUA',
+    receptionOneWay: 'UNILATERAL',
+    perfectionTitle: 'Caminho de Perfeição',
+    perfectionEnables: 'HABILITA',
+    perfectionBlocks: 'BLOQUEIA',
+    keyFactorsTitle: 'Fatores-Chave',
+    radicalityChecksTitle: 'Verificações de Radicalidade',
+    radicalityShowAll: 'mostrar todos ({{count}})',
+    radicalityShowFewer: 'mostrar menos',
     radicalitySeverity: {
-      severe: 'severe',
-      moderate: 'moderate',
-      mild: 'mild',
+      severe: 'Severa',
+      moderate: 'Moderada',
+      mild: 'Leve',
     },
-    timingBasedOn: 'Based on: {{text}}',
+    timingBasedOn: 'Baseado em: {{text}}',
     timingConfidence: {
-      very_high: 'Very High Confidence',
-      high: 'High Confidence',
-      medium: 'Medium Confidence',
-      low: 'Low Confidence',
-      very_low: 'Very Low Confidence',
+      very_high: 'Confiança Muito Alta',
+      high: 'Confiança Alta',
+      medium: 'Confiança Média',
+      low: 'Confiança Baixa',
+      very_low: 'Confiança Muito Baixa',
     },
-    vocTreatmentMitigated: 'VOC mitigated by applying aspect',
-    vocTreatmentNegation: 'VOC — chart leans toward denial',
-    vocTreatmentIgnored: 'VOC disregarded — direct aspect perfects',
+    vocTreatmentMitigated: 'Lua vazia mitigada por aspecto aplicável',
+    vocTreatmentNegation: 'Lua vazia — mapa tende à negação',
+    vocTreatmentIgnored: 'Lua vazia desconsiderada — aspecto direto se perfeita',
     moonToQuesited: '☽ → {{planet}} {{aspect}} ({{deg}}°)',
-    pathDirect: 'DIRECT',
-    pathSupported: 'SUPPORTED',
-    pathChallenged: 'CHALLENGED',
-    pathMixed: 'MIXED',
+    pathDirect: 'DIRETO',
+    pathSupported: 'APOIADO',
+    pathChallenged: 'DESAFIADO',
+    pathMixed: 'MISTO',
   },
 
   // Accidental conditions (significator condition pills)
   conditions: {
-    combust: 'combust',
-    cazimi: 'cazimi',
-    under_beams: 'under ☀',
+    combust: 'combustão',
+    cazimi: 'Cazimi',
+    under_beams: 'sob ☀',
   },
 
   // Aspect type names (used in AspectRow)
@@ -217,11 +217,24 @@ const pt = {
     deleteConfirm: 'Excluir',
     deleteCancel: 'Cancelar',
     deleteAction: 'Excluir',
-    // Phase 2a — outcome tracking (TODO: translate to Portuguese)
-    outcomeLabel: 'Outcome',
-    outcomeCameTrue: 'Came true',
-    outcomeDidNot: "Didn't happen",
-    outcomePending: 'Pending',
+    // Phase 2a — outcome tracking
+    outcomeLabel: 'Resultado',
+    outcomeCameTrue: 'Realizou',
+    outcomeDidNot: 'Não aconteceu',
+    outcomePending: 'Pendente',
+  },
+
+  // Outcome reminder push notifications (Stage 6c)
+  notifications: {
+    sectionTitle: 'Lembretes de Resultado',
+    enabled: 'Lembretes',
+    delayLabel: 'Me lembrar após',
+    delay7: '7 dias',
+    delay14: '14 dias',
+    delay30: '30 dias',
+    hint: 'Vamos te lembrar de marcar o resultado de perguntas sem resultado registrado.',
+    permissionDenied: 'Permita notificações nas Configurações do dispositivo para ativar lembretes.',
+    outcomeTitle: 'O que aconteceu?',
   },
 
   // Settings screen
@@ -407,6 +420,41 @@ const pt = {
     cta: 'Atualizar agora',
   },
 
+  // Streak badge
+  streak: {
+    badge_one: '🔥 {{count}} dia seguido',
+    badge_few: '🔥 {{count}} dias seguidos',
+    badge_many: '🔥 {{count}} dias seguidos',
+    badge_other: '🔥 {{count}} dias seguidos',
+  },
+
+  // On this day banner
+  onThisDay: {
+    title_one: 'Neste dia, há um ano',
+    title_few: 'Neste dia, há {{count}} anos',
+    title_many: 'Neste dia, há {{count}} anos',
+    title_other: 'Neste dia, há {{count}} anos',
+    markOutcome: 'marcar resultado',
+    open: 'Abrir →',
+  },
+
+  // Statistics screen
+  stats: {
+    title: 'Minhas Estatísticas',
+    totalQuestions_one: '{{count}} pergunta',
+    totalQuestions_few: '{{count}} perguntas',
+    totalQuestions_many: '{{count}} perguntas',
+    totalQuestions_other: '{{count}} perguntas',
+    streakLabel: 'dias seguidos',
+    accuracyLabel: 'precisão',
+    verdicts: 'Veredictos',
+    outcomes: 'Resultados',
+    outcomesSet: '{{set}} de {{total}} rastreados',
+    activity: 'Atividade (últimos 6 meses)',
+    topCategories: 'Tópicos Principais',
+    noData: 'Faça sua primeira pergunta para ver estatísticas aqui.',
+  },
+
   // Accessibility labels
   a11y: {
     askButton: 'Perguntar às estrelas. Envie sua pergunta horária.',
@@ -415,7 +463,8 @@ const pt = {
       'Veredicto {{verdict}} para a pergunta: {{question}}. Data: {{date}}.',
     homeTab: 'Perguntar',
     journalTab: 'Crônicas',
-    settingsTab: 'Almanaque',
+    statsTab: 'Estatísticas',
+    settingsTab: 'Meu Almanaque',
     backButton: 'Voltar',
     settingsIcon: 'Abrir configurações',
     openLocationPicker: 'Alterar localização',

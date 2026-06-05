@@ -4,7 +4,7 @@
 
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, BookOpen, Settings as SettingsIcon } from 'lucide-react-native';
+import { Sparkles, BookOpen, BarChart2, Settings as SettingsIcon } from 'lucide-react-native';
 import { colors, typography } from '@/constants/theme';
 
 export default function TabsLayout() {
@@ -42,6 +42,14 @@ export default function TabsLayout() {
           title: t('a11y.journalTab'),
           tabBarAccessibilityLabel: t('a11y.journalTab'),
           tabBarIcon: ({ color, size }) => <BookOpen color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="stats"
+        options={{
+          title: t('a11y.statsTab'),
+          tabBarAccessibilityLabel: t('a11y.statsTab'),
+          tabBarIcon: ({ color, size }) => <BarChart2 color={color} size={size} />,
         }}
       />
       <Tabs.Screen

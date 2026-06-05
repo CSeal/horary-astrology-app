@@ -8,8 +8,11 @@ import { useRouter } from 'expo-router';
 import { horaryApi } from '@/services/horaryApi';
 import { mockHoraryApi } from '@/services/mockHoraryApi';
 import { reviewPromptService } from '@/services/reviewPromptService';
+import { notificationService } from '@/services/notificationService';
 import { useQuestionsStore } from '@/stores/questionsStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { useDebugStore } from '@/stores/debugStore';
+import i18n from '@/i18n/index';
 import { LOADING_MIN_DURATION } from '@/constants/config';
 import { withMinDuration } from '@/hooks/withMinDuration';
 import type { HoraryRequest, HoraryResponse, HoraryAPIError } from '@/types/horary';
@@ -23,6 +26,7 @@ function buildJournalEntry(
   return {
     id: response.id,
     question: request.question,
+    category: request.category,
     verdict: response.verdict,
     confidence_band: response.confidence_band,
     summary: response.summary,
@@ -72,6 +76,24 @@ export function useHoraryQuery(city?: string) {
       const entry = buildJournalEntry(variables, data, city);
       await addEntry(entry);
       router.replace(`/result/${entry.id}` as never);
+
+      // Stage 6c — schedule an outcome reminder if notifications are enabled.
+      // Best-effort: permission/scheduling failures must never block navigation.
+      const { notificationsEnabled, notificationDelayDays } =
+        useSettingsStore.getState();
+      if (notificationsEnabled) {
+        const questionTrunc = variables.question.slice(0, 80);
+        notificationService
+          .schedule(
+            entry,
+            notificationDelayDays,
+            questionTrunc,
+            i18n.t('notifications.outcomeTitle')
+          )
+          .catch(() => {
+            /* outcome reminder is best-effort — swallow all errors */
+          });
+      }
 
       // FR-G02 — best-effort review prompt. Deferred 2s so the verdict reveal
       // animation completes first; never awaited so it can't block navigation.

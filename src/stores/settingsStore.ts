@@ -26,12 +26,16 @@ interface SettingsState {
   locationSource: LocationSource;
   homeLocation: LocationOverride | null;
   zodiacType: ZodiacType;
+  notificationsEnabled: boolean;
+  notificationDelayDays: 7 | 14 | 30;
   setLocale: (locale: SupportedLocale) => Promise<void>;
   setApiKeySource: (source: 'personal' | 'default') => void;
   completeOnboarding: () => Promise<void>;
   setLocationSource: (source: LocationSource) => Promise<void>;
   setHomeLocation: (location: LocationOverride | null) => Promise<void>;
   setZodiacType: (type: ZodiacType) => Promise<void>;
+  setNotificationsEnabled: (enabled: boolean) => Promise<void>;
+  setNotificationDelayDays: (days: 7 | 14 | 30) => Promise<void>;
   hydrate: () => Promise<void>;
 }
 
@@ -42,6 +46,8 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   locationSource: 'device',
   homeLocation: null,
   zodiacType: DEFAULT_ZODIAC_TYPE,
+  notificationsEnabled: false,
+  notificationDelayDays: 14,
 
   setLocale: async (locale: SupportedLocale) => {
     set({ locale });
@@ -106,16 +112,49 @@ export const useSettingsStore = create<SettingsState>((set) => ({
     }
   },
 
+  setNotificationsEnabled: async (enabled: boolean) => {
+    set({ notificationsEnabled: enabled });
+    try {
+      await AsyncStorage.setItem(
+        ASYNC_STORAGE_KEYS.NOTIFICATIONS_ENABLED,
+        enabled ? '1' : '0'
+      );
+    } catch {
+      console.error('[settingsStore] Failed to persist notifications flag');
+    }
+  },
+
+  setNotificationDelayDays: async (days: 7 | 14 | 30) => {
+    set({ notificationDelayDays: days });
+    try {
+      await AsyncStorage.setItem(
+        ASYNC_STORAGE_KEYS.NOTIFICATION_DELAY_DAYS,
+        String(days)
+      );
+    } catch {
+      console.error('[settingsStore] Failed to persist notification delay');
+    }
+  },
+
   hydrate: async () => {
     try {
-      const [storedLocale, onboardingFlag, storedSource, storedHome, storedZodiac] =
-        await Promise.all([
-          AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LANGUAGE),
-          AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ONBOARDING_COMPLETE),
-          AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LOCATION_SOURCE),
-          AsyncStorage.getItem(ASYNC_STORAGE_KEYS.HOME_LOCATION),
-          AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ZODIAC_TYPE),
-        ]);
+      const [
+        storedLocale,
+        onboardingFlag,
+        storedSource,
+        storedHome,
+        storedZodiac,
+        storedNotifEnabled,
+        storedNotifDelay,
+      ] = await Promise.all([
+        AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LANGUAGE),
+        AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ONBOARDING_COMPLETE),
+        AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LOCATION_SOURCE),
+        AsyncStorage.getItem(ASYNC_STORAGE_KEYS.HOME_LOCATION),
+        AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ZODIAC_TYPE),
+        AsyncStorage.getItem(ASYNC_STORAGE_KEYS.NOTIFICATIONS_ENABLED),
+        AsyncStorage.getItem(ASYNC_STORAGE_KEYS.NOTIFICATION_DELAY_DAYS),
+      ]);
       const update: Partial<SettingsState> = {};
       if (SUPPORTED_LOCALES.includes(storedLocale as SupportedLocale)) update.locale = storedLocale as SupportedLocale;
       if (onboardingFlag === '1') update.onboardingComplete = true;
@@ -131,6 +170,11 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       }
       if (storedZodiac === 'Tropic' || storedZodiac === 'Sidereal') {
         update.zodiacType = storedZodiac;
+      }
+      if (storedNotifEnabled === '1') update.notificationsEnabled = true;
+      const delay = Number(storedNotifDelay);
+      if (delay === 7 || delay === 14 || delay === 30) {
+        update.notificationDelayDays = delay;
       }
       set(update);
     } catch {

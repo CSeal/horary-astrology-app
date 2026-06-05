@@ -17,7 +17,8 @@
       "bundleIdentifier": "com.astrask.horary",
       "appleTeamId": "DGAHHMV358",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Your exact location at the moment of asking is required to cast an accurate horary chart."
+        "NSLocationWhenInUseUsageDescription": "Your exact location at the moment of asking is required to cast an accurate horary chart.",
+        "NSUserNotificationUsageDescription": "We'll remind you to mark the outcome of your horary readings."
       }
     },
     "android": {
@@ -30,7 +31,8 @@
       },
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "RECEIVE_BOOT_COMPLETED"
       ]
     },
     "plugins": [
@@ -47,6 +49,14 @@
         }
       ],
       "expo-secure-store",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/android-icon-monochrome.png",
+          "color": "#1A1A2E",
+          "sounds": []
+        }
+      ],
       [
         "expo-location",
         {

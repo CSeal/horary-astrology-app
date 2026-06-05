@@ -214,6 +214,19 @@ const ru = {
     outcomePending: 'В ожидании',
   },
 
+  // Outcome reminder push notifications (Stage 6c)
+  notifications: {
+    sectionTitle: 'Напоминания об исходах',
+    enabled: 'Напоминания',
+    delayLabel: 'Напомнить через',
+    delay7: '7 дней',
+    delay14: '14 дней',
+    delay30: '30 дней',
+    hint: 'Мы напомним отметить исход вопросов без записанного результата.',
+    permissionDenied: 'Разрешите уведомления в настройках устройства.',
+    outcomeTitle: 'Что произошло?',
+  },
+
   settings: {
     title: 'Мой альманах',
     appVersion: 'Версия {{version}}',
@@ -378,12 +391,45 @@ const ru = {
     cta: 'Обновить',
   },
 
+  streak: {
+    badge_one: '🔥 {{count}} день подряд',
+    badge_few: '🔥 {{count}} дня подряд',
+    badge_many: '🔥 {{count}} дней подряд',
+    badge_other: '🔥 {{count}} дней подряд',
+  },
+
+  onThisDay: {
+    title_one: 'В этот день, год назад',
+    title_few: 'В этот день, {{count}} года назад',
+    title_many: 'В этот день, {{count}} лет назад',
+    title_other: 'В этот день, {{count}} лет назад',
+    markOutcome: 'отметить исход',
+    open: 'Открыть →',
+  },
+
+  stats: {
+    title: 'Моя статистика',
+    totalQuestions_one: '{{count}} вопрос',
+    totalQuestions_few: '{{count}} вопроса',
+    totalQuestions_many: '{{count}} вопросов',
+    totalQuestions_other: '{{count}} вопросов',
+    streakLabel: 'подряд',
+    accuracyLabel: 'точность',
+    verdicts: 'Вердикты',
+    outcomes: 'Исходы',
+    outcomesSet: '{{set}} из {{total}} отмечено',
+    activity: 'Активность (6 месяцев)',
+    topCategories: 'Топ тем',
+    noData: 'Задайте первый вопрос, чтобы увидеть статистику.',
+  },
+
   a11y: {
     askButton: 'Спроси звёзды. Отправить гороскопический вопрос.',
     verdictCard: 'Приговор {{verdict}}. Уверенность: {{confidence}}.',
     journalEntry: 'Приговор {{verdict}} для вопроса: {{question}}. Дата: {{date}}.',
     homeTab: 'Спроси',
     journalTab: 'Хроники',
+    statsTab: 'Аналитика',
     settingsTab: 'Альманах',
     backButton: 'Назад',
     settingsIcon: 'Открыть настройки',

@@ -9,8 +9,10 @@ import { Sparkles } from 'lucide-react-native';
 import { SafeAreaView, ScrollView, View, Text } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { JournalItem } from '@/components/JournalItem';
+import { StreakBadge } from '@/components/StreakBadge';
 import { Button } from '@/components/ui/Button';
 import { useJournal } from '@/hooks/useJournal';
+import { useStreak } from '@/hooks/useStreak';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { colors, typography } from '@/constants/theme';
 import type { JournalEntry } from '@/types/journal';
@@ -19,6 +21,7 @@ import type { SupportedLocale } from '@/constants/config';
 const DATE_LOCALE_MAP: Record<SupportedLocale, string> = {
   en: 'en-US',
   ru: 'ru-RU',
+  uk: 'uk-UA',
   de: 'de-DE',
   fr: 'fr-FR',
   pt: 'pt-BR',
@@ -65,6 +68,7 @@ export default function JournalScreen() {
   const router = useRouter();
   const { t, i18n } = useTranslation();
   const { entries, deleteEntry } = useJournal();
+  const { current: currentStreak } = useStreak();
   const updateOutcome = useQuestionsStore((s) => s.updateOutcome);
 
   const groups = useMemo(
@@ -101,10 +105,11 @@ export default function JournalScreen() {
   return (
     <CosmosBackground>
       <SafeAreaView className="flex-1" edges={['top']}>
-        <View className="px-5 pt-2 pb-4">
+        <View className="flex-row items-center justify-between px-5 pt-2 pb-4">
           <Text className="font-cormorant-medium text-2xl text-text-primary">
             {t('journal.title')}
           </Text>
+          <StreakBadge streak={currentStreak} />
         </View>
 
         <ScrollView

@@ -4,7 +4,7 @@
 // Four cards stagger in from below; the monthly progress bar fills with timing.
 
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { Alert, Share, Linking } from 'react-native';
+import { Alert, Share, Linking, Switch } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import {
@@ -13,6 +13,7 @@ import {
   MapPin,
   Star,
   Clock,
+  Bell,
   Pencil,
   Share2,
   Heart,
@@ -44,6 +45,7 @@ import {
 } from '@/components/LocationPickerSheet';
 import { useSettingsStore } from '@/stores/settingsStore';
 import { secureKeyService } from '@/services/secureKeyService';
+import { notificationService } from '@/services/notificationService';
 import { AppLogo } from '@/components/svg/AppLogo';
 import { useDebugTrigger } from '@/hooks/useDebugTrigger';
 import {
@@ -59,6 +61,7 @@ import type { LocationOverride } from '@/types/location';
 const LANGUAGES: { code: SupportedLocale; flag: string; label: string }[] = [
   { code: 'en', flag: '🇬🇧', label: 'English' },
   { code: 'ru', flag: '🇷🇺', label: 'Русский' },
+  { code: 'uk', flag: '🇺🇦', label: 'Українська' },
   { code: 'de', flag: '🇩🇪', label: 'Deutsch' },
   { code: 'fr', flag: '🇫🇷', label: 'Français' },
   { code: 'pt', flag: '🇧🇷', label: 'Português' },
@@ -77,6 +80,11 @@ export default function SettingsScreen() {
   const setHomeLocation = useSettingsStore((s) => s.setHomeLocation);
   const zodiacType = useSettingsStore((s) => s.zodiacType);
   const setZodiacType = useSettingsStore((s) => s.setZodiacType);
+  const notificationsEnabled = useSettingsStore((s) => s.notificationsEnabled);
+  const setNotificationsEnabled = useSettingsStore((s) => s.setNotificationsEnabled);
+  const notificationDelayDays = useSettingsStore((s) => s.notificationDelayDays);
+  const setNotificationDelayDays = useSettingsStore((s) => s.setNotificationDelayDays);
+  const [notifPermissionDenied, setNotifPermissionDenied] = useState(false);
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [savingKey, setSavingKey] = useState(false);
   const [editingKey, setEditingKey] = useState(false);
@@ -136,6 +144,34 @@ export default function SettingsScreen() {
       cancelled = true;
     };
   }, [setApiKeySource]);
+
+  // Outcome reminder toggle. Turning ON requires OS notification permission;
+  // if denied, revert to off and surface a banner pointing to device Settings.
+  const handleToggleNotifications = useCallback(
+    async (next: boolean) => {
+      if (!next) {
+        setNotifPermissionDenied(false);
+        await setNotificationsEnabled(false);
+        return;
+      }
+      const granted = await notificationService.requestPermission();
+      if (granted) {
+        setNotifPermissionDenied(false);
+        await setNotificationsEnabled(true);
+      } else {
+        setNotifPermissionDenied(true);
+        await setNotificationsEnabled(false);
+      }
+    },
+    [setNotificationsEnabled]
+  );
+
+  const handleSelectDelay = useCallback(
+    (days: 7 | 14 | 30) => {
+      void setNotificationDelayDays(days);
+    },
+    [setNotificationDelayDays]
+  );
 
   const handleLocaleChange = useCallback(
     async (next: SupportedLocale) => {
@@ -230,11 +266,13 @@ export default function SettingsScreen() {
   const s4Op = useSharedValue(0);
   const s5Y = useSharedValue(20);
   const s5Op = useSharedValue(0);
+  const s6Y = useSharedValue(20);
+  const s6Op = useSharedValue(0);
 
   useEffect(() => {
     const spring = { damping: 12, stiffness: 90 };
     const fade = { duration: 350 };
-    // Order: title, language, location, zodiac, timezone, share, key.
+    // Order: title, language, location, zodiac, timezone, share, notifications, key.
     const sections: [SharedValue<number>, SharedValue<number>, number][] = [
       [titleY, titleOp, 0],
       [s0Y, s0Op, 80],
@@ -242,7 +280,8 @@ export default function SettingsScreen() {
       [s5Y, s5Op, 240],
       [s1Y, s1Op, 320],
       [s2Y, s2Op, 400],
-      [s3Y, s3Op, 480],
+      [s6Y, s6Op, 480],
+      [s3Y, s3Op, 560],
     ];
     sections.forEach(([y, op, delay]) => {
       y.value = withDelay(delay, withSpring(0, spring));
@@ -278,6 +317,10 @@ export default function SettingsScreen() {
   const s5Style = useAnimatedStyle(() => ({
     opacity: s5Op.value,
     transform: [{ translateY: s5Y.value }],
+  }));
+  const s6Style = useAnimatedStyle(() => ({
+    opacity: s6Op.value,
+    transform: [{ translateY: s6Y.value }],
   }));
 
 
@@ -571,6 +614,81 @@ export default function SettingsScreen() {
               </Text>
               <ChevronRight color={colors.textSecondary} size={typography.base} />
             </TouchableOpacity>
+          </Card>
+        </AnimatedView>
+
+        {/* OUTCOME REMINDERS */}
+        <AnimatedView style={s6Style} className="gap-2">
+          <View className="flex-row items-center gap-2">
+            <Bell color={colors.accentGold} size={typography.sm} />
+            <Text
+              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+              accessibilityRole="header"
+            >
+              {t('notifications.sectionTitle')}
+            </Text>
+          </View>
+          <Card elevated>
+            <View className="flex-row items-center justify-between min-h-11">
+              <Text className="font-inter text-base text-text-primary">
+                {t('notifications.enabled')}
+              </Text>
+              <Switch
+                value={notificationsEnabled}
+                onValueChange={(next) => void handleToggleNotifications(next)}
+                trackColor={{ true: colors.accentGold, false: colors.border }}
+                thumbColor={colors.textInverse}
+                accessibilityLabel={t('notifications.enabled')}
+              />
+            </View>
+
+            {notifPermissionDenied && (
+              <View className="mt-2 rounded-xl bg-no/15 border border-no px-3 py-2">
+                <Text className="font-inter text-xs text-no">
+                  {t('notifications.permissionDenied')}
+                </Text>
+              </View>
+            )}
+
+            {notificationsEnabled && (
+              <View className="mt-4">
+                <Text className="font-inter text-sm text-text-secondary mb-2">
+                  {t('notifications.delayLabel')}
+                </Text>
+                <View className="flex-row gap-2">
+                  {([7, 14, 30] as const).map((days) => {
+                    const active = notificationDelayDays === days;
+                    return (
+                      <TouchableOpacity
+                        key={days}
+                        onPress={() => handleSelectDelay(days)}
+                        className={`rounded-full px-3 py-1 ${
+                          active
+                            ? 'bg-accent-gold'
+                            : 'bg-bg-surface border border-border'
+                        }`}
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: active }}
+                      >
+                        <Text
+                          className={`text-xs ${
+                            active
+                              ? 'text-text-inverse font-inter-semibold'
+                              : 'text-text-secondary font-inter'
+                          }`}
+                        >
+                          {t(`notifications.delay${days}`)}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            )}
+
+            <Text className="font-inter text-xs text-text-secondary mt-3">
+              {t('notifications.hint')}
+            </Text>
           </Card>
         </AnimatedView>
 

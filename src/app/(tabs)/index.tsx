@@ -4,6 +4,7 @@
 // Header + form rise in gently on mount.
 
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react-native';
 import {
@@ -24,6 +25,15 @@ import {
 } from '@/components/LocationPickerSheet';
 import { useHoraryQuery } from '@/hooks/useHoraryQuery';
 import { useLocation } from '@/hooks/useLocation';
+import { useJournal } from '@/hooks/useJournal';
+import { useStreak } from '@/hooks/useStreak';
+import { StreakBadge } from '@/components/StreakBadge';
+import { OnThisDayBanner } from '@/components/OnThisDayBanner';
+import {
+  findOnThisDayEntries,
+  isDismissedToday,
+  dismissToday,
+} from '@/services/onThisDayService';
 import { useSettingsStore } from '@/stores/settingsStore';
 import {
   DEFAULT_HORARY_CATEGORY,
@@ -33,10 +43,15 @@ import {
 } from '@/constants/config';
 import { colors, typography } from '@/constants/theme';
 import type { HoraryAPIError } from '@/types/horary';
+import type { JournalEntry } from '@/types/journal';
 import type { LocationOverride } from '@/types/location';
 
 export default function HomeScreen() {
   const { t } = useTranslation();
+  const router = useRouter();
+  const { entries } = useJournal();
+  const { current: currentStreak } = useStreak();
+  const [onThisDayEntry, setOnThisDayEntry] = useState<JournalEntry | null>(null);
   const [question, setQuestion] = useState('');
   const [dismissedLimit, setDismissedLimit] = useState(false);
   const [dismissedError, setDismissedError] = useState(false);
@@ -129,6 +144,15 @@ export default function HomeScreen() {
     }
   }, [mutation.isSuccess, override]);
 
+  // Load the "on this day, a year ago" recall entry (unless dismissed today).
+  useEffect(() => {
+    isDismissedToday().then((dismissed) => {
+      if (dismissed) return;
+      const matches = findOnThisDayEntries(entries);
+      if (matches.length > 0) setOnThisDayEntry(matches[0]);
+    });
+  }, [entries]);
+
   const handleOpenPicker = useCallback(() => {
     pickerRef.current?.present();
   }, []);
@@ -183,6 +207,12 @@ export default function HomeScreen() {
               {t('home.title')}
             </Text>
           </AnimatedView>
+
+          {currentStreak > 0 && (
+            <View className="items-center -mt-1">
+              <StreakBadge streak={currentStreak} />
+            </View>
+          )}
 
           {errorMessage && !dismissedError && (
             <Banner
@@ -246,6 +276,17 @@ export default function HomeScreen() {
                 onClearOverride={handleClearOverride}
               />
             </AnimatedView>
+          )}
+
+          {onThisDayEntry && (
+            <OnThisDayBanner
+              entry={onThisDayEntry}
+              onOpen={() => router.push(`/result/${onThisDayEntry.id}` as never)}
+              onDismiss={() => {
+                dismissToday().catch(() => {});
+                setOnThisDayEntry(null);
+              }}
+            />
           )}
         </ScrollView>
       </SafeAreaView>

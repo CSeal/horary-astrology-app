@@ -33,6 +33,9 @@ export const ASYNC_STORAGE_KEYS = {
   LOCATION_SOURCE: 'horary_location_source',
   HOME_LOCATION: 'horary_home_location',
   ZODIAC_TYPE: 'horary_zodiac_type',
+  // Stage 6c — outcome reminder push notifications
+  NOTIFICATIONS_ENABLED: 'horary_notifications_enabled',
+  NOTIFICATION_DELAY_DAYS: 'horary_notification_delay_days',
   // Growth (Phase 1.5) — review-prompt eligibility tracking
   INSTALL_DATE: 'horary_install_date',
   REVIEW_PROMPT_STATE: 'horary_review_prompt_state',
@@ -58,7 +61,7 @@ export const REVIEW_MIN_DAYS_BETWEEN_PROMPTS = 180;
 export const SECURE_STORE_KEY_API = 'horary_api_key';
 
 // Supported locales
-export const SUPPORTED_LOCALES = ['en', 'ru', 'de', 'fr', 'pt', 'es'] as const;
+export const SUPPORTED_LOCALES = ['en', 'ru', 'uk', 'de', 'fr', 'pt', 'es'] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
 // Horary question categories — required by POST /api/v3/horary/analyze.

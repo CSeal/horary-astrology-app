@@ -7,6 +7,7 @@ import type {
   ReadingTiming,
   HoraryResponse,
 } from '@/types/horary';
+import type { HoraryCategory } from '@/constants/config';
 
 // Re-exported under the documented name; structurally identical to ReadingTiming.
 export type JournalTiming = ReadingTiming;
@@ -28,6 +29,7 @@ export interface ChartWheelData {
 export interface JournalEntry {
   id: string;
   question: string;
+  category?: HoraryCategory;
   verdict: VerdictType;
   confidence_band: ConfidenceBand;
   summary: string;

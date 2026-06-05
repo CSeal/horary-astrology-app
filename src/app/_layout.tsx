@@ -12,6 +12,7 @@ import '../../global.css';
 
 // eslint-disable-next-line no-restricted-imports
 import * as Sentry from '@sentry/react-native';
+import * as Notifications from 'expo-notifications';
 import { useEffect, useState } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -36,9 +37,21 @@ import { AnimatedSplash } from '@/components/AnimatedSplash';
 import { ForceUpdateScreen } from '@/components/ForceUpdateScreen';
 import { checkForUpdate, UpdateCheckResult } from '@/services/updateCheckService';
 import { reviewPromptService } from '@/services/reviewPromptService';
+import { notificationService } from '@/services/notificationService';
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   /* splash auto-hide may have already happened */
+});
+
+// Foreground presentation for scheduled outcome reminders. Without this, a
+// notification firing while the app is open is silently suppressed on iOS.
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
 });
 
 // Initialise Sentry as early as possible. No-op when DSN is absent (dev / CI builds).
@@ -130,6 +143,24 @@ export default function RootLayout() {
       i18n.changeLanguage(locale);
     }
   }, [locale]);
+
+  // Stage 6c — outcome reminders. Drop already-fired entries from the queue on
+  // open, and deep-link to the relevant result screen when a reminder is tapped.
+  useEffect(() => {
+    notificationService.pruneExpired().catch(() => {});
+
+    const sub = Notifications.addNotificationResponseReceivedListener((response) => {
+      const entryId = response.notification.request.content.data?.entryId as
+        | string
+        | undefined;
+      if (entryId) {
+        router.push(`/result/${entryId}` as never);
+      }
+    });
+    return () => sub.remove();
+    // router is a stable expo-router ref — listed once, effect runs on mount only.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Gate route: redirect to /onboarding when flag is false; redirect home when
   // user accidentally lands on /onboarding after completion.

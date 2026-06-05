@@ -5,6 +5,7 @@
 
 import { create } from 'zustand';
 import { journalService } from '@/services/journalService';
+import { notificationService } from '@/services/notificationService';
 import type { JournalEntry } from '@/types/journal';
 
 interface QuestionsState {
@@ -36,6 +37,10 @@ export const useQuestionsStore = create<QuestionsState>((set) => ({
     await journalService.updateOutcome(id, outcome);
     const updated = await journalService.getAll();
     set({ entries: updated });
+    // Stage 6c — a recorded conclusive outcome makes the reminder redundant.
+    if (outcome === 'came_true' || outcome === 'did_not_happen') {
+      notificationService.cancel(id).catch(() => {});
+    }
   },
 
   hydrate: async () => {

@@ -7,6 +7,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from '@/i18n/en';
 import ru from '@/i18n/ru';
+import uk from '@/i18n/uk';
 import de from '@/i18n/de';
 import fr from '@/i18n/fr';
 import pt from '@/i18n/pt';
@@ -18,6 +19,7 @@ i18n.use(initReactI18next).init({
   resources: {
     en: { translation: en },
     ru: { translation: ru },
+    uk: { translation: uk },
     de: { translation: de },
     fr: { translation: fr },
     pt: { translation: pt },
