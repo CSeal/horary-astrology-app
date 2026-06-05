@@ -12,6 +12,7 @@ import {
   type SupportedLocale,
   type ZodiacType,
 } from '@/constants/config';
+import { secureKeyService } from '@/services/secureKeyService';
 import type { LocationOverride } from '@/types/location';
 
 // Where chart coordinates come from by default when no per-question override
@@ -22,6 +23,7 @@ export type LocationSource = 'device' | 'manual';
 interface SettingsState {
   locale: SupportedLocale;
   apiKeySource: 'personal' | 'default';
+  hasApiKey: boolean;
   onboardingComplete: boolean;
   locationSource: LocationSource;
   homeLocation: LocationOverride | null;
@@ -30,6 +32,7 @@ interface SettingsState {
   notificationDelayDays: 7 | 14 | 30;
   setLocale: (locale: SupportedLocale) => Promise<void>;
   setApiKeySource: (source: 'personal' | 'default') => void;
+  setHasApiKey: (val: boolean) => void;
   completeOnboarding: () => Promise<void>;
   setLocationSource: (source: LocationSource) => Promise<void>;
   setHomeLocation: (location: LocationOverride | null) => Promise<void>;
@@ -42,6 +45,7 @@ interface SettingsState {
 export const useSettingsStore = create<SettingsState>((set) => ({
   locale: 'en',
   apiKeySource: 'default',
+  hasApiKey: false,
   onboardingComplete: false,
   locationSource: 'device',
   homeLocation: null,
@@ -60,6 +64,10 @@ export const useSettingsStore = create<SettingsState>((set) => ({
 
   setApiKeySource: (source: 'personal' | 'default') => {
     set({ apiKeySource: source });
+  },
+
+  setHasApiKey: (val: boolean) => {
+    set({ hasApiKey: val });
   },
 
   completeOnboarding: async () => {
@@ -146,6 +154,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         storedZodiac,
         storedNotifEnabled,
         storedNotifDelay,
+        storedApiKey,
       ] = await Promise.all([
         AsyncStorage.getItem(ASYNC_STORAGE_KEYS.LANGUAGE),
         AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ONBOARDING_COMPLETE),
@@ -154,6 +163,7 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         AsyncStorage.getItem(ASYNC_STORAGE_KEYS.ZODIAC_TYPE),
         AsyncStorage.getItem(ASYNC_STORAGE_KEYS.NOTIFICATIONS_ENABLED),
         AsyncStorage.getItem(ASYNC_STORAGE_KEYS.NOTIFICATION_DELAY_DAYS),
+        secureKeyService.getKey(),
       ]);
       const update: Partial<SettingsState> = {};
       if (SUPPORTED_LOCALES.includes(storedLocale as SupportedLocale)) update.locale = storedLocale as SupportedLocale;
@@ -176,6 +186,9 @@ export const useSettingsStore = create<SettingsState>((set) => ({
       if (delay === 7 || delay === 14 || delay === 30) {
         update.notificationDelayDays = delay;
       }
+      const hasKey = Boolean(storedApiKey && storedApiKey.trim().length > 0);
+      update.hasApiKey = hasKey;
+      update.apiKeySource = hasKey ? 'personal' : 'default';
       set(update);
     } catch {
       console.error('[settingsStore] Failed to hydrate settings');

@@ -27,6 +27,8 @@ const pt = {
     charCount: '{{count}} / {{max}}',
     locationDeniedPickCity: 'Acesso à localização negado — escolha uma cidade para continuar',
     chooseCity: 'Escolher cidade',
+    noApiKeyBanner: 'Chave API não configurada',
+    noApiKeyAction: 'Configurar →',
   },
 
   // Subcategories per category
@@ -371,6 +373,7 @@ const pt = {
     emptyQuestion: 'Por favor, insira uma pergunta antes de enviar.',
     questionTooShort: 'Sua pergunta deve ter pelo menos {{min}} caracteres.',
     questionTooLong: 'Sua pergunta não pode exceder {{max}} caracteres.',
+    invalidApiKey: 'Chave API ausente ou inválida. Vá em Configurações → Chave API.',
     rateLimited:
       'Você atingiu o limite de requisições da API. Aguarde antes de perguntar novamente.',
     asyncStorageError: 'Não foi possível carregar os dados salvos.',

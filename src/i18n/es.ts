@@ -27,6 +27,8 @@ const es = {
     charCount: '{{count}} / {{max}}',
     locationDeniedPickCity: 'Acceso a ubicación denegado — elige una ciudad para continuar',
     chooseCity: 'Elegir ciudad',
+    noApiKeyBanner: 'Clave API no configurada',
+    noApiKeyAction: 'Configurar →',
   },
 
   // Subcategories per category
@@ -370,6 +372,7 @@ const es = {
     emptyQuestion: 'Por favor, introduce una pregunta antes de enviar.',
     questionTooShort: 'Tu pregunta debe tener al menos {{min}} caracteres.',
     questionTooLong: 'Tu pregunta no puede superar los {{max}} caracteres.',
+    invalidApiKey: 'Clave API faltante o inválida. Ve a Ajustes → Clave API.',
     rateLimited:
       'Has alcanzado el límite de solicitudes de la API. Espera antes de volver a preguntar.',
     asyncStorageError: 'No se pudieron cargar los datos guardados.',

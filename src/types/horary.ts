@@ -121,7 +121,7 @@ export interface HoraryResponse {
 }
 
 export interface HoraryAPIError {
-  code: 'NETWORK_ERROR' | 'API_4XX' | 'API_5XX' | 'TIMEOUT' | 'UNKNOWN' | 'LIMIT_EXCEEDED';
+  code: 'NETWORK_ERROR' | 'API_4XX' | 'API_5XX' | 'TIMEOUT' | 'UNKNOWN' | 'LIMIT_EXCEEDED' | 'INVALID_API_KEY';
   message: string;
   retryable: boolean;
   originalStatus?: number;

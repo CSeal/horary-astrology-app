@@ -71,6 +71,16 @@ export function normalizeError(error: AxiosError): HoraryAPIError {
     };
   }
 
+  if (status === 401) {
+    return {
+      code: 'INVALID_API_KEY',
+      message: apiMessage ?? 'Invalid or missing API key. Check Settings → API Key.',
+      retryable: false,
+      originalStatus: 401,
+      originalMessage: apiMessage,
+    };
+  }
+
   if (status >= 400 && status < 500) {
     return {
       code: 'API_4XX',

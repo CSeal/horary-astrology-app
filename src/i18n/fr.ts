@@ -27,6 +27,8 @@ const fr = {
     charCount: '{{count}} / {{max}}',
     locationDeniedPickCity: 'Accès à la localisation refusé — choisissez une ville pour continuer',
     chooseCity: 'Choisir une ville',
+    noApiKeyBanner: 'Clé API non configurée',
+    noApiKeyAction: 'Configurer →',
   },
 
   // Subcategories per category
@@ -367,6 +369,7 @@ const fr = {
     emptyQuestion: 'Veuillez saisir une question avant de demander.',
     questionTooShort: 'Votre question doit contenir au moins {{min}} caractères.',
     questionTooLong: 'Votre question ne peut pas dépasser {{max}} caractères.',
+    invalidApiKey: "Clé API manquante ou invalide. Allez dans Paramètres → Clé API.",
     rateLimited: "Vous avez atteint la limite de l'API. Veuillez attendre avant de demander à nouveau.",
     asyncStorageError: 'Impossible de charger les données sauvegardées.',
     storageError: 'Impossible de sauvegarder vos données.',

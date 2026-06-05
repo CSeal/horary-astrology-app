@@ -24,6 +24,8 @@ const ru = {
     charCount: '{{count}} / {{max}}',
     locationDeniedPickCity: 'Доступ к геолокации запрещён — выберите город',
     chooseCity: 'Выбрать город',
+    noApiKeyBanner: 'API-ключ не настроен',
+    noApiKeyAction: 'Настроить →',
   },
 
   subcategories: {
@@ -350,6 +352,7 @@ const ru = {
     emptyQuestion: 'Пожалуйста, введите вопрос перед отправкой.',
     questionTooShort: 'Вопрос должен содержать не менее {{min}} символов.',
     questionTooLong: 'Вопрос не может превышать {{max}} символов.',
+    invalidApiKey: 'API-ключ отсутствует или недействителен. Перейдите в Настройки → API-ключ.',
     rateLimited: 'Превышен лимит запросов к API. Пожалуйста, подождите перед следующим вопросом.',
     asyncStorageError: 'Не удалось загрузить сохранённые данные.',
     storageError: 'Не удалось сохранить данные.',

@@ -74,6 +74,7 @@ export default function SettingsScreen() {
   const setLocale = useSettingsStore((s) => s.setLocale);
   const apiKeySource = useSettingsStore((s) => s.apiKeySource);
   const setApiKeySource = useSettingsStore((s) => s.setApiKeySource);
+  const setHasApiKey = useSettingsStore((s) => s.setHasApiKey);
   const locationSource = useSettingsStore((s) => s.locationSource);
   const setLocationSource = useSettingsStore((s) => s.setLocationSource);
   const homeLocation = useSettingsStore((s) => s.homeLocation);
@@ -188,6 +189,7 @@ export default function SettingsScreen() {
     try {
       await secureKeyService.setKey(trimmed);
       setApiKeySource('personal');
+      setHasApiKey(true);
       setApiKeyInput('');
       setEditingKey(false);
     } catch {
@@ -195,7 +197,7 @@ export default function SettingsScreen() {
     } finally {
       setSavingKey(false);
     }
-  }, [apiKeyInput, setApiKeySource, t]);
+  }, [apiKeyInput, setApiKeySource, setHasApiKey, t]);
 
   const handleStartEditKey = useCallback(() => {
     setApiKeyInput('');
@@ -241,6 +243,7 @@ export default function SettingsScreen() {
             try {
               await secureKeyService.deleteKey();
               setApiKeySource('default');
+              setHasApiKey(false);
             } catch {
               Alert.alert(t('errors.storageError'));
             }
@@ -249,7 +252,7 @@ export default function SettingsScreen() {
       ],
       { cancelable: true }
     );
-  }, [setApiKeySource, t]);
+  }, [setApiKeySource, setHasApiKey, t]);
 
   // ── Card stagger (sections + title) ──
   const titleY = useSharedValue(20);

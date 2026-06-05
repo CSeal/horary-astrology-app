@@ -94,6 +94,10 @@ export default function HomeScreen() {
 
   const pickerRef = useRef<LocationPickerSheetRef>(null);
 
+  const hasApiKey = useSettingsStore((s) => s.hasApiKey);
+  // In dev builds an env var key may substitute — suppress the UI guard then.
+  const keyMissing = !hasApiKey && !process.env.EXPO_PUBLIC_ASTROLOGY_API_KEY;
+
   const lastError = mutation.error as HoraryAPIError | null | undefined;
   const isLimitExceeded = lastError?.code === 'LIMIT_EXCEEDED';
   const errorMessage = lastError && !isLimitExceeded
@@ -101,7 +105,9 @@ export default function HomeScreen() {
       ? t('errors.noInternet')
       : lastError.code === 'TIMEOUT'
         ? t('errors.timeout')
-        : t('errors.apiError')
+        : lastError.code === 'INVALID_API_KEY'
+          ? t('errors.invalidApiKey')
+          : t('errors.apiError')
     : null;
   // Pending only while GPS is still resolving AND nothing else is available yet.
   const locationPending =
@@ -214,6 +220,22 @@ export default function HomeScreen() {
             </View>
           )}
 
+          {keyMissing && (
+            <Pressable
+              onPress={() => router.push('/(tabs)/settings' as never)}
+              className="flex-row items-center justify-between bg-bg-surface rounded-xl px-4 py-3 border border-border"
+              accessibilityRole="button"
+              accessibilityLabel={t('home.noApiKeyBanner')}
+            >
+              <Text className="font-inter text-sm text-text-secondary flex-1 mr-2">
+                {t('home.noApiKeyBanner')}
+              </Text>
+              <Text className="font-inter-medium text-sm text-accent-gold">
+                {t('home.noApiKeyAction')}
+              </Text>
+            </Pressable>
+          )}
+
           {errorMessage && !dismissedError && (
             <Banner
               message={errorMessage}
@@ -265,6 +287,7 @@ export default function HomeScreen() {
                 locationSourceLabel={locationSourceLabel}
                 locationPending={locationPending}
                 locationMissing={locationMissing}
+                noApiKey={keyMissing}
                 category={category}
                 onSelectCategory={handleSelectCategory}
                 subcategory={subcategory}

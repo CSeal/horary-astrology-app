@@ -27,6 +27,8 @@ const en = {
     charCount: '{{count}} / {{max}}',
     locationDeniedPickCity: 'Location access denied — pick a city to continue',
     chooseCity: 'Choose city',
+    noApiKeyBanner: 'API key not configured',
+    noApiKeyAction: 'Set up →',
   },
 
   // Subcategories per category
@@ -370,6 +372,7 @@ const en = {
     emptyQuestion: 'Please enter a question before asking.',
     questionTooShort: 'Your question must be at least {{min}} characters.',
     questionTooLong: 'Your question cannot exceed {{max}} characters.',
+    invalidApiKey: 'API key is missing or invalid. Go to Settings → API Key to configure.',
     rateLimited: "You've reached the API rate limit. Please wait before asking again.",
     asyncStorageError: 'Could not load saved data.',
     storageError: 'Could not save your data.',

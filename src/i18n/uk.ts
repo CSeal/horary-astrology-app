@@ -24,6 +24,8 @@ const uk = {
     charCount: '{{count}} / {{max}}',
     locationDeniedPickCity: 'Доступ до геолокації заборонено — виберіть місто',
     chooseCity: 'Виберіть місто',
+    noApiKeyBanner: 'API-ключ не налаштовано',
+    noApiKeyAction: 'Налаштувати →',
   },
 
   subcategories: {
@@ -350,6 +352,7 @@ const uk = {
     emptyQuestion: 'Будь ласка, введи запитання перед відправкою.',
     questionTooShort: 'Запитання має містити не менше {{min}} символів.',
     questionTooLong: 'Запитання не може перевищувати {{max}} символів.',
+    invalidApiKey: 'API-ключ відсутній або недійсний. Перейди до Налаштування → API-ключ.',
     rateLimited: 'Перевищено ліміт запитів до API. Будь ласка, почекай перед наступним запитанням.',
     asyncStorageError: 'Не вдалося завантажити збережені дані.',
     storageError: 'Не вдалося зберегти дані.',
