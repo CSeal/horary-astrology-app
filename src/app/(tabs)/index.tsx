@@ -46,6 +46,39 @@ import type { HoraryAPIError } from '@/types/horary';
 import type { JournalEntry } from '@/types/journal';
 import type { LocationOverride } from '@/types/location';
 
+// Tappable banner with a subtle press-scale (used for the API-key and
+// location-missing prompts). Each instance owns its own scale SharedValue.
+function BannerPressable({
+  onPress,
+  accessibilityLabel,
+  children,
+}: {
+  onPress: () => void;
+  accessibilityLabel: string;
+  children: React.ReactNode;
+}) {
+  const scale = useSharedValue(1);
+  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  return (
+    <AnimatedView style={animStyle}>
+      <Pressable
+        onPress={onPress}
+        onPressIn={() => {
+          scale.value = withSpring(0.97, { damping: 14, stiffness: 200 });
+        }}
+        onPressOut={() => {
+          scale.value = withSpring(1, { damping: 12, stiffness: 90 });
+        }}
+        className="flex-row items-center justify-between bg-bg-surface rounded-xl px-4 py-3 border border-border"
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
+      >
+        {children}
+      </Pressable>
+    </AnimatedView>
+  );
+}
+
 export default function HomeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -221,10 +254,8 @@ export default function HomeScreen() {
           )}
 
           {keyMissing && (
-            <Pressable
+            <BannerPressable
               onPress={() => router.push('/(tabs)/settings' as never)}
-              className="flex-row items-center justify-between bg-bg-surface rounded-xl px-4 py-3 border border-border"
-              accessibilityRole="button"
               accessibilityLabel={t('home.noApiKeyBanner')}
             >
               <Text className="font-inter text-sm text-text-secondary flex-1 mr-2">
@@ -233,7 +264,7 @@ export default function HomeScreen() {
               <Text className="font-inter-medium text-sm text-accent-gold">
                 {t('home.noApiKeyAction')}
               </Text>
-            </Pressable>
+            </BannerPressable>
           )}
 
           {errorMessage && !dismissedError && (
@@ -245,10 +276,8 @@ export default function HomeScreen() {
           )}
 
           {locationMissing && (
-            <Pressable
+            <BannerPressable
               onPress={handleOpenPicker}
-              className="flex-row items-center justify-between bg-bg-surface rounded-xl px-4 py-3 border border-border"
-              accessibilityRole="button"
               accessibilityLabel={t('home.chooseCity')}
             >
               <Text className="font-inter text-sm text-text-secondary">
@@ -257,7 +286,7 @@ export default function HomeScreen() {
               <Text className="font-inter-medium text-sm text-accent-gold">
                 {t('home.chooseCity')}
               </Text>
-            </Pressable>
+            </BannerPressable>
           )}
 
           {isLimitExceeded && !dismissedLimit && (

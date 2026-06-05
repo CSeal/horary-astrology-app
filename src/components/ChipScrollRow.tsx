@@ -6,7 +6,13 @@
 import { useRef, useCallback } from 'react';
 // eslint-disable-next-line no-restricted-imports
 import { ScrollView, type LayoutChangeEvent } from 'react-native'; // needs ref → can't use @/tw wrapper
-import { View, Text, TouchableOpacity } from '@/tw';
+import * as Haptics from 'expo-haptics';
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from 'react-native-reanimated';
+import { AnimatedView, View, Text, TouchableOpacity } from '@/tw';
 import { colors, typography } from '@/constants/theme';
 
 export interface ChipItem {
@@ -21,6 +27,54 @@ interface ChipScrollRowProps {
   selected: string;
   onSelect: (key: string) => void;
   sectionLabel?: string;
+}
+
+interface ChipProps {
+  item: ChipItem;
+  isSelected: boolean;
+  onSelect: () => void;
+  onLayout: (e: LayoutChangeEvent) => void;
+}
+
+function Chip({ item, isSelected, onSelect, onLayout }: ChipProps) {
+  const scale = useSharedValue(1);
+  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const handlePressIn = () => {
+    scale.value = withSpring(0.93, { damping: 14, stiffness: 200 });
+  };
+  const handlePressOut = () => {
+    scale.value = withSpring(1, { damping: 12, stiffness: 90 });
+  };
+  const iconColor = isSelected ? colors.textInverse : colors.textSecondary;
+
+  return (
+    <AnimatedView style={animStyle} onLayout={onLayout}>
+      <TouchableOpacity
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          onSelect();
+        }}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        className={`flex-row items-center gap-1.5 px-4 min-h-10 rounded-full border ${
+          isSelected
+            ? 'bg-accent-gold border-accent-gold'
+            : 'bg-bg-card border-border'
+        }`}
+        accessibilityRole="button"
+        accessibilityState={{ selected: isSelected }}
+      >
+        {item.icon ? item.icon(iconColor, typography.sm) : null}
+        <Text
+          className={`font-inter-medium text-sm ${
+            isSelected ? 'text-text-inverse' : 'text-text-primary'
+          }`}
+        >
+          {item.label}
+        </Text>
+      </TouchableOpacity>
+    </AnimatedView>
+  );
 }
 
 export function ChipScrollRow({
@@ -78,33 +132,15 @@ export function ChipScrollRow({
         style={{ flexGrow: 0 }}
         contentContainerStyle={{ gap: 8, paddingRight: 8 }}
       >
-        {items.map((item) => {
-          const isSelected = item.key === selected;
-          const iconColor = isSelected ? colors.textInverse : colors.textSecondary;
-          return (
-            <TouchableOpacity
-              key={item.key}
-              onPress={() => handleSelect(item.key)}
-              onLayout={handleItemLayout(item.key)}
-              className={`flex-row items-center gap-1.5 px-4 min-h-10 rounded-full border ${
-                isSelected
-                  ? 'bg-accent-gold border-accent-gold'
-                  : 'bg-bg-card border-border'
-              }`}
-              accessibilityRole="button"
-              accessibilityState={{ selected: isSelected }}
-            >
-              {item.icon ? item.icon(iconColor, typography.sm) : null}
-              <Text
-                className={`font-inter-medium text-sm ${
-                  isSelected ? 'text-text-inverse' : 'text-text-primary'
-                }`}
-              >
-                {item.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+        {items.map((item) => (
+          <Chip
+            key={item.key}
+            item={item}
+            isSelected={item.key === selected}
+            onSelect={() => handleSelect(item.key)}
+            onLayout={handleItemLayout(item.key)}
+          />
+        ))}
       </ScrollView>
     </View>
   );

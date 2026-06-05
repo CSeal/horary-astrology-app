@@ -8,11 +8,13 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Haptics from 'expo-haptics';
 import { AnimatedView, View, Text } from '@/tw';
-import Animated, {
+import {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
+  withDelay,
+  withSequence,
 } from 'react-native-reanimated';
 import type { VerdictType, ConfidenceBand } from '@/types/horary';
 import { colors } from '@/constants/theme';
@@ -59,6 +61,40 @@ const CONFIDENCE_FILLED: Record<ConfidenceBand, number> = {
   medium: 2,
   low: 1,
 };
+
+// Confidence dot that pops in (scale 0 → 1.1 → 1, opacity 0 → 1), staggered by
+// index. Base delay lets the card's mount scale settle before the dots appear.
+function StaggerDot({ index, color }: { index: number; color: string }) {
+  const scale = useSharedValue(0);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    const delay = 400 + index * 80;
+    scale.value = withDelay(
+      delay,
+      withSequence(
+        withSpring(1.1, { damping: 10, stiffness: 200 }),
+        withSpring(1, { damping: 12, stiffness: 140 })
+      )
+    );
+    opacity.value = withDelay(delay, withTiming(1, { duration: 200 }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const style = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
+
+  return (
+    <AnimatedView
+      style={[
+        style,
+        { width: 10, height: 10, borderRadius: 5, backgroundColor: color },
+      ]}
+    />
+  );
+}
 
 export function VerdictCard({
   verdict,
@@ -115,14 +151,10 @@ export function VerdictCard({
 
       <View className="flex-row items-center gap-1.5 mt-4">
         {Array.from({ length: 3 }).map((_, i) => (
-          <Animated.View
+          <StaggerDot
             key={i}
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              backgroundColor: i < filled ? VERDICT_COLOR[verdict] : colors.bgCard,
-            }}
+            index={i}
+            color={i < filled ? VERDICT_COLOR[verdict] : colors.bgCard}
           />
         ))}
         <Text

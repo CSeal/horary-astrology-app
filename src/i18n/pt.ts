@@ -311,6 +311,14 @@ const pt = {
     back: 'Voltar',
     skip: 'Pular',
     finish: 'Perguntar às estrelas',
+    chronicleTitle: 'Sua Crônica',
+    chronicleBody:
+      'Cada pergunta é lembrada. Sua crônica cresce a cada leitura estelar.',
+    chroniclePoint1: 'Acompanhe sua sequência diária',
+    chroniclePoint2: 'Revise todos os veredictos no seu diário',
+    chroniclePoint3: 'Relembre perguntas deste dia, anos atrás',
+    apiKeyNote:
+      'astrology-api.io calcula os mapas astrais. Criar uma chave gratuita leva um minuto — ou pule e use a chave padrão do app.',
   },
 
   // Planet names

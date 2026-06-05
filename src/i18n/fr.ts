@@ -307,6 +307,14 @@ const fr = {
     back: 'Retour',
     skip: 'Ignorer',
     finish: 'Demander aux étoiles',
+    chronicleTitle: 'Votre Chronique',
+    chronicleBody:
+      'Chaque question est mémorisée. Votre chronique grandit à chaque lecture.',
+    chroniclePoint1: 'Suivez votre série quotidienne',
+    chroniclePoint2: 'Consultez tous vos verdicts dans le journal',
+    chroniclePoint3: 'Retrouvez vos questions de ce jour, il y a des années',
+    apiKeyNote:
+      'astrology-api.io calcule les thèmes astraux. Une clé gratuite se crée en une minute — ou passez et utilisez la clé par défaut de l\'app.',
   },
 
   // Planet names

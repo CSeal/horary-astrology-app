@@ -310,6 +310,14 @@ const en = {
     back: 'Back',
     skip: 'Skip',
     finish: 'Ask the Stars',
+    chronicleTitle: 'Your Chronicle',
+    chronicleBody:
+      'Every question is remembered. Your chronicle grows with every star reading.',
+    chroniclePoint1: 'Track your daily streak',
+    chroniclePoint2: 'Review every verdict in your journal',
+    chroniclePoint3: 'Recall questions from this day, years ago',
+    apiKeyNote:
+      'astrology-api.io powers the chart calculations. A free key takes a minute to create — or skip and use the app default.',
   },
 
   // Planet names

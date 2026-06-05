@@ -3,8 +3,17 @@
 // Surfaces a past journal entry, lets the user reopen it, mark its outcome,
 // or dismiss it for the day.
 
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text, TouchableOpacity } from '@/tw';
+import {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
+import { View, Text, TouchableOpacity, AnimatedView } from '@/tw';
 import type { JournalEntry } from '@/types/journal';
 
 interface OnThisDayBannerProps {
@@ -29,15 +38,44 @@ export function OnThisDayBanner({
   const pillClass = VERDICT_PILL_CLASS[entry.verdict];
   const yearsAgo = new Date().getFullYear() - new Date(entry.timestamp).getFullYear();
 
+  const opacity = useSharedValue(0);
+  const translateY = useSharedValue(12);
+  useEffect(() => {
+    opacity.value = withTiming(1, { duration: 300 });
+    translateY.value = withSpring(0, { damping: 14, stiffness: 120 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const animStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ translateY: translateY.value }],
+  }));
+
+  const handleDismiss = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    translateY.value = withTiming(-12, { duration: 250 });
+    opacity.value = withTiming(0, { duration: 250 }, (finished) => {
+      'worklet';
+      if (finished) runOnJS(onDismiss)();
+    });
+  };
+
+  const handleOpen = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onOpen();
+  };
+
   return (
-    <View className="bg-bg-card border border-border rounded-xl px-4 py-3 gap-2">
+    <AnimatedView
+      style={animStyle}
+      className="bg-bg-card border border-border rounded-xl px-4 py-3 gap-2"
+    >
       {/* Header: title + dismiss */}
       <View className="flex-row items-center justify-between">
         <Text className="font-inter-semibold text-xs text-text-secondary uppercase tracking-widest">
           📅 {t('onThisDay.title', { count: yearsAgo })}
         </Text>
         <TouchableOpacity
-          onPress={onDismiss}
+          onPress={handleDismiss}
           className="min-w-8 min-h-8 items-end justify-center"
           accessibilityRole="button"
           accessibilityLabel={t('onThisDay.title')}
@@ -67,14 +105,14 @@ export function OnThisDayBanner({
           ) : entry.outcome === 'did_not_happen' ? (
             <Text className="text-no text-xs"> · ✗ {t('journal.outcomeDidNot')}</Text>
           ) : (
-            <TouchableOpacity onPress={onOpen} accessibilityRole="button">
+            <TouchableOpacity onPress={handleOpen} accessibilityRole="button">
               <Text className="text-accent-gold text-xs"> · {t('onThisDay.markOutcome')}</Text>
             </TouchableOpacity>
           )}
         </View>
 
         <TouchableOpacity
-          onPress={onOpen}
+          onPress={handleOpen}
           accessibilityRole="button"
           accessibilityLabel={t('onThisDay.open')}
         >
@@ -83,6 +121,6 @@ export function OnThisDayBanner({
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </AnimatedView>
   );
 }

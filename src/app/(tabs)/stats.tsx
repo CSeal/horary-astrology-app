@@ -2,8 +2,17 @@
 // Statistics screen — shows verdict distribution, outcome accuracy,
 // activity by month, streak, and top topics.
 
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, ScrollView, View, Text } from '@/tw';
+import {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withSpring,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
+import { SafeAreaView, ScrollView, View, Text, AnimatedView } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { useStats } from '@/hooks/useStats';
 import type { VerdictType } from '@/types/horary';
@@ -18,6 +27,61 @@ const VERDICT_BAR_CLASS: Record<VerdictType, string> = {
   MAYBE: 'bg-maybe',
 };
 
+// Inner colored bar that animates its width from 0% to targetPct on mount.
+function AnimatedBar({
+  targetPct,
+  delay,
+  duration,
+  className,
+}: {
+  targetPct: number;
+  delay: number;
+  duration: number;
+  className: string;
+}) {
+  const progress = useSharedValue(0);
+  useEffect(() => {
+    progress.value = withDelay(
+      delay,
+      withTiming(targetPct, { duration, easing: Easing.out(Easing.ease) })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const animStyle = useAnimatedStyle(() => ({ width: `${progress.value}%` }));
+  return <AnimatedView style={animStyle} className={className} />;
+}
+
+// Summary stat block with a spring scale + fade entrance on mount.
+function StatBlock({
+  delay,
+  value,
+  label,
+}: {
+  delay: number;
+  value: string;
+  label: string;
+}) {
+  const scale = useSharedValue(0.8);
+  const opacity = useSharedValue(0);
+  useEffect(() => {
+    scale.value = withDelay(delay, withSpring(1, { damping: 12, stiffness: 100 }));
+    opacity.value = withDelay(delay, withTiming(1, { duration: 300 }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const animStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+  }));
+  return (
+    <AnimatedView style={animStyle} className="flex-1 items-center">
+      <Text className="font-cormorant-bold text-2xl text-accent-gold">{value}</Text>
+      <Text className="font-inter text-[10px] text-text-secondary uppercase tracking-wider mt-0.5">
+        {label}
+      </Text>
+    </AnimatedView>
+  );
+}
+
 function SectionHeader({ label }: { label: string }) {
   return (
     <Text className="font-inter-semibold text-[11px] text-accent-gold uppercase tracking-[2px]">
@@ -29,6 +93,18 @@ function SectionHeader({ label }: { label: string }) {
 export default function StatsScreen() {
   const { t } = useTranslation();
   const stats = useStats();
+
+  const screenOp = useSharedValue(0);
+  const screenY = useSharedValue(20);
+  useEffect(() => {
+    screenOp.value = withTiming(1, { duration: 350 });
+    screenY.value = withSpring(0, { damping: 14, stiffness: 100 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const screenStyle = useAnimatedStyle(() => ({
+    opacity: screenOp.value,
+    transform: [{ translateY: screenY.value }],
+  }));
 
   if (stats === null) {
     return (
@@ -72,41 +148,33 @@ export default function StatsScreen() {
           </Text>
         </View>
 
+        <AnimatedView style={screenStyle} className="flex-1">
         <ScrollView
           className="flex-1"
           contentContainerClassName="px-5 pb-10 gap-6"
         >
           {/* Summary card */}
           <View className="flex-row bg-bg-card border border-border rounded-xl px-4 py-4">
-            <View className="flex-1 items-center">
-              <Text className="font-cormorant-bold text-2xl text-accent-gold">
-                {total}
-              </Text>
-              <Text className="font-inter text-[10px] text-text-secondary uppercase tracking-wider mt-0.5">
-                {t('stats.totalQuestions', { count: total })}
-              </Text>
-            </View>
+            <StatBlock
+              delay={0}
+              value={`${total}`}
+              label={t('stats.totalQuestions', { count: total })}
+            />
 
             {currentStreak > 0 && (
-              <View className="flex-1 items-center">
-                <Text className="font-cormorant-bold text-2xl text-accent-gold">
-                  🔥 {currentStreak}
-                </Text>
-                <Text className="font-inter text-[10px] text-text-secondary uppercase tracking-wider mt-0.5">
-                  {t('stats.streakLabel')}
-                </Text>
-              </View>
+              <StatBlock
+                delay={80}
+                value={`🔥 ${currentStreak}`}
+                label={t('stats.streakLabel')}
+              />
             )}
 
             {accuracyPercent !== null && (
-              <View className="flex-1 items-center">
-                <Text className="font-cormorant-bold text-2xl text-accent-gold">
-                  {accuracyPercent}%
-                </Text>
-                <Text className="font-inter text-[10px] text-text-secondary uppercase tracking-wider mt-0.5">
-                  {t('stats.accuracyLabel')}
-                </Text>
-              </View>
+              <StatBlock
+                delay={160}
+                value={`${accuracyPercent}%`}
+                label={t('stats.accuracyLabel')}
+              />
             )}
           </View>
 
@@ -115,7 +183,7 @@ export default function StatsScreen() {
             <SectionHeader label={t('stats.verdicts')} />
             {DIST_VERDICTS.filter(
               (v) => v !== 'MAYBE' || verdictCounts[v] > 0
-            ).map((verdict) => (
+            ).map((verdict, index) => (
               <View
                 key={verdict}
                 className="flex-row items-center gap-2 py-1"
@@ -124,9 +192,11 @@ export default function StatsScreen() {
                   {t(`verdictTypes.${verdict}` as const)}
                 </Text>
                 <View className="flex-1 h-1.5 rounded-full bg-bg-surface overflow-hidden">
-                  <View
+                  <AnimatedBar
+                    targetPct={verdictPercents[verdict]}
+                    delay={index * 80}
+                    duration={600}
                     className={`h-full rounded-full ${VERDICT_BAR_CLASS[verdict]}`}
-                    style={{ width: `${verdictPercents[verdict]}%` }}
                   />
                 </View>
                 <Text className="font-mono text-xs text-text-secondary w-10 text-right">
@@ -148,9 +218,11 @@ export default function StatsScreen() {
                   {accuracyPercent}%
                 </Text>
                 <View className="flex-1 h-1.5 rounded-full bg-bg-surface overflow-hidden">
-                  <View
+                  <AnimatedBar
+                    targetPct={accuracyPercent}
+                    delay={0}
+                    duration={600}
                     className="h-full rounded-full bg-yes"
-                    style={{ width: `${accuracyPercent}%` }}
                   />
                 </View>
               </View>
@@ -163,7 +235,7 @@ export default function StatsScreen() {
           {/* Activity */}
           <View className="gap-2">
             <SectionHeader label={t('stats.activity')} />
-            {questionsByMonth.map((month) => (
+            {questionsByMonth.map((month, index) => (
               <View
                 key={month.label}
                 className="flex-row items-center gap-2 py-1"
@@ -172,9 +244,11 @@ export default function StatsScreen() {
                   {month.label}
                 </Text>
                 <View className="flex-1 h-1.5 rounded-full bg-bg-surface overflow-hidden">
-                  <View
+                  <AnimatedBar
+                    targetPct={(month.count / maxMonth) * 100}
+                    delay={index * 60}
+                    duration={500}
                     className="h-full rounded-full bg-accent-violet"
-                    style={{ width: `${(month.count / maxMonth) * 100}%` }}
                   />
                 </View>
                 <Text className="font-mono text-xs text-text-disabled w-6 text-right">
@@ -203,6 +277,7 @@ export default function StatsScreen() {
             </View>
           )}
         </ScrollView>
+        </AnimatedView>
       </SafeAreaView>
     </CosmosBackground>
   );

@@ -35,6 +35,40 @@ const CONDITION_PILL_CLASS: Record<string, string> = {
 
 const CONDITION_ORDER = ['combust', 'cazimi', 'under_beams'] as const;
 
+// Accidental-condition pill that scales in subtly, staggered by index.
+function ConditionPill({
+  index,
+  label,
+  className,
+}: {
+  index: number;
+  label: string;
+  className: string;
+}) {
+  const scale = useSharedValue(0.6);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    const delay = 100 + index * 60;
+    scale.value = withDelay(delay, withSpring(1, { damping: 13, stiffness: 160 }));
+    opacity.value = withDelay(delay, withTiming(1, { duration: 200 }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const style = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+  }));
+
+  return (
+    <AnimatedView style={style} className="ml-1">
+      <Text className={`font-inter text-[9px] px-1.5 py-0.5 rounded-full ${className}`}>
+        {label}
+      </Text>
+    </AnimatedView>
+  );
+}
+
 export function SignificatorRow({ data, index = 0 }: SignificatorRowProps) {
   const { t } = useTranslation();
   const glyph = PLANET_GLYPHS[data.planet] ?? data.planet.slice(0, 2);
@@ -80,13 +114,13 @@ export function SignificatorRow({ data, index = 0 }: SignificatorRowProps) {
           {data.retrograde && (
             <Text className="font-inter text-sm text-no ml-1">{' ℞'}</Text>
           )}
-          {conditionPills.map((condition) => (
-            <Text
+          {conditionPills.map((condition, i) => (
+            <ConditionPill
               key={condition}
-              className={`font-inter text-[9px] px-1.5 py-0.5 rounded-full ml-1 ${CONDITION_PILL_CLASS[condition]}`}
-            >
-              {t(`conditions.${condition}`)}
-            </Text>
+              index={i}
+              label={t(`conditions.${condition}`)}
+              className={CONDITION_PILL_CLASS[condition]}
+            />
           ))}
         </View>
         <Text className="font-inter text-xs text-text-secondary italic">

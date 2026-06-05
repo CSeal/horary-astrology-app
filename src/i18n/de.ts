@@ -307,6 +307,14 @@ const de = {
     back: 'Zurück',
     skip: 'Überspringen',
     finish: 'Die Sterne fragen',
+    chronicleTitle: 'Deine Chronik',
+    chronicleBody:
+      'Jede Frage wird erinnert. Deine Chronik wächst mit jeder Sternlesung.',
+    chroniclePoint1: 'Verfolge deine tägliche Serie',
+    chroniclePoint2: 'Überprüfe alle Urteile in deinem Journal',
+    chroniclePoint3: 'Erinnere dich an Fragen von diesem Tag in vergangenen Jahren',
+    apiKeyNote:
+      'astrology-api.io berechnet die Horoskope. Ein kostenloser Schlüssel ist in einer Minute erstellt — oder überspringe und nutze den Standard der App.',
   },
 
   // Planet names

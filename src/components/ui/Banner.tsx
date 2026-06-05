@@ -7,7 +7,7 @@ import {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
-  Easing,
+  withSpring,
 } from 'react-native-reanimated';
 
 interface BannerProps {
@@ -28,24 +28,18 @@ export function Banner({
       ? 'bg-no/10 border border-no/30'
       : 'bg-maybe/10 border border-maybe/30';
 
-  const translateY = useSharedValue(-16);
-  const opacity = useSharedValue(0);
+  const enterOp = useSharedValue(0);
+  const enterY = useSharedValue(8);
 
   useEffect(() => {
-    translateY.value = withTiming(0, {
-      duration: 300,
-      easing: Easing.out(Easing.ease),
-    });
-    opacity.value = withTiming(1, {
-      duration: 300,
-      easing: Easing.out(Easing.ease),
-    });
+    enterOp.value = withTiming(1, { duration: 280 });
+    enterY.value = withSpring(0, { damping: 14, stiffness: 120 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const entranceStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ translateY: translateY.value }],
+    opacity: enterOp.value,
+    transform: [{ translateY: enterY.value }],
   }));
 
   return (

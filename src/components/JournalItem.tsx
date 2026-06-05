@@ -8,8 +8,9 @@ import ReanimatedSwipeable, {
   type SwipeableMethods,
 } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { RectButton } from 'react-native-gesture-handler';
+import * as Haptics from 'expo-haptics';
 import { Trash2 } from 'lucide-react-native';
-import { AnimatedView, TouchableOpacity, View, Text, Pressable } from '@/tw';
+import { AnimatedView, TouchableOpacity, View, Text } from '@/tw';
 import { useTranslation } from 'react-i18next';
 import {
   useSharedValue,
@@ -47,9 +48,9 @@ function formatDate(iso: string, locale: string): string {
 
 type OutcomeValue = NonNullable<JournalEntry['outcome']>;
 
-type OutcomeButton = { value: OutcomeValue; labelKey: string; activeClass: string };
+type OutcomeButtonConfig = { value: OutcomeValue; labelKey: string; activeClass: string };
 
-const OUTCOME_BUTTONS: OutcomeButton[] = [
+const OUTCOME_BUTTONS: OutcomeButtonConfig[] = [
   {
     value: 'came_true',
     labelKey: 'journal.outcomeCameTrue',
@@ -66,6 +67,66 @@ const OUTCOME_BUTTONS: OutcomeButton[] = [
     activeClass: 'text-accent-gold',
   },
 ];
+
+// Haptic feedback per outcome — success buzz for came_true, medium for did_not,
+// light for pending. Fires on selection (not on deselection of an active button).
+function fireOutcomeHaptic(value: OutcomeValue) {
+  if (value === 'came_true') {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+  } else if (value === 'did_not_happen') {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  } else {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }
+}
+
+interface OutcomeButtonProps {
+  label: string;
+  active: boolean;
+  activeClass: string;
+  accessibilityLabel: string;
+  onPress: () => void;
+}
+
+function OutcomeButton({
+  label,
+  active,
+  activeClass,
+  accessibilityLabel,
+  onPress,
+}: OutcomeButtonProps) {
+  const scale = useSharedValue(1);
+  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const handlePressIn = () => {
+    scale.value = withSpring(0.93, { damping: 14, stiffness: 200 });
+  };
+  const handlePressOut = () => {
+    scale.value = withSpring(1, { damping: 12, stiffness: 90 });
+  };
+  return (
+    <AnimatedView style={animStyle} className="flex-1">
+      <TouchableOpacity
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        className={`py-1.5 rounded-lg items-center border ${
+          active
+            ? 'border-transparent bg-white/10'
+            : 'border-white/10 bg-transparent'
+        }`}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel}
+        accessibilityState={{ selected: active }}
+      >
+        <Text
+          className={`font-inter text-xs ${active ? activeClass : 'text-text-disabled'}`}
+        >
+          {label}
+        </Text>
+      </TouchableOpacity>
+    </AnimatedView>
+  );
+}
 
 export function JournalItem({
   entry,
@@ -169,30 +230,21 @@ export function JournalItem({
           <View className="flex-row gap-2 mt-3">
             {OUTCOME_BUTTONS.map((btn) => {
               const isActive = outcome === btn.value;
+              const label = t(btn.labelKey as Parameters<typeof t>[0]);
               return (
-                <Pressable
+                <OutcomeButton
                   key={btn.value}
-                  onPress={(e) => {
-                    e.stopPropagation?.();
+                  label={label}
+                  active={isActive}
+                  activeClass={btn.activeClass}
+                  accessibilityLabel={label}
+                  onPress={() => {
+                    // Selecting an outcome fires haptic; deselecting (tapping the
+                    // already-active button) clears it without a buzz.
+                    if (!isActive) fireOutcomeHaptic(btn.value);
                     onOutcome?.(isActive ? null : btn.value);
                   }}
-                  className={`flex-1 py-1.5 rounded-lg items-center border ${
-                    isActive
-                      ? 'border-transparent bg-white/10'
-                      : 'border-white/10 bg-transparent'
-                  }`}
-                  accessibilityRole="button"
-                  accessibilityLabel={t(btn.labelKey as Parameters<typeof t>[0])}
-                  accessibilityState={{ selected: isActive }}
-                >
-                  <Text
-                    className={`font-inter text-xs ${
-                      isActive ? btn.activeClass : 'text-text-disabled'
-                    }`}
-                  >
-                    {t(btn.labelKey as Parameters<typeof t>[0])}
-                  </Text>
-                </Pressable>
+                />
               );
             })}
           </View>

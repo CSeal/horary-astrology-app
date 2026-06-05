@@ -3,8 +3,15 @@
 // one-line note. Band (yes/maybe/no) derives from the 0-100 score; a chart the
 // engine flagged non-radical is always shown as weak.
 
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, Text } from '@/tw';
+import {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
+import { View, Text, AnimatedView } from '@/tw';
 import { colors } from '@/constants/theme';
 
 interface ChartStrengthBarProps {
@@ -38,6 +45,16 @@ export function ChartStrengthBar({ score, isRadical }: ChartStrengthBarProps) {
   const band = bandForScore(score, isRadical);
   const clamped = Math.max(0, Math.min(100, Math.round(score)));
 
+  const progress = useSharedValue(0);
+  useEffect(() => {
+    progress.value = withTiming(clamped, {
+      duration: 700,
+      easing: Easing.out(Easing.ease),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clamped]);
+  const fillStyle = useAnimatedStyle(() => ({ width: `${progress.value}%` }));
+
   return (
     <View>
       <View className="flex-row items-baseline justify-between mb-2">
@@ -56,9 +73,9 @@ export function ChartStrengthBar({ score, isRadical }: ChartStrengthBarProps) {
       </View>
 
       <View className="h-2 rounded-full bg-bg-surface overflow-hidden">
-        <View
+        <AnimatedView
           className="h-full rounded-full"
-          style={{ width: `${clamped}%`, backgroundColor: BAND_COLOR[band] }}
+          style={[fillStyle, { backgroundColor: BAND_COLOR[band] }]}
         />
       </View>
 

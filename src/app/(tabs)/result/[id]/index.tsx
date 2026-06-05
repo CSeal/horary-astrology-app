@@ -8,6 +8,7 @@
 import { useCallback, useEffect } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import * as Haptics from 'expo-haptics';
 import { ArrowLeft, ChevronRight } from 'lucide-react-native';
 import {
   useSharedValue,
@@ -77,6 +78,26 @@ export default function ResultScreen() {
     router.push(`/result/${id}/full` as never);
   }, [router, id]);
 
+  // ── Back button press feedback (scale + haptic) ──
+  const backScale = useSharedValue(1);
+  const handleBackPressIn = useCallback(() => {
+    backScale.value = withSpring(0.92, { damping: 18, stiffness: 320 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const handleBackPressOut = useCallback(() => {
+    backScale.value = withSpring(1, { damping: 14, stiffness: 240 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const handleBackPress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {
+      /* haptics may be unavailable */
+    });
+    handleBack();
+  }, [handleBack]);
+  const backStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: backScale.value }],
+  }));
+
   // ── Entrance animation (three groups, one owning effect) ──
   const navY = useSharedValue(20);
   const navOp = useSharedValue(0);
@@ -94,8 +115,8 @@ export default function ResultScreen() {
     navOp.value = withTiming(1, fade);
     bodyY.value = withDelay(80, withSpring(0, spring));
     bodyOp.value = withDelay(80, withTiming(1, fade));
-    ctaY.value = withDelay(200, withSpring(0, spring));
-    ctaOp.value = withDelay(200, withTiming(1, fade));
+    ctaY.value = withDelay(280, withSpring(0, spring));
+    ctaOp.value = withDelay(280, withTiming(1, fade));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entry?.id]);
 
@@ -134,17 +155,22 @@ export default function ResultScreen() {
       <SafeAreaView className="flex-1" edges={['top']}>
         {/* Nav: ← Journal */}
         <AnimatedView style={navStyle} className="flex-row items-center px-5 py-3">
-          <TouchableOpacity
-            onPress={handleBack}
-            className="min-w-11 min-h-11 flex-row items-center -ml-2 pr-2"
-            accessibilityLabel={t('verdict.backJournal')}
-            accessibilityRole="button"
-          >
-            <ArrowLeft color={colors.textSecondary} size={typography.xl} />
-            <Text className="font-inter-medium text-base text-text-secondary ml-1">
-              {t('verdict.backJournal')}
-            </Text>
-          </TouchableOpacity>
+          <AnimatedView style={backStyle}>
+            <TouchableOpacity
+              onPress={handleBackPress}
+              onPressIn={handleBackPressIn}
+              onPressOut={handleBackPressOut}
+              activeOpacity={0.85}
+              className="min-w-11 min-h-11 flex-row items-center -ml-2 pr-2"
+              accessibilityLabel={t('verdict.backJournal')}
+              accessibilityRole="button"
+            >
+              <ArrowLeft color={colors.textSecondary} size={typography.xl} />
+              <Text className="font-inter-medium text-base text-text-secondary ml-1">
+                {t('verdict.backJournal')}
+              </Text>
+            </TouchableOpacity>
+          </AnimatedView>
         </AnimatedView>
 
         <ScrollView

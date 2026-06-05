@@ -310,6 +310,14 @@ const es = {
     back: 'Volver',
     skip: 'Omitir',
     finish: 'Preguntar a las estrellas',
+    chronicleTitle: 'Tu Crónica',
+    chronicleBody:
+      'Cada pregunta es recordada. Tu crónica crece con cada lectura estelar.',
+    chroniclePoint1: 'Sigue tu racha diaria',
+    chroniclePoint2: 'Revisa todos los veredictos en tu diario',
+    chroniclePoint3: 'Recuerda preguntas de este día, años atrás',
+    apiKeyNote:
+      'astrology-api.io calcula las cartas astrales. Crear una clave gratuita toma un minuto — o omítelo y usa la clave predeterminada de la app.',
   },
 
   // Planet names
