@@ -60,8 +60,8 @@ describe('buildAnalysisRequest', () => {
   });
 
   it('includes subject_role when provided and not "self"', () => {
-    const out = buildAnalysisRequest({ ...baseRequest, subject_role: 'friend' }, 'en');
-    expect((out as any).subject_role).toBe('friend');
+    const out = buildAnalysisRequest({ ...baseRequest, subject_role: 'third_party_friend' }, 'en');
+    expect((out as any).subject_role).toBe('third_party_friend');
   });
 
   it('omits subject_role when it equals "self"', () => {
@@ -601,7 +601,7 @@ describe('normalizeAnalysisResponse', () => {
           role: 'querent',
           planet: 'Mars',
           house: 1,
-          dignity_info: { sign: 'Ari', essential_dignity: 'domicile', accidental_conditions: null },
+          dignity_info: { sign: 'Ari', essential_dignity: 'domicile', accidental_conditions: undefined },
         },
       ],
     });
@@ -617,6 +617,7 @@ describe('normalizeAnalysisResponse', () => {
           value: 5,
           confidence: 'high',
           based_on: '',
+          explanation: '',
         },
       ],
     });
@@ -647,12 +648,12 @@ describe('normalizeAnalysisResponse', () => {
         summary: 'OK.',
         considerations: [],
         flags: [
-          { type: 'combust_significator', severity: 'moderate', show_to_client: true, weight_applied: 1 },
+          { type: 'ascendant_ruler_combust', severity: 'moderate', show_to_client: true, weight_applied: 1 },
         ],
       },
     });
     const out = normalizeAnalysisResponse(raw, baseRequest);
-    expect(out.radicalityFlags?.[0].message).toBe('combust_significator');
+    expect(out.radicalityFlags?.[0].message).toBe('ascendant_ruler_combust');
   });
 
   it('maps radicalityFlags: flag with undefined considerations array falls back to f.type', () => {
@@ -662,13 +663,14 @@ describe('normalizeAnalysisResponse', () => {
         score: 70,
         recommendation: 'proceed',
         summary: 'OK.',
+        // intentionally omit considerations — tests mapper resilience with old API responses
         flags: [
-          { type: 'late_asc', severity: 'mild', show_to_client: true, weight_applied: 1 },
+          { type: 'late_ascendant', severity: 'mild', show_to_client: true, weight_applied: 1 },
         ],
-      },
+      } as any,
     });
     const out = normalizeAnalysisResponse(raw, baseRequest);
-    expect(out.radicalityFlags?.[0].message).toBe('late_asc');
+    expect(out.radicalityFlags?.[0].message).toBe('late_ascendant');
   });
 
   it('maps radicalityFlags: low severity consideration → "mild"', () => {
@@ -694,8 +696,9 @@ describe('normalizeAnalysisResponse', () => {
         score: 70,
         recommendation: 'proceed',
         summary: 'OK.',
+        considerations: [],
         flags: [
-          { type: 'internal_flag', severity: 'severe', show_to_client: false, weight_applied: 1 },
+          { type: 'moon_voc', severity: 'severe', show_to_client: false, weight_applied: 1 },
         ],
       },
     });
@@ -750,7 +753,7 @@ describe('normalizeAnalysisResponse', () => {
       radicality: {
         is_radical: false,
         score: 20,
-        recommendation: 'do_not_proceed',
+        recommendation: 'do_not_judge',
         summary: 'Chart is not radical.',
         considerations: [],
       },
