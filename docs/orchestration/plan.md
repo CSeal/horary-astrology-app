@@ -109,7 +109,7 @@ SVG RULES:
 
 - Design system: `docs/design-system-brief.md`
 - HTML prototype: `docs/html-prototype/index.html`
-- Claude Design export (22 screens): `docs/html-prototype/AstraSkClaudeDesign.html`
+- Claude Design export (22 screens): `docs/html-prototype/HoraClaudeDesign.html`
 
 **Cosmos Dark palette:**
 ```

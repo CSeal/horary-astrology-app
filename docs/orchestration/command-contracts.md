@@ -73,8 +73,8 @@
 - Interactive: YES — asks owner to select app name variant, confirm keyword selection, approve description
 
 ## `/orchestrate:prototype-update`
-- Required inputs: docs/design-prompts/prototype-update-v2.md, docs/html-prototype/AstraSkClaudeDesign.html (base)
-- Expected outputs: updated docs/html-prototype/AstraSkClaudeDesign.html with Phase 1.5 + Phase 2 non-monetization screens
+- Required inputs: docs/design-prompts/prototype-update-v2.md, docs/html-prototype/HoraClaudeDesign.html (base)
+- Expected outputs: updated docs/html-prototype/HoraClaudeDesign.html with Phase 1.5 + Phase 2 non-monetization screens
 - Gate linkage: Gate 4 equivalent (design approval — owner reviews updated prototype before implementation)
 - Agent: horary-design-agent (existing), model: sonnet
 - Scope: Phase 1.5 modifications + Phase 2 non-monetization new screens identified by M1+M2 research

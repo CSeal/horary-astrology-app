@@ -2,7 +2,7 @@
 // Russian string map. Must have parity with en.ts.
 
 const ru = {
-  appName: 'AstraSk',
+  appName: 'Hora',
   appTagline: 'Задай искренний вопрос. Небо ответит.',
 
   home: {
@@ -264,14 +264,14 @@ const ru = {
     apiKeyEdit: 'Изменить',
     shareSection: 'ПОДЕЛИТЬСЯ',
     inviteFriend: 'Пригласить друга',
-    rateApp: 'Оценить AstraSk',
-    inviteFriendTitle: 'Поделиться AstraSk',
+    rateApp: 'Оценить Hora',
+    inviteFriendTitle: 'Поделиться Hora',
     inviteShareText:
-      'Я использую AstraSk для мгновенных ответов хорарной астрологии. Попробуй бесплатно:',
+      'Я использую Hora для мгновенных ответов хорарной астрологии. Попробуй бесплатно:',
   },
 
   onboarding: {
-    step1Title: 'AstraSk',
+    step1Title: 'Hora',
     step1Subtitle: 'Задай искренний вопрос. Небо ответит.',
     step2Title: 'Путь вопроса',
     step2Point1: 'Задай искренний, конкретный вопрос',
@@ -442,7 +442,7 @@ const ru = {
 
   forceUpdate: {
     title: 'Требуется обновление',
-    body: 'Доступно критическое обновление. Пожалуйста, обновите AstraSk для продолжения работы.',
+    body: 'Доступно критическое обновление. Пожалуйста, обновите Hora для продолжения работы.',
     cta: 'Обновить',
   },
 

@@ -104,7 +104,7 @@ GET https://photon.komoot.io/api
     &osm_tag=place:village
 
 Headers:
-  User-Agent: AstraSk/1.0 (horary-astrology)
+  User-Agent: Hora/1.0 (horary-astrology)
   Accept: application/json
 ```
 

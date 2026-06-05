@@ -2,7 +2,7 @@
 // Українська карта рядків. Повна паритет з en.ts та ru.ts.
 
 const uk = {
-  appName: 'AstraSk',
+  appName: 'Hora',
   appTagline: 'Постав щире запитання. Небо відповість.',
 
   home: {
@@ -264,14 +264,14 @@ const uk = {
     apiKeyEdit: 'Змінити',
     shareSection: 'ПОДІЛИСЬ',
     inviteFriend: 'Запросити друга',
-    rateApp: 'Оцінити AstraSk',
-    inviteFriendTitle: 'Поділись AstraSk',
+    rateApp: 'Оцінити Hora',
+    inviteFriendTitle: 'Поділись Hora',
     inviteShareText:
-      'Я використовую AstraSk для миттєвих відповідей хорарної астрології. Спробуй безплатно:',
+      'Я використовую Hora для миттєвих відповідей хорарної астрології. Спробуй безплатно:',
   },
 
   onboarding: {
-    step1Title: 'AstraSk',
+    step1Title: 'Hora',
     step1Subtitle: 'Постав щире запитання. Небо відповість.',
     step2Title: 'Шлях запитання',
     step2Point1: 'Постав щире, конкретне запитання',
@@ -442,7 +442,7 @@ const uk = {
 
   forceUpdate: {
     title: 'Потрібне оновлення',
-    body: 'Доступне критичне оновлення. Будь ласка, оновіть AstraSk для продовження роботи.',
+    body: 'Доступне критичне оновлення. Будь ласка, оновіть Hora для продовження роботи.',
     cta: 'Оновити',
   },
 

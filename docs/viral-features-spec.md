@@ -5,7 +5,7 @@ source_inputs: [docs/aso-brief.md, docs/competitor-research.md, docs/prd-v1.md, 
 reviewed_by: owner-pending
 ---
 
-# Viral Features Spec — AstraSk
+# Viral Features Spec — Hora
 **Stage**: StageM2-GrowthSpec
 **Date**: 2026-06-04
 
@@ -15,7 +15,7 @@ reviewed_by: owner-pending
 
 ### Overview
 
-Allow users to share their horary verdict as a styled image card to Instagram Stories or the native system share sheet. This is the primary viral mechanic: every shared card carries the AstraSk brand and the call-to-action "Ask yours: astrask.app".
+Allow users to share their horary verdict as a styled image card to Instagram Stories or the native system share sheet. This is the primary viral mechanic: every shared card carries the Hora brand and the call-to-action "Ask yours: hora.app".
 
 ### Research Findings
 
@@ -54,7 +54,7 @@ Layout (top to bottom, centered):
 ```
 ┌────────────────────────────────────┐  ← padding 80px all sides
 │                                    │
-│   ✦ AstraSk                        │  ← app wordmark, Cormorant 500 48px, #F5C842
+│   ✦ Hora                        │  ← app wordmark, Cormorant 500 48px, #F5C842
 │   Horary Astrology                 │  ← Inter 400 28px, #9B93B8
 │                                    │
 │   ────────────────────────────     │  ← 1px divider, rgba(240,238,255,0.12)
@@ -73,7 +73,7 @@ Layout (top to bottom, centered):
 │   ────────────────────────────     │  ← divider
 │                                    │
 │   Ask yours:                       │  ← Inter 400 28px, #9B93B8
-│   astrask.app                      │  ← Inter 600 32px, #F5C842
+│   hora.app                      │  ← Inter 600 32px, #F5C842
 │                                    │
 └────────────────────────────────────┘
 ```
@@ -212,9 +212,9 @@ Replace `<APPID>` with the Apple numeric App Store ID once the app is registered
 export const APP_STORE_URL_INVITE =
   'https://apps.apple.com/app/id<APPID>?utm_source=invite&utm_medium=share&utm_campaign=friend';
 export const INVITE_SHARE_TEXT_EN =
-  'I use AstraSk to get instant horary astrology answers. Try it free:';
+  'I use Hora to get instant horary astrology answers. Try it free:';
 export const INVITE_SHARE_TEXT_RU =
-  'Я использую AstraSk для мгновенных ответов хорарной астрологии. Попробуй бесплатно:';
+  'Я использую Hora для мгновенных ответов хорарной астрологии. Попробуй бесплатно:';
 ```
 
 ### Share sheet invocation
@@ -239,17 +239,17 @@ Add a new section in `src/app/(tabs)/settings.tsx` above the API key section:
 ```
 ── SHARE & INVITE ──────────────────
   [Share icon]  Invite a friend   [chevron →]
-  [Star icon]   Rate AstraSk      [chevron →]  ← links to App Store page directly
+  [Star icon]   Rate Hora      [chevron →]  ← links to App Store page directly
 ```
 
-The "Rate AstraSk" row links to the App Store page (direct open, not `requestReview()` — this is a compliant deep link approach). The review prompt service (Feature 3) is event-driven, separate from this row.
+The "Rate Hora" row links to the App Store page (direct open, not `requestReview()` — this is a compliant deep link approach). The review prompt service (Feature 3) is event-driven, separate from this row.
 
 ### Deep-link schema (deferred — Phase 2)
 
 Document for future implementation:
 
 ```
-astrask://invite?ref=<referrer_id>&utm_campaign=friend
+hora://invite?ref=<referrer_id>&utm_campaign=friend
 ```
 
 When implemented in Phase 2:
@@ -265,8 +265,8 @@ When implemented in Phase 2:
 ```
 settings.shareSection       = "Share & Invite"
 settings.inviteFriend       = "Invite a friend"
-settings.rateApp            = "Rate AstraSk"
-settings.inviteFriendTitle  = "Share AstraSk"
+settings.rateApp            = "Rate Hora"
+settings.inviteFriendTitle  = "Share Hora"
 ```
 
 ---

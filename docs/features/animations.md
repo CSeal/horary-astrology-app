@@ -17,7 +17,7 @@ All animations run exclusively on the UI thread via Reanimated 4 shared values. 
 | `PlanetGlyph` | [src/components/svg/PlanetGlyph.tsx](../../src/components/svg/PlanetGlyph.tsx) | Unicode astrological glyph in SVG Text |
 | `VerdictStar` | [src/components/svg/VerdictStar.tsx](../../src/components/svg/VerdictStar.tsx) | 8-point starburst that springs into view |
 | `ChartWheel` | [src/components/svg/ChartWheel.tsx](../../src/components/svg/ChartWheel.tsx) | Phase 2 placeholder — 12 house dividers |
-| `AnimatedSplash` | [src/components/AnimatedSplash.tsx](../../src/components/AnimatedSplash.tsx) | Boot splash with starburst + fade-in |
+| `AnimatedSplash` | [src/components/AnimatedSplash.tsx](../../src/components/AnimatedSplash.tsx) | Boot splash with zodiac clock + fade-in |
 | `ForceUpdateScreen` | [src/components/ForceUpdateScreen.tsx](../../src/components/ForceUpdateScreen.tsx) | Force-update gate — same star geometry, fade+slide entrance |
 
 ---
@@ -83,10 +83,12 @@ Shadow polygon: pre-calculated coordinates for 1.07× scale around center `(110,
 
 Shown between the native splash image and the app content. Fades out once fonts, stores, and checks are ready.
 
+Displays the zodiac clock face brand logo — a circular face with 12 tick marks and a pointer hand — that scales in before the app content appears.
+
 Phases managed by a `phase` state: `'intro' | 'idle' | 'exit'`.
 
 ```
-'intro'  → star scales in (withSpring), overlay fades in (withTiming)
+'intro'  → zodiac clock scales in (withSpring), overlay fades in (withTiming)
 'idle'   → hold (waits for appReady flag)
 'exit'   → overlay fades out → onComplete() called → root renders app
 ```

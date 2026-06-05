@@ -236,7 +236,7 @@ SCREEN 1: HOME (ASK)
 ═══════════════════════════════════════════════════════════════════
 
   ┌─────────────────────────────────┐
-  │  ✦ AstraSk              [⚙️]   │  ← Header: app name + settings icon
+  │  ✦ Hora              [⚙️]   │  ← Header: app name + settings icon
   │─────────────────────────────────│
   │                                 │
   │   ✦  ✦    ·  ✦   ·    ✦  ·    │
@@ -533,7 +533,7 @@ SCREEN 6: ONBOARDING (FIRST RUN)
   │  ·     ✦    ·    ✦    ·    ✦  │  ← Full-screen star field
   │   ✦    ·      ✦    ·    ✦     │
   │                                 │
-  │         ✦  AstraSk  ✦          │  ← App name (large, white, centered)
+  │         ✦  Hora  ✦          │  ← App name (large, white, centered)
   │                                 │
   │   Ask a sincere question.       │  ← Tagline (muted, italic, centered)
   │   The sky will answer.          │

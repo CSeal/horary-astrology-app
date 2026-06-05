@@ -5,7 +5,7 @@ source_inputs: [docs/growth-features-spec.md (T1-01), docs/mvp-scope.md (Phase 3
 reviewed_by: owner-pending
 ---
 
-# Monetization Spec — AstraSk Horary Astrology App
+# Monetization Spec — Hora Horary Astrology App
 
 **Stage**: Pending — run `/orchestrate:monetization` to populate this document.
 **Phase**: Phase 3 — Monetization (after Phase 2 Retention KPIs are met)
@@ -97,10 +97,10 @@ The paywall sheet UI **must be designed** (as a non-functional screen) before Ap
 | Phase | **Phase 2 (Retention)** |
 | Effort | M |
 
-- Deep-link schema: `astrask://invite?ref=<referrer_id>&utm_campaign=friend`
+- Deep-link schema: `hora://invite?ref=<referrer_id>&utm_campaign=friend`
 - Handle in Expo Router `+native-intent.ts`
 - Store `referrer_id` in AsyncStorage `horary_referrer` on first launch via link
-- Universal link variant (`https://astrask.app/invite`) for iOS in-app browser compatibility
+- Universal link variant (`https://hora.app/invite`) for iOS in-app browser compatibility
 - No server referral backend required for Phase 2 (client-side only)
 
 ---
@@ -125,7 +125,7 @@ The paywall sheet UI **must be designed** (as a non-functional screen) before Ap
 | Phase | **Phase 2 (Retention)** |
 | Effort | S |
 
-- Custom modal before `requestReview()`: "Are you enjoying AstraSk?"
+- Custom modal before `requestReview()`: "Are you enjoying Hora?"
 - YES → `requestReview()`, NO → opens email draft to support address
 - Improves average App Store rating by 0.3–0.5 stars by filtering disgruntled users before the system prompt
 - Requires: custom modal component + i18n strings in all 6 locales

@@ -10,7 +10,7 @@ reviewed_by: owner-pending
 ## Title (max 30 chars)
 
 ```
-AstraSk: Horary Chart
+Hora: Horary Chart
 ```
 Character count: 22
 
@@ -42,7 +42,7 @@ Character count: 99
 ```
 Ask a specific question. Get a real answer — in seconds.
 
-AstraSk uses the classical horary astrology method (William Lilly, Regiomontanus houses) to cast a chart the moment you ask your question and interpret it with AI in plain language. No birth time required. No astrology knowledge needed.
+Hora uses the classical horary astrology method (William Lilly, Regiomontanus houses) to cast a chart the moment you ask your question and interpret it with AI in plain language. No birth time required. No astrology knowledge needed.
 
 HOW IT WORKS
 
@@ -68,11 +68,11 @@ WHAT YOU GET
 
 WHY IT'S DIFFERENT
 
-Every other horary app shows you a raw chart and expects you to interpret it yourself. AstraSk interprets it for you — using the same classical rulebook (essential dignities, house-based significators, reception) that a trained astrologer would use.
+Every other horary app shows you a raw chart and expects you to interpret it yourself. Hora interprets it for you — using the same classical rulebook (essential dignities, house-based significators, reception) that a trained astrologer would use.
 
-Every other horary app costs $15–$300 upfront. AstraSk is free to try — 5 questions per month, no commitment.
+Every other horary app costs $15–$300 upfront. Hora is free to try — 5 questions per month, no commitment.
 
-Other horary tools (Morinus, Janus, Solar Fire) are web-only or Windows-only. AstraSk is the first beautiful, native mobile horary app built for both iOS and Android.
+Other horary tools (Morinus, Janus, Solar Fire) are web-only or Windows-only. Hora is the first beautiful, native mobile horary app built for both iOS and Android.
 
 QUESTIONS PEOPLE ASK
 

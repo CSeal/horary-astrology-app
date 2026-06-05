@@ -1130,6 +1130,6 @@ git status          # no uncommitted changes (clean worktree)
 | Constant | File | Current value | Replace with |
 |---|---|---|---|
 | `APP_STORE_ID` | `src/constants/config.ts` | `'000000000'` | Real numeric ID from App Store Connect |
-| iOS Signing Team | `app.json` + `ios/` | `DGAHHMV358` (personal) | AstraSk org team ID before TestFlight |
+| iOS Signing Team | `app.json` + `ios/` | `DGAHHMV358` (personal) | Hora org team ID before TestFlight |
 | `EXPO_PUBLIC_SENTRY_DSN` | `.env.local` | not set | DSN from sentry.io after project creation |
 | `EXPO_PUBLIC_DEBUG_PIN` | `.env.local` | not set (debug disabled) | PIN for QA builds |

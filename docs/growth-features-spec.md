@@ -5,7 +5,7 @@ source_inputs: [docs/aso-brief.md (StageM1 competitive parity gap table), docs/c
 reviewed_by: owner-pending
 ---
 
-# Growth Features Spec — AstraSk
+# Growth Features Spec — Hora
 **Stage**: StageM2-GrowthSpec
 **Date**: 2026-06-04
 
@@ -13,25 +13,25 @@ reviewed_by: owner-pending
 
 ## How to Read This Document
 
-- **Tier 1 — Parity MUST-HAVE**: Present in 3+ top competitors AND missing from current AstraSk build. Must ship before App Store launch or the product will underperform in conversion and retention metrics relative to every alternative.
+- **Tier 1 — Parity MUST-HAVE**: Present in 3+ top competitors AND missing from current Hora build. Must ship before App Store launch or the product will underperform in conversion and retention metrics relative to every alternative.
 - **Tier 2 — Growth / Viral**: High viral coefficient or strong retention impact. Ship Phase 1.5 (pre-launch polish sprint).
 - **Tier 3 — Phase 2+**: Post-launch. Meaningful but not launch-blocking.
 
 **Effort scale**: S = < 1 day, M = 1–3 days, L = 3–7 days, XL = 1–2 weeks.
 
-**Competitive parity source**: docs/aso-brief.md Section "Competitive Parity Gap Table" — rows marked HIGH priority where `AstraSk Has` = PHASE 2 or NOT PLANNED AND competitors have the feature.
+**Competitive parity source**: docs/aso-brief.md Section "Competitive Parity Gap Table" — rows marked HIGH priority where `Hora Has` = PHASE 2 or NOT PLANNED AND competitors have the feature.
 
 ---
 
 ## Tier 1 — Parity MUST-HAVE (ship before App Store launch)
 
-Derived from HIGH-priority parity gaps where AstraSk does not currently have the feature.
+Derived from HIGH-priority parity gaps where Hora does not currently have the feature.
 
 **T1-01 — Subscription / Unlimited Plan** → Phase 2. Full spec in `docs/monetization-spec.md`. Run `/orchestrate:monetization` when ready.
 
 **T1-02 — Push Notification Reminders** → Phase 2. Full spec in `docs/monetization-spec.md`.
 
-**Note**: T1-01 and T1-02 are the only two HIGH-priority parity gaps currently missing from AstraSk that are not already implemented. All other HIGH-priority items are either implemented or out-of-scope by product decision (natal, tarot, live astrologer).
+**Note**: T1-01 and T1-02 are the only two HIGH-priority parity gaps currently missing from Hora that are not already implemented. All other HIGH-priority items are either implemented or out-of-scope by product decision (natal, tarot, live astrologer).
 
 ---
 
@@ -43,11 +43,11 @@ Derived from HIGH-priority parity gaps where AstraSk does not currently have the
 |---|---|
 | Name | Share Verdict Card |
 | Full spec | docs/viral-features-spec.md Feature 1 |
-| Viral coefficient | High — each share exposes AstraSk to the sharer's Instagram/WhatsApp audience with a visually branded card and the call-to-action "Ask yours: astrask.app" |
+| Viral coefficient | High — each share exposes Hora to the sharer's Instagram/WhatsApp audience with a visually branded card and the call-to-action "Ask yours: hora.app" |
 | User impact | Medium-High — the result screen is the peak emotional moment; sharing while emotionally engaged is the highest-probability share action |
 | Effort | M |
 | Phase | **1.5** |
-| Spec summary | `ShareVerdictCard` component (off-screen, fixed 1080×1920px) captured via `react-native-view-shot` (v4, New Architecture compatible). Instagram Stories via `react-native-share` (URL scheme + pasteboard). Fallback to `expo-sharing` (system share sheet) when Instagram is not installed. Card shows: verdict badge (color-coded YES/NO/MAYBE/UNCLEAR) + question truncated to 40 chars + "AstraSk" wordmark + "Ask yours: astrask.app". Share button added to `result/[id].tsx` nav bar (currently placeholder `Share2` icon per design system brief). Android Instagram path deferred to Phase 2. |
+| Spec summary | `ShareVerdictCard` component (off-screen, fixed 1080×1920px) captured via `react-native-view-shot` (v4, New Architecture compatible). Instagram Stories via `react-native-share` (URL scheme + pasteboard). Fallback to `expo-sharing` (system share sheet) when Instagram is not installed. Card shows: verdict badge (color-coded YES/NO/MAYBE/UNCLEAR) + question truncated to 40 chars + "Hora" wordmark + "Ask yours: hora.app". Share button added to `result/[id].tsx` nav bar (currently placeholder `Share2` icon per design system brief). Android Instagram path deferred to Phase 2. |
 | Compound V pre-flight needs | Library audit: react-native-view-shot v4 Expo SDK 55 install (`npx expo install react-native-view-shot`). Library audit: react-native-share v10 New Architecture compatibility. Expo config plugin for `LSApplicationQueriesSchemes`. |
 | New files | `src/components/ShareVerdictCard.tsx`, `src/services/shareVerdictService.ts` |
 | Modified files | `src/app/(tabs)/result/[id].tsx`, `app.json`, `src/i18n/en.ts`, `src/i18n/ru.ts` |
@@ -77,7 +77,7 @@ Derived from HIGH-priority parity gaps where AstraSk does not currently have the
 | User impact | Low-Medium — reaches friends of users who are motivated enough to open Settings |
 | Effort | S |
 | Phase | **1.5** |
-| Spec summary | Settings screen gets a "Share & Invite" section. "Invite a friend" row opens React Native `Share.share()` with pre-composed text + UTM-tagged App Store URL. Text is i18n-aware (EN/RU). No backend required. UTM: `utm_source=invite&utm_medium=share&utm_campaign=friend`. "Rate AstraSk" row deep-links to the App Store page directly (compliant: this is not `requestReview()` from a button). |
+| Spec summary | Settings screen gets a "Share & Invite" section. "Invite a friend" row opens React Native `Share.share()` with pre-composed text + UTM-tagged App Store URL. Text is i18n-aware (EN/RU). No backend required. UTM: `utm_source=invite&utm_medium=share&utm_campaign=friend`. "Rate Hora" row deep-links to the App Store page directly (compliant: this is not `requestReview()` from a button). |
 | Compound V pre-flight needs | None — uses built-in `Share` from `react-native`. Need App Store numeric ID (`<APPID>`) once app is registered. Placeholder constant `APP_STORE_URL_INVITE` in config.ts until then. |
 | New files | None |
 | Modified files | `src/app/(tabs)/settings.tsx`, `src/constants/config.ts`, `src/i18n/en.ts`, `src/i18n/ru.ts` |
@@ -94,7 +94,7 @@ Derived from HIGH-priority parity gaps where AstraSk does not currently have the
 | Full spec | docs/viral-features-spec.md Feature 2 (Phase 2 schema section) |
 | Effort | M |
 | Phase | **2** |
-| Spec summary | Deep-link schema: `astrask://invite?ref=<referrer_id>&utm_campaign=friend`. Handle in Expo Router `+native-intent.ts`. Store `referrer_id` in AsyncStorage `horary_referrer` on first launch via link. Client-side only — no server referral backend required for Phase 2. Universal link variant (`https://astrask.app/invite`) for iOS WKWebView compatibility (Instagram in-app browser blocks URL schemes). |
+| Spec summary | Deep-link schema: `hora://invite?ref=<referrer_id>&utm_campaign=friend`. Handle in Expo Router `+native-intent.ts`. Store `referrer_id` in AsyncStorage `horary_referrer` on first launch via link. Client-side only — no server referral backend required for Phase 2. Universal link variant (`https://hora.app/invite`) for iOS WKWebView compatibility (Instagram in-app browser blocks URL schemes). |
 | Compound V pre-flight needs | Expo Router deep-link handling, Associated Domains for universal links, branch.io or custom redirect service for link generation. |
 
 ### T3-02 — Push Notification Reminders (moved from Tier 1 detail)
@@ -129,7 +129,7 @@ See T1-02 above for full detail. Phase 2 implementation.
 | Name | Pre-prompt satisfaction gate |
 | Effort | S |
 | Phase | **2** |
-| Spec summary | Before calling `requestReview()`, show a custom modal: "Are you enjoying AstraSk?" → YES triggers `requestReview()`, NO opens an email draft to the support address. Per aso-virality-brief.md domain expert, this pattern reliably improves average rating by 0.3–0.5 stars by filtering disgruntled users before the system prompt. Deferred to Phase 2 because it requires a custom modal component and i18n strings — adds effort beyond the Phase 1.5 target. |
+| Spec summary | Before calling `requestReview()`, show a custom modal: "Are you enjoying Hora?" → YES triggers `requestReview()`, NO opens an email draft to the support address. Per aso-virality-brief.md domain expert, this pattern reliably improves average rating by 0.3–0.5 stars by filtering disgruntled users before the system prompt. Deferred to Phase 2 because it requires a custom modal component and i18n strings — adds effort beyond the Phase 1.5 target. |
 | Compound V pre-flight needs | None — standard React Native Modal. |
 
 ---
@@ -171,7 +171,7 @@ Before the implementation agent opens any files:
 | Outcome tracking | Not started | SHIPPED |
 | Pre-prompt gate | Not started | SHIPPED |
 
-After Phase 1.5: AstraSk will have shipped all Tier 2 growth mechanics. The only remaining competitive gaps will be the subscription paywall and push notifications — both tracked for Phase 2.
+After Phase 1.5: Hora will have shipped all Tier 2 growth mechanics. The only remaining competitive gaps will be the subscription paywall and push notifications — both tracked for Phase 2.
 
 ---
 

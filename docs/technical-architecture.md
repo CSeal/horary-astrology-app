@@ -7,7 +7,7 @@ stage: Stage4-Architecture
 gate_linkage: Gate5
 ---
 
-# Technical Architecture — Horary Astrology App (AstraSk)
+# Technical Architecture — Horary Astrology App (Hora)
 
 *Document version: 1.0*
 *SDK: Expo SDK 55 / React Native 0.83*
@@ -16,7 +16,7 @@ gate_linkage: Gate5
 
 ## 1. Overview
 
-AstraSk is a mobile-first horary astrology application targeting iOS and Android. The architecture prioritizes:
+Hora is a mobile-first horary astrology application targeting iOS and Android. The architecture prioritizes:
 
 - **Offline-first local data** — journal and settings persisted on device (AsyncStorage + SecureStore)
 - **Single remote integration** — astrology-api.io (horary chart casting + AI summary)

@@ -2,7 +2,7 @@
 // Cosmos-themed animated splash overlay.
 //
 // Transition design — seamless native → JS handoff:
-//   Native splash shows the gold glyph at ~168pt (splash-icon.png / resizeMode contain).
+//   Native splash shows the zodiac clock face glyph at ~168pt (splash-icon.png / resizeMode contain).
 //   AnimatedSplash mounts with glyphScale=0.82 (≈168pt) and glyphOpacity=1 so the
 //   glyph appears to be THE SAME object that was already on screen.
 //
@@ -25,7 +25,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { Svg, Polygon, Circle } from 'react-native-svg';
+import { Svg, Polygon, Circle, Line } from 'react-native-svg';
 import { colors } from '@/constants/theme';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -67,19 +67,6 @@ const STAR_SEEDS = [
   { xf: 0.50, yf: 0.09, r: 2.0, delay: 100 },
 ] as const;
 
-// 8-pointed star — center (110,110), outer R=82, inner r=33 in 220×220 viewBox.
-const STAR_POINTS =
-  '110,28 122.6,79.5 168,52 140.5,97.4 192,110 ' +
-  '140.5,122.6 168,168 122.6,140.5 110,192 97.4,140.5 ' +
-  '52,168 79.5,122.6 28,110 79.5,97.4 52,52 97.4,79.5';
-
-// Shadow polygon: same star scaled 1.07× around center (110,110).
-// Pre-calculated to avoid deprecated SVG scale/origin props.
-// Formula: new_coord = 110 + (coord - 110) × 1.07
-const STAR_POINTS_SHADOW =
-  '110,22.3 123.5,77.4 172.1,47.9 142.6,96.5 197.7,110 ' +
-  '142.6,123.5 172.1,172.1 123.5,142.6 110,197.7 96.5,142.6 ' +
-  '47.9,172.1 77.4,123.5 22.3,110 77.4,96.5 47.9,47.9 96.5,77.4';
 
 // ─── StarDot sub-component ────────────────────────────────────────────────────
 
@@ -219,32 +206,35 @@ export function AnimatedSplash({ appReady, onComplete }: AnimatedSplashProps) {
 
       <Animated.View style={glyphStyle}>
         <Svg width={220} height={220} viewBox="0 0 220 220">
-          <Circle cx={110} cy={110} r={100} fill={colors.accentGold} opacity={0.05} />
-          <Circle cx={110} cy={110} r={78}  fill={colors.accentGold} opacity={0.08} />
-          <Circle
-            cx={110} cy={110} r={104}
-            fill="none"
-            stroke={colors.accentGold}
-            strokeWidth={0.8}
-            strokeOpacity={0.22}
-          />
-          {/* Violet depth shadow — pre-scaled points (no deprecated SVG transform props) */}
-          <Polygon
-            points={STAR_POINTS_SHADOW}
-            fill={colors.accentViolet}
-            opacity={0.24}
-          />
-          <Polygon points={STAR_POINTS} fill={colors.accentGold} />
-          <Polygon
-            points={STAR_POINTS}
-            fill="none"
-            stroke={colors.textPrimary}
-            strokeWidth={1.2}
-            strokeOpacity={0.18}
-            strokeLinejoin="round"
-          />
-          <Circle cx={110} cy={110} r={9} fill={colors.accentGold} />
-          <Circle cx={110} cy={110} r={3} fill={colors.textPrimary} opacity={0.45} />
+          {/* Ambient violet glow */}
+          <Circle cx={110} cy={110} r={97} fill={colors.accentViolet} fillOpacity={0.12} />
+          {/* Outer ring */}
+          <Circle cx={110} cy={110} r={97} fill="none" stroke={colors.accentGold} strokeWidth={3.3} strokeOpacity={0.6} />
+          {/* Inner reference ring */}
+          <Circle cx={110} cy={110} r={75} fill="none" stroke={colors.accentGold} strokeWidth={1.3} strokeOpacity={0.18} />
+          {/* Cardinal ticks — 12/3/6/9 o'clock (longer) */}
+          <Line x1={110} y1={13}  x2={110} y2={37}  stroke={colors.accentGold} strokeWidth={4}   strokeOpacity={0.9} strokeLinecap="round" />
+          <Line x1={207} y1={110} x2={183} y2={110} stroke={colors.accentGold} strokeWidth={4}   strokeOpacity={0.9} strokeLinecap="round" />
+          <Line x1={110} y1={207} x2={110} y2={183} stroke={colors.accentGold} strokeWidth={4}   strokeOpacity={0.9} strokeLinecap="round" />
+          <Line x1={13}  y1={110} x2={37}  y2={110} stroke={colors.accentGold} strokeWidth={4}   strokeOpacity={0.9} strokeLinecap="round" />
+          {/* Minor ticks — 1/2/4/5/7/8/10/11 o'clock (shorter) */}
+          <Line x1={158} y1={26}  x2={152} y2={38}  stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={194} y1={62}  x2={182} y2={68}  stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={194} y1={158} x2={182} y2={152} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={158} y1={194} x2={152} y2={182} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={62}  y1={194} x2={68}  y2={182} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={26}  y1={158} x2={38}  y2={152} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={26}  y1={62}  x2={38}  y2={68}  stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={62}  y1={26}  x2={68}  y2={38}  stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          {/* Pointer hand → 10 o'clock (300° from 12) */}
+          <Line x1={110} y1={110} x2={53}  y2={79}  stroke={colors.accentGold} strokeWidth={4.8} strokeLinecap="round" />
+          {/* Counterbalance tail */}
+          <Line x1={110} y1={110} x2={130} y2={121} stroke={colors.accentGold} strokeWidth={3.1} strokeOpacity={0.5} strokeLinecap="round" />
+          {/* 4-point star at pointer tip */}
+          <Polygon points="53,67 56,78 66,79 56,80 53,91 50,80 40,79 50,78" fill={colors.accentGold} />
+          {/* Center pivot */}
+          <Circle cx={110} cy={110} r={7.7} fill={colors.accentGold} />
+          <Circle cx={110} cy={110} r={3.3} fill="white" fillOpacity={0.4} />
         </Svg>
       </Animated.View>
     </Animated.View>

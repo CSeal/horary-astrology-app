@@ -1,4 +1,4 @@
-# AstraSk — Documentation Index
+# Hora — Documentation Index
 
 Central navigation for all project documentation.
 Update this file whenever a new doc is added or a section status changes.
@@ -51,7 +51,12 @@ Written and updated by `doc-writer` agent via `/doc:feature <name>`.
 | [features/force-update.md](features/force-update.md) | Force-update gate (remote config + version enforcement) | Done |
 | [features/location-override.md](features/location-override.md) | Manual city override (per-question) via bottom sheet + Photon geocoding | Done |
 | [features/debug-mode.md](features/debug-mode.md) | Hidden developer debug menu (20-tap + PIN gate, mock API, state resets) | Done |
-| [features/testing.md](features/testing.md) | Unit/integration test suite (11 suites / 84 tests) + Stage 6 QA gate | Done |
+| [features/testing.md](features/testing.md) | Unit/integration test suite (16 suites / 209 tests, 100% coverage) + Stage 6 QA gate | Done |
+| _features/verdict-detail.md_ | Two-screen C+ verdict layout (compact badge + full reading with chart, significators, aspects, radicality, timing) | Planned |
+| _features/stats.md_ | Statistics screen — verdict distribution chart, accuracy %, monthly activity, streak milestones | Planned |
+| _features/streak.md_ | Consecutive-day streak tracking with milestone badges (StreakBadge) | Planned |
+| _features/notifications.md_ | Push notification scheduling for outcome reminders (notificationService) | Planned |
+| _features/outcome-tracking.md_ | Mark readings as came_true / did_not_happen / pending | Planned |
 
 ---
 

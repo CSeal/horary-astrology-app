@@ -18,7 +18,7 @@ stage: StageM3-APIAudit
 gate_linkage: Gate8
 ---
 
-# API Gap Spec — AstraSk Horary App (Phase 1.5)
+# API Gap Spec — Hora Horary App (Phase 1.5)
 
 *Produced: 2026-06-04. Wire model source: `HoraryAnalysisResponse` in `api-integration-spec.md §5`,
 confirmed against live API response 2026-06-03.*

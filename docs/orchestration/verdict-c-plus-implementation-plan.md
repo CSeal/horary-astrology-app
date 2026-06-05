@@ -1,7 +1,7 @@
 ---
 created_by: claude-sonnet-4-6
 updated_by: claude-sonnet-4-6
-source_inputs: [Verdict Redesign.html, AstraSk - Standalone.html, result/[id].tsx, VerdictCard.tsx, types/journal.ts, settings.tsx]
+source_inputs: [Verdict Redesign.html, Hora - Standalone.html, result/[id].tsx, VerdictCard.tsx, types/journal.ts, settings.tsx]
 reviewed_by: owner-approved
 stage: Phase1.5-ImplementationPlan
 date: 2026-06-04
@@ -11,7 +11,7 @@ date: 2026-06-04
 
 ## Design source
 - `Verdict Redesign.html` — Option C+ chosen by owner
-- `AstraSk - Standalone.html` — 22-screen reference (settings discrepancies resolved in our favour)
+- `Hora - Standalone.html` — 22-screen reference (settings discrepancies resolved in our favour)
 
 ## Architectural decisions (owner-approved)
 

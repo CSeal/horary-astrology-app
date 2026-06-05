@@ -5,9 +5,9 @@ source_inputs: [prd-v1.md, api-integration-spec.md, src/stores/settingsStore.ts,
 reviewed_by: owner-pending
 ---
 
-# Apple App Privacy Labels — AstraSk: Horary Chart
+# Apple App Privacy Labels — Hora: Horary Chart
 
-**Bundle ID:** com.astrask.horary
+**Bundle ID:** com.hora.app
 **Date prepared:** 2026-06-04
 **Reference:** App Store Connect → App Privacy section
 **Apple documentation:** https://developer.apple.com/app-store/app-privacy-details/
@@ -16,7 +16,7 @@ reviewed_by: owner-pending
 
 ## Overview
 
-AstraSk collects and sends a minimal set of data. All journal data and preferences remain on-device. The only third-party data transmission occurs per chart request to astrology-api.io: question text, location, and timezone.
+Hora collects and sends a minimal set of data. All journal data and preferences remain on-device. The only third-party data transmission occurs per chart request to astrology-api.io: question text, location, and timezone.
 
 ---
 
@@ -91,7 +91,7 @@ Apple's guidance: when data is sent to a third-party SDK or service, it must be 
 
 ## Data Types NOT Collected
 
-The following standard Apple privacy categories DO NOT apply to AstraSk:
+The following standard Apple privacy categories DO NOT apply to Hora:
 
 | Category | Not collected | Reason |
 |---|---|---|
@@ -127,13 +127,13 @@ When filling the App Store Connect form, the completed label will read:
 
 ## Reviewer Narrative (for App Review submission notes)
 
-"AstraSk does not collect any data linked to user identity. The app has no user accounts, no analytics SDK, and no advertising network. Per-request data (question text, device location, timezone) is sent via HTTPS to astrology-api.io solely to calculate the horary chart. This data is not retained by us on any server. All journal entries and preferences are stored locally on the user's device. Uninstalling the app removes all local data. The app's API key (user-supplied) is stored in iOS Keychain via Expo SecureStore and never transmitted to any party other than astrology-api.io."
+"Hora does not collect any data linked to user identity. The app has no user accounts, no analytics SDK, and no advertising network. Per-request data (question text, device location, timezone) is sent via HTTPS to astrology-api.io solely to calculate the horary chart. This data is not retained by us on any server. All journal entries and preferences are stored locally on the user's device. Uninstalling the app removes all local data. The app's API key (user-supplied) is stored in iOS Keychain via Expo SecureStore and never transmitted to any party other than astrology-api.io."
 
 ---
 
 ## Notes on Pregnancy / Fertility Category
 
-AstraSk supports questions in the "pregnancy" and "fertility" horary categories. These are routed to the same `/api/v3/horary/analyze` endpoint as all other questions. The app does NOT:
+Hora supports questions in the "pregnancy" and "fertility" horary categories. These are routed to the same `/api/v3/horary/analyze` endpoint as all other questions. The app does NOT:
 - Access any HealthKit data
 - Request any health-related permissions
 - Store or process medical records
@@ -142,5 +142,5 @@ These categories are supported as traditional horary astrology question types, e
 
 ---
 
-*Prepared for App Store Connect submission — AstraSk v1.0.0*
+*Prepared for App Store Connect submission — Hora v1.0.0*
 *Date: 2026-06-04*

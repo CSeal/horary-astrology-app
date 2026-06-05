@@ -5,9 +5,9 @@ source_inputs: [prd-v1.md, api-integration-spec.md, src/stores/settingsStore.ts,
 reviewed_by: owner-pending
 ---
 
-# Google Play Data Safety — AstraSk: Horary Chart
+# Google Play Data Safety — Hora: Horary Chart
 
-**Package:** com.astrask.horary
+**Package:** com.hora.app
 **Date prepared:** 2026-06-04
 **Reference:** Google Play Console → App content → Data safety
 **Google documentation:** https://support.google.com/googleplay/android-developer/answer/10787469
@@ -16,7 +16,7 @@ reviewed_by: owner-pending
 
 ## Overview
 
-This document provides the guidance needed to complete the Google Play Console Data Safety form for AstraSk. Complete one section at a time in Play Console, following the answers below.
+This document provides the guidance needed to complete the Google Play Console Data Safety form for Hora. Complete one section at a time in Play Console, following the answers below.
 
 ---
 
@@ -26,7 +26,7 @@ This document provides the guidance needed to complete the Google Play Console D
 
 **Answer: YES**
 
-Rationale: The app sends location, timezone, and question text to astrology-api.io per chart request. Even though no AstraSk-owned backend exists, sending data to a third-party API qualifies as data collection/sharing under Google's definition.
+Rationale: The app sends location, timezone, and question text to astrology-api.io per chart request. Even though no Hora-owned backend exists, sending data to a third-party API qualifies as data collection/sharing under Google's definition.
 
 ---
 
@@ -67,7 +67,7 @@ Since we have no server-side data store, there is no account deletion flow requi
 **Notes:**
 - Select both "Approximate location" and "Precise location" to cover all cases (GPS vs. network-based location)
 - Mark as "Shared" with a third party (astrology-api.io)
-- Mark "Processed ephemerally" — location is sent per-request and not stored on AstraSk servers
+- Mark "Processed ephemerally" — location is sent per-request and not stored on Hora servers
 - Purpose: "App functionality" only — never for advertising or analytics
 
 ---
@@ -82,7 +82,7 @@ Since we have no server-side data store, there is no account deletion flow requi
 | Shared | No |
 
 **Notes:**
-- Question text is stored locally on-device only, not on any AstraSk-owned server
+- Question text is stored locally on-device only, not on any Hora-owned server
 - Journal entries (question, verdict, timestamp, location city) are device-local only
 - This section refers to on-device storage, not server-side collection — select "Not collected" from Play Console's perspective (we have no server receiving this data persistently)
 
@@ -214,5 +214,5 @@ Placeholder: **[PRIVACY_POLICY_URL]**
 
 ---
 
-*Prepared for Google Play Console Data Safety form submission — AstraSk v1.0.0*
+*Prepared for Google Play Console Data Safety form submission — Hora v1.0.0*
 *Date: 2026-06-04*

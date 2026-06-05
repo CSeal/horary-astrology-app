@@ -1,7 +1,7 @@
 ---
 created_by: claude-sonnet-4-6
 updated_by: claude-sonnet-4-6
-source_inputs: [docs/api-gap-spec.md, docs/design-system-brief.md, docs/mvp-scope.md, docs/html-prototype/AstraSkClaudeDesign.html]
+source_inputs: [docs/api-gap-spec.md, docs/design-system-brief.md, docs/mvp-scope.md, docs/html-prototype/HoraClaudeDesign.html]
 reviewed_by: owner-pending
 stage: Phase1.5-DesignExploration
 date: 2026-06-04
@@ -18,7 +18,7 @@ After choosing a layout, come back and say which option you prefer — then `pro
 
 ---
 
-You are redesigning the **Verdict screen** of the **AstraSk Horary Astrology** mobile app.
+You are redesigning the **Verdict screen** of the **Hora Horary Astrology** mobile app.
 
 ---
 
@@ -115,7 +115,7 @@ The "See full reading" screen is pushed onto the navigation stack (back button i
 
 After the owner selects a layout option, create `docs/design-prompts/prototype-update-v3.md` with:
 - The chosen layout's implementation spec for `horary-design-agent`
-- Exact HTML/CSS instructions for updating `docs/html-prototype/AstraSkClaudeDesign.html`
+- Exact HTML/CSS instructions for updating `docs/html-prototype/HoraClaudeDesign.html`
 - Component breakdown for the Phase 1.5 implementation sprint
 
 *End of verdict-layout-v1.md*

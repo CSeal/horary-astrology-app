@@ -10,7 +10,7 @@ reviewed_by: owner-pending
 ## Title (max 30 chars)
 
 ```
-AstraSk: Stundenhoroskop
+Hora: Stundenhoroskop
 ```
 Character count: 24
 
@@ -32,7 +32,7 @@ Character count: 78
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
-Words already indexed: AstraSk, Stundenhoroskop, Frage, sofortige, Antwort
+Words already indexed: Hora, Stundenhoroskop, Frage, sofortige, Antwort
 
 ```
 Astrologie,Horoskop,klassisch,traditionell,Urteil,Planeten,Deutung,KI,Ja,Nein,kosmisch,Signifikator
@@ -44,7 +44,7 @@ Character count: 100
 ```
 Stelle eine konkrete Frage. Erhalte eine echte Antwort — in Sekunden.
 
-AstraSk verwendet die klassische Stundenhoroskop-Methode (William Lilly, Regiomontanus-Häuser), um im Moment deiner Frage ein Horoskop zu erstellen, und interpretiert es mit KI in verständlicher Sprache. Keine Geburtszeit erforderlich. Keine Astrologie-Kenntnisse nötig.
+Hora verwendet die klassische Stundenhoroskop-Methode (William Lilly, Regiomontanus-Häuser), um im Moment deiner Frage ein Horoskop zu erstellen, und interpretiert es mit KI in verständlicher Sprache. Keine Geburtszeit erforderlich. Keine Astrologie-Kenntnisse nötig.
 
 SO FUNKTIONIERT ES
 
@@ -70,9 +70,9 @@ WAS DU ERHÄLTST
 
 WARUM ES ANDERS IST
 
-Jede andere Stundenhoroskop-App zeigt dir ein rohes Horoskop und erwartet, dass du es selbst deutest. AstraSk deutet es für dich — mit demselben klassischen Regelwerk (wesentliche Würden, hausbasierte Signifikatoren, Rezeption), das ein ausgebildeter Astrologe verwenden würde.
+Jede andere Stundenhoroskop-App zeigt dir ein rohes Horoskop und erwartet, dass du es selbst deutest. Hora deutet es für dich — mit demselben klassischen Regelwerk (wesentliche Würden, hausbasierte Signifikatoren, Rezeption), das ein ausgebildeter Astrologe verwenden würde.
 
-Andere Stundenhoroskop-Tools (Morinus, Janus, Solar Fire) sind web- oder Windows-only. AstraSk ist die erste schöne, native mobile Stundenhoroskop-App für iOS und Android.
+Andere Stundenhoroskop-Tools (Morinus, Janus, Solar Fire) sind web- oder Windows-only. Hora ist die erste schöne, native mobile Stundenhoroskop-App für iOS und Android.
 
 FRAGEN, DIE GESTELLT WERDEN
 

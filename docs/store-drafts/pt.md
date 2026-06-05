@@ -10,7 +10,7 @@ reviewed_by: owner-pending
 ## Title (max 30 chars)
 
 ```
-AstraSk: Mapa Horário
+Hora: Mapa Horário
 ```
 Character count: 21
 
@@ -32,7 +32,7 @@ Character count: 73
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
-Words already indexed: AstraSk, Mapa, Horário, Pergunte, Resposta, imediata
+Words already indexed: Hora, Mapa, Horário, Pergunte, Resposta, imediata
 
 ```
 astrologia,horóscopo,clássica,veredicto,planetas,sim,não,adivinhação,interpretação,IA,significador
@@ -44,7 +44,7 @@ Character count: 98
 ```
 Faça uma pergunta específica. Obtenha uma resposta real — em segundos.
 
-AstraSk usa o método clássico de astrologia horária (William Lilly, casas de Regiomontano) para montar um mapa no momento em que você faz sua pergunta e interpretá-lo com IA em linguagem clara. Não precisa de horário de nascimento. Não precisa de conhecimentos de astrologia.
+Hora usa o método clássico de astrologia horária (William Lilly, casas de Regiomontano) para montar um mapa no momento em que você faz sua pergunta e interpretá-lo com IA em linguagem clara. Não precisa de horário de nascimento. Não precisa de conhecimentos de astrologia.
 
 COMO FUNCIONA
 
@@ -70,9 +70,9 @@ O QUE VOCÊ RECEBE
 
 POR QUE É DIFERENTE
 
-Cada outro app de astrologia horária mostra um mapa bruto e espera que você o interprete sozinho. AstraSk interpreta por você — usando o mesmo manual clássico (dignidades essenciais, significadores de casas, recepção) que um astrólogo treinado usaria.
+Cada outro app de astrologia horária mostra um mapa bruto e espera que você o interprete sozinho. Hora interpreta por você — usando o mesmo manual clássico (dignidades essenciais, significadores de casas, recepção) que um astrólogo treinado usaria.
 
-As outras ferramentas horárias (Morinus, Janus, Solar Fire) só funcionam na web ou no Windows. AstraSk é o primeiro app horário nativo e bonito para iOS e Android.
+As outras ferramentas horárias (Morinus, Janus, Solar Fire) só funcionam na web ou no Windows. Hora é o primeiro app horário nativo e bonito para iOS e Android.
 
 PERGUNTAS QUE AS PESSOAS FAZEM
 

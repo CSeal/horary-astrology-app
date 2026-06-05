@@ -5,7 +5,7 @@ source_inputs: [prd-v1.md, mvp-scope.md, ux-flows.md, design-system-plan]
 reviewed_by: owner-pending
 ---
 
-# Design System Brief — AstraSk
+# Design System Brief — Hora
 ## Horary Astrology Mobile App
 
 *Document version: 1.0*
@@ -539,7 +539,7 @@ Settings icon:  "Open settings"
 
 - Full-screen, no tab bar
 - Star particles at full density
-- App name "AstraSk" in Cormorant Garamond 500, 48px, centered
+- App name "Hora" in Cormorant Garamond 500, 48px, centered
 - Step dots at bottom center: 8px circles, gold for active, muted for inactive
 
 ---

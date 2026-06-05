@@ -4,7 +4,7 @@
 
 const pt = {
   // App name
-  appName: 'AstraSk',
+  appName: 'Hora',
   appTagline: 'Faça uma pergunta sincera. O céu irá responder.',
 
   // Home screen
@@ -278,15 +278,15 @@ const pt = {
     apiKeyEdit: 'Editar',
     shareSection: 'COMPARTILHAR & CONVIDAR',
     inviteFriend: 'Convidar um amigo',
-    rateApp: 'Avaliar o AstraSk',
-    inviteFriendTitle: 'Compartilhar o AstraSk',
+    rateApp: 'Avaliar o Hora',
+    inviteFriendTitle: 'Compartilhar o Hora',
     inviteShareText:
-      'Eu uso o AstraSk para respostas instantâneas de astrologia horária. Experimente grátis:',
+      'Eu uso o Hora para respostas instantâneas de astrologia horária. Experimente grátis:',
   },
 
   // Onboarding
   onboarding: {
-    step1Title: 'AstraSk',
+    step1Title: 'Hora',
     step1Subtitle: 'Faça uma pergunta sincera. O céu irá responder.',
     step2Title: 'O Caminho de uma Pergunta',
     step2Point1: 'Faça uma pergunta sincera e específica',
@@ -468,7 +468,7 @@ const pt = {
   // Force-update gate
   forceUpdate: {
     title: 'Atualização Necessária',
-    body: 'Uma atualização crítica está disponível. Atualize o app para continuar usando o AstraSk.',
+    body: 'Uma atualização crítica está disponível. Atualize o app para continuar usando o Hora.',
     cta: 'Atualizar agora',
   },
 

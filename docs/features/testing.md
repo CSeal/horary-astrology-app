@@ -4,9 +4,9 @@
 **Created by:** claude-opus
 **Related:** [ask-flow.md](ask-flow.md), [force-update.md](force-update.md), [journal.md](journal.md), [location-override.md](location-override.md), [debug-mode.md](debug-mode.md)
 
-Unit/integration test coverage for AstraSk's production-critical logic. Scope was chosen via a superpowers-v brainstorm (code-archaeology + domain-expert + library-audit): test the pure functions and async state machines that drive user-facing behaviour, and skip native bridges, navigation, and Reanimated worklets (low unit-test ROI).
+Unit/integration test coverage for Hora's production-critical logic. Scope was chosen via a superpowers-v brainstorm (code-archaeology + domain-expert + library-audit): test the pure functions and async state machines that drive user-facing behaviour, and skip native bridges, navigation, and Reanimated worklets (low unit-test ROI).
 
-**Baseline: 11 suites / 84 tests.** This count is a QA gate — see [Orchestration gate](#orchestration-gate).
+**Baseline: 16 suites / 209 tests, 100% coverage across all 4 metrics (Statements / Branches / Functions / Lines).** This count is a QA gate — see [Orchestration gate](#orchestration-gate).
 
 ---
 
@@ -39,17 +39,22 @@ Jest config lives inline in [package.json](../../package.json):
 
 | File | Target | Tests | Notes |
 |---|---|---|---|
-| [horaryApi.test.ts](../../src/services/__tests__/horaryApi.test.ts) | `normalizeError`, `getApiKey` | 12 | Pure error-mapping matrix + API-key priority chain |
+| [horaryApi.test.ts](../../src/services/__tests__/horaryApi.test.ts) | `normalizeError`, `getApiKey` | 15 | Pure error-mapping matrix + API-key priority chain |
 | [horaryApi.retry.test.ts](../../src/services/__tests__/horaryApi.retry.test.ts) | `askWithRetry` | 4 | axios mocked, fake timers for backoff |
-| [updateCheckService.test.ts](../../src/services/__tests__/updateCheckService.test.ts) | `checkForUpdate` | 7 | 3-tier fallback state machine |
+| [updateCheckService.test.ts](../../src/services/__tests__/updateCheckService.test.ts) | `checkForUpdate` | 12 | 3-tier fallback state machine; extended for cache staleness + platform-key |
 | [journalService.test.ts](../../src/services/__tests__/journalService.test.ts) | journal CRUD | 6 | Round-trip + 500-entry prune + corrupt JSON |
-| [geocodingService.test.ts](../../src/services/__tests__/geocodingService.test.ts) | `search` | 8 | Photon mapping + filter + AbortSignal |
-| [questionsStore.test.ts](../../src/stores/__tests__/questionsStore.test.ts) | hydrate + CRUD | 3 | hydrate / clearAllEntries / entries shape (quota now server-enforced) |
-| [parity.test.ts](../../src/i18n/__tests__/parity.test.ts) | en ↔ ru | 3 | Key set + placeholders + no-empty |
-| [useDebugTrigger.test.ts](../../src/hooks/__tests__/useDebugTrigger.test.ts) | 20-tap gesture | 6 | `renderHook` + `Date.now` spy |
+| [geocodingService.test.ts](../../src/services/__tests__/geocodingService.test.ts) | `search` | 10 | Photon mapping + filter + language fallback + AbortSignal |
+| [questionsStore.test.ts](../../src/stores/__tests__/questionsStore.test.ts) | hydrate + CRUD | 8 | hydrate / addEntry / deleteEntry / updateOutcome / clearAllEntries + error path |
+| [parity.test.ts](../../src/i18n/__tests__/parity.test.ts) | en ↔ ru key parity | 3 | Key set + placeholders + no-empty (covers all 8 locale files via en as source of truth) |
+| [useDebugTrigger.test.ts](../../src/hooks/__tests__/useDebugTrigger.test.ts) | 20-tap gesture | 9 | `renderHook` + `Date.now` spy; includes unmount cleanup cases |
 | [withMinDuration.test.ts](../../src/hooks/__tests__/withMinDuration.test.ts) | loading floor | 3 | Pre-existing timing helper |
-| [horaryMapper.test.ts](../../src/services/__tests__/horaryMapper.test.ts) | wire → `JournalEntry` | 20 | API field mapping incl. FR-G04–G07 |
+| [horaryMapper.test.ts](../../src/services/__tests__/horaryMapper.test.ts) | wire → `JournalEntry` | 53 | Full API field mapping incl. radicality flags, reception, perfection path, timing, testimony |
 | [reviewPromptService.test.ts](../../src/services/__tests__/reviewPromptService.test.ts) | FR-G02 review gates | 12 | Verdict tone + entry count + install age + cooldown |
+| [notificationService.test.ts](../../src/services/__tests__/notificationService.test.ts) | outcome-reminder scheduling | 11 | schedule / cancel / pruneExpired / permission grant+deny |
+| [secureKeyService.test.ts](../../src/services/__tests__/secureKeyService.test.ts) | SecureStore wrapper | 5 | get / set / delete + error path |
+| [zodiac.test.ts](../../src/constants/__tests__/zodiac.test.ts) | zodiac constants + pure functions | 33 | expandSign / nextSign / aspectSymbol / formatDegrees / timingWeight |
+| [useStreak.test.ts](../../src/hooks/__tests__/useStreak.test.ts) | streak calculation | 7 | Consecutive-day logic, milestone detection, gap reset |
+| [onThisDayService.test.ts](../../src/services/__tests__/onThisDayService.test.ts) | same-date past readings | 8 | ±3-day window, year exclusion, dismiss state |
 
 ---
 
@@ -88,15 +93,19 @@ The coordinates this service returns are sent straight to the horary API, so a
 mapping bug corrupts the chart. Covers `<2`-char short-circuit, `!res.ok` throw,
 display-name assembly, invalid-feature filtering, and AbortSignal pass-through.
 
-### `questionsStore.test.ts` — hydrate & entries
+### `questionsStore.test.ts` — hydrate & CRUD
 The monthly quota is now enforced server-side (API `429 → LIMIT_EXCEEDED`), so the store's
-remaining responsibilities are journal-entry state: `hydrate` from AsyncStorage, the
-debug-only `clearAllEntries` action, and the `entries` shape.
+responsibilities are journal-entry state: `hydrate` from AsyncStorage, `addEntry`, `deleteEntry`,
+`updateOutcome` (including clearing to `null`), the debug-only `clearAllEntries` action, and
+the error path that leaves entries unchanged when journalService throws.
 
 ### `parity.test.ts` — translation drift
 Flattens `en.ts` and `ru.ts` to dot-paths and asserts identical key sets (both
 directions), no empty values, and matching `{{placeholder}}` tokens. Cheap insurance
-against a missing-translation key shipping after any future string edit.
+against a missing-translation key shipping after any future string edit. The suite uses
+`en.ts` as the source of truth; the remaining 6 locales (UK, DE, ES, FR, PT, and the index)
+are not diffed in this suite — they are expected to be validated manually or by a separate
+parity extension when editing those files.
 
 ### `useDebugTrigger.test.ts` — activation gesture
 The hook measures its 4s rolling window with `Date.now()`, so time is driven by a
@@ -104,6 +113,32 @@ The hook measures its 4s rolling window with `Date.now()`, so time is driven by 
 fire, streak reset after a >4s pause, the Medium (15th) / Light (19th) / Heavy (20th)
 haptics, and re-arming after a fire. The hook clears its pending reset timer on unmount,
 so no timer handle leaks into the runner.
+
+### `notificationService.test.ts` — outcome-reminder scheduling
+Tests the 50-item queue cap (oldest evicted at capacity), schedule idempotency, cancellation
+by `entryId`, `pruneExpired` (drops past items, no-op when all future), and the
+permission-request paths (granted / denied / already-granted). `expo-notifications` and
+`AsyncStorage` are mocked by `jest-expo`.
+
+### `secureKeyService.test.ts` — SecureStore wrapper
+Thin wrapper over `expo-secure-store`. Tests the get (value present / null / throws-with-warn),
+set, and delete happy paths. Ensures the `keychainAccessible` option is forwarded correctly.
+
+### `zodiac.test.ts` — zodiac constants + pure functions
+Covers all pure utility functions exported from `src/constants/zodiac.ts`: `expandSign`,
+`nextSign`, `aspectSymbol`, `aspectPolarity`, `formatDegrees`, and `timingWeight`. Also
+asserts the `ZODIAC_SIGNS` array order and completeness, and the `ASPECT_SYMBOLS` glyph map.
+At 33 tests this is the largest single suite.
+
+### `useStreak.test.ts` — streak calculation
+Tests the hook's consecutive-day logic (today counts, yesterday counts, a 2-day gap resets),
+milestone badge detection thresholds, and edge cases (empty journal, single entry, all entries
+on same day).
+
+### `onThisDayService.test.ts` — same-date past readings
+Tests the ±3-day calendar window that matches past readings to the current date, the rule that
+entries from the current year are excluded, newest-first sorting, the empty-array path, and
+the AsyncStorage-backed dismiss state (`dismissToday` / `isDismissed`).
 
 ---
 
@@ -141,8 +176,8 @@ The jest suite is wired into **Stage 6 QA** as a must-pass P0 gate:
 - [orchestrate-stage6.md](../../.claude/commands/orchestrate-stage6.md) instructs the QA
   agent to run the suite **with coverage** and treats `--passWithNoTests` as disallowed.
 - [horary-qa-agent.md](../../.claude/agents/horary-qa-agent.md) Step 1 lists the focus
-  areas that must stay green and flags any drop below the **11 suites / 84 tests** baseline
-  as a P0 regression.
+  areas that must stay green and flags any drop below the **16 suites / 209 tests** baseline
+  as a P0 regression. Coverage must remain 100% across all 4 metrics.
 
 When adding tests, update the baseline count in both that agent file and this doc.
 

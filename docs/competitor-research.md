@@ -386,7 +386,7 @@ _Live competitive intelligence run. Sources: App Store / Play Store listings (fe
 | Lunaton: Horary Astrology | Fortune telling tarot & runes | 5.0 / 5 | 2 (very early) | Free + IAP ($5.99/reading, $19.99/5 readings) | Feb 2026 (v2.6) | No |
 | Horary Astrology (Pro Version) | — | unconfirmed | unconfirmed | unconfirmed | unconfirmed | Yes (Play Store) |
 
-**Delta vs. baseline**: Astrology: Horary Chart price increased from $15.99 to $23.99; rating dropped from 4.38 to 3.8 on iOS (reflecting user dissatisfaction at higher price). Lunaton added tarot + runes features (subtitle changed from horary-only to "Fortune telling tarot & runes") — this dilutes its horary positioning and is an opportunity for AstraSk to own the pure-horary niche.
+**Delta vs. baseline**: Astrology: Horary Chart price increased from $15.99 to $23.99; rating dropped from 4.38 to 3.8 on iOS (reflecting user dissatisfaction at higher price). Lunaton added tarot + runes features (subtitle changed from horary-only to "Fortune telling tarot & runes") — this dilutes its horary positioning and is an opportunity for Hora to own the pure-horary niche.
 
 #### New Competitor Identified: Horary Astrology (Pro Version) — Android
 
@@ -397,7 +397,7 @@ _Live competitive intelligence run. Sources: App Store / Play Store listings (fe
 | Key features | 225+ preloaded questions, yes/no indicator, horary chart, significators, casebook/journal, outcome tracking, timing indicators, confidence notes, simple explanation mode, light/dark mode, privacy-first (local storage) |
 | Notable | Most feature-complete Android horary app; includes casebook (our journal equivalent) and confidence notes (our confidence_band equivalent) |
 
-**Threat assessment**: Medium-High on Android. This app has the closest feature overlap with AstraSk on Android. Key gaps vs AstraSk: no AI-generated plain-language summary, no bilingual (RU), no beautiful dark UI, no API-backed chart calculation (uses preloaded questions rather than live ephemeris).
+**Threat assessment**: Medium-High on Android. This app has the closest feature overlap with Hora on Android. Key gaps vs Hora: no AI-generated plain-language summary, no bilingual (RU), no beautiful dark UI, no API-backed chart calculation (uses preloaded questions rather than live ephemeris).
 
 #### New Competitor Identified: Nummi AI
 
@@ -410,7 +410,7 @@ _Live competitive intelligence run. Sources: App Store / Play Store listings (fe
 | AI type | Conversational Vedic astrology AI with persistent memory |
 | Last updated | March 2026 (v2.0.3) |
 
-**Threat assessment**: Low-Medium. Nummi is Vedic, not Western horary. It occupies "AI spiritual companion" positioning, not "specific question answering." However, it signals the market is moving toward conversational AI astrology — a positioning risk if AstraSk does not emphasize its unique classical-method differentiation.
+**Threat assessment**: Low-Medium. Nummi is Vedic, not Western horary. It occupies "AI spiritual companion" positioning, not "specific question answering." However, it signals the market is moving toward conversational AI astrology — a positioning risk if Hora does not emphasize its unique classical-method differentiation.
 
 #### General Astrology App Landscape (2026 snapshot)
 
@@ -424,9 +424,9 @@ None of these have horary functionality. This confirms the niche is structurally
 
 Aggregated across: Astrology: Horary Chart (iOS/Android), Lunaton, Co-Star, Nebula, TimePassages, Nummi, Horary Astrology Pro (Android). Sources: App Store pages, Trustpilot, AppFollow, Kimola review analysis, Lunar Guide reviews, JustUseApp reviews. Approximate review base: 30+ datapoints per major app.
 
-#### Pain Points (Competitor Weakness = AstraSk Opportunity)
+#### Pain Points (Competitor Weakness = Hora Opportunity)
 
-| Pain Point | Apps Affected | Frequency | AstraSk Opportunity |
+| Pain Point | Apps Affected | Frequency | Hora Opportunity |
 |---|---|---|---|
 | "Too complex / confusing for beginners" | Horary Chart, Astro Gold, TimePassages | High (mentioned in 5+ apps) | Beginner-friendly UX with guided onboarding — MUST lead with this |
 | "No explanation of what the chart means" | Horary Chart, Morinus, AstroApp | High | AI plain-language interpretation is our primary differentiator |
@@ -439,9 +439,9 @@ Aggregated across: Astrology: Horary Chart (iOS/Android), Lunaton, Co-Star, Nebu
 | "No Russian / English-only" | All competitors except Lunaton (partial) | Medium-High for Russian market | Native EN + RU is unique among horary apps |
 | "No Android version" | Lunaton | Medium | Both iOS and Android from day one |
 
-#### Feature Requests (Competitor Users Wish For = AstraSk Should Have)
+#### Feature Requests (Competitor Users Wish For = Hora Should Have)
 
-| Feature Request | Source App | AstraSk Status |
+| Feature Request | Source App | Hora Status |
 |---|---|---|
 | "Plain-language explanation of what the chart result means" | Horary Chart reviews | IMPLEMENTED (AI summary) |
 | "Save readings and review history" | Multiple apps | IMPLEMENTED (local journal) |
@@ -452,9 +452,9 @@ Aggregated across: Astrology: Horary Chart (iOS/Android), Lunaton, Co-Star, Nebu
 | "Works in Russian" | Lunaton, Russian VK groups | IMPLEMENTED (i18n/ru.ts) |
 | "Simpler UI for non-astrologers" | Horary Chart, Astro Gold | IMPLEMENTED (beginner UX path) |
 
-#### Praise (What Competitors Do Well = AstraSk Must Match)
+#### Praise (What Competitors Do Well = Hora Must Match)
 
-| Praised Feature | App | AstraSk Match |
+| Praised Feature | App | Hora Match |
 |---|---|---|
 | "Beautiful, clean dark UI" | Co-Star | MATCH — dark celestial design system |
 | "Feels like a real astrologer answered" | Lunaton (human reading) | PARTIAL — AI summary must feel personalized, not generic |
@@ -467,9 +467,9 @@ Aggregated across: Astrology: Horary Chart (iOS/Android), Lunaton, Co-Star, Nebu
 
 ### Competitive Parity Gap Table
 
-Full feature inventory across top-10 competitors. Priority: HIGH = present in 3+ top competitors. DIFFERENTIATOR = AstraSk-unique.
+Full feature inventory across top-10 competitors. Priority: HIGH = present in 3+ top competitors. DIFFERENTIATOR = Hora-unique.
 
-| Feature | Competitor Has | AstraSk Has | Priority |
+| Feature | Competitor Has | Hora Has | Priority |
 |---|---|---|---|
 | Horary chart calculation (traditional method) | Horary Chart, Horary Pro Android, Morinus, AstroApp | YES | HIGH |
 | Yes/No/Maybe judgment verdict | Horary Chart, Horary Pro Android, Yes No Tarot | YES | HIGH |
@@ -508,25 +508,25 @@ Full feature inventory across top-10 competitors. Priority: HIGH = present in 3+
 
 ---
 
-### AstraSk Differentiators List
+### Hora Differentiators List
 
-These are what AstraSk does better than every competitor. These MUST be emphasized in ASO metadata, screenshots, and App Store description.
+These are what Hora does better than every competitor. These MUST be emphasized in ASO metadata, screenshots, and App Store description.
 
-1. **Only horary app with AI plain-language interpretation** — Every horary app (Horary Chart, Morinus, AstroApp) shows raw chart data. AstraSk gives the user a paragraph in plain English/Russian explaining what it means. No other horary app does this.
+1. **Only horary app with AI plain-language interpretation** — Every horary app (Horary Chart, Morinus, AstroApp) shows raw chart data. Hora gives the user a paragraph in plain English/Russian explaining what it means. No other horary app does this.
 
-2. **Instant answer in under 2 seconds** — Lunaton (best human option) takes 24 hours minimum. AstraSk delivers in under 2 seconds. For time-sensitive decisions, this is irreplaceable.
+2. **Instant answer in under 2 seconds** — Lunaton (best human option) takes 24 hours minimum. Hora delivers in under 2 seconds. For time-sensitive decisions, this is irreplaceable.
 
 3. **No birth data required** — Natal chart apps (Co-Star, TimePassages, Nummi) require birth date/time/location. Horary uses only the moment of the question — no personal history needed. Lower barrier to entry, stronger privacy story.
 
-4. **Full Russian + English support in a horary app** — No other horary app has Russian UI. Lunaton has partial Russian content but no Russian interface. AstraSk is the only Russian-language native horary mobile app.
+4. **Full Russian + English support in a horary app** — No other horary app has Russian UI. Lunaton has partial Russian content but no Russian interface. Hora is the only Russian-language native horary mobile app.
 
-5. **Freemium (free tier) for horary** — Every dedicated horary app costs $15.99–$300 upfront. AstraSk is free to start, 5 questions/month with no payment barrier.
+5. **Freemium (free tier) for horary** — Every dedicated horary app costs $15.99–$300 upfront. Hora is free to start, 5 questions/month with no payment barrier.
 
-6. **Classical method (William Lilly / Regiomontanus) with beginner UX** — Competitors offer classical technique OR beginner UX, never both. AstraSk bridges the gap.
+6. **Classical method (William Lilly / Regiomontanus) with beginner UX** — Competitors offer classical technique OR beginner UX, never both. Hora bridges the gap.
 
-7. **Question journal with full reading history** — Only Horary Astrology Pro (Android) and some general apps offer this. Among iOS horary apps, AstraSk is unique in offering a local journal with complete history.
+7. **Question journal with full reading history** — Only Horary Astrology Pro (Android) and some general apps offer this. Among iOS horary apps, Hora is unique in offering a local journal with complete history.
 
-8. **Dark celestial premium UI** — The only horary app with a Co-Star-tier visual design. Horary Chart looks like a 2014 utility app. AstraSk looks like a premium spiritual product.
+8. **Dark celestial premium UI** — The only horary app with a Co-Star-tier visual design. Horary Chart looks like a 2014 utility app. Hora looks like a premium spiritual product.
 
 ---
 
@@ -539,10 +539,10 @@ These are what AstraSk does better than every competitor. These MUST be emphasiz
 | # | Keyword | Est. Volume | Competition | Opportunity | Notes |
 |---|---|---|---|---|---|
 | 1 | horary astrology | Medium | Low | HIGH | Core niche, almost no competition |
-| 2 | astrology question answer | Medium | Low-Medium | HIGH | Maps exactly to AstraSk use case |
+| 2 | astrology question answer | Medium | Low-Medium | HIGH | Maps exactly to Hora use case |
 | 3 | ask astrology question | Low-Medium | Low | HIGH | Long-tail, high intent |
 | 4 | horary chart | Low-Medium | Low | HIGH | Technical term, practitioner + advanced users |
-| 5 | yes no astrology | Medium | Low | HIGH | Exact output of AstraSk verdict |
+| 5 | yes no astrology | Medium | Low | HIGH | Exact output of Hora verdict |
 | 6 | traditional astrology | Low-Medium | Low | HIGH | Differentiates from entertainment apps |
 | 7 | astrology chart question | Low-Medium | Low | HIGH | Use-case specific |
 | 8 | classical astrology | Low | Low | MEDIUM-HIGH | Niche but no competitors |
@@ -551,7 +551,7 @@ These are what AstraSk does better than every competitor. These MUST be emphasiz
 | 11 | astrology app | High | Very High | LOW-MEDIUM | Dominated by Co-Star, Nebula; useful for breadth |
 | 12 | horoscope app | Very High | Very High | LOW | Too competitive, not relevant to our technique |
 | 13 | birth chart | High | High | LOW | Out of scope — natal, not horary |
-| 14 | daily horoscope | Very High | Very High | LOW | Not what AstraSk does |
+| 14 | daily horoscope | Very High | Very High | LOW | Not what Hora does |
 | 15 | astrology reading | High | High | LOW-MEDIUM | Too generic, dominated by Astrotalk etc. |
 | 16 | spiritual guidance app | Medium | Medium | MEDIUM | Emotional positioning keyword |
 | 17 | cosmic insight | Low-Medium | Low | MEDIUM | Emotional/brand keyword |

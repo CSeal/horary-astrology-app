@@ -3,7 +3,7 @@
 **Status:** Implemented (Stage 5c — Screens)
 **Created by:** claude-sonnet (2026-05-26)
 
-The core user journey: the user types a question, AstraSk captures their location and time, sends the request to astrology-api.io, and navigates to the Verdict screen. Every step from form submission to journal storage happens in a single React Query mutation.
+The core user journey: the user types a question, Hora captures their location and time, sends the request to astrology-api.io, and navigates to the Verdict screen. Every step from form submission to journal storage happens in a single React Query mutation.
 
 ---
 

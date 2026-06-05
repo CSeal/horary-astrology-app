@@ -6,7 +6,7 @@ Place app screenshots here after the first TestFlight / internal build.
 
 | Filename | Screen | Notes |
 |---|---|---|
-| `01-splash.png` | Animated splash | Capture mid-animation if possible — starburst visible |
+| `01-splash.png` | Animated splash | Capture mid-animation if possible — zodiac clock face visible |
 | `02-onboarding.png` | Onboarding Step 0 | App name + tagline on cosmic background |
 | `03-home.png` | Home screen | AskForm visible, empty question field |
 | `04-verdict-yes.png` | Verdict — YES | Green card, high confidence |

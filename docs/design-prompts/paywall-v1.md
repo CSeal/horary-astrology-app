@@ -1,7 +1,7 @@
 ---
 created_by: claude-sonnet-4-6
 updated_by: claude-sonnet-4-6
-source_inputs: [docs/monetization-spec.md, docs/design-system-brief.md, docs/html-prototype/AstraSkClaudeDesign.html, docs/aso-brief.md]
+source_inputs: [docs/monetization-spec.md, docs/design-system-brief.md, docs/html-prototype/HoraClaudeDesign.html, docs/aso-brief.md]
 reviewed_by: owner-pending
 stage: Phase3-Monetization-DesignPrep
 date: 2026-06-04
@@ -17,7 +17,7 @@ date: 2026-06-04
 
 ---
 
-You are designing a new screen for the **AstraSk Horary Astrology** mobile app — a premium "Upgrade to Unlimited" paywall bottom sheet. This screen will be added to the existing interactive HTML prototype.
+You are designing a new screen for the **Hora Horary Astrology** mobile app — a premium "Upgrade to Unlimited" paywall bottom sheet. This screen will be added to the existing interactive HTML prototype.
 
 ---
 
@@ -84,7 +84,7 @@ This is a **bottom sheet** that slides up over a darkened scrim. It should look 
 ┌──────────────────────────────────────────────────────┐
 │                      [ × close ]  ← top-right, 20px  │
 │                                                       │
-│            ✦  AstraSk  Unlimited                      │
+│            ✦  Hora  Unlimited                      │
 │         Ask as much as the stars allow               │
 │                                                       │
 │  ┌────────────────────────────────────────────────┐   │
@@ -120,7 +120,7 @@ This is a **bottom sheet** that slides up over a darkened scrim. It should look 
 
 **Title row**:
 - `✦` sparkle glyph — `--accent-gold`, 22px
-- `"AstraSk Unlimited"` — `--font-display`, 28px, `--text-primary`, weight 600
+- `"Hora Unlimited"` — `--font-display`, 28px, `--text-primary`, weight 600
 - Both on the same line, centered
 - Subtitle: `"Ask as much as the stars allow"` — `--font-body`, 15px, `--text-secondary`, centered, margin-top 6px
 

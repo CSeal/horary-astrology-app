@@ -7,7 +7,7 @@ stage: Stage4-Architecture
 gate_linkage: Gate5
 ---
 
-# API Integration Spec — Horary Astrology App (AstraSk)
+# API Integration Spec — Horary Astrology App (Hora)
 
 *Document version: 2.0 — complete rewrite based on confirmed live API*
 *Provider: astrology-api.io (api.astrology-api.io)*
@@ -760,7 +760,7 @@ The SDK does **not** include a `horary` sub-client. Our custom `horaryApi.ts` + 
 
 ### Sub-clients provided
 
-| Sub-client | Endpoints | Relevance to AstraSk |
+| Sub-client | Endpoints | Relevance to Hora |
 |---|---|---|
 | `data` | `/api/v3/data` — positions, enhanced, global | `getPositions` could supplement chart_data; already partially covered by `chart_data` in `/analyze` |
 | `svg` | `/api/v3/svg` — natal, synastry, transit SVGs | **High future value** — natal chart SVG for Verdict screen chart visualization |

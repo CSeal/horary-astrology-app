@@ -7,7 +7,7 @@ stage: Stage4-Architecture
 gate_linkage: Gate5, Gate7
 ---
 
-# Quality Gates — Horary Astrology App (AstraSk)
+# Quality Gates — Horary Astrology App (Hora)
 
 *Document version: 1.0*
 

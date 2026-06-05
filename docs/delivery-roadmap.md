@@ -7,7 +7,7 @@ stage: Stage4-Architecture
 gate_linkage: Gate5
 ---
 
-# Delivery Roadmap — Horary Astrology App (AstraSk)
+# Delivery Roadmap — Horary Astrology App (Hora)
 
 *Document version: 1.0*
 

@@ -10,7 +10,7 @@ reviewed_by: owner-pending
 ## Title (max 30 chars)
 
 ```
-AstraSk: Thème Horaire
+Hora: Thème Horaire
 ```
 Character count: 22
 
@@ -32,7 +32,7 @@ Character count: 74
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
-Words already indexed: AstraSk, Thème, Horaire, Posez, réponse
+Words already indexed: Hora, Thème, Horaire, Posez, réponse
 
 ```
 astrologie,horoscope,classique,verdict,planètes,oui,non,divination,interprétation,IA,significateur
@@ -44,7 +44,7 @@ Character count: 99
 ```
 Posez une question précise. Obtenez une vraie réponse — en quelques secondes.
 
-AstraSk utilise la méthode classique de l'astrologie horaire (William Lilly, maisons de Régiomontanus) pour dresser un thème au moment où vous posez votre question et l'interpréter avec l'IA en langage clair. Aucune heure de naissance requise. Aucune connaissance en astrologie nécessaire.
+Hora utilise la méthode classique de l'astrologie horaire (William Lilly, maisons de Régiomontanus) pour dresser un thème au moment où vous posez votre question et l'interpréter avec l'IA en langage clair. Aucune heure de naissance requise. Aucune connaissance en astrologie nécessaire.
 
 COMMENT ÇA MARCHE
 
@@ -70,9 +70,9 @@ CE QUE VOUS OBTENEZ
 
 POURQUOI C'EST DIFFÉRENT
 
-Chaque autre application horaire vous montre un thème brut et s'attend à ce que vous l'interprétiez vous-même. AstraSk l'interprète pour vous — en utilisant le même manuel classique (dignités essentielles, significateurs de maisons, réception) qu'un astrologue formé utiliserait.
+Chaque autre application horaire vous montre un thème brut et s'attend à ce que vous l'interprétiez vous-même. Hora l'interprète pour vous — en utilisant le même manuel classique (dignités essentielles, significateurs de maisons, réception) qu'un astrologue formé utiliserait.
 
-Les autres outils horaires (Morinus, Janus, Solar Fire) ne fonctionnent que sur le web ou sous Windows. AstraSk est la première belle application horaire native pour iOS et Android.
+Les autres outils horaires (Morinus, Janus, Solar Fire) ne fonctionnent que sur le web ou sous Windows. Hora est la première belle application horaire native pour iOS et Android.
 
 QUESTIONS QUE LES GENS POSENT
 

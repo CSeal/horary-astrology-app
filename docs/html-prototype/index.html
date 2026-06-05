@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AstraSk — Prototype</title>
+  <title>Hora — Prototype</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
@@ -188,7 +188,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      color: var(--accent-gold);
+      color: var(--text-secondary);
       font-size: 15px;
       font-weight: 500;
       cursor: pointer;
@@ -262,7 +262,7 @@
       padding: 16px 24px;
       background: var(--accent-gold);
       color: var(--text-inverse);
-      font-family: var(--font-body);
+      font-family: var(--font-display);
       font-size: 17px;
       font-weight: 600;
       border: none;
@@ -295,6 +295,26 @@
     }
     .btn-secondary:active { opacity: 0.7; }
 
+    .btn-outline {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 16px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: opacity 0.15s;
+      user-select: none;
+      flex: 1;
+    }
+    .btn-outline:active { opacity: 0.7; }
+
     /* ===== SECTION LABEL ===== */
     .section-label {
       font-size: 11px;
@@ -321,9 +341,351 @@
       overflow: hidden;
     }
 
-    /* =====================================================
-       SCREEN 1: ONBOARDING
-    ===================================================== */
+    /* ===== STREAK BADGE ===== */
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(245,200,66,0.3);
+      background: rgba(245,200,66,0.1);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      font-family: var(--font-body);
+    }
+
+    /* ===== VERDICT STYLES ===== */
+    .verdict-question {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 16px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .verdict-card {
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(34,211,164,0.3);
+      background: var(--yes-glow);
+      padding: 28px 24px 24px;
+      box-shadow: 0 0 48px var(--yes-glow-strong);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .verdict-word {
+      font-family: var(--font-display);
+      font-size: 56px;
+      font-weight: 700;
+      color: var(--yes);
+      line-height: 1;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      text-shadow: 0 0 30px rgba(34,211,164,0.5);
+    }
+    .confidence-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .conf-dots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+    }
+    .conf-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--bg-card);
+    }
+    .conf-dot.filled { background: var(--yes); box-shadow: 0 0 6px rgba(34,211,164,0.5); }
+    .conf-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--yes);
+      letter-spacing: 1px;
+    }
+
+    .sig-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .sig-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .sig-symbol {
+      font-size: 22px;
+      color: var(--accent-violet);
+      width: 28px;
+      flex-shrink: 0;
+      text-align: center;
+      line-height: 1;
+    }
+    .sig-info { flex: 1; }
+    .sig-name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    .sig-role {
+      font-size: 11px;
+      font-style: italic;
+      color: var(--text-secondary);
+    }
+    .sig-detail {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    .aspect-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: rgba(139,92,246,0.08);
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: var(--radius-md);
+      margin-bottom: 10px;
+    }
+    .aspect-symbol { font-size: 16px; color: var(--accent-violet); }
+    .aspect-text { font-size: 13px; color: var(--text-secondary); flex: 1; }
+    .aspect-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--yes);
+      background: rgba(34,211,164,0.12);
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+    }
+    .aspect-badge.sep {
+      color: var(--text-secondary);
+      background: rgba(155,147,184,0.12);
+    }
+
+    .summary-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--text-primary);
+    }
+
+    .verdict-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      margin-bottom: 20px;
+    }
+    .verdict-meta .dot-sep { color: var(--text-disabled); }
+
+    /* ===== JOURNAL STYLES ===== */
+    .month-header {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      padding: 4px 0 10px;
+    }
+
+    .journal-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .journal-item {
+      background: var(--bg-surface);
+      border-radius: var(--radius-md);
+      padding: 14px 14px 14px 17px;
+      border-left: 3px solid var(--yes);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--yes);
+      cursor: pointer;
+      transition: opacity 0.15s;
+      user-select: none;
+    }
+    .journal-item:active { opacity: 0.7; }
+    .journal-item.no { border-left-color: var(--no); }
+    .journal-item.unclear { border-left-color: var(--unclear); }
+
+    .journal-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .journal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(34,211,164,0.15);
+      color: var(--yes);
+    }
+    .journal-badge.no { background: rgba(248,113,113,0.15); color: var(--no); }
+    .journal-badge.unclear { background: rgba(155,147,184,0.15); color: var(--unclear); }
+
+    .journal-date {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+    }
+    .journal-question {
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .journal-item-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .journal-outcome-pill {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+    }
+    .journal-outcome-pill.came-true { background: rgba(34,211,164,0.15); color: var(--yes); }
+    .journal-outcome-pill.pending { background: rgba(155,147,184,0.12); color: var(--text-secondary); }
+    .journal-outcome-pill.didnt { background: rgba(248,113,113,0.15); color: var(--no); }
+    .journal-arrow { font-size: 14px; color: var(--text-disabled); }
+
+    /* ===== SETTINGS STYLES ===== */
+    .settings-section { margin-bottom: 20px; }
+    .settings-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .settings-row:last-child { border-bottom: none; }
+    .settings-row-label {
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: var(--text-primary);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .lang-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .lang-row:last-child { border-bottom: none; }
+    .lang-name {
+      font-size: 14px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .lang-check { color: var(--accent-gold); font-size: 14px; }
+    .api-key-display {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+    .edit-icon-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--accent-gold);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .edit-icon-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .settings-note {
+      font-size: 10px;
+      color: var(--text-secondary);
+      padding: 6px 16px 0;
+    }
+    .loc-toggle {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .loc-btn {
+      flex: 1;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      background: var(--bg-card);
+    }
+    .loc-btn.active {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      background: rgba(245,200,66,0.08);
+    }
+
+    /* iOS-style toggle */
+    .ios-toggle {
+      width: 44px;
+      height: 26px;
+      background: var(--accent-gold);
+      border-radius: 13px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .ios-toggle::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    /* Personal badge */
+    .personal-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      background: rgba(245,200,66,0.12);
+      border: 1px solid rgba(245,200,66,0.3);
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+    }
+
+    /* ===== ONBOARDING ===== */
     #screen-onboarding .star-bg { z-index: 0; }
     #screen-onboarding .screen-content {
       flex: 1;
@@ -336,13 +698,6 @@
     }
 
     .onboarding-top { text-align: center; }
-    .onboarding-star-icon {
-      font-size: 48px;
-      line-height: 1;
-      margin-bottom: 20px;
-      display: block;
-      filter: drop-shadow(0 0 20px rgba(245,200,66,0.5));
-    }
     .onboarding-app-name {
       font-family: var(--font-display);
       font-size: 52px;
@@ -376,10 +731,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
     }
-    .feature-icon {
-      font-size: 18px;
-      flex-shrink: 0;
-    }
+    .feature-icon { font-size: 18px; flex-shrink: 0; }
     .feature-text {
       font-size: 14px;
       font-weight: 400;
@@ -413,93 +765,7 @@
       border-radius: 4px;
     }
 
-    /* =====================================================
-       SCREEN 2: HOME
-    ===================================================== */
-    #screen-home .nav-header { background: transparent; border-bottom: none; }
-    .home-app-name {
-      font-family: var(--font-display);
-      font-size: 28px;
-      font-weight: 500;
-      color: var(--text-primary);
-      letter-spacing: 1px;
-    }
-    .home-content { padding: 8px 20px 20px; }
-
-    .ask-label {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 4px;
-    }
-    .ask-sublabel {
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin-bottom: 14px;
-    }
-
-    .question-input-wrap { position: relative; margin-bottom: 8px; }
-    .question-input {
-      width: 100%;
-      min-height: 120px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      color: var(--text-primary);
-      font-family: var(--font-body);
-      font-size: 15px;
-      line-height: 1.6;
-      padding: 16px;
-      resize: none;
-      outline: none;
-      transition: border-color 0.15s;
-      display: block;
-    }
-    .question-input::placeholder { color: var(--text-disabled); }
-    .question-input:focus { border-color: var(--border-focus); }
-    .char-count {
-      font-size: 11px;
-      color: var(--text-secondary);
-      text-align: right;
-      margin-bottom: 16px;
-      font-family: var(--font-mono);
-    }
-
-    .location-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 20px;
-      padding: 12px 14px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-    }
-    .location-pin { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-    .location-city {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text-primary);
-      line-height: 1.3;
-    }
-    .location-coords {
-      font-size: 11px;
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
-      margin-top: 2px;
-    }
-
-    .question-counter {
-      text-align: center;
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 14px;
-    }
-    .question-counter span { color: var(--accent-gold); font-weight: 600; }
-
-    /* =====================================================
-       SCREEN 3: LOADING
-    ===================================================== */
+    /* ===== LOADING SCREEN ===== */
     #screen-loading {
       align-items: center;
       justify-content: center;
@@ -606,335 +872,238 @@
       line-height: 1.6;
     }
 
-    /* =====================================================
-       SCREEN 4: VERDICT
-    ===================================================== */
-    .verdict-question {
-      font-family: var(--font-display);
-      font-size: 15px;
-      font-style: italic;
-      color: var(--text-secondary);
-      line-height: 1.5;
-      margin-bottom: 16px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .verdict-card {
+    /* ===== VERDICT — COMPACT (screen-verdict) ===== */
+    .verdict-compact-badge {
+      background: rgba(34,211,164,0.1);
+      border: 1px solid rgba(34,211,164,0.4);
       border-radius: var(--radius-xl);
-      border: 1px solid rgba(34,211,164,0.3);
-      background: var(--yes-glow);
-      padding: 28px 24px 24px;
-      box-shadow: 0 0 48px var(--yes-glow-strong);
-      margin-bottom: 20px;
+      padding: 20px 32px;
       text-align: center;
+      box-shadow: 0 0 40px rgba(34,211,164,0.2);
+      margin-bottom: 16px;
     }
-    .verdict-word {
+    .verdict-compact-word {
       font-family: var(--font-display);
-      font-size: 56px;
+      font-size: 48px;
       font-weight: 700;
       color: var(--yes);
       line-height: 1;
       letter-spacing: 2px;
-      margin-bottom: 16px;
-      text-shadow: 0 0 30px rgba(34,211,164,0.5);
+      text-shadow: 0 0 24px rgba(34,211,164,0.5);
+      margin-bottom: 10px;
     }
-    .confidence-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
-    .conf-dots {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-    }
-    .conf-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--bg-card);
-    }
-    .conf-dot.filled { background: var(--yes); box-shadow: 0 0 6px rgba(34,211,164,0.5); }
-    .conf-label {
-      font-size: 13px;
+    .confidence-pill {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 10px;
       font-weight: 600;
-      color: var(--yes);
       letter-spacing: 1px;
-    }
-
-    .significators-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 0 10px;
-      cursor: pointer;
-      user-select: none;
-    }
-    .significators-toggle .section-label { margin-bottom: 0; }
-    .toggle-arrow {
-      font-size: 12px;
-      color: var(--accent-gold);
-      transition: transform 0.2s;
-    }
-    .toggle-arrow.open { transform: rotate(180deg); }
-
-    .sig-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-    .sig-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 14px;
-      background: var(--bg-card);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-    }
-    .sig-symbol {
-      font-size: 22px;
-      color: var(--accent-violet);
-      width: 28px;
-      flex-shrink: 0;
-      text-align: center;
-      line-height: 1;
-    }
-    .sig-info { flex: 1; }
-    .sig-name {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-    .sig-role {
-      font-size: 11px;
-      font-style: italic;
-      color: var(--text-secondary);
-    }
-    .sig-detail {
-      font-size: 13px;
-      color: var(--text-secondary);
-      text-align: right;
-    }
-    .sig-check { font-size: 14px; color: var(--yes); }
-
-    .aspect-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: rgba(139,92,246,0.08);
-      border: 1px solid rgba(139,92,246,0.2);
-      border-radius: var(--radius-md);
-      margin-bottom: 16px;
-    }
-    .aspect-symbol { font-size: 16px; color: var(--accent-violet); }
-    .aspect-text { font-size: 13px; color: var(--text-secondary); flex: 1; }
-    .aspect-badge {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--yes);
-      background: rgba(34,211,164,0.12);
-      padding: 3px 8px;
-      border-radius: var(--radius-full);
-    }
-
-    .summary-section { margin-bottom: 20px; }
-    .summary-text {
-      font-size: 15px;
-      line-height: 1.7;
-      color: var(--text-primary);
-    }
-
-    .verdict-meta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
-      margin-bottom: 20px;
-    }
-    .verdict-meta .dot-sep { color: var(--text-disabled); }
-
-    /* =====================================================
-       SCREEN 5: JOURNAL
-    ===================================================== */
-    .month-header {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      color: var(--accent-gold);
       text-transform: uppercase;
-      padding: 4px 0 10px;
-    }
-
-    .journal-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-    .journal-item {
-      background: var(--bg-surface);
-      border-radius: var(--radius-md);
-      padding: 14px 14px 14px 17px;
-      border-left: 3px solid var(--yes);
-      cursor: pointer;
-      transition: opacity 0.15s;
-      user-select: none;
-    }
-    .journal-item:active { opacity: 0.7; }
-    .journal-item.no { border-left-color: var(--no); }
-    .journal-item.maybe { border-left-color: var(--maybe); }
-    .journal-item.unclear { border-left-color: var(--unclear); }
-
-    .journal-item-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-    .journal-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
+      color: var(--text-secondary);
+      background: var(--bg-card);
       padding: 3px 10px;
       border-radius: var(--radius-full);
-      font-size: 11px;
-      font-weight: 600;
-      background: rgba(34,211,164,0.15);
-      color: var(--yes);
     }
-    .journal-badge.no { background: rgba(248,113,113,0.15); color: var(--no); }
-    .journal-badge.maybe { background: rgba(251,191,36,0.15); color: var(--maybe); }
-    .journal-badge.unclear { background: rgba(155,147,184,0.15); color: var(--unclear); }
 
-    .journal-date {
-      font-size: 11px;
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
-    }
-    .journal-question {
-      font-size: 14px;
-      color: var(--text-primary);
-      line-height: 1.5;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin-bottom: 6px;
-    }
-    .journal-item-bottom {
+    .chart-strength-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
     }
-    .journal-conf {
+    .chart-strength-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .strength-track {
+      flex: 1;
+      height: 6px;
+      background: var(--bg-card);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      width: 70%;
+      background: var(--accent-violet);
+      border-radius: var(--radius-full);
+    }
+    .strength-pill {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--accent-violet);
+      background: rgba(139,92,246,0.12);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+
+    .ai-summary {
+      font-family: var(--font-display);
+      font-size: 17px;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+
+    .timing-teaser {
+      background: var(--bg-surface);
+      border: 1px solid rgba(240,238,255,0.06);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+    .timing-teaser-text {
+      flex: 1;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+    .timing-chevron { color: var(--accent-gold); font-size: 16px; }
+
+    .verdict-cta-area {
+      border-top: 1px solid var(--border);
+      padding: 14px 20px 0;
+      margin-top: 4px;
+    }
+    .verdict-cta-hint {
+      text-align: center;
       font-size: 11px;
       color: var(--text-disabled);
-    }
-    .journal-arrow {
-      font-size: 14px;
-      color: var(--text-disabled);
+      margin-bottom: 10px;
+      letter-spacing: 0.3px;
     }
 
-    /* =====================================================
-       SCREEN 6: SETTINGS
-    ===================================================== */
-    .settings-section { margin-bottom: 24px; }
-
-    .settings-card {
+    /* ===== STATS SCREEN ===== */
+    .stat-blocks-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .stat-block {
+      flex: 1;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      overflow: hidden;
+      padding: 14px 10px;
+      text-align: center;
     }
-    .settings-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border);
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      line-height: 1;
+      margin-bottom: 4px;
     }
-    .settings-row:last-child { border-bottom: none; }
-    .settings-row-label {
-      font-size: 15px;
-      color: var(--text-primary);
-      font-weight: 400;
-    }
-    .settings-row-value {
-      font-size: 14px;
+    .stat-key {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
       color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
-    .settings-picker {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 5px 10px;
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-primary);
-      cursor: pointer;
-    }
-    .settings-picker-arrow { color: var(--text-secondary); font-size: 10px; }
 
-    .usage-track {
-      width: 100%;
-      height: 6px;
-      background: var(--bg-base);
-      border-radius: var(--radius-full);
-      overflow: hidden;
-      margin-top: 8px;
-      margin-bottom: 6px;
+    .dist-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
     }
-    .usage-fill {
-      height: 100%;
-      width: 80%;
-      background: linear-gradient(90deg, var(--accent-gold), #c49b1e);
-      border-radius: var(--radius-full);
-    }
-    .usage-label {
+    .dist-label {
       font-size: 12px;
+      font-weight: 600;
       color: var(--text-secondary);
-      display: flex;
-      justify-content: space-between;
+      width: 54px;
+      flex-shrink: 0;
     }
-    .usage-count { color: var(--accent-gold); font-weight: 600; }
-
-    .api-key-display {
-      font-family: var(--font-mono);
-      font-size: 16px;
-      color: var(--text-secondary);
-      letter-spacing: 3px;
+    .dist-track {
       flex: 1;
+      height: 6px;
+      background: var(--bg-surface);
+      border-radius: var(--radius-full);
+      overflow: hidden;
     }
-    .edit-icon-btn {
+    .dist-fill { height: 100%; border-radius: var(--radius-full); }
+    .dist-pct {
+      font-size: 11px;
+      color: var(--text-secondary);
+      width: 30px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .activity-bars {
       display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 60px;
+      margin-bottom: 8px;
+    }
+    .activity-bar-wrap {
+      display: flex;
+      flex-direction: column;
       align-items: center;
       gap: 4px;
-      color: var(--accent-gold);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      padding: 4px 0;
+      flex: 1;
     }
-    .edit-icon-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .activity-bar {
+      width: 100%;
+      background: rgba(139,92,246,0.6);
+      border-radius: 3px 3px 0 0;
+    }
+    .activity-month {
+      font-size: 9px;
+      color: var(--text-disabled);
+      letter-spacing: 0.5px;
+    }
 
-    .settings-note {
+    .topic-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .topic-chip {
       font-size: 12px;
       color: var(--text-secondary);
-      padding: 6px 16px 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 5px 12px;
     }
 
-    .version-row {
+    /* ===== CATEGORY CHIPS ===== */
+    .category-chips {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 14px;
+      padding-bottom: 2px;
+    }
+    .category-chips::-webkit-scrollbar { display: none; }
+    .cat-chip {
+      flex-shrink: 0;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
       background: var(--bg-card);
+      color: var(--text-secondary);
       border: 1px solid var(--border);
-      border-radius: var(--radius-md);
+    }
+    .cat-chip.active {
+      background: rgba(245,200,66,0.15);
+      border-color: rgba(245,200,66,0.4);
+      color: var(--accent-gold);
     }
 
     /* ===== MISC UTILITIES ===== */
@@ -946,7 +1115,7 @@
     .mb-8 { margin-bottom: 8px; }
     .mb-16 { margin-bottom: 16px; }
 
-    /* ===== VERDICT SCREEN REVEAL ANIMATION ===== */
+    /* ===== VERDICT CARD ANIMATION ===== */
     .verdict-card-anim {
       animation: verdict-reveal 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
     }
@@ -955,14 +1124,84 @@
       to   { transform: scale(1); opacity: 1; }
     }
 
-    /* ===== PAGE TITLE (large screen) ===== */
-    .screen-page-title {
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--text-primary);
-      padding: 16px 20px 8px;
-      flex-shrink: 0;
+    /* ===== ON-THIS-DAY BANNER ===== */
+    .otd-banner {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      cursor: pointer;
     }
+    .otd-icon { color: var(--accent-gold); font-size: 14px; flex-shrink: 0; }
+    .otd-text { flex: 1; }
+    .otd-label { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 2px; }
+    .otd-question { font-family: var(--font-display); font-size: 13px; font-style: italic; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+    .otd-view { font-size: 12px; font-weight: 600; color: var(--accent-gold); flex-shrink: 0; }
+
+    /* ===== ASK FORM CARD ===== */
+    .ask-form-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .question-textarea {
+      width: 100%;
+      min-height: 80px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+      font-family: var(--font-display);
+      font-size: 17px;
+      line-height: 1.6;
+      padding: 0 0 10px;
+      resize: none;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    .question-textarea::placeholder { color: var(--text-disabled); font-style: italic; }
+    .form-bottom-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .form-location {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ===== OUTCOME ROW ===== */
+    .outcome-section { margin-top: 20px; }
+    .outcome-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; }
+    .outcome-pills { display: flex; gap: 8px; }
+    .outcome-pill {
+      flex: 1;
+      padding: 7px 6px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border);
+      color: var(--text-disabled);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .outcome-pill.active-yes { background: rgba(34,211,164,0.15); color: var(--yes); border-color: rgba(34,211,164,0.3); }
+    .outcome-pill.active-no { background: rgba(248,113,113,0.15); color: var(--no); border-color: rgba(248,113,113,0.3); }
+    .outcome-pill.active-pending { background: rgba(155,147,184,0.1); color: var(--text-secondary); border-color: rgba(155,147,184,0.3); }
+
+    /* ===== VERDICT FULL — SCREEN ===== */
+    #screen-verdict-full .screen-scroll { flex: 1; }
   </style>
 </head>
 <body>
@@ -976,10 +1215,8 @@
        SCREEN 1: ONBOARDING
   ============================================================ -->
   <div class="screen active" id="screen-onboarding">
-    <!-- Star background -->
     <div class="star-bg" id="stars-onboarding"></div>
 
-    <!-- Status bar -->
     <div class="status-bar">
       <span class="status-time">9:41</span>
       <div class="status-icons">
@@ -989,11 +1226,31 @@
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="screen-content" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:48px 32px 40px;position:relative;z-index:1;">
-      <div class="onboarding-top" style="text-align:center;width:100%;">
-        <span class="onboarding-star-icon">✦</span>
-        <div class="onboarding-app-name">AstraSk</div>
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:48px 32px 40px;position:relative;z-index:1;">
+      <div style="text-align:center;width:100%;">
+        <svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:12px;">
+          <circle cx="50" cy="50" r="44" fill="#8B5CF6" fill-opacity="0.12"/>
+          <circle cx="50" cy="50" r="44" fill="none" stroke="#F5C842" stroke-width="1.5" stroke-opacity="0.6"/>
+          <circle cx="50" cy="50" r="34" fill="none" stroke="#F5C842" stroke-width="0.6" stroke-opacity="0.18"/>
+          <line x1="50" y1="6" x2="50" y2="17" stroke="#F5C842" stroke-width="1.8" stroke-opacity="0.9" stroke-linecap="round"/>
+          <line x1="94" y1="50" x2="83" y2="50" stroke="#F5C842" stroke-width="1.8" stroke-opacity="0.9" stroke-linecap="round"/>
+          <line x1="50" y1="94" x2="50" y2="83" stroke="#F5C842" stroke-width="1.8" stroke-opacity="0.9" stroke-linecap="round"/>
+          <line x1="6" y1="50" x2="17" y2="50" stroke="#F5C842" stroke-width="1.8" stroke-opacity="0.9" stroke-linecap="round"/>
+          <line x1="72" y1="11.9" x2="69" y2="17.1" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+          <line x1="88.1" y1="28" x2="82.9" y2="31" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+          <line x1="88.1" y1="72" x2="82.9" y2="69" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+          <line x1="72" y1="88.1" x2="69" y2="82.9" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+          <line x1="28" y1="88.1" x2="31" y2="82.9" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+          <line x1="11.9" y1="72" x2="17.1" y2="69" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+          <line x1="11.9" y1="28" x2="17.1" y2="31" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+          <line x1="28" y1="11.9" x2="31" y2="17.1" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+          <line x1="50" y1="50" x2="24" y2="36" stroke="#F5C842" stroke-width="2.2" stroke-linecap="round"/>
+          <line x1="50" y1="50" x2="59" y2="55" stroke="#F5C842" stroke-width="1.4" stroke-opacity="0.5" stroke-linecap="round"/>
+          <polygon points="24,30.5 25.4,35.5 30,36 25.4,36.5 24,41.5 22.6,36.5 18,36 22.6,35.5" fill="#F5C842"/>
+          <circle cx="50" cy="50" r="3.5" fill="#F5C842"/>
+          <circle cx="50" cy="50" r="1.5" fill="white" fill-opacity="0.4"/>
+        </svg>
+        <div class="onboarding-app-name">Hora</div>
         <div class="onboarding-tagline">Ask the stars.<br>Get your answer.</div>
       </div>
 
@@ -1012,7 +1269,7 @@
         </div>
       </div>
 
-      <div class="onboarding-bottom" style="width:100%;">
+      <div style="width:100%;">
         <button class="btn-primary" onclick="showScreen('home')">✦ &nbsp;Get Started</button>
         <div class="onboarding-note">Enable location for accurate chart casting</div>
         <div class="step-dots" style="margin-top:14px;">
@@ -1027,7 +1284,7 @@
 
 
   <!-- ============================================================
-       SCREEN 2: HOME (ASK)
+       SCREEN 2: HOME (updated — StreakBadge + OnThisDay + AskForm)
   ============================================================ -->
   <div class="screen" id="screen-home">
     <div class="star-bg" id="stars-home"></div>
@@ -1043,55 +1300,78 @@
     </div>
 
     <!-- Nav header -->
-    <div class="nav-header" style="background:transparent;border-bottom:none;">
-      <span class="home-app-name">✦ AstraSk</span>
+    <div class="nav-header" style="background:transparent;border-bottom:none;padding:0 20px;">
+      <span style="font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--text-primary);letter-spacing:0.5px;">
+        <span style="color:var(--accent-gold);font-size:16px;margin-right:6px;">✦</span>Horary Reading
+      </span>
       <div class="nav-icon-btn" onclick="showScreen('settings')">
-        <!-- Settings gear -->
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       </div>
     </div>
 
     <!-- Scrollable content -->
     <div class="screen-scroll" style="position:relative;z-index:1;">
-      <div style="padding:8px 20px 20px;">
-        <div class="ask-label">Ask your question</div>
-        <div class="ask-sublabel">Be sincere and specific</div>
+      <div style="padding:4px 20px 20px;">
 
-        <div class="question-input-wrap">
-          <textarea class="question-input" id="home-textarea" placeholder="Ask a sincere, specific question...&#10;e.g. Will I get the promotion?" rows="5" oninput="updateCharCount(this)">Will I get the job offer this month?</textarea>
+        <!-- Streak badge -->
+        <div style="display:flex;justify-content:center;margin-bottom:12px;">
+          <span class="streak-badge">🔥 7-day streak</span>
         </div>
-        <div class="char-count" id="char-count">36 / 280</div>
 
-        <div class="location-row">
-          <span class="location-pin">📍</span>
-          <div>
-            <div class="location-city">London, United Kingdom</div>
-            <div class="location-coords">51.5074° N, 0.1278° W</div>
+        <!-- OnThisDay banner -->
+        <div class="otd-banner">
+          <div class="otd-icon">✦</div>
+          <div class="otd-text">
+            <div class="otd-label">On this day, a year ago:</div>
+            <div class="otd-question">"Will I get the job offer this month?"</div>
+          </div>
+          <div class="otd-view">View →</div>
+        </div>
+
+        <!-- Ask form card -->
+        <div class="ask-form-card">
+          <!-- Category chips -->
+          <div class="category-chips">
+            <div class="cat-chip active">Love</div>
+            <div class="cat-chip">Career</div>
+            <div class="cat-chip">Health</div>
+            <div class="cat-chip">Finances</div>
+            <div class="cat-chip">Spiritual</div>
+          </div>
+
+          <!-- Textarea -->
+          <textarea class="question-textarea" placeholder="Ask your question..." rows="3">Will my new project succeed in 2026?</textarea>
+
+          <!-- Bottom row: location + CTA -->
+          <div class="form-bottom-row">
+            <div class="form-location">
+              <span>📍</span>
+              <span>Austin, TX</span>
+            </div>
+            <button class="btn-primary" onclick="startLoading()" style="width:auto;padding:10px 20px;font-size:14px;">Cast the Chart</button>
           </div>
         </div>
 
-        <button class="btn-primary" onclick="startLoading()">✦ &nbsp;Ask the Stars</button>
-
-        <div class="question-counter" style="margin-top:16px;">Questions this month: <span>2 / 5</span></div>
       </div>
     </div>
 
-    <!-- Tab bar -->
+    <!-- Tab bar (4 tabs) -->
     <div class="tab-bar">
       <div class="tab-item active" onclick="showScreen('home')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <span class="tab-label">Ask</span>
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span class="tab-label">Home</span>
       </div>
       <div class="tab-item" onclick="showScreen('journal')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        </div>
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
         <span class="tab-label">Journal</span>
+      </div>
+      <div class="tab-item" onclick="showScreen('stats')">
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <span class="tab-label">Stats</span>
+      </div>
+      <div class="tab-item" onclick="showScreen('settings')">
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <span class="tab-label">Settings</span>
       </div>
     </div>
   </div><!-- /screen-home -->
@@ -1103,7 +1383,6 @@
   <div class="screen" id="screen-loading" style="align-items:center;justify-content:center;">
     <div class="star-bg" id="stars-loading"></div>
 
-    <!-- Status bar -->
     <div class="status-bar" style="position:absolute;top:0;left:0;right:0;z-index:2;">
       <span class="status-time">9:41</span>
       <div class="status-icons">
@@ -1114,7 +1393,6 @@
     </div>
 
     <div class="loading-content">
-      <!-- Orbit animation -->
       <div class="orbit-container">
         <div class="orbit-ring"></div>
         <div class="orbit-trail"></div>
@@ -1131,13 +1409,13 @@
         <div class="progress-bar-fill"></div>
       </div>
 
-      <div class="loading-question">"Will I get the job offer this month?"</div>
+      <div class="loading-question">"Will my new project succeed in 2026?"</div>
     </div>
   </div><!-- /screen-loading -->
 
 
   <!-- ============================================================
-       SCREEN 4: VERDICT (YES)
+       SCREEN 4: VERDICT — COMPACT (C+ two-screen layout)
   ============================================================ -->
   <div class="screen" id="screen-verdict">
     <!-- Status bar -->
@@ -1150,25 +1428,88 @@
       </div>
     </div>
 
-    <!-- Nav header -->
+    <!-- Nav row -->
     <div class="nav-header" style="flex-shrink:0;">
-      <div class="nav-back" onclick="showScreen('home')" id="verdict-back-btn">
+      <div class="nav-back" onclick="showScreen('journal')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        Back
+        Journal
       </div>
-      <div class="nav-icon-btn" style="opacity:0.35;cursor:default;">
-        <!-- Share (Phase 2 placeholder, disabled) -->
-        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      </div>
+      <div style="width:36px;"></div>
     </div>
 
     <!-- Scrollable content -->
     <div class="screen-scroll" style="flex:1;">
-      <div style="padding:12px 20px 20px;">
-        <div class="verdict-question">"Will I get the job offer this month?"</div>
+      <div style="padding:12px 20px 16px;">
 
-        <!-- Verdict card -->
-        <div class="verdict-card verdict-card-anim">
+        <!-- Question -->
+        <div class="verdict-question">"Will my new project succeed in 2026?"</div>
+
+        <!-- Compact verdict badge -->
+        <div class="verdict-compact-badge verdict-card-anim">
+          <div class="verdict-compact-word">YES</div>
+          <span class="confidence-pill">HIGH CONFIDENCE</span>
+        </div>
+
+        <!-- Chart strength bar -->
+        <div class="chart-strength-row">
+          <span class="chart-strength-label">Chart Strength</span>
+          <div class="strength-track"><div class="strength-fill"></div></div>
+          <span class="strength-pill">Strong</span>
+        </div>
+
+        <!-- AI Summary -->
+        <div class="ai-summary">"Saturn applies to the cusp ruler with dignity. Mutual reception supports the matter. The Moon's final aspect perfects the promise."</div>
+
+        <!-- Timing teaser -->
+        <div class="timing-teaser" onclick="showScreen('verdict-full')">
+          <span style="font-size:16px;">🕐</span>
+          <span class="timing-teaser-text">Likely within 3 months</span>
+          <span class="timing-chevron">→</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Pinned CTA -->
+    <div class="verdict-cta-area">
+      <div class="verdict-cta-hint">Significators · Aspects · Timing</div>
+      <button class="btn-primary" onclick="showScreen('verdict-full')" style="font-family:var(--font-display);font-size:17px;">See Full Reading →</button>
+    </div>
+  </div><!-- /screen-verdict -->
+
+
+  <!-- ============================================================
+       SCREEN 5: VERDICT FULL (detailed — significators, aspects, timing)
+  ============================================================ -->
+  <div class="screen" id="screen-verdict-full">
+    <!-- Status bar -->
+    <div class="status-bar" style="flex-shrink:0;position:relative;z-index:2;">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M5 12.5c0-2.5 3.1-4.5 7-4.5s7 2 7 4.5"/><circle cx="12" cy="17" r="1.5" fill="currentColor"/></svg>
+        <span class="status-battery">100%</span>
+      </div>
+    </div>
+
+    <!-- Nav row -->
+    <div class="nav-header" style="flex-shrink:0;">
+      <div class="nav-back" onclick="showScreen('verdict')">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Back
+      </div>
+      <div style="width:36px;"></div>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="screen-scroll" style="flex:1;">
+      <div style="padding:12px 20px 32px;">
+
+        <!-- Question -->
+        <div class="verdict-question">"Will my new project succeed in 2026?"</div>
+
+        <!-- Full verdict card with glow -->
+        <div class="verdict-card verdict-card-anim" style="box-shadow:0 0 40px rgba(34,211,164,0.2);margin-bottom:20px;">
           <div class="verdict-word">YES ✦</div>
           <div class="confidence-row">
             <div class="conf-dots">
@@ -1180,106 +1521,78 @@
             </div>
             <span class="conf-label">HIGH</span>
           </div>
+          <div style="margin-top:14px;font-family:var(--font-display);font-size:15px;font-style:italic;color:var(--text-secondary);line-height:1.6;">
+            Saturn applies with dignity. Mutual reception supports the matter.
+          </div>
         </div>
 
-        <!-- Significators toggle -->
-        <div class="significators-toggle" onclick="toggleSig()">
-          <div class="section-label" style="margin-bottom:0;">The Planets Say</div>
-          <span class="toggle-arrow open" id="sig-arrow">▲</span>
-        </div>
-        <div class="divider"></div>
-
-        <div class="sig-list" id="sig-list">
-          <!-- Querent -->
+        <!-- Significators section -->
+        <div class="section-label" style="margin-bottom:10px;">Significators</div>
+        <div class="sig-list">
+          <!-- Row 1: Saturn / Querent -->
+          <div class="sig-row">
+            <span class="sig-symbol">♄</span>
+            <div class="sig-info">
+              <div class="sig-name">Saturn · Querent</div>
+              <div class="sig-role">Capricorn · House VII</div>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:10px;font-weight:600;color:#22D3A4;background:rgba(34,211,164,0.12);padding:2px 7px;border-radius:999px;">DOMICILE</span>
+              <div style="font-size:10px;color:var(--text-secondary);margin-top:3px;">Direct</div>
+            </div>
+          </div>
+          <!-- Row 2: Jupiter / Quesited -->
           <div class="sig-row">
             <span class="sig-symbol">♃</span>
             <div class="sig-info">
-              <div class="sig-name">Jupiter</div>
-              <div class="sig-role">You · Querent</div>
+              <div class="sig-name">Jupiter · Quesited</div>
+              <div class="sig-role">Pisces · House X</div>
             </div>
             <div style="text-align:right;">
-              <div class="sig-detail">Sagittarius · H1</div>
-              <div style="margin-top:3px;">
-                <span style="font-size:10px;font-weight:600;color:#070714;background:#F5C842;padding:2px 7px;border-radius:999px;letter-spacing:0.5px;">DOMICILE</span>
-              </div>
-            </div>
-          </div>
-          <!-- Quesited -->
-          <div class="sig-row">
-            <span class="sig-symbol">☉</span>
-            <div class="sig-info">
-              <div class="sig-name">Sun</div>
-              <div class="sig-role">Your goal · Quesited</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="sig-detail">Aries · H10</div>
-              <div style="margin-top:3px;">
-                <span style="font-size:10px;font-weight:600;color:#070714;background:#F5C842;padding:2px 7px;border-radius:999px;letter-spacing:0.5px;">EXALTATION</span>
-              </div>
-            </div>
-          </div>
-          <!-- Moon -->
-          <div class="sig-row">
-            <span class="sig-symbol">☽</span>
-            <div class="sig-info">
-              <div class="sig-name">Moon</div>
-              <div class="sig-role">The Moon</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="sig-detail">Cancer · H3</div>
-              <div style="margin-top:4px;font-size:12px;color:var(--yes);">Not VOC ✓</div>
+              <span style="font-size:10px;font-weight:600;color:#070714;background:#F5C842;padding:2px 7px;border-radius:999px;">EXALTATION</span>
+              <div style="font-size:10px;color:var(--text-secondary);margin-top:3px;">Direct</div>
             </div>
           </div>
         </div>
 
-        <!-- Aspect -->
+        <!-- Aspects section -->
+        <div class="section-label" style="margin-bottom:10px;">Aspects</div>
         <div class="aspect-row">
           <span class="aspect-symbol">△</span>
-          <span class="aspect-text">Jupiter ▷ Applying trine ▷ Sun · 4.2° orb</span>
-          <span class="aspect-badge">Applying ✓</span>
+          <span class="aspect-text">Trine · Saturn → Jupiter · 2.3°</span>
+          <span class="aspect-badge">Applying</span>
+        </div>
+        <div class="aspect-row" style="margin-bottom:16px;">
+          <span class="aspect-symbol">✶</span>
+          <span class="aspect-text">Sextile · Moon → Saturn · 5.1°</span>
+          <span class="aspect-badge sep">Separating</span>
         </div>
 
-        <!-- Summary -->
-        <div class="summary-section">
-          <div class="section-label" style="margin-bottom:10px;">Reading</div>
-          <div class="divider"></div>
-          <p class="summary-text">The situation is moving strongly in your favor. Jupiter, your significator, applies by trine to the Sun in the tenth house of career — a powerful indicator of professional success. The Moon supports the matter and is not void-of-course. The chart is radical and the testimony is clear.</p>
+        <!-- Timing section -->
+        <div class="section-label" style="margin-bottom:10px;">Timing</div>
+        <div style="background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:20px;">
+          <div style="font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--text-primary);margin-bottom:4px;">Likely 2–3 months</div>
+          <div style="font-size:12px;color:var(--text-secondary);">Based on Saturn's motion and house placement</div>
         </div>
 
-        <!-- Meta -->
-        <div class="verdict-meta">
-          <span>May 25, 2026</span>
-          <span class="dot-sep">·</span>
-          <span>14:32</span>
-          <span class="dot-sep">·</span>
-          <span>📍 London</span>
+        <!-- Outcome row -->
+        <div class="outcome-section">
+          <div class="outcome-label">How did it go?</div>
+          <div class="outcome-pills">
+            <div class="outcome-pill active-yes">● Came True</div>
+            <div class="outcome-pill active-no" style="opacity:0.5;">● Didn't Happen</div>
+            <div class="outcome-pill active-pending">● Pending</div>
+          </div>
         </div>
 
-        <!-- CTA -->
-        <button class="btn-secondary" onclick="showScreen('home')">Ask Another Question</button>
       </div>
     </div>
-
-    <!-- Tab bar -->
-    <div class="tab-bar">
-      <div class="tab-item" onclick="showScreen('home')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <span class="tab-label">Ask</span>
-      </div>
-      <div class="tab-item" onclick="showScreen('journal')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        </div>
-        <span class="tab-label">Journal</span>
-      </div>
-    </div>
-  </div><!-- /screen-verdict -->
+    <!-- No pinned CTA on full screen — bottom padding only -->
+  </div><!-- /screen-verdict-full -->
 
 
   <!-- ============================================================
-       SCREEN 5: JOURNAL
+       SCREEN 6: JOURNAL (updated — StreakBadge + outcome pills)
   ============================================================ -->
   <div class="screen" id="screen-journal">
     <!-- Status bar -->
@@ -1292,99 +1605,88 @@
       </div>
     </div>
 
-    <div class="screen-page-title">Journal</div>
+    <!-- Header with streak badge -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 20px 4px;flex-shrink:0;">
+      <span style="font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--text-primary);">My Readings</span>
+      <span class="streak-badge">🔥 7</span>
+    </div>
 
     <div class="screen-scroll" style="flex:1;">
       <div style="padding:4px 20px 20px;">
-        <div class="month-header">May 2026</div>
+        <div class="month-header">June 2026</div>
 
         <div class="journal-list">
-          <!-- Entry 1: YES -->
-          <div class="journal-item" onclick="showScreen('verdict-from-journal')">
+          <!-- Entry 1: YES + Came True -->
+          <div class="journal-item" onclick="showScreen('verdict')">
             <div class="journal-item-top">
               <span class="journal-badge">✦ YES</span>
-              <span class="journal-date">May 25</span>
+              <span class="journal-date">Jun 04</span>
             </div>
-            <div class="journal-question">Will I get the job offer this month?</div>
+            <div class="journal-question">Will my new project succeed in 2026?</div>
             <div class="journal-item-bottom">
-              <span class="journal-conf">Confidence: HIGH</span>
-              <span class="journal-arrow">›</span>
+              <span style="font-size:11px;color:var(--text-disabled);">📍 Moscow, Russia</span>
+              <span class="journal-outcome-pill came-true">✓ Came True</span>
             </div>
           </div>
 
-          <!-- Entry 2: NO -->
-          <div class="journal-item no" onclick="showScreen('verdict-from-journal')">
+          <!-- Entry 2: NO + Pending -->
+          <div class="journal-item no" onclick="showScreen('verdict')">
             <div class="journal-item-top">
               <span class="journal-badge no">✕ NO</span>
-              <span class="journal-date">May 22</span>
+              <span class="journal-date">Jun 01</span>
             </div>
-            <div class="journal-question">Will she call me this week?</div>
+            <div class="journal-question">Is it a good time to invest in real estate?</div>
             <div class="journal-item-bottom">
-              <span class="journal-conf">Confidence: MEDIUM</span>
-              <span class="journal-arrow">›</span>
+              <span style="font-size:11px;color:var(--text-disabled);">📍 Moscow, Russia</span>
+              <span class="journal-outcome-pill pending">Pending</span>
             </div>
           </div>
 
-          <!-- Entry 3: UNCLEAR -->
-          <div class="journal-item unclear" onclick="showScreen('verdict-from-journal')">
+          <!-- Entry 3: UNCLEAR + Didn't happen -->
+          <div class="journal-item unclear" onclick="showScreen('verdict')">
             <div class="journal-item-top">
               <span class="journal-badge unclear">~ UNCLEAR</span>
-              <span class="journal-date">May 20</span>
+              <span class="journal-date">May 28</span>
             </div>
-            <div class="journal-question">Is this the right investment decision?</div>
+            <div class="journal-question">Will she contact me again?</div>
             <div class="journal-item-bottom">
-              <span class="journal-conf">Confidence: LOW</span>
-              <span class="journal-arrow">›</span>
+              <span style="font-size:11px;color:var(--text-disabled);">📍 Moscow, Russia</span>
+              <span class="journal-outcome-pill didnt">✗ Didn't happen</span>
             </div>
           </div>
         </div>
 
-        <div class="month-header" style="margin-top:8px;">April 2026</div>
-        <div class="journal-list">
-          <!-- Entry 4: YES -->
-          <div class="journal-item" onclick="showScreen('verdict-from-journal')">
-            <div class="journal-item-top">
-              <span class="journal-badge">✦ YES</span>
-              <span class="journal-date">Apr 30</span>
-            </div>
-            <div class="journal-question">Should I accept the offer from Berlin?</div>
-            <div class="journal-item-bottom">
-              <span class="journal-conf">Confidence: HIGH</span>
-              <span class="journal-arrow">›</span>
-            </div>
-          </div>
-        </div>
-
-        <div style="text-align:center;font-size:11px;font-style:italic;color:var(--text-disabled);margin-top:8px;">
-          Swipe left on any entry to delete
-        </div>
       </div>
     </div>
 
     <!-- Tab bar -->
     <div class="tab-bar">
       <div class="tab-item" onclick="showScreen('home')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <span class="tab-label">Ask</span>
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span class="tab-label">Home</span>
       </div>
       <div class="tab-item active" onclick="showScreen('journal')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        </div>
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
         <span class="tab-label">Journal</span>
+      </div>
+      <div class="tab-item" onclick="showScreen('stats')">
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <span class="tab-label">Stats</span>
+      </div>
+      <div class="tab-item" onclick="showScreen('settings')">
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <span class="tab-label">Settings</span>
       </div>
     </div>
   </div><!-- /screen-journal -->
 
 
   <!-- ============================================================
-       SCREEN: VERDICT (from journal — same data, back goes to journal)
+       SCREEN 7: STATS (new)
   ============================================================ -->
-  <div class="screen" id="screen-verdict-from-journal">
+  <div class="screen" id="screen-stats">
     <!-- Status bar -->
-    <div class="status-bar" style="flex-shrink:0;position:relative;z-index:2;">
+    <div class="status-bar" style="flex-shrink:0;">
       <span class="status-time">9:41</span>
       <div class="status-icons">
         <svg viewBox="0 0 24 24"><path d="M1 6l5.5 5.5L12 6l5.5 5.5L23 6"/></svg>
@@ -1393,123 +1695,123 @@
       </div>
     </div>
 
-    <!-- Nav header -->
-    <div class="nav-header" style="flex-shrink:0;">
-      <div class="nav-back" onclick="showScreen('journal')">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        Journal
-      </div>
-      <div class="nav-icon-btn" style="opacity:0.35;cursor:default;">
-        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      </div>
+    <!-- Header -->
+    <div style="padding:8px 20px 4px;flex-shrink:0;">
+      <span style="font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--text-primary);">Statistics</span>
     </div>
 
     <div class="screen-scroll" style="flex:1;">
-      <div style="padding:12px 20px 20px;">
-        <div class="verdict-question">"Will I get the job offer this month?"</div>
+      <div style="padding:8px 20px 24px;">
 
-        <div class="verdict-card verdict-card-anim">
-          <div class="verdict-word">YES ✦</div>
-          <div class="confidence-row">
-            <div class="conf-dots">
-              <div class="conf-dot filled"></div>
-              <div class="conf-dot filled"></div>
-              <div class="conf-dot filled"></div>
-              <div class="conf-dot filled"></div>
-              <div class="conf-dot filled"></div>
-            </div>
-            <span class="conf-label">HIGH</span>
+        <!-- Summary stat blocks -->
+        <div class="stat-blocks-row">
+          <div class="stat-block">
+            <div class="stat-value">24</div>
+            <div class="stat-key">Readings</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-value">🔥 7</div>
+            <div class="stat-key">Streak</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-value">68%</div>
+            <div class="stat-key">Accurate</div>
           </div>
         </div>
 
-        <div class="significators-toggle" onclick="toggleSig2()">
-          <div class="section-label" style="margin-bottom:0;">The Planets Say</div>
-          <span class="toggle-arrow open" id="sig-arrow-2">▲</span>
-        </div>
-        <div class="divider"></div>
-
-        <div class="sig-list" id="sig-list-2">
-          <div class="sig-row">
-            <span class="sig-symbol">♃</span>
-            <div class="sig-info">
-              <div class="sig-name">Jupiter</div>
-              <div class="sig-role">You · Querent</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="sig-detail">Sagittarius · H1</div>
-              <div style="margin-top:3px;">
-                <span style="font-size:10px;font-weight:600;color:#070714;background:#F5C842;padding:2px 7px;border-radius:999px;letter-spacing:0.5px;">DOMICILE</span>
-              </div>
-            </div>
+        <!-- Distribution section -->
+        <div class="section-label" style="margin-bottom:12px;">Distribution</div>
+        <div style="margin-bottom:20px;">
+          <div class="dist-row">
+            <span class="dist-label">YES</span>
+            <div class="dist-track"><div class="dist-fill" style="width:58%;background:var(--yes);"></div></div>
+            <span class="dist-pct">58%</span>
           </div>
-          <div class="sig-row">
-            <span class="sig-symbol">☉</span>
-            <div class="sig-info">
-              <div class="sig-name">Sun</div>
-              <div class="sig-role">Your goal · Quesited</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="sig-detail">Aries · H10</div>
-              <div style="margin-top:3px;">
-                <span style="font-size:10px;font-weight:600;color:#070714;background:#F5C842;padding:2px 7px;border-radius:999px;letter-spacing:0.5px;">EXALTATION</span>
-              </div>
-            </div>
+          <div class="dist-row">
+            <span class="dist-label">NO</span>
+            <div class="dist-track"><div class="dist-fill" style="width:25%;background:var(--no);"></div></div>
+            <span class="dist-pct">25%</span>
           </div>
-          <div class="sig-row">
-            <span class="sig-symbol">☽</span>
-            <div class="sig-info">
-              <div class="sig-name">Moon</div>
-              <div class="sig-role">The Moon</div>
-            </div>
-            <div style="text-align:right;">
-              <div class="sig-detail">Cancer · H3</div>
-              <div style="margin-top:4px;font-size:12px;color:var(--yes);">Not VOC ✓</div>
-            </div>
+          <div class="dist-row">
+            <span class="dist-label">UNCLEAR</span>
+            <div class="dist-track"><div class="dist-fill" style="width:13%;background:var(--unclear);"></div></div>
+            <span class="dist-pct">13%</span>
+          </div>
+          <div class="dist-row">
+            <span class="dist-label">MAYBE</span>
+            <div class="dist-track"><div class="dist-fill" style="width:4%;background:var(--maybe);"></div></div>
+            <span class="dist-pct">4%</span>
           </div>
         </div>
 
-        <div class="aspect-row">
-          <span class="aspect-symbol">△</span>
-          <span class="aspect-text">Jupiter ▷ Applying trine ▷ Sun · 4.2° orb</span>
-          <span class="aspect-badge">Applying ✓</span>
+        <!-- Activity by month -->
+        <div class="section-label" style="margin-bottom:12px;">Activity by Month</div>
+        <div style="margin-bottom:20px;">
+          <div class="activity-bars">
+            <div class="activity-bar-wrap">
+              <div class="activity-bar" style="height:calc(2/7*40px + 4px);"></div>
+            </div>
+            <div class="activity-bar-wrap">
+              <div class="activity-bar" style="height:calc(3/7*40px + 4px);"></div>
+            </div>
+            <div class="activity-bar-wrap">
+              <div class="activity-bar" style="height:calc(5/7*40px + 4px);"></div>
+            </div>
+            <div class="activity-bar-wrap">
+              <div class="activity-bar" style="height:calc(7/7*40px);"></div>
+            </div>
+            <div class="activity-bar-wrap">
+              <div class="activity-bar" style="height:calc(4/7*40px + 4px);"></div>
+            </div>
+            <div class="activity-bar-wrap">
+              <div class="activity-bar" style="height:calc(3/7*40px + 4px);"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <div class="activity-bar-wrap"><span class="activity-month">JAN</span></div>
+            <div class="activity-bar-wrap"><span class="activity-month">FEB</span></div>
+            <div class="activity-bar-wrap"><span class="activity-month">MAR</span></div>
+            <div class="activity-bar-wrap"><span class="activity-month">APR</span></div>
+            <div class="activity-bar-wrap"><span class="activity-month">MAY</span></div>
+            <div class="activity-bar-wrap"><span class="activity-month">JUN</span></div>
+          </div>
         </div>
 
-        <div class="summary-section">
-          <div class="section-label" style="margin-bottom:10px;">Reading</div>
-          <div class="divider"></div>
-          <p class="summary-text">The situation is moving strongly in your favor. Jupiter, your significator, applies by trine to the Sun in the tenth house of career — a powerful indicator of professional success. The Moon supports the matter and is not void-of-course. The chart is radical and the testimony is clear.</p>
+        <!-- Top topics -->
+        <div class="section-label" style="margin-bottom:12px;">Top Topics</div>
+        <div class="topic-chips">
+          <div class="topic-chip">Love ×8</div>
+          <div class="topic-chip">Career ×6</div>
+          <div class="topic-chip">Finances ×4</div>
         </div>
 
-        <div class="verdict-meta">
-          <span>May 25, 2026</span>
-          <span class="dot-sep">·</span>
-          <span>14:32</span>
-          <span class="dot-sep">·</span>
-          <span>📍 London</span>
-        </div>
       </div>
     </div>
 
     <!-- Tab bar -->
     <div class="tab-bar">
       <div class="tab-item" onclick="showScreen('home')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <span class="tab-label">Ask</span>
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span class="tab-label">Home</span>
       </div>
-      <div class="tab-item active" onclick="showScreen('journal')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        </div>
+      <div class="tab-item" onclick="showScreen('journal')">
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
         <span class="tab-label">Journal</span>
       </div>
+      <div class="tab-item active" onclick="showScreen('stats')">
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <span class="tab-label">Stats</span>
+      </div>
+      <div class="tab-item" onclick="showScreen('settings')">
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <span class="tab-label">Settings</span>
+      </div>
     </div>
-  </div><!-- /screen-verdict-from-journal -->
+  </div><!-- /screen-stats -->
 
 
   <!-- ============================================================
-       SCREEN 6: SETTINGS
+       SCREEN 8: SETTINGS (updated — 7 languages, BYOK, notifications, location)
   ============================================================ -->
   <div class="screen" id="screen-settings">
     <!-- Status bar -->
@@ -1522,99 +1824,130 @@
       </div>
     </div>
 
-    <!-- Nav header -->
-    <div class="nav-header" style="flex-shrink:0;">
-      <div class="nav-back" onclick="showScreen('home')">
-        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-        Back
-      </div>
-      <span style="font-size:17px;font-weight:600;color:var(--text-primary);">Settings</span>
-      <div style="width:56px;"></div>
-    </div>
-
     <div class="screen-scroll" style="flex:1;">
       <div style="padding:12px 20px 40px;">
 
-        <!-- LANGUAGE section -->
+        <!-- App logo + version -->
+        <div style="text-align:center;margin-bottom:20px;">
+          <!-- Zodiac Clock logo (mirrors AppLogo.tsx) -->
+          <div style="display:flex;justify-content:center;margin-bottom:8px;">
+            <div style="background:#070714;border-radius:16px;padding:12px;display:inline-flex;">
+              <svg width="48" height="48" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="44" fill="#8B5CF6" fill-opacity="0.12"/>
+                <circle cx="50" cy="50" r="44" fill="none" stroke="#F5C842" stroke-width="1.5" stroke-opacity="0.6"/>
+                <circle cx="50" cy="50" r="34" fill="none" stroke="#F5C842" stroke-width="0.6" stroke-opacity="0.18"/>
+                <line x1="50" y1="6" x2="50" y2="17" stroke="#F5C842" stroke-width="1.8" stroke-opacity="0.9" stroke-linecap="round"/>
+                <line x1="94" y1="50" x2="83" y2="50" stroke="#F5C842" stroke-width="1.8" stroke-opacity="0.9" stroke-linecap="round"/>
+                <line x1="50" y1="94" x2="50" y2="83" stroke="#F5C842" stroke-width="1.8" stroke-opacity="0.9" stroke-linecap="round"/>
+                <line x1="6" y1="50" x2="17" y2="50" stroke="#F5C842" stroke-width="1.8" stroke-opacity="0.9" stroke-linecap="round"/>
+                <line x1="72" y1="11.9" x2="69" y2="17.1" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+                <line x1="88.1" y1="28" x2="82.9" y2="31" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+                <line x1="88.1" y1="72" x2="82.9" y2="69" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+                <line x1="72" y1="88.1" x2="69" y2="82.9" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+                <line x1="28" y1="88.1" x2="31" y2="82.9" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+                <line x1="11.9" y1="72" x2="17.1" y2="69" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+                <line x1="11.9" y1="28" x2="17.1" y2="31" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+                <line x1="28" y1="11.9" x2="31" y2="17.1" stroke="#F5C842" stroke-width="1" stroke-opacity="0.4" stroke-linecap="round"/>
+                <line x1="50" y1="50" x2="24" y2="36" stroke="#F5C842" stroke-width="2.2" stroke-linecap="round"/>
+                <line x1="50" y1="50" x2="59" y2="55" stroke="#F5C842" stroke-width="1.4" stroke-opacity="0.5" stroke-linecap="round"/>
+                <polygon points="24,30.5 25.4,35.5 30,36 25.4,36.5 24,41.5 22.6,36.5 18,36 22.6,35.5" fill="#F5C842"/>
+                <circle cx="50" cy="50" r="3.5" fill="#F5C842"/>
+                <circle cx="50" cy="50" r="1.5" fill="white" fill-opacity="0.4"/>
+              </svg>
+            </div>
+          </div>
+          <div style="font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--text-primary);letter-spacing:1px;margin-bottom:4px;">Hora</div>
+          <div style="font-size:11px;color:var(--text-secondary);">v1.0.0</div>
+        </div>
+
+        <!-- Language card -->
         <div class="settings-section">
-          <div class="section-label">Language</div>
           <div class="settings-card">
-            <div class="settings-row">
-              <span class="settings-row-label">Language</span>
-              <div class="settings-picker">
-                <span>English</span>
-                <span class="settings-picker-arrow">▾</span>
-              </div>
+            <!-- Header row -->
+            <div class="settings-row" style="border-bottom:1px solid var(--border);">
+              <span class="settings-row-label">🌐 Language</span>
+            </div>
+            <!-- Language list -->
+            <div class="lang-row">
+              <span class="lang-name">🇬🇧 English</span>
+              <span class="lang-check">✓</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-name">🇷🇺 Русский</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-name">🇺🇦 Українська</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-name">🇩🇪 Deutsch</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-name">🇫🇷 Français</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-name">🇧🇷 Português</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-name">🇪🇸 Español</span>
             </div>
           </div>
         </div>
 
-        <!-- LOCATION section -->
+        <!-- API Key card -->
         <div class="settings-section">
-          <div class="section-label">Location</div>
           <div class="settings-card">
-            <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:4px;">
-              <span class="settings-row-label">Detected timezone</span>
-              <span style="font-family:var(--font-mono);font-size:13px;color:var(--accent-violet);">Europe/London</span>
-              <span style="font-size:11px;color:var(--text-disabled);font-style:italic;">Based on your device location and system timezone</span>
+            <div class="settings-row" style="border-bottom:1px solid var(--border);">
+              <span class="settings-row-label">🔑 API Key</span>
+              <span class="personal-badge">Personal</span>
             </div>
-          </div>
-        </div>
-
-        <!-- USAGE section -->
-        <div class="settings-section">
-          <div class="section-label">Usage</div>
-          <div class="settings-card">
-            <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:0;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                <span class="settings-row-label">Questions this month</span>
-                <span style="font-size:14px;font-weight:600;color:var(--accent-gold);">4 / 5</span>
-              </div>
-              <div class="usage-track">
-                <div class="usage-fill"></div>
-              </div>
-              <div class="usage-label">
-                <span>Free tier</span>
-                <span style="color:var(--text-secondary);">Resets June 1</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- API KEY section -->
-        <div class="settings-section">
-          <div class="section-label">API Key</div>
-          <div class="settings-card">
-            <div class="settings-row">
-              <span class="api-key-display">●●●●●●●●●●●●●●</span>
+            <div class="settings-row" style="border-bottom:none;">
+              <span class="api-key-display">ast-••••••••4e8b</span>
               <div class="edit-icon-btn">
                 <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Edit
               </div>
             </div>
           </div>
-          <div class="settings-note">Using: personal key</div>
-          <div style="padding:8px 0 0 0;">
-            <span style="font-size:13px;color:var(--no);cursor:pointer;padding:4px 0;">Remove key</span>
+          <div class="settings-note">Your key is stored securely on-device.</div>
+        </div>
+
+        <!-- Location card -->
+        <div class="settings-section">
+          <div class="settings-card">
+            <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:0;padding-bottom:14px;">
+              <span class="settings-row-label" style="margin-bottom:10px;">📍 Default Location</span>
+              <div class="loc-toggle">
+                <div class="loc-btn active">GPS Device</div>
+                <div class="loc-btn">Manual City</div>
+              </div>
+              <div style="font-size:11px;color:var(--text-secondary);margin-top:8px;padding:0;">Detects your position for each reading</div>
+            </div>
           </div>
         </div>
 
-        <!-- ABOUT section -->
+        <!-- Notifications card -->
         <div class="settings-section">
-          <div class="section-label">About</div>
           <div class="settings-card">
-            <div class="settings-row">
-              <span class="settings-row-label">Version</span>
-              <span class="settings-row-value" style="font-family:var(--font-mono);font-size:13px;">1.0.0</span>
-            </div>
-            <div class="settings-row" style="cursor:pointer;">
-              <span class="settings-row-label">Disclaimer</span>
-              <span style="color:var(--text-secondary);font-size:16px;">›</span>
+            <div class="settings-row" style="border-bottom:none;">
+              <div>
+                <span class="settings-row-label">🔔 Outcome Reminders</span>
+                <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;">Remind me in 7 days</div>
+              </div>
+              <div class="ios-toggle"></div>
             </div>
           </div>
-          <div style="padding:10px 4px 0;">
-            <p style="font-size:12px;color:var(--text-disabled);line-height:1.6;">For entertainment and reflection purposes. Not a substitute for professional advice.</p>
+        </div>
+
+        <!-- Share / Rate row -->
+        <div class="settings-section">
+          <div style="display:flex;gap:10px;">
+            <button class="btn-outline">⭐ Rate App</button>
+            <button class="btn-outline">Share Hora</button>
           </div>
+        </div>
+
+        <!-- Version tap area -->
+        <div style="text-align:center;margin-top:4px;">
+          <span style="font-size:11px;color:var(--text-disabled);">v1.0.0</span>
         </div>
 
       </div>
@@ -1623,32 +1956,87 @@
     <!-- Tab bar -->
     <div class="tab-bar">
       <div class="tab-item" onclick="showScreen('home')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        </div>
-        <span class="tab-label">Ask</span>
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <span class="tab-label">Home</span>
       </div>
       <div class="tab-item" onclick="showScreen('journal')">
-        <div class="tab-icon">
-          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        </div>
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
         <span class="tab-label">Journal</span>
+      </div>
+      <div class="tab-item" onclick="showScreen('stats')">
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <span class="tab-label">Stats</span>
+      </div>
+      <div class="tab-item active" onclick="showScreen('settings')">
+        <div class="tab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <span class="tab-label">Settings</span>
       </div>
     </div>
   </div><!-- /screen-settings -->
+
+  <!-- ============================================================
+       SCREEN: CHART WHEEL
+  ============================================================ -->
+  <div class="screen" id="screen-chart-wheel" style="background:#070714;">
+    <div class="status-bar">
+      <span>9:41</span>
+      <span style="display:flex;gap:6px;align-items:center;">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="3" width="3" height="9" fill="#F0EEFF" rx="0.5"/><rect x="4.5" y="2" width="3" height="10" fill="#F0EEFF" rx="0.5"/><rect x="9" y="0" width="3" height="12" fill="#F0EEFF" rx="0.5"/><rect x="13.5" y="0" width="2.5" height="12" fill="rgba(240,238,255,0.3)" rx="0.5"/></svg>
+        <svg width="16" height="12" viewBox="0 0 24 24" fill="none" stroke="#F0EEFF" stroke-width="2"><path d="M1 6s4-2 11-2 11 2 11 2M5 10s3-1.5 7-1.5S19 10 19 10M8 14s2-1 4-1 4 1 4 1M11 18h2"/></svg>
+        100%
+      </span>
+    </div>
+
+    <!-- Nav: ← Full Reading -->
+    <div style="display:flex;align-items:center;padding:12px 20px 8px;gap:6px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F0EEFF" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <span style="font-family:var(--font-body);font-size:15px;color:#F0EEFF;font-weight:500;">Full Reading</span>
+    </div>
+
+    <div class="screen-scroll" style="flex:1;overflow-y:auto;padding:0 20px 32px;">
+
+      <!-- Question -->
+      <p style="font-family:var(--font-display);font-size:14px;color:#9B93B8;font-style:italic;margin-bottom:14px;">"Will my new project succeed in 2026?"</p>
+
+      <!-- Section header -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+        <span style="font-family:var(--font-body);font-size:11px;font-weight:600;color:#F5C842;letter-spacing:2px;text-transform:uppercase;">Chart</span>
+        <div style="flex:1;height:1px;background:rgba(240,238,255,0.08);"></div>
+      </div>
+
+      <!-- Chart wheel container -->
+      <div style="display:flex;justify-content:center;align-items:center;padding:8px 0 16px;">
+        <svg id="horary-chart-svg" width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+          <!-- Generated by buildHoraryChart() on page load -->
+        </svg>
+      </div>
+
+      <!-- Caption -->
+      <p style="font-family:var(--font-body);font-size:11px;color:#9B93B8;text-align:center;letter-spacing:0.5px;">Cancer Rising · Capricorn 7th · YES</p>
+
+      <!-- Legend row -->
+      <div style="display:flex;justify-content:center;gap:16px;margin-top:12px;flex-wrap:wrap;">
+        <span style="font-family:var(--font-body);font-size:11px;color:#9B93B8;">♄ Querent (Saturn)</span>
+        <span style="font-family:var(--font-body);font-size:11px;color:#9B93B8;">♃ Quesited (Jupiter)</span>
+      </div>
+    </div>
+  </div><!-- /screen-chart-wheel -->
 
 </div><!-- /phone-frame -->
 
 <!-- ================================================================
      NAVIGATION KEY (outside frame)
 ================================================================ -->
-<div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:100;">
-  <button onclick="showScreen('onboarding')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Onboarding</button>
-  <button onclick="showScreen('home')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Home</button>
-  <button onclick="showScreen('loading')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Loading</button>
-  <button onclick="showScreen('verdict')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Verdict</button>
-  <button onclick="showScreen('journal')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Journal</button>
-  <button onclick="showScreen('settings')" style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Settings</button>
+<div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:100;flex-wrap:wrap;justify-content:center;max-width:600px;">
+  <button onclick="showScreen('onboarding')"   style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Onboarding</button>
+  <button onclick="showScreen('home')"          style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Home</button>
+  <button onclick="showScreen('loading')"       style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Loading</button>
+  <button onclick="showScreen('verdict')"       style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Verdict</button>
+  <button onclick="showScreen('verdict-full')"  style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Verdict Full</button>
+  <button onclick="showScreen('journal')"       style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Journal</button>
+  <button onclick="showScreen('stats')"         style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Stats</button>
+  <button onclick="showScreen('settings')"      style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Settings</button>
+  <button onclick="showScreen('chart-wheel')"   style="background:rgba(28,25,64,0.9);border:1px solid rgba(245,200,66,0.3);color:#9B93B8;font-size:11px;font-family:Inter,sans-serif;padding:6px 12px;border-radius:20px;cursor:pointer;">Chart Wheel</button>
 </div>
 
 <script>
@@ -1687,7 +2075,6 @@
     }
   }
 
-  // Initialise all star backgrounds
   createStars('stars-onboarding', 60);
   createStars('stars-home', 45);
   createStars('stars-loading', 55);
@@ -1696,13 +2083,15 @@
   // SCREEN NAVIGATION
   // ================================================================
   const screenMap = {
-    'onboarding':          'screen-onboarding',
-    'home':                'screen-home',
-    'loading':             'screen-loading',
-    'verdict':             'screen-verdict',
-    'journal':             'screen-journal',
-    'verdict-from-journal':'screen-verdict-from-journal',
-    'settings':            'screen-settings',
+    'onboarding':   'screen-onboarding',
+    'home':         'screen-home',
+    'loading':      'screen-loading',
+    'verdict':      'screen-verdict',
+    'verdict-full': 'screen-verdict-full',
+    'journal':      'screen-journal',
+    'stats':        'screen-stats',
+    'settings':     'screen-settings',
+    'chart-wheel':  'screen-chart-wheel',
   };
 
   function showScreen(name) {
@@ -1714,16 +2103,19 @@
     if (target) {
       target.style.display = 'flex';
       target.classList.add('active');
-      // Scroll reset
       const scroll = target.querySelector('.screen-scroll');
       if (scroll) scroll.scrollTop = 0;
       // Re-trigger verdict animation
-      if (name === 'verdict' || name === 'verdict-from-journal') {
+      if (name === 'verdict' || name === 'verdict-full') {
         target.querySelectorAll('.verdict-card-anim').forEach(el => {
           el.style.animation = 'none';
-          void el.offsetWidth; // reflow
+          void el.offsetWidth;
           el.style.animation = '';
         });
+      }
+      // Re-trigger chart wheel animation (rebuild clears + restarts CSS anim)
+      if (name === 'chart-wheel') {
+        buildHoraryChart();
       }
     }
   }
@@ -1737,38 +2129,174 @@
   }
 
   // ================================================================
-  // CHARACTER COUNTER
+  // HORARY CHART WHEEL SVG GENERATOR — with reveal animation
+  // Mirrors HoraryChartWheel.tsx stagger logic:
+  //   • Lines (24) draw via stroke-dashoffset over 0-840ms
+  //   • Glyphs (31) scale+fade in from 560ms-1400ms
+  // Total duration: 1400ms, easing: ease-out cubic
   // ================================================================
-  function updateCharCount(el) {
-    const count = document.getElementById('char-count');
-    if (count) {
-      count.textContent = el.value.length + ' / 280';
-      count.style.color = el.value.length > 280 ? 'var(--no)' : 'var(--text-secondary)';
+  function buildHoraryChart() {
+    const svg = document.getElementById('horary-chart-svg');
+    if (!svg) return;
+
+    // Clear previous content so animation restarts on screen re-entry
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    const R = 150, cx = 150, cy = 150;
+    const acLon = 90; // Cancer ascendant = 90° ecliptic longitude
+
+    const zodiacOuter = R * 0.95;
+    const zodiacInner = R * 0.76;
+    const houseInner  = R * 0.60;
+    const planetR     = R * 0.48;
+    const centerDot   = R * 0.06;
+
+    const ZODIAC_GLYPHS = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓'];
+
+    const svgAngle = lon => Math.PI - ((lon - acLon + 360) % 360) * Math.PI / 180;
+    const pt = (r, lon) => {
+      const a = svgAngle(lon);
+      return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+    };
+    const dist = (p1, p2) => Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
+
+    const ns = 'http://www.w3.org/2000/svg';
+    const el = (tag, attrs, style) => {
+      const e = document.createElementNS(ns, tag);
+      for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+      if (style) e.style.cssText = style;
+      return e;
+    };
+    const txt = (x, y, content, attrs) => {
+      const t = el('text', { x, y, 'text-anchor':'middle', 'dominant-baseline':'central', ...attrs });
+      t.textContent = content;
+      return t;
+    };
+
+    // Inject keyframes once
+    if (!document.getElementById('chart-anim-style')) {
+      const s = document.createElement('style');
+      s.id = 'chart-anim-style';
+      s.textContent = `
+        @keyframes chart-draw-line {
+          from { stroke-dashoffset: var(--len,100); opacity:0; }
+          to   { stroke-dashoffset: 0; opacity:1; }
+        }
+        @keyframes chart-pop-glyph {
+          0%   { opacity:0; transform:scale(0.35); }
+          60%  { opacity:1; transform:scale(1.08); }
+          100% { opacity:1; transform:scale(1); }
+        }
+        .cg { transform-box:fill-box; transform-origin:center center;
+              animation:chart-pop-glyph 420ms cubic-bezier(0.22,0.61,0.36,1) both; }
+      `;
+      document.head.appendChild(s);
     }
+
+    // Stagger timing — mirrors HoraryChartWheel.tsx
+    const TOTAL_DUR   = 1400;
+    const TOTAL_LINES = 24;
+    const TOTAL_GLYPH = 31; // 12 zodiac + 12 house + 7 planets
+    const lineDelay  = i => ((0.6 * TOTAL_DUR) / TOTAL_LINES) * i;
+    const LINE_DUR   = 350;
+    const glyphDelay = i => 0.4 * TOTAL_DUR + ((0.6 * TOTAL_DUR) / TOTAL_GLYPH) * i;
+    const GLYPH_DUR  = 420;
+
+    const animLine = (p1, p2, stroke, sw, idx) => {
+      const len = dist(p1, p2).toFixed(2);
+      const delay = lineDelay(idx).toFixed(0);
+      return el('line', {
+        x1: p1.x.toFixed(2), y1: p1.y.toFixed(2),
+        x2: p2.x.toFixed(2), y2: p2.y.toFixed(2),
+        stroke, 'stroke-width': sw,
+        'stroke-dasharray': len, 'stroke-dashoffset': len,
+        'stroke-linecap': 'round',
+      }, `--len:${len}; animation:chart-draw-line ${LINE_DUR}ms cubic-bezier(0,0,0.2,1) ${delay}ms both;`);
+    };
+
+    const animGlyph = (x, y, content, attrs, idx) => {
+      const delay = glyphDelay(idx).toFixed(0);
+      const g = el('g', { class: 'cg' },
+        `animation-delay:${delay}ms; animation-duration:${GLYPH_DUR}ms;`);
+      g.appendChild(txt(x, y, content, attrs));
+      return g;
+    };
+
+    // ── Static background fills ───────────────────────────────────
+    svg.appendChild(el('circle', { cx, cy, r: zodiacOuter, fill:'#0A091F' }));
+    svg.appendChild(el('circle', { cx, cy, r: zodiacInner, fill:'#12102A' }));
+    svg.appendChild(el('circle', { cx, cy, r: houseInner,  fill:'#1C1940' }));
+    for (const r of [zodiacOuter, zodiacInner, houseInner]) {
+      svg.appendChild(el('circle', { cx, cy, r, fill:'none', stroke:'rgba(240,238,255,0.10)', 'stroke-width':1 }));
+    }
+
+    let li = 0, gi = 0;
+
+    // ── Zodiac sectors ────────────────────────────────────────────
+    for (let i = 0; i < 12; i++) {
+      const lon = i * 30;
+      svg.appendChild(animLine(pt(zodiacInner, lon), pt(zodiacOuter, lon),
+        'rgba(240,238,255,0.18)', 0.7, li++));
+      const gPos = pt((zodiacInner + zodiacOuter) / 2, lon + 15);
+      const hi = i === 3 || i === 9;
+      svg.appendChild(animGlyph(gPos.x, gPos.y, ZODIAC_GLYPHS[i], {
+        fill: hi ? '#8B5CF6' : '#9B93B8',
+        'font-size': R * 0.09, 'font-family': 'Inter,sans-serif',
+      }, gi++));
+    }
+
+    // ── House ring ────────────────────────────────────────────────
+    for (let h = 1; h <= 12; h++) {
+      const cuspLon = (acLon + (h - 1) * 30) % 360;
+      const nextLon = (acLon + h * 30) % 360;
+      svg.appendChild(animLine(pt(houseInner, cuspLon), pt(zodiacInner, cuspLon),
+        'rgba(240,238,255,0.12)', 0.5, li++));
+      const span = ((nextLon - cuspLon) + 360) % 360;
+      const numPos = pt((houseInner + zodiacInner) / 2, (cuspLon + span / 2) % 360);
+      const isAngular = h === 1 || h === 4 || h === 7 || h === 10;
+      svg.appendChild(animGlyph(numPos.x, numPos.y, h, {
+        fill: isAngular ? 'rgba(245,200,66,0.80)' : '#4A4465',
+        'font-size': R * 0.075, 'font-family': 'Inter,sans-serif',
+        'font-weight': isAngular ? '600' : '400',
+      }, gi++));
+    }
+
+    // ── AC label (static — always visible as anchor) ──────────────
+    svg.appendChild(txt(cx - zodiacInner - 14, cy, 'AC', {
+      fill: '#F5C842', 'font-size': R * 0.09,
+      'font-family': 'Inter,sans-serif', 'font-weight': '600',
+    }));
+
+    // ── Planets ───────────────────────────────────────────────────
+    const planets = [
+      ['☉', 138, false, null],
+      ['☽', 222, false, '#22D3A4'],
+      ['☿', 130, false, null],
+      ['♀', 170, false, null],
+      ['♂', 18,  false, null],
+      ['♃', 338, false, '#F5C842'],
+      ['♄', 278, false, '#8B5CF6'],
+    ];
+    for (const [glyph, lon, retro, color] of planets) {
+      const pos = pt(planetR, lon);
+      svg.appendChild(animGlyph(pos.x, pos.y, glyph, {
+        fill: color ?? '#F0EEFF',
+        'font-size': R * 0.105, 'font-family': 'Inter,sans-serif',
+      }, gi++));
+      if (retro) {
+        svg.appendChild(animGlyph(pos.x + R * 0.075, pos.y + R * 0.06, '℞', {
+          fill: '#F87171', 'font-size': R * 0.065,
+          'font-family': 'Inter,sans-serif',
+        }, gi++));
+      }
+    }
+
+    // ── Center dot (static) ───────────────────────────────────────
+    svg.appendChild(el('circle', { cx, cy, r: centerDot, fill:'#F5C842' }));
   }
 
-  // ================================================================
-  // SIGNIFICATORS TOGGLE
-  // ================================================================
-  function toggleSig() {
-    const list = document.getElementById('sig-list');
-    const arrow = document.getElementById('sig-arrow');
-    if (!list || !arrow) return;
-    const isOpen = list.style.display !== 'none';
-    list.style.display = isOpen ? 'none' : 'flex';
-    arrow.textContent = isOpen ? '▼' : '▲';
-    arrow.classList.toggle('open', !isOpen);
-  }
-
-  function toggleSig2() {
-    const list = document.getElementById('sig-list-2');
-    const arrow = document.getElementById('sig-arrow-2');
-    if (!list || !arrow) return;
-    const isOpen = list.style.display !== 'none';
-    list.style.display = isOpen ? 'none' : 'flex';
-    arrow.textContent = isOpen ? '▼' : '▲';
-    arrow.classList.toggle('open', !isOpen);
-  }
+  // Build chart on load and whenever the chart-wheel screen is activated.
+  document.addEventListener('DOMContentLoaded', buildHoraryChart);
 </script>
 </body>
 </html>

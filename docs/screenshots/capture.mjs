@@ -21,13 +21,15 @@ const HTML_FILE = resolve(ROOT, 'docs/html-prototype/index.html');
 
 // screen-id → output filename
 const SCREENS = [
-  { id: 'onboarding',          file: '02-onboarding.png',          label: 'Onboarding' },
-  { id: 'home',                file: '03-home.png',                 label: 'Home (empty)' },
-  { id: 'loading',             file: '03b-loading.png',             label: 'Loading' },
-  { id: 'verdict',             file: '04-verdict.png',              label: 'Verdict' },
-  { id: 'verdict-from-journal',file: '04b-verdict-journal.png',     label: 'Verdict (from Journal)' },
-  { id: 'journal',             file: '05-journal.png',              label: 'Journal' },
-  { id: 'settings',            file: '06-settings.png',             label: 'Settings' },
+  { id: 'onboarding',   file: '02-onboarding.png',      label: 'Onboarding' },
+  { id: 'home',         file: '03-home.png',             label: 'Home' },
+  { id: 'loading',      file: '03b-loading.png',         label: 'Loading' },
+  { id: 'verdict',      file: '04-verdict.png',          label: 'Verdict (compact)' },
+  { id: 'verdict-full', file: '04b-verdict-full.png',    label: 'Verdict (full detail)' },
+  { id: 'journal',      file: '05-journal.png',          label: 'Journal' },
+  { id: 'stats',        file: '07-stats.png',            label: 'Stats' },
+  { id: 'settings',     file: '06-settings.png',         label: 'Settings' },
+  { id: 'chart-wheel',  file: '08-chart-wheel.png',      label: 'Chart Wheel' },
 ];
 
 if (!existsSync(OUT_DIR)) mkdirSync(OUT_DIR, { recursive: true });
@@ -48,6 +50,14 @@ await page.evaluate(() => document.fonts.ready);
 // Extra settle time for CSS animations.
 await page.waitForTimeout(600);
 
+// Hide the prototype navigation overlay (position:fixed) so it doesn't bleed
+// into the phone-frame element screenshot bounding box.
+await page.evaluate(() => {
+  document.querySelectorAll('body > div[style*="position:fixed"]').forEach(el => {
+    el.style.display = 'none';
+  });
+});
+
 for (const { id, file, label } of SCREENS) {
   // Navigate to screen.
   await page.evaluate((screenId) => {
@@ -65,8 +75,9 @@ for (const { id, file, label } of SCREENS) {
   await page.waitForSelector(`#screen-${id}`, { state: 'visible', timeout: 5000 })
     .catch(() => console.warn(`  ⚠ #screen-${id} not found — skipping`));
 
-  // Settle: wait for any CSS transitions.
-  await page.waitForTimeout(300);
+  // Chart wheel rebuilds with a 1400ms CSS animation — wait for it to finish.
+  // All other screens only need a brief settle for transitions.
+  await page.waitForTimeout(id === 'chart-wheel' ? 1600 : 300);
 
   // Screenshot the phone frame only (not the whole page).
   const phoneFrame = await page.$('.phone-frame');

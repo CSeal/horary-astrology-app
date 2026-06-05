@@ -233,7 +233,7 @@ export default function SettingsScreen() {
     }
   }, [t]);
 
-  // "Rate AstraSk" — direct App Store deep link (compliant for a button tap;
+  // "Rate Hora" — direct App Store deep link (compliant for a button tap;
   // distinct from the event-driven StoreReview.requestReview() prompt).
   const handleRateApp = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
@@ -357,7 +357,7 @@ export default function SettingsScreen() {
             className="w-full items-center gap-1 mt-6"
           >
             <AppLogo size={48} />
-            <Text className="font-cormorant-bold text-3xl text-accent-gold">AstraSk</Text>
+            <Text className="font-cormorant-bold text-3xl text-accent-gold">Hora</Text>
             <Text className="font-inter text-xs text-text-secondary">
               {t('settings.appVersion', { version: appVersion })}
             </Text>

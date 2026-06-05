@@ -5,9 +5,9 @@ source_inputs: [aso-brief.md, prd-v1.md, docs/qa-summary.md, src/i18n/en.ts, app
 reviewed_by: owner-pending
 ---
 
-# App Store Reviewer Notes — AstraSk: Horary Chart
+# App Store Reviewer Notes — Hora: Horary Chart
 
-**Bundle ID:** com.astrask.horary
+**Bundle ID:** com.hora.app
 **Version:** 1.0.0
 **Date prepared:** 2026-06-04
 **Privacy Policy URL:** [PRIVACY_POLICY_URL]
@@ -18,7 +18,7 @@ reviewed_by: owner-pending
 
 **For the "Notes" field in App Store Connect → App Review Information:**
 
-AstraSk is a horary astrology calculator that uses the classical William Lilly method (17th century) combined with modern AI interpretation to analyze user questions. The app casts an astrological chart for the precise moment a question is asked, then uses AI to interpret the chart's planetary significators and deliver a verdict (YES / NO / MAYBE / UNCLEAR) in plain language.
+Hora is a horary astrology calculator that uses the classical William Lilly method (17th century) combined with modern AI interpretation to analyze user questions. The app casts an astrological chart for the precise moment a question is asked, then uses AI to interpret the chart's planetary significators and deliver a verdict (YES / NO / MAYBE / UNCLEAR) in plain language.
 
 **This is not a fortune-telling app.** Horary astrology is a 600-year-old analytical technique codified in William Lilly's "Christian Astrology" (1647). The app is positioned as an educational and analytical tool — the same framing used by lunar calendar apps, traditional astrology reference apps, and astrological chart calculators that have been approved on the App Store.
 
@@ -45,7 +45,7 @@ The app DOES:
 Add the following string to the Settings screen "About" section (below the version number):
 
 ```
-For entertainment and educational purposes only. AstraSk uses traditional horary 
+For entertainment and educational purposes only. Hora uses traditional horary 
 astrology (William Lilly, 17th century) to analyze questions. Results are not 
 professional advice and should not be used as a substitute for qualified legal, 
 financial, medical, or psychological guidance.
@@ -55,8 +55,8 @@ financial, medical, or psychological guidance.
 ```typescript
 settings: {
   ...
-  disclaimer: 'For entertainment and educational purposes only. AstraSk uses traditional horary astrology (William Lilly, 17th century) to analyze questions. Results are not professional advice and should not be used as a substitute for qualified legal, financial, medical, or psychological guidance.',
-  disclaimerTitle: 'About AstraSk',
+  disclaimer: 'For entertainment and educational purposes only. Hora uses traditional horary astrology (William Lilly, 17th century) to analyze questions. Results are not professional advice and should not be used as a substitute for qualified legal, financial, medical, or psychological guidance.',
+  disclaimerTitle: 'About Hora',
 }
 ```
 
@@ -66,7 +66,7 @@ settings: {
 
 ## Section 3: Reviewer Access — Mock Mode
 
-AstraSk uses a Bring Your Own Key (BYOK) model: each user provides their own astrology-api.io API key. There is no shared demo key.
+Hora uses a Bring Your Own Key (BYOK) model: each user provides their own astrology-api.io API key. There is no shared demo key.
 
 Use the built-in Mock Mode to test all app features without any API key:
 
@@ -148,7 +148,7 @@ The app contains no mature content, violence, gambling, or user-generated social
 
 ## Section 5: Pregnancy/Fertility Category Justification
 
-AstraSk supports horary astrology questions in the "Pregnancy" and "Fertility" question categories. These are routed through the same `/api/v3/horary/analyze` endpoint as all other questions (career, love, money, etc.) and return the same verdict format (YES/NO/MAYBE/UNCLEAR).
+Hora supports horary astrology questions in the "Pregnancy" and "Fertility" question categories. These are routed through the same `/api/v3/horary/analyze` endpoint as all other questions (career, love, money, etc.) and return the same verdict format (YES/NO/MAYBE/UNCLEAR).
 
 **This is not a health or medical app.** The pregnancy/fertility categories are equivalent to what a "lunar calendar" or "fertility moon cycle" app offers — traditional folk methods for timing decisions, presented as cultural/educational content. All mainstream lunar calendar apps with fertility tracking (Flo, Clue, Moon Calendar) are rated 4+ or Everyone without health disclaimers.
 
@@ -195,5 +195,5 @@ If the reviewer requires further documentation of the horary technique's academi
 
 ---
 
-*AstraSk: Horary Chart — Reviewer Notes v1.0*
+*Hora: Horary Chart — Reviewer Notes v1.0*
 *Date: 2026-06-04*

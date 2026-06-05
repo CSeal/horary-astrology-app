@@ -1,7 +1,7 @@
 ---
 created_by: claude-sonnet-4-6
 updated_by: claude-sonnet-4-6
-source_inputs: [docs/html-prototype/AstraSkClaudeDesign.html, docs/html-prototype/index.html, docs/growth-features-spec.md, docs/viral-features-spec.md, docs/api-gap-spec.md, docs/mvp-scope.md, docs/aso-brief.md, docs/design-system-brief.md]
+source_inputs: [docs/html-prototype/HoraClaudeDesign.html, docs/html-prototype/index.html, docs/growth-features-spec.md, docs/viral-features-spec.md, docs/api-gap-spec.md, docs/mvp-scope.md, docs/aso-brief.md, docs/design-system-brief.md]
 reviewed_by: owner-pending
 stage: StageM4-DocRefresh
 date: 2026-06-04
@@ -10,7 +10,7 @@ date: 2026-06-04
 # Design Prompt — Prototype Update v2 (horary-design-agent)
 
 **This document is addressed to `horary-design-agent`.**
-It contains a complete brief for updating the AstraSk interactive HTML prototype to reflect Phase 1.5 features (FR-G01 through FR-G07 from prd-v1.md) and Phase 2 non-monetization features that should be prototyped now for App Store screenshot readiness.
+It contains a complete brief for updating the Hora interactive HTML prototype to reflect Phase 1.5 features (FR-G01 through FR-G07 from prd-v1.md) and Phase 2 non-monetization features that should be prototyped now for App Store screenshot readiness.
 
 ---
 
@@ -18,7 +18,7 @@ It contains a complete brief for updating the AstraSk interactive HTML prototype
 
 Before producing any output, the design agent MUST read the following files in this order:
 
-1. `docs/html-prototype/AstraSkClaudeDesign.html` — the standalone reference design (primary visual source)
+1. `docs/html-prototype/HoraClaudeDesign.html` — the standalone reference design (primary visual source)
 2. `docs/html-prototype/index.html` — the interactive prototype (file to update)
 3. `docs/design-system-brief.md` — design tokens (colors, typography, spacing)
 4. `docs/growth-features-spec.md` — Phase 1.5 feature list and rationale
@@ -26,7 +26,7 @@ Before producing any output, the design agent MUST read the following files in t
 6. `docs/aso-brief.md` — screenshots brief, competitor feature gaps, visual direction
 7. `docs/mvp-scope.md` — Phase 2 non-monetization features to prototype
 
-The instruction to fetch and implement: **"Fetch this design file, read its readme, and implement the relevant aspects of the design: AstraSk - Standalone.html (reference: docs/html-prototype/AstraSkClaudeDesign.html)"**
+The instruction to fetch and implement: **"Fetch this design file, read its readme, and implement the relevant aspects of the design: Hora - Standalone.html (reference: docs/html-prototype/HoraClaudeDesign.html)"**
 
 ---
 
@@ -167,7 +167,7 @@ Included in 2A-4 above. The flags row sits directly below the score bar, wrappin
 ```
 ── SHARE & INVITE ──────────────────────────────
   [share icon]  Invite a friend            [›]
-  [star icon]   Rate AstraSk              [›]
+  [star icon]   Rate Hora              [›]
 ```
 
 - Section label: "SHARE & INVITE" — same `.section-label` style (11px Inter 600, uppercase, `--accent-gold`)
@@ -176,12 +176,12 @@ Included in 2A-4 above. The flags row sits directly below the score bar, wrappin
 - Right: chevron-right icon (14px, `--text-disabled`)
 
 **"Invite a friend"** row: Uses a share/upload icon SVG.
-**"Rate AstraSk"** row: Uses a star outline SVG.
+**"Rate Hora"** row: Uses a star outline SVG.
 
 **Behavior annotation**:
 ```html
 <!-- Phase 1.5: "Invite a friend" → Share.share() with UTM-tagged App Store link -->
-<!-- Phase 1.5: "Rate AstraSk" → deep link to App Store page (not requestReview()) -->
+<!-- Phase 1.5: "Rate Hora" → deep link to App Store page (not requestReview()) -->
 ```
 
 ---

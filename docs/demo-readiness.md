@@ -120,7 +120,7 @@ Switch to the Settings tab:
 - **Location source** — Device GPS (default) or Set City (always uses the chosen city). Tapping "Set City" opens the city-search bottom sheet.
 - **Timezone** — read-only IANA timezone string (e.g. `Europe/London`).
 - **API key section** — shows current source ("Using: app default" or "Using: personal key"). Tap "Edit" to reveal the masked text input. Enter a key and tap "Save Key" to persist to SecureStore. "Remove key" clears it.
-- **Share & Invite section** (FR-G03) — "Invite a friend" triggers the native Share sheet with a UTM-tagged app store link. "Rate AstraSk" opens the App Store review page via `Linking.openURL`.
+- **Share & Invite section** (FR-G03) — "Invite a friend" triggers the native Share sheet with a UTM-tagged app store link. "Rate Hora" opens the App Store review page via `Linking.openURL`.
 
 ---
 

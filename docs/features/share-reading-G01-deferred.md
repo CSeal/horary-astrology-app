@@ -44,7 +44,7 @@ After installing native deps, rebuild the dev client (`eas build --profile devel
    in the main tree. Mounted only during capture, positioned `{ position:'absolute',
    left:-9999, top:-9999, width:1080, height:1920 }`. Props: `{ verdict, question, confidence }`.
    - Truncate `entry.question` to 40 chars + `…` (consent model: sharing is explicit).
-   - Brand footer + CTA "Ask yours: astrask.app".
+   - Brand footer + CTA "Ask yours: hora.app".
 2. **`src/services/shareVerdictService.ts`** — `captureRef` → temp PNG → Instagram Stories
    (via `react-native-share` `Share.shareSingle({ social: Social.InstagramStories, ... })`)
    with system-share-sheet fallback (`expo-sharing` / `react-native-share` open).

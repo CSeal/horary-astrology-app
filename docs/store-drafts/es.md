@@ -10,7 +10,7 @@ reviewed_by: owner-pending
 ## Title (max 30 chars)
 
 ```
-AstraSk: Carta Horaria
+Hora: Carta Horaria
 ```
 Character count: 22
 
@@ -37,7 +37,7 @@ Character count: 71
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
-Words already indexed: AstraSk, Carta, Horaria, Pregunta, Respuesta, instant
+Words already indexed: Hora, Carta, Horaria, Pregunta, Respuesta, instant
 
 ```
 astrología,horóscopo,clásica,veredicto,planetas,si,no,divinación,interpretación,IA,significador
@@ -49,7 +49,7 @@ Character count: 95
 ```
 Haz una pregunta específica. Obtén una respuesta real — en segundos.
 
-AstraSk usa el método clásico de astrología horaria (William Lilly, casas de Regiomontano) para levantar una carta en el momento en que haces tu pregunta e interpretarla con IA en lenguaje claro. No se necesita hora de nacimiento. No se necesitan conocimientos de astrología.
+Hora usa el método clásico de astrología horaria (William Lilly, casas de Regiomontano) para levantar una carta en el momento en que haces tu pregunta e interpretarla con IA en lenguaje claro. No se necesita hora de nacimiento. No se necesitan conocimientos de astrología.
 
 CÓMO FUNCIONA
 
@@ -75,9 +75,9 @@ LO QUE OBTIENES
 
 POR QUÉ ES DIFERENTE
 
-Cada otra app horaria te muestra una carta cruda y espera que la interpretes tú mismo. AstraSk la interpreta por ti — usando el mismo manual clásico (dignidades esenciales, significadores de casas, recepción) que usaría un astrólogo formado.
+Cada otra app horaria te muestra una carta cruda y espera que la interpretes tú mismo. Hora la interpreta por ti — usando el mismo manual clásico (dignidades esenciales, significadores de casas, recepción) que usaría un astrólogo formado.
 
-Las otras herramientas horarias (Morinus, Janus, Solar Fire) solo funcionan en web o en Windows. AstraSk es la primera app horaria nativa y hermosa para iOS y Android.
+Las otras herramientas horarias (Morinus, Janus, Solar Fire) solo funcionan en web o en Windows. Hora es la primera app horaria nativa y hermosa para iOS y Android.
 
 PREGUNTAS QUE LA GENTE HACE
 

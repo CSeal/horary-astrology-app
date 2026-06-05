@@ -196,9 +196,9 @@ key_findings:
   - Lunaton added tarot/runes in 2026 — diluting its horary positioning, leaving pure-horary niche open
   - New competitor: Horary Astrology Pro (Android) — most feature-complete Android horary app; lacks AI interpretation, Russian, premium UI
   - Top competitor pain points confirmed: complexity, no explanation, slow answers, expensive, no Russian
-  - 7 AstraSk differentiators identified and documented (AI interpretation, instant answer, Russian, free tier, beginner UX, journal, premium UI)
+  - 7 Hora differentiators identified and documented (AI interpretation, instant answer, Russian, free tier, beginner UX, journal, premium UI)
   - 50 keywords ranked across 5 groups: English horary, technique, use-case, broad, Russian
-  - 5 app name candidates generated; Candidate A recommended ("AstraSk: Horary Chart" / "Ask. Get an Instant Answer.")
+  - 5 app name candidates generated; Candidate A recommended ("Hora: Horary Chart" / "Ask. Get an Instant Answer.")
   - Apple 4.3(b) compliance requirements documented and addressed in all ASO copy
 next_stage: StageM2-GrowthSpec || StageM3-APIAudit
 blockers: []

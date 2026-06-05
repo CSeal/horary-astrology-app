@@ -72,7 +72,7 @@
 - Must-pass:
   - docs/aso-brief.md exists and contains >= 30 candidate keywords
   - docs/aso-brief.md contains **competitive parity gap table** (at least 10 features, with HIGH/MEDIUM/LOW priority)
-  - docs/aso-brief.md contains **"What competitors do badly, we do better"** table (min 5 rows = AstraSk differentiators)
+  - docs/aso-brief.md contains **"What competitors do badly, we do better"** table (min 5 rows = Hora differentiators)
   - docs/competitor-research.md contains a new dated refresh section
   - Review sentiment section present (min 10 reviews mined)
 - Conditional-pass:
@@ -98,7 +98,7 @@
 ## Gate M4 — Doc Refresh Coherence
 - Must-pass:
   - prd-v1.md Phase 1.5 section has binary acceptance criteria for each FR-G01 to FR-G07
-  - docs/design-prompts/prototype-update-v2.md exists and references docs/html-prototype/AstraSkClaudeDesign.html as base
+  - docs/design-prompts/prototype-update-v2.md exists and references docs/html-prototype/HoraClaudeDesign.html as base
   - design prompt covers Phase 1.5 modifications AND Phase 2 non-monetization screens
   - design prompt includes competitor-derived screens from docs/aso-brief.md "Screenshots feature mining"
   - docs/INDEX.md updated

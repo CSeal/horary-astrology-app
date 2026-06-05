@@ -53,7 +53,7 @@ App boot → checkForUpdate()
   },
   "android": {
     "minVersion": "1.0.0",
-    "storeUrl": "market://details?id=com.yourcompany.astrask"
+    "storeUrl": "market://details?id=com.yourcompany.hora"
   }
 }
 ```

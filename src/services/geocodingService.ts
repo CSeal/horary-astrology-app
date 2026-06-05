@@ -82,7 +82,7 @@ export const geocodingService = {
       signal,
       headers: {
         Accept: 'application/json',
-        'User-Agent': 'AstraSk/1.0 (horary-astrology)',
+        'User-Agent': 'Hora/1.0 (horary-astrology)',
       },
     });
     if (!res.ok) {

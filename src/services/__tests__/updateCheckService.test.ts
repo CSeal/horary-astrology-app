@@ -25,7 +25,7 @@ jest.mock('expo-application', () => ({ nativeApplicationVersion: '1.0.0' }));
 const CACHE_KEY = ASYNC_STORAGE_KEYS.UPDATE_CONFIG_CACHE;
 
 const config = (iosMin: string, androidMin = iosMin) => ({
-  ios: { minVersion: iosMin, storeUrl: 'https://apps.apple.com/app/astrask' },
+  ios: { minVersion: iosMin, storeUrl: 'https://apps.apple.com/app/hora' },
   android: { minVersion: androidMin, storeUrl: 'https://play.google.com/store' },
 });
 
@@ -71,7 +71,7 @@ describe('checkForUpdate', () => {
     const result = await checkForUpdate();
     expect(result).toEqual({
       required: false,
-      storeUrl: 'https://apps.apple.com/app/astrask',
+      storeUrl: 'https://apps.apple.com/app/hora',
     });
     const cached = await AsyncStorage.getItem(CACHE_KEY);
     expect(cached).not.toBeNull();
