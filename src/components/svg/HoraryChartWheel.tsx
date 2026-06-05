@@ -14,8 +14,17 @@
 //   svgAngle(lon) = π - offset(lon) * π / 180
 //   point(r,lon)  = (cx + r·cos(svgAngle), cy + r·sin(svgAngle))
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Svg, { Circle, Line, Text as SvgText, G } from 'react-native-svg';
+import Animated, {
+  useSharedValue,
+  useAnimatedProps,
+  withTiming,
+  Easing,
+  interpolate,
+  Extrapolation,
+  type SharedValue,
+} from 'react-native-reanimated';
 import { colors } from '@/constants/theme';
 import { PLANET_GLYPHS } from '@/constants/planets';
 import {
@@ -31,6 +40,95 @@ interface HoraryChartWheelProps {
   size?: number;
 }
 
+const AnimatedLine = Animated.createAnimatedComponent(Line);
+const AnimatedG = Animated.createAnimatedComponent(G);
+
+// Total animation timeline. Each element maps a sub-window of `reveal` (0→1)
+// to its own draw/fade so a single SharedValue drives the whole stagger.
+const REVEAL_DURATION = 1400;
+
+interface RevealLineProps {
+  reveal: SharedValue<number>;
+  start: number;
+  end: number;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  length: number;
+}
+
+// Radial divider that "draws" itself via strokeDashoffset within [start, end].
+function RevealLine({
+  reveal,
+  start,
+  end,
+  x1,
+  y1,
+  x2,
+  y2,
+  length,
+}: RevealLineProps) {
+  const animatedProps = useAnimatedProps(() => {
+    const t = interpolate(
+      reveal.value,
+      [start, end],
+      [0, 1],
+      Extrapolation.CLAMP
+    );
+    return {
+      strokeDashoffset: length * (1 - t),
+      opacity: t,
+    };
+  });
+  return (
+    <AnimatedLine
+      x1={x1}
+      y1={y1}
+      x2={x2}
+      y2={y2}
+      stroke={colors.border}
+      strokeWidth={1}
+      strokeDasharray={length}
+      animatedProps={animatedProps}
+    />
+  );
+}
+
+interface RevealGlyphProps {
+  reveal: SharedValue<number>;
+  start: number;
+  end: number;
+  cx: number;
+  cy: number;
+  children: React.ReactNode;
+}
+
+// Glyph group that springs in (scale + fade) within [start, end] of the reveal.
+function RevealGlyph({
+  reveal,
+  start,
+  end,
+  cx,
+  cy,
+  children,
+}: RevealGlyphProps) {
+  const animatedProps = useAnimatedProps(() => {
+    const t = interpolate(
+      reveal.value,
+      [start, end],
+      [0, 1],
+      Extrapolation.CLAMP
+    );
+    const scale = interpolate(t, [0, 0.6, 1], [0.4, 1.08, 1]);
+    return {
+      opacity: t,
+      transform: `translate(${cx} ${cy}) scale(${scale}) translate(${-cx} ${-cy})`,
+    };
+  });
+  return <AnimatedG animatedProps={animatedProps}>{children}</AnimatedG>;
+}
+
 // Resolve a (possibly 3-letter) sign name to its 0-based zodiac index.
 function signIndex(sign: string | undefined): number {
   const full = expandSign(sign) as ZodiacSign | undefined;
@@ -42,6 +140,18 @@ export function HoraryChartWheel({ data, size = 300 }: HoraryChartWheelProps) {
   const R = size / 2;
   const cx = R;
   const cy = R;
+
+  const reveal = useSharedValue(0);
+  useEffect(() => {
+    reveal.value = withTiming(1, {
+      duration: REVEAL_DURATION,
+      easing: Easing.out(Easing.cubic),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const dist = (a: { x: number; y: number }, b: { x: number; y: number }) =>
+    Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2);
 
   // Ring radii as fractions of R.
   const outerBorder = R * 0.95;
@@ -120,6 +230,24 @@ export function HoraryChartWheel({ data, size = 300 }: HoraryChartWheelProps) {
     };
   });
 
+  // ── Stagger timeline ──────────────────────────────────────────────────────
+  // The 0→1 reveal is partitioned into ordered phases. Each element gets a
+  // [start, end] sub-window so a single SharedValue drives the whole sequence:
+  //   lines (zodiac → house) draw first, then glyphs spring in.
+  const totalLines = zodiacSectors.length + houseSectors.length;
+  const lineSpan = 0.6;
+  const lineWindow = (i: number): [number, number] => {
+    const slot = (lineSpan / totalLines) * i;
+    return [slot, Math.min(slot + 0.25, 1)];
+  };
+  const totalGlyphs =
+    zodiacSectors.length + houseSectors.length + planetMarkers.length;
+  const glyphWindow = (i: number): [number, number] => {
+    const base = 0.4;
+    const slot = base + ((1 - base) / totalGlyphs) * i;
+    return [slot, Math.min(slot + 0.3, 1)];
+  };
+
   return (
     <Svg width={size} height={size}>
       {/* Outer zodiac ring fill */}
@@ -159,88 +287,132 @@ export function HoraryChartWheel({ data, size = 300 }: HoraryChartWheelProps) {
 
       {/* Zodiac sectors — dividers + glyphs */}
       <G>
-        {zodiacSectors.map((s) => (
-          <Line
-            key={`zline-${s.sign}`}
-            x1={s.start.x}
-            y1={s.start.y}
-            x2={s.end.x}
-            y2={s.end.y}
-            stroke={colors.border}
-            strokeWidth={1}
-          />
-        ))}
-        {zodiacSectors.map((s) => (
-          <SvgText
-            key={`zglyph-${s.sign}`}
-            x={s.glyphPos.x}
-            y={s.glyphPos.y}
-            fill={colors.textSecondary}
-            fontSize={zodiacGlyphSize}
-            textAnchor="middle"
-            alignmentBaseline="central"
-          >
-            {ZODIAC_GLYPHS[s.sign]}
-          </SvgText>
-        ))}
+        {zodiacSectors.map((s, i) => {
+          const [start, end] = lineWindow(i);
+          return (
+            <RevealLine
+              key={`zline-${s.sign}`}
+              reveal={reveal}
+              start={start}
+              end={end}
+              x1={s.start.x}
+              y1={s.start.y}
+              x2={s.end.x}
+              y2={s.end.y}
+              length={dist(s.start, s.end)}
+            />
+          );
+        })}
+        {zodiacSectors.map((s, i) => {
+          const [start, end] = glyphWindow(i);
+          return (
+            <RevealGlyph
+              key={`zglyph-${s.sign}`}
+              reveal={reveal}
+              start={start}
+              end={end}
+              cx={s.glyphPos.x}
+              cy={s.glyphPos.y}
+            >
+              <SvgText
+                x={s.glyphPos.x}
+                y={s.glyphPos.y}
+                fill={colors.textSecondary}
+                fontSize={zodiacGlyphSize}
+                textAnchor="middle"
+                alignmentBaseline="central"
+              >
+                {ZODIAC_GLYPHS[s.sign]}
+              </SvgText>
+            </RevealGlyph>
+          );
+        })}
       </G>
 
       {/* House sectors — dividers + numbers */}
       <G>
-        {houseSectors.map((s) => (
-          <Line
-            key={`hline-${s.h}`}
-            x1={s.start.x}
-            y1={s.start.y}
-            x2={s.end.x}
-            y2={s.end.y}
-            stroke={colors.border}
-            strokeWidth={1}
-          />
-        ))}
-        {houseSectors.map((s) => (
-          <SvgText
-            key={`hnum-${s.h}`}
-            x={s.numberPos.x}
-            y={s.numberPos.y}
-            fill={colors.textDisabled}
-            fontSize={houseNumberSize}
-            textAnchor="middle"
-            alignmentBaseline="central"
-          >
-            {s.h}
-          </SvgText>
-        ))}
+        {houseSectors.map((s, i) => {
+          const [start, end] = lineWindow(zodiacSectors.length + i);
+          return (
+            <RevealLine
+              key={`hline-${s.h}`}
+              reveal={reveal}
+              start={start}
+              end={end}
+              x1={s.start.x}
+              y1={s.start.y}
+              x2={s.end.x}
+              y2={s.end.y}
+              length={dist(s.start, s.end)}
+            />
+          );
+        })}
+        {houseSectors.map((s, i) => {
+          const [start, end] = glyphWindow(zodiacSectors.length + i);
+          return (
+            <RevealGlyph
+              key={`hnum-${s.h}`}
+              reveal={reveal}
+              start={start}
+              end={end}
+              cx={s.numberPos.x}
+              cy={s.numberPos.y}
+            >
+              <SvgText
+                x={s.numberPos.x}
+                y={s.numberPos.y}
+                fill={colors.textDisabled}
+                fontSize={houseNumberSize}
+                textAnchor="middle"
+                alignmentBaseline="central"
+              >
+                {s.h}
+              </SvgText>
+            </RevealGlyph>
+          );
+        })}
       </G>
 
       {/* Planets — glyph + retrograde marker */}
       <G>
-        {planetMarkers.map((m) => (
-          <G key={m.key}>
-            <SvgText
-              x={m.pos.x}
-              y={m.pos.y}
-              fill={colors.accentGold}
-              fontSize={planetGlyphSize}
-              textAnchor="middle"
-              alignmentBaseline="central"
+        {planetMarkers.map((m, i) => {
+          const [start, end] = glyphWindow(
+            zodiacSectors.length + houseSectors.length + i
+          );
+          return (
+            <RevealGlyph
+              key={m.key}
+              reveal={reveal}
+              start={start}
+              end={end}
+              cx={m.pos.x}
+              cy={m.pos.y}
             >
-              {m.glyph}
-            </SvgText>
-            {m.retro && (
               <SvgText
-                x={m.pos.x + planetGlyphSize * 0.7}
-                y={m.pos.y + planetGlyphSize * 0.5}
-                fill={colors.no}
-                fontSize={retroSize}
+                x={m.pos.x}
+                y={m.pos.y}
+                fill={colors.accentGold}
+                fontSize={planetGlyphSize}
                 textAnchor="middle"
                 alignmentBaseline="central"
               >
-                ℞
+                {m.glyph}
               </SvgText>
-            )}
-          </G>
-        ))}
+              {m.retro && (
+                <SvgText
+                  x={m.pos.x + planetGlyphSize * 0.7}
+                  y={m.pos.y + planetGlyphSize * 0.5}
+                  fill={colors.no}
+                  fontSize={retroSize}
+                  textAnchor="middle"
+                  alignmentBaseline="central"
+                >
+                  ℞
+                </SvgText>
+              )}
+            </RevealGlyph>
+          );
+        })}
       </G>
 
       {/* AC marker at the Ascendant (left / 9 o'clock) */}

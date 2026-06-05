@@ -135,6 +135,12 @@ export default function FullReadingScreen() {
     transform: [{ translateY: screenY.value }],
   }));
 
+  // Parallax background: background shifts at 0.3x scroll speed.
+  const scrollY = useSharedValue(0);
+  const bgParallaxStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: scrollY.value * -0.3 }],
+  }));
+
   // Back button press feedback.
   const backScale = useSharedValue(1);
   const backStyle = useAnimatedStyle(() => ({
@@ -176,7 +182,7 @@ export default function FullReadingScreen() {
     : aspects.slice(0, ASPECT_PREVIEW_COUNT);
 
   return (
-    <CosmosBackground>
+    <CosmosBackground parallaxStyle={bgParallaxStyle}>
       <SafeAreaView className="flex-1" edges={['top']}>
         {/* Nav: ← + Full Reading */}
         <AnimatedView
@@ -204,7 +210,14 @@ export default function FullReadingScreen() {
           </Text>
         </AnimatedView>
 
-        <ScrollView className="flex-1" contentContainerClassName="px-5 pb-8 gap-2">
+        <ScrollView
+          className="flex-1"
+          contentContainerClassName="px-5 pb-8 gap-2"
+          onScroll={(event) => {
+            scrollY.value = event.nativeEvent.contentOffset.y;
+          }}
+          scrollEventThrottle={16}
+        >
           {entry.timing && (
             <>
               <SectionHeader label={t('verdict.timingWhen')} />

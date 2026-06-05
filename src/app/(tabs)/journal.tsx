@@ -2,11 +2,20 @@
 // Journal screen — entries grouped by month, newest first.
 // Tap entry → /result/[id]. Long-press → delete confirmation (Alert).
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import * as Haptics from 'expo-haptics';
 import { Sparkles } from 'lucide-react-native';
-import { SafeAreaView, ScrollView, View, Text } from '@/tw';
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSpring,
+  withDelay,
+  withRepeat,
+} from 'react-native-reanimated';
+import { SafeAreaView, ScrollView, View, Text, AnimatedView } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { JournalItem } from '@/components/JournalItem';
 import { StreakBadge } from '@/components/StreakBadge';
@@ -76,12 +85,32 @@ export default function JournalScreen() {
     [entries, i18n.language]
   );
 
+  const enterOp = useSharedValue(0);
+  const enterY = useSharedValue(20);
+  const floatY = useSharedValue(0);
+
+  useEffect(() => {
+    if (entries.length !== 0) return;
+    enterOp.value = withTiming(1, { duration: 400 });
+    enterY.value = withSpring(0, { damping: 12, stiffness: 90 });
+    floatY.value = withDelay(400, withRepeat(withTiming(-8, { duration: 2000 }), -1, true));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const enterStyle = useAnimatedStyle(() => ({
+    opacity: enterOp.value,
+    transform: [{ translateY: enterY.value }],
+  }));
+  const floatStyle = useAnimatedStyle(() => ({ transform: [{ translateY: floatY.value }] }));
+
   if (entries.length === 0) {
     return (
       <CosmosBackground>
         <SafeAreaView className="flex-1" edges={['top']}>
-          <View className="flex-1 items-center justify-center px-5 gap-6">
-            <Sparkles color={colors.accentGold} size={typography['2xl']} />
+          <AnimatedView style={enterStyle} className="flex-1 items-center justify-center px-5 gap-6">
+            <AnimatedView style={floatStyle}>
+              <Sparkles color={colors.accentGold} size={typography['2xl']} />
+            </AnimatedView>
             <View className="items-center gap-2">
               <Text className="font-cormorant-medium text-2xl text-text-primary text-center">
                 {t('journal.emptyTitle')}
@@ -93,10 +122,13 @@ export default function JournalScreen() {
             <View className="w-full max-w-xs">
               <Button
                 label={t('journal.emptyButton')}
-                onPress={() => router.push('/')}
+                onPress={() => {
+                  void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  router.push('/');
+                }}
               />
             </View>
-          </View>
+          </AnimatedView>
         </SafeAreaView>
       </CosmosBackground>
     );

@@ -8,6 +8,7 @@ import {
   useAnimatedStyle,
   useSharedValue,
   withDelay,
+  withRepeat,
   withSpring,
   withTiming,
   Easing,
@@ -124,15 +125,26 @@ export default function StatsScreen() {
 
   const screenOp = useSharedValue(0);
   const screenY = useSharedValue(20);
+  const emptyEnterOp = useSharedValue(0);
+  const emptyEnterY = useSharedValue(20);
+  const emptyFloatY = useSharedValue(0);
   useEffect(() => {
     screenOp.value = withTiming(1, { duration: 350 });
     screenY.value = withSpring(0, { damping: 14, stiffness: 100 });
+    emptyEnterOp.value = withTiming(1, { duration: 400 });
+    emptyEnterY.value = withSpring(0, { damping: 12, stiffness: 90 });
+    emptyFloatY.value = withDelay(400, withRepeat(withTiming(-8, { duration: 2000 }), -1, true));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const screenStyle = useAnimatedStyle(() => ({
     opacity: screenOp.value,
     transform: [{ translateY: screenY.value }],
   }));
+  const emptyEnterStyle = useAnimatedStyle(() => ({
+    opacity: emptyEnterOp.value,
+    transform: [{ translateY: emptyEnterY.value }],
+  }));
+  const emptyFloatStyle = useAnimatedStyle(() => ({ transform: [{ translateY: emptyFloatY.value }] }));
 
   if (stats === null) {
     return (
@@ -143,12 +155,14 @@ export default function StatsScreen() {
               {t('stats.title')}
             </Text>
           </View>
-          <View className="flex-1 items-center justify-center px-5 gap-3">
-            <Text className="text-accent-gold text-2xl">✦</Text>
+          <AnimatedView style={emptyEnterStyle} className="flex-1 items-center justify-center px-5 gap-3">
+            <AnimatedView style={emptyFloatStyle}>
+              <Text className="text-accent-gold text-2xl">✦</Text>
+            </AnimatedView>
             <Text className="font-inter text-sm text-text-secondary text-center">
               {t('stats.noData')}
             </Text>
-          </View>
+          </AnimatedView>
         </SafeAreaView>
       </CosmosBackground>
     );

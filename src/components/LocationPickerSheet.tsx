@@ -6,6 +6,7 @@
 
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { useTranslation } from 'react-i18next';
 import { MapPin, Search, Check } from 'lucide-react-native';
 import BottomSheet, {
@@ -14,11 +15,63 @@ import BottomSheet, {
   BottomSheetTextInput,
   type BottomSheetBackdropProps,
 } from '@gorhom/bottom-sheet';
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  withSpring,
+  withDelay,
+} from 'react-native-reanimated';
 import { useDebounce } from 'use-debounce';
-import { View, Text, TouchableOpacity } from '@/tw';
+import { View, Text, TouchableOpacity, AnimatedView } from '@/tw';
 import { geocodingService } from '@/services/geocodingService';
 import { colors, typography } from '@/constants/theme';
 import type { LocationOverride } from '@/types/location';
+
+function ResultItem({
+  item,
+  index,
+  onPress,
+}: {
+  item: LocationOverride;
+  index: number;
+  onPress: () => void;
+}) {
+  const op = useSharedValue(0);
+  const y = useSharedValue(12);
+
+  useEffect(() => {
+    const delay = Math.min(index * 40, 200);
+    op.value = withDelay(delay, withTiming(1, { duration: 300 }));
+    y.value = withDelay(delay, withSpring(0, { damping: 14, stiffness: 120 }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const style = useAnimatedStyle(() => ({
+    opacity: op.value,
+    transform: [{ translateY: y.value }],
+  }));
+
+  const handlePress = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onPress();
+  }, [onPress]);
+
+  return (
+    <AnimatedView style={style}>
+      <TouchableOpacity
+        onPress={handlePress}
+        className="px-3 py-3 rounded-xl active:bg-bg-surface"
+        accessibilityRole="button"
+      >
+        <Text className="font-inter text-base text-text-primary">{item.city}</Text>
+        <Text className="font-inter text-xs text-text-secondary mt-1">
+          {item.displayName}
+        </Text>
+      </TouchableOpacity>
+    </AnimatedView>
+  );
+}
 
 export interface LocationPickerSheetRef {
   present: () => void;
@@ -215,19 +268,12 @@ export function LocationPickerSheet({
                 `${item.latitude}-${item.longitude}-${idx}`
               }
               keyboardShouldPersistTaps="handled"
-              renderItem={({ item }) => (
-                <TouchableOpacity
+              renderItem={({ item, index }) => (
+                <ResultItem
+                  item={item}
+                  index={index}
                   onPress={() => handlePick(item)}
-                  className="px-3 py-3 rounded-xl active:bg-bg-surface"
-                  accessibilityRole="button"
-                >
-                  <Text className="font-inter text-base text-text-primary">
-                    {item.city}
-                  </Text>
-                  <Text className="font-inter text-xs text-text-secondary mt-1">
-                    {item.displayName}
-                  </Text>
-                </TouchableOpacity>
+                />
               )}
               ItemSeparatorComponent={() => <View className="h-px bg-border" />}
             />
