@@ -118,4 +118,45 @@ describe('checkForUpdate', () => {
     mockFetchFail();
     await expect(checkForUpdate()).resolves.toBeNull();
   });
+
+  // ── Branch: fetchConfig !resp.ok ──────────────────────────────────────────
+  it('fetch returns non-OK response and no cache → null (fail-open)', async () => {
+    globalThis.fetch = jest.fn().mockResolvedValue({
+      ok: false,
+    }) as jest.Mock;
+    await expect(checkForUpdate()).resolves.toBeNull();
+  });
+
+  // ── Branch: readCache catch (corrupt JSON in AsyncStorage) ────────────────
+  it('fetch fails and AsyncStorage contains corrupt JSON → null (fail-open)', async () => {
+    await AsyncStorage.setItem(CACHE_KEY, '{invalid json');
+    mockFetchFail();
+    await expect(checkForUpdate()).resolves.toBeNull();
+  });
+
+  // ── Branch: writeCache catch (AsyncStorage.setItem throws) ───────────────
+  it('writeCache failure is non-fatal — checkForUpdate still returns a valid result', async () => {
+    mockFetchOk(config('1.0.0'));
+    jest
+      .spyOn(AsyncStorage, 'setItem')
+      .mockRejectedValueOnce(new Error('storage full'));
+    const result = await checkForUpdate();
+    expect(result).not.toBeNull();
+    expect(result).toHaveProperty('storeUrl');
+  });
+
+  // ── Branch: nativeApplicationVersion is null ──────────────────────────────
+  it('null nativeApplicationVersion coerces to "0" → update required when min > 0', async () => {
+    setVersion(null);
+    mockFetchOk(config('1.0.0'));
+    const result = await checkForUpdate();
+    expect(result?.required).toBe(true);
+  });
+
+  // ── Branch: !platformConfig (config missing current platform key) ─────────
+  it('config missing the current platform key → null (fail-open)', async () => {
+    // Platform.OS is 'ios' in jest-expo; supply a config with only android.
+    mockFetchOk({ android: { minVersion: '1.0.0', storeUrl: 'https://play.google.com' } });
+    await expect(checkForUpdate()).resolves.toBeNull();
+  });
 });

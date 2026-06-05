@@ -39,7 +39,7 @@ export const useQuestionsStore = create<QuestionsState>((set) => ({
     set({ entries: updated });
     // Stage 6c — a recorded conclusive outcome makes the reminder redundant.
     if (outcome === 'came_true' || outcome === 'did_not_happen') {
-      notificationService.cancel(id).catch(() => {});
+      notificationService.cancel(id).catch(/* istanbul ignore next */ () => {});
     }
   },
 

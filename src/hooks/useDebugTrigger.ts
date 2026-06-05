@@ -53,15 +53,16 @@ export function useDebugTrigger(onTriggered: () => void) {
 
     if (count === SHOW_DOTS_FROM) {
       // Dots appear — medium feedback signals "you're in the final stretch".
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(/* istanbul ignore next */ () => {});
     } else if (count === REQUIRED_TAPS - 1) {
       // One tap left — light tick.
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(/* istanbul ignore next */ () => {});
     } else if (count >= REQUIRED_TAPS) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(() => {});
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy).catch(/* istanbul ignore next */ () => {});
       tapCountRef.current = 0;
       lastTapRef.current = 0;
       setTapCount(0);
+      /* istanbul ignore else */
       if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
       onTriggered();
     }

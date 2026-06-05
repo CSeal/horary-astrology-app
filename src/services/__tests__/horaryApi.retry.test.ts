@@ -98,4 +98,14 @@ describe('horaryApi.ask — retry/backoff', () => {
     await expect(horaryApi.ask(request)).rejects.toEqual(fatalError);
     expect(mockPost).toHaveBeenCalledTimes(1);
   });
+
+  it('throws UNKNOWN when the API returns an envelope without data', async () => {
+    // Envelope missing the `data` property → malformed response
+    mockPost.mockResolvedValueOnce({ data: { success: true } }); // no `.data.data`
+    await expect(horaryApi.ask(request)).rejects.toMatchObject({
+      code: 'UNKNOWN',
+      retryable: false,
+    });
+    expect(mockPost).toHaveBeenCalledTimes(1);
+  });
 });

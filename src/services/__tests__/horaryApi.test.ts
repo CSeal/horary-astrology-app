@@ -77,6 +77,12 @@ describe('normalizeError', () => {
     expect(result.originalStatus).toBe(429);
   });
 
+  it('uses default 429 message when the API body has no message field', () => {
+    const result = normalizeError(makeAxiosError({ status: 429, data: {} }));
+    expect(result.code).toBe('LIMIT_EXCEEDED');
+    expect(result.message).toBe('You have reached your monthly question limit.');
+  });
+
   it('maps a 4xx → API_4XX, not retryable, surfacing the API message', () => {
     const result = normalizeError(
       makeAxiosError({ status: 422, data: { message: 'Invalid question' } })
@@ -104,6 +110,22 @@ describe('normalizeError', () => {
     const result = normalizeError(makeAxiosError({ status: 302 }));
     expect(result.code).toBe('UNKNOWN');
     expect(result.retryable).toBe(false);
+  });
+
+  it('maps 401 → INVALID_API_KEY, not retryable', () => {
+    const result = normalizeError(
+      makeAxiosError({ status: 401, data: { message: 'Invalid API key' } })
+    );
+    expect(result.code).toBe('INVALID_API_KEY');
+    expect(result.retryable).toBe(false);
+    expect(result.message).toBe('Invalid API key');
+    expect(result.originalStatus).toBe(401);
+  });
+
+  it('uses default 401 message when the API body has none', () => {
+    const result = normalizeError(makeAxiosError({ status: 401, data: {} }));
+    expect(result.code).toBe('INVALID_API_KEY');
+    expect(result.message).toBe('Invalid or missing API key. Check Settings → API Key.');
   });
 });
 

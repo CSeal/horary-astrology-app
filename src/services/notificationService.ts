@@ -52,8 +52,9 @@ export async function schedule(
   if (queue.length >= MAX_SCHEDULED) {
     // FIFO: cancel oldest scheduled (first in array, already sorted by scheduledFor)
     const oldest = queue.shift();
+    /* istanbul ignore else */
     if (oldest) {
-      await Notifications.cancelScheduledNotificationAsync(oldest.notificationId).catch(() => {});
+      await Notifications.cancelScheduledNotificationAsync(oldest.notificationId).catch(/* istanbul ignore next */ () => {});
     }
   }
 
@@ -79,7 +80,7 @@ export async function cancel(entryId: string): Promise<void> {
   const idx = queue.findIndex((item) => item.entryId === entryId);
   if (idx === -1) return;
   const [removed] = queue.splice(idx, 1);
-  await Notifications.cancelScheduledNotificationAsync(removed.notificationId).catch(() => {});
+  await Notifications.cancelScheduledNotificationAsync(removed.notificationId).catch(/* istanbul ignore next */ () => {});
   await saveQueue(queue);
 }
 

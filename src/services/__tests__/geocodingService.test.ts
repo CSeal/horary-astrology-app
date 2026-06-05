@@ -111,4 +111,37 @@ describe('geocodingService.search', () => {
     expect(url).toContain('lang=default');
     expect(url).not.toContain('lang=ru');
   });
+
+  it('uses city as fallback for place name when name is undefined', async () => {
+    mockFetchOk([
+      photonFeature({
+        // name is undefined (not set) — city is the fallback
+        city: 'Paris',
+        state: 'Île-de-France',
+        country: 'France',
+        coordinates: [2.3522, 48.8566],
+      }),
+    ]);
+    const [result] = await geocodingService.search('Paris', 'en');
+    expect(result.city).toBe('Paris');
+    expect(result.displayName).toContain('Paris');
+    expect(result.displayName).toContain('France');
+  });
+
+  it('omits country segment from displayName when country is absent', async () => {
+    mockFetchOk([
+      photonFeature({
+        name: 'Lyon',
+        state: 'Auvergne-Rhône-Alpes',
+        // country is undefined
+        coordinates: [4.8357, 45.764],
+      }),
+    ]);
+    const [result] = await geocodingService.search('Lyon', 'en');
+    expect(result.city).toBe('Lyon');
+    // country segment should not appear
+    expect(result.displayName).not.toMatch(/,\s*undefined/);
+    // state IS different from place name so it should appear
+    expect(result.displayName).toContain('Auvergne');
+  });
 });

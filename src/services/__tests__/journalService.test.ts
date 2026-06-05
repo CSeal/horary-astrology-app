@@ -104,4 +104,20 @@ describe('journalService', () => {
     expect(all).toHaveLength(1);
     expect(all[0].outcome).toBeUndefined();
   });
+
+  it('save does not throw when AsyncStorage.setItem fails, logs error', async () => {
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(AsyncStorage, 'setItem').mockRejectedValueOnce(new Error('disk full'));
+    await expect(journalService.save([entry('a')])).resolves.toBeUndefined();
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('[journalService]'));
+    errorSpy.mockRestore();
+  });
+
+  it('clear does not throw when AsyncStorage.removeItem fails, logs error', async () => {
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    jest.spyOn(AsyncStorage, 'removeItem').mockRejectedValueOnce(new Error('disk full'));
+    await expect(journalService.clear()).resolves.toBeUndefined();
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('[journalService]'));
+    errorSpy.mockRestore();
+  });
 });

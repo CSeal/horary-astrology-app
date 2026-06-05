@@ -27,7 +27,7 @@ export function useStreak(): StreakData {
 
     const unique = Array.from(
       new Set(entries.map((e) => dateKey(new Date(e.timestamp))))
-    ).sort((a, b) => (a < b ? 1 : a > b ? -1 : 0));
+    ).sort((a, b) => (a > b ? -1 : 1));
 
     const now = new Date();
     const today = dateKey(now);

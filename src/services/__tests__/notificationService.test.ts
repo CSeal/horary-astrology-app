@@ -10,6 +10,7 @@ import {
   schedule,
   cancel,
   pruneExpired,
+  requestPermission,
 } from '@/services/notificationService';
 import type { JournalEntry } from '@/types/journal';
 
@@ -156,5 +157,65 @@ describe('notificationService', () => {
     const queue = await readQueue();
     expect(queue).toHaveLength(1);
     expect(queue[0].entryId).toBe('fresh');
+  });
+
+  it('pruneExpired is a no-op and does not save when all items are in the future', async () => {
+    // Seed 2 future items
+    const future1 = new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString();
+    const future2 = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+    const seeded = [
+      { entryId: 'a', notificationId: 'n-a', scheduledFor: future1 },
+      { entryId: 'b', notificationId: 'n-b', scheduledFor: future2 },
+    ];
+    await AsyncStorage.setItem('horary_notification_schedule', JSON.stringify(seeded));
+
+    // Spy on setItem AFTER seeding, then clear the seed call so only pruneExpired calls count
+    const setItemSpy = jest.spyOn(AsyncStorage, 'setItem');
+    setItemSpy.mockClear();
+
+    await pruneExpired();
+
+    // Queue unchanged — nothing was expired
+    const raw = await AsyncStorage.getItem('horary_notification_schedule');
+    const queue = raw ? JSON.parse(raw) : [];
+    expect(queue).toHaveLength(2);
+    // setItem should NOT have been called (the `active.length !== queue.length` condition is false)
+    expect(setItemSpy).not.toHaveBeenCalled();
+
+    setItemSpy.mockRestore();
+  });
+
+  it('schedule is a no-op when permission is denied', async () => {
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
+    (Notifications.requestPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
+    await schedule(entry('perm-denied'), 7, 'Q?', 'What happened?');
+    expect(Notifications.scheduleNotificationAsync).not.toHaveBeenCalled();
+    const queue = await readQueue();
+    expect(queue).toHaveLength(0);
+  });
+});
+
+describe('requestPermission', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('returns true immediately when permission is already granted', async () => {
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'granted' });
+    await expect(requestPermission()).resolves.toBe(true);
+    expect(Notifications.requestPermissionsAsync).not.toHaveBeenCalled();
+  });
+
+  it('requests permission when not already granted and returns true if user allows', async () => {
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
+    (Notifications.requestPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'granted' });
+    await expect(requestPermission()).resolves.toBe(true);
+    expect(Notifications.requestPermissionsAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it('requests permission when not already granted and returns false if user denies', async () => {
+    (Notifications.getPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
+    (Notifications.requestPermissionsAsync as jest.Mock).mockResolvedValueOnce({ status: 'denied' });
+    await expect(requestPermission()).resolves.toBe(false);
   });
 });

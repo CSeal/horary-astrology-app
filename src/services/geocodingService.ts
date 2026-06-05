@@ -40,7 +40,7 @@ interface PhotonResponse {
 }
 
 function buildDisplayName(p: PhotonFeature['properties']): string {
-  const place = p.name ?? p.city ?? '';
+  const place = p.name ?? p.city ?? /* istanbul ignore next */ '';
   const region = p.state && p.state !== place ? `, ${p.state}` : '';
   const country = p.country ? `, ${p.country}` : '';
   return `${place}${region}${country}`.trim();

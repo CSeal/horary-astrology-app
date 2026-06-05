@@ -48,6 +48,36 @@ describe('buildAnalysisRequest', () => {
     expect(out.options?.language).toBe('ru');
     expect(out.include_timing).toBe(true);
   });
+
+  it('includes subcategory when provided', () => {
+    const out = buildAnalysisRequest({ ...baseRequest, subcategory: 'romantic' }, 'en');
+    expect(out.subcategory).toBe('romantic');
+  });
+
+  it('omits subcategory when not provided', () => {
+    const out = buildAnalysisRequest(baseRequest, 'en');
+    expect(out.subcategory).toBeUndefined();
+  });
+
+  it('includes subject_role when provided and not "self"', () => {
+    const out = buildAnalysisRequest({ ...baseRequest, subject_role: 'friend' }, 'en');
+    expect((out as any).subject_role).toBe('friend');
+  });
+
+  it('omits subject_role when it equals "self"', () => {
+    const out = buildAnalysisRequest({ ...baseRequest, subject_role: 'self' }, 'en');
+    expect((out as any).subject_role).toBeUndefined();
+  });
+
+  it('includes chart_options when zodiacType is Sidereal', () => {
+    const out = buildAnalysisRequest(baseRequest, 'en', 'Sidereal');
+    expect((out as any).chart_options).toEqual({ zodiac_type: 'Sidereal' });
+  });
+
+  it('omits chart_options when zodiacType is Tropic (default)', () => {
+    const out = buildAnalysisRequest(baseRequest, 'en', 'Tropic');
+    expect((out as any).chart_options).toBeUndefined();
+  });
 });
 
 function wireResponse(
@@ -548,6 +578,216 @@ describe('normalizeAnalysisResponse', () => {
       const out = normalizeAnalysisResponse(wireResponse(), baseRequest);
       expect(out.testimonyScore).toBeUndefined();
     });
+  });
+
+  // ── Missing branch coverage ──
+
+  it('maps significator with no dignity_info → empty sign, null dignity, false retrograde', () => {
+    const raw = wireResponse({
+      significators: [
+        { role: 'querent', planet: 'Saturn', house: 10 },
+      ],
+    });
+    const [sig] = normalizeAnalysisResponse(raw, baseRequest).significators;
+    expect(sig.sign).toBe('');
+    expect(sig.dignity).toBeNull();
+    expect(sig.retrograde).toBe(false);
+  });
+
+  it('maps significator with null accidental_conditions → retrograde: false', () => {
+    const raw = wireResponse({
+      significators: [
+        {
+          role: 'querent',
+          planet: 'Mars',
+          house: 1,
+          dignity_info: { sign: 'Ari', essential_dignity: 'domicile', accidental_conditions: null },
+        },
+      ],
+    });
+    const [sig] = normalizeAnalysisResponse(raw, baseRequest).significators;
+    expect(sig.retrograde).toBe(false);
+  });
+
+  it('maps timing with missing explanation → empty string; falsy based_on → basedOn undefined', () => {
+    const raw = wireResponse({
+      timing: [
+        {
+          time_unit: 'days',
+          value: 5,
+          confidence: 'high',
+          based_on: '',
+        },
+      ],
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.timing?.explanation).toBe('');
+    expect(out.timing?.basedOn).toBeUndefined();
+  });
+
+  it('maps reception with null reception_type → type: null', () => {
+    const raw = wireResponse({
+      reception_analysis: {
+        has_mutual_reception: true,
+        has_one_way_reception: false,
+        reception_type: undefined as any,
+        description: 'Mutual reception.',
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.reception?.type).toBeNull();
+  });
+
+  it('maps radicalityFlags: flag with no matching consideration falls back to f.type as message', () => {
+    const raw = wireResponse({
+      radicality: {
+        is_radical: true,
+        score: 70,
+        recommendation: 'proceed',
+        summary: 'OK.',
+        considerations: [],
+        flags: [
+          { type: 'combust_significator', severity: 'moderate', show_to_client: true, weight_applied: 1 },
+        ],
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.radicalityFlags?.[0].message).toBe('combust_significator');
+  });
+
+  it('maps radicalityFlags: flag with undefined considerations array falls back to f.type', () => {
+    const raw = wireResponse({
+      radicality: {
+        is_radical: true,
+        score: 70,
+        recommendation: 'proceed',
+        summary: 'OK.',
+        flags: [
+          { type: 'late_asc', severity: 'mild', show_to_client: true, weight_applied: 1 },
+        ],
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.radicalityFlags?.[0].message).toBe('late_asc');
+  });
+
+  it('maps radicalityFlags: low severity consideration → "mild"', () => {
+    const raw = wireResponse({
+      radicality: {
+        is_radical: true,
+        score: 90,
+        recommendation: 'proceed',
+        summary: 'OK.',
+        considerations: [
+          { name: 'minor_flag', is_present: true, severity: 'low', message: 'Minor issue.', value: null },
+        ],
+      },
+    });
+    const flags = normalizeAnalysisResponse(raw, baseRequest).radicalityFlags;
+    expect(flags?.[0].severity).toBe('mild');
+  });
+
+  it('omits radicalityFlags when all flags have show_to_client: false', () => {
+    const raw = wireResponse({
+      radicality: {
+        is_radical: true,
+        score: 70,
+        recommendation: 'proceed',
+        summary: 'OK.',
+        flags: [
+          { type: 'internal_flag', severity: 'severe', show_to_client: false, weight_applied: 1 },
+        ],
+      },
+    });
+    expect(normalizeAnalysisResponse(raw, baseRequest).radicalityFlags).toBeUndefined();
+  });
+
+  it('maps moonToQuesited with null degrees_to_perfection → degreesToPerfection: null', () => {
+    const raw = wireResponse({
+      lunar_analysis: {
+        is_void_of_course: false,
+        moon_to_quesited: {
+          aspect_type: 'sextile',
+          event_order: 1,
+          is_applying: true,
+          orb: 5,
+          planet: 'Venus',
+          degrees_to_perfection: null,
+        },
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.moonToQuesited?.degreesToPerfection).toBeNull();
+  });
+
+  it('voc detail: omits degree when moon_longitude is null → signDisplay is just the sign name', () => {
+    const raw = wireResponse({
+      lunar_analysis: {
+        is_void_of_course: true,
+        moon_sign: 'Gem',
+        moon_longitude: null as any,
+        degrees_to_sign_change: 2,
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.voc_moon_sign).toBe('Gemini');
+  });
+
+  it('voc detail: signDisplay is undefined when moon_sign cannot be resolved', () => {
+    const raw = wireResponse({
+      lunar_analysis: {
+        is_void_of_course: true,
+        moon_sign: undefined as any,
+        moon_longitude: 45,
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.voc_moon_sign).toBeUndefined();
+  });
+
+  it('resolveRadicality: radicality.is_radical=false from block → is_radical: false with summary', () => {
+    const raw = wireResponse({
+      radicality: {
+        is_radical: false,
+        score: 20,
+        recommendation: 'do_not_proceed',
+        summary: 'Chart is not radical.',
+        considerations: [],
+      },
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.is_radical).toBe(false);
+    expect(out.radicality_summary).toBe('Chart is not radical.');
+  });
+
+  it('maps undefined judgment answer → UNCLEAR (covers answer ?? "" branch)', () => {
+    const raw = { category: 'general' } as HoraryAnalysisResponse;
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.verdict).toBe('UNCLEAR');
+  });
+
+  it('summary defaults to empty string when both interpretation and reasoning are absent', () => {
+    const raw = wireResponse({
+      judgment: { answer: 'yes', confidence_band: 'high', interpretation: null, reasoning: null } as any,
+    });
+    const out = normalizeAnalysisResponse(raw, baseRequest);
+    expect(out.summary).toBe('');
+  });
+
+  it('maps radicalityFlags: medium severity consideration → "moderate"', () => {
+    const raw = wireResponse({
+      radicality: {
+        is_radical: true,
+        score: 75,
+        recommendation: 'proceed',
+        summary: 'OK.',
+        considerations: [
+          { name: 'medium_flag', is_present: true, severity: 'medium', message: 'Medium issue.', value: null },
+        ],
+      },
+    });
+    const flags = normalizeAnalysisResponse(raw, baseRequest).radicalityFlags;
+    expect(flags?.[0].severity).toBe('moderate');
   });
 });
 

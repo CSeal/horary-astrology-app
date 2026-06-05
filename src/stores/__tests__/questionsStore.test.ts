@@ -16,6 +16,11 @@ jest.mock(
   () => require('@react-native-async-storage/async-storage/jest/async-storage-mock')
 );
 
+// Mock notificationService (used in updateOutcome)
+jest.mock('../../services/notificationService', () => ({
+  notificationService: { cancel: jest.fn().mockResolvedValue(undefined) },
+}));
+
 // Mock journalService to avoid real AsyncStorage reads
 jest.mock('../../services/journalService', () => ({
   journalService: {
@@ -95,5 +100,52 @@ describe('questionsStore — debug actions', () => {
     await useQuestionsStore.getState().clearAllEntries();
     expect(useQuestionsStore.getState().entries).toEqual([]);
     expect(journalService.clear).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('questionsStore — addEntry', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useQuestionsStore.setState({ entries: [] });
+  });
+
+  it('stores the entry and refreshes entries from journalService', async () => {
+    const newEntry = entry('new');
+    (journalService.getAll as jest.Mock).mockResolvedValueOnce([newEntry]);
+    await useQuestionsStore.getState().addEntry(newEntry);
+    expect(journalService.addEntry).toHaveBeenCalledWith(newEntry);
+    expect(useQuestionsStore.getState().entries).toEqual([newEntry]);
+  });
+});
+
+describe('questionsStore — deleteEntry', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useQuestionsStore.setState({ entries: [entry('a'), entry('b')] });
+  });
+
+  it('removes the entry by id and refreshes entries from journalService', async () => {
+    (journalService.getAll as jest.Mock).mockResolvedValueOnce([entry('a')]);
+    await useQuestionsStore.getState().deleteEntry('b');
+    expect(journalService.deleteEntry).toHaveBeenCalledWith('b');
+    expect(useQuestionsStore.getState().entries).toEqual([entry('a')]);
+  });
+});
+
+describe('questionsStore — hydrate error', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    useQuestionsStore.setState({ entries: [entry('existing')] });
+  });
+
+  it('catches errors, leaves entries unchanged, and logs to console.error', async () => {
+    (journalService.getAll as jest.Mock).mockRejectedValueOnce(new Error('storage fail'));
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    await useQuestionsStore.getState().hydrate();
+    expect(useQuestionsStore.getState().entries).toEqual([entry('existing')]);
+    expect(consoleSpy).toHaveBeenCalledWith(
+      '[questionsStore] Failed to hydrate questions store'
+    );
+    consoleSpy.mockRestore();
   });
 });
