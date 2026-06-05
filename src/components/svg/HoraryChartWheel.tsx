@@ -219,13 +219,49 @@ export function HoraryChartWheel({ data, size = 300 }: HoraryChartWheelProps) {
     return { h, start, end, numberPos };
   });
 
+  // ── Planet radial-lane collision avoidance ───────────────────────────────
+  // Three concentric lanes for the planet ring. If two planets are within
+  // COLLISION_DEG of each other they share a radius and their glyphs overlap.
+  // We assign each planet the first lane (default → inner → outer) that has
+  // no collision with already-placed planets at that lane.
+  //
+  // Threshold derivation: glyph ≈ R*0.1 px; arc at R*0.48 per degree ≈ 0.84px
+  // → glyphs touch when Δ < (R*0.1) / (R*0.48) * (180/π) ≈ 12°.
+  const COLLISION_DEG = 12;
+  const LANES = [planetRadius, R * 0.36, R * 0.56] as const;
+
+  const angularDiff = (a: number, b: number): number => {
+    const d = Math.abs(a - b) % 360;
+    return d > 180 ? 360 - d : d;
+  };
+
+  // Process planets in longitude order so adjacent ones are evaluated together.
+  const laneMap = new Map<number, number>(); // original index → assigned radius
+  const byLon = data.planets
+    .map((p, i) => ({ lon: p.absoluteLongitude, i }))
+    .sort((a, b) => a.lon - b.lon);
+
+  for (const { lon, i } of byLon) {
+    let chosen = LANES[0];
+    for (const lane of LANES) {
+      const blocked = [...laneMap.entries()].some(
+        ([j, r]) =>
+          r === lane &&
+          angularDiff(lon, data.planets[j].absoluteLongitude) < COLLISION_DEG
+      );
+      if (!blocked) { chosen = lane; break; }
+    }
+    laneMap.set(i, chosen);
+  }
+
   // ── Planets ──────────────────────────────────────────────────────────────
   const planetMarkers = data.planets.map((p, idx) => {
-    const pos = point(planetRadius, p.absoluteLongitude);
+    const pos = point(laneMap.get(idx) ?? planetRadius, p.absoluteLongitude);
     return {
       key: `${p.name}-${idx}`,
       glyph: PLANET_GLYPHS[p.name] ?? p.name.slice(0, 2),
       retro: p.isRetrograde,
+      house: p.house,
       pos,
     };
   });
@@ -410,6 +446,17 @@ export function HoraryChartWheel({ data, size = 300 }: HoraryChartWheelProps) {
                   ℞
                 </SvgText>
               )}
+              {/* House number subscript — below planet glyph, dimmed */}
+              <SvgText
+                x={m.pos.x}
+                y={m.pos.y + planetGlyphSize * 0.95}
+                fill={colors.textDisabled}
+                fontSize={retroSize}
+                textAnchor="middle"
+                alignmentBaseline="central"
+              >
+                {m.house}
+              </SvgText>
             </RevealGlyph>
           );
         })}

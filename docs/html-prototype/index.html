@@ -2331,18 +2331,43 @@
       'font-family': 'Inter,sans-serif', 'font-weight': '600',
     }));
 
-    // ── Planets ───────────────────────────────────────────────────
+    // ── Planet radial-lane collision avoidance ────────────────────
+    // Three lanes: default (R*0.48), inner (R*0.36), outer (R*0.56).
+    // Threshold: glyphs collide when < 12° apart at the default radius.
+    const COLLISION_DEG = 12;
+    const LANES = [planetR, R * 0.36, R * 0.56];
+    const angularDiff = (a, b) => { const d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; };
+
+    // [glyph, absoluteLon, isRetrograde, colorOverride, house]
     const planets = [
-      ['☉', 138, false, null],
-      ['☽', 222, false, '#22D3A4'],
-      ['☿', 130, false, null],
-      ['♀', 170, false, null],
-      ['♂', 18,  false, null],
-      ['♃', 338, false, '#F5C842'],
-      ['♄', 278, false, '#8B5CF6'],
+      ['☉', 138, false, null,       2],  // Sun  Leo H2
+      ['☽', 222, false, '#22D3A4',  5],  // Moon Scorpio H5 (querent)
+      ['☿', 130, false, null,       2],  // Mercury Leo H2
+      ['♀', 170, false, null,       3],  // Venus Virgo H3
+      ['♂', 18,  false, null,      10],  // Mars Aries H10
+      ['♃', 338, false, '#F5C842',  9],  // Jupiter Pisces H9 (quesited)
+      ['♄', 278, false, '#8B5CF6',  7],  // Saturn Capricorn H7
     ];
-    for (const [glyph, lon, retro, color] of planets) {
-      const pos = pt(planetR, lon);
+
+    // Assign each planet a lane (sorted by longitude so adjacent ones meet first)
+    const laneAssign = new Map(); // index → radius
+    const byLon = planets.map((p, i) => ({ lon: p[1], i }))
+                         .sort((a, b) => a.lon - b.lon);
+    for (const { lon, i } of byLon) {
+      let chosen = LANES[0];
+      for (const lane of LANES) {
+        const blocked = [...laneAssign.entries()].some(
+          ([j, r]) => r === lane && angularDiff(lon, planets[j][1]) < COLLISION_DEG
+        );
+        if (!blocked) { chosen = lane; break; }
+      }
+      laneAssign.set(i, chosen);
+    }
+
+    for (let i = 0; i < planets.length; i++) {
+      const [glyph, lon, retro, color, house] = planets[i];
+      const r = laneAssign.get(i);
+      const pos = pt(r, lon);
       svg.appendChild(animGlyph(pos.x, pos.y, glyph, {
         fill: color ?? '#F0EEFF',
         'font-size': R * 0.105, 'font-family': 'Inter,sans-serif',
@@ -2353,6 +2378,11 @@
           'font-family': 'Inter,sans-serif',
         }, gi++));
       }
+      // House number subscript — below planet glyph, dimmed
+      svg.appendChild(animGlyph(pos.x, pos.y + R * 0.1, String(house), {
+        fill: '#4A4465', 'font-size': R * 0.065,
+        'font-family': 'Inter,sans-serif',
+      }, gi++));
     }
 
     // ── Center dot (static) ───────────────────────────────────────
