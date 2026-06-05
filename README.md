@@ -50,18 +50,18 @@ You ask a sincere, specific yes-or-no question. Hora captures your precise locat
 
 | Onboarding | Home | Loading |
 |:---:|:---:|:---:|
-| ![Onboarding](docs/screenshots/02-onboarding.png) | ![Home](docs/screenshots/03-home.png) | ![Loading](docs/screenshots/03b-loading.png) |
-| *3-step first-run flow* | *Ask form + streak + OnThisDay* | *Planet orbit loading animation* |
+| ![Onboarding](docs/screenshots/02-onboarding.png) | ![Home](docs/screenshots/home-animated.gif) | ![Loading](docs/screenshots/loading-animated.gif) |
+| *3-step first-run flow* | *Nav + form entrance · sparkle idle pulse* | *Planet orbit + progress shimmer* |
 
 | Verdict (compact) | Verdict (full detail) | Journal |
 |:---:|:---:|:---:|
-| ![Verdict](docs/screenshots/04-verdict.png) | ![Full reading](docs/screenshots/04b-verdict-full.png) | ![Journal](docs/screenshots/05-journal.png) |
-| *Compact badge + AI summary + CTA* | *Significators · aspects · timing* | *Readings by month + streak* |
+| ![Verdict](docs/screenshots/verdict-animated.gif) | ![Full reading](docs/screenshots/04b-verdict-full.png) | ![Journal](docs/screenshots/05-journal.png) |
+| *Glow burst · star spin · confidence dots* | *Significators · aspects · timing* | *Readings by month + streak* |
 
-| Stats | Settings | Chart Wheel (animated) |
+| Stats | Settings | Chart Wheel |
 |:---:|:---:|:---:|
 | ![Stats](docs/screenshots/07-stats.png) | ![Settings](docs/screenshots/06-settings.png) | ![Chart Wheel](docs/screenshots/chart-wheel-animated.gif) |
-| *Distribution · streak · accuracy* | *7 languages · BYOK · notifications* | *Zodiac ring · house numbers · planet glyphs* |
+| *Distribution · streak · accuracy* | *7 languages · BYOK · notifications* | *Zodiac ring reveal animation* |
 
 ---
 

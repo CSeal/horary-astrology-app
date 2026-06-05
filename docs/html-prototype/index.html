@@ -862,6 +862,42 @@
       0%   { transform: translateX(-200%); }
       100% { transform: translateX(400%); }
     }
+    /* ── Entrance animations (mirror Reanimated enter in index.tsx / result) ─ */
+    @keyframes nav-enter  { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:none; } }
+    @keyframes content-up { from { opacity:0; transform:translateY(16px);  } to { opacity:1; transform:none; } }
+    @keyframes load-enter { from { opacity:0; transform:translateY(24px);  } to { opacity:1; transform:none; } }
+    /* ── VerdictStar spin-in (mirrors VerdictStar.tsx: scale 0→1, rotate 0→180°) ─ */
+    @keyframes star-spin  { from { opacity:0; transform:rotate(0deg) scale(0); } to { opacity:1; transform:rotate(180deg) scale(1); } }
+    /* ── Glow ring burst (mirrors VerdictCard.tsx: scale 0.3→2.5, opacity flash) ─ */
+    @keyframes glow-burst { 0% { transform:scale(0.3); opacity:0; } 8% { opacity:0.6; } 100% { transform:scale(2.5); opacity:0; } }
+    /* ── Confidence dot pop (mirrors StaggerDot: scale 0→1.1→1 + opacity) ─────── */
+    @keyframes dot-pop    { 0% { transform:scale(0); opacity:0; } 60% { transform:scale(1.1); opacity:1; } 100% { transform:scale(1); opacity:1; } }
+    /* ── Sparkle idle pulse (mirrors Sparkles icon pulse in index.tsx) ─────────── */
+    @keyframes spk-pulse  { 0%,100% { transform:scale(1); } 50% { transform:scale(1.18); } }
+
+    .anim-nav    { animation: nav-enter  350ms cubic-bezier(0.22,0.61,0.36,1) both; }
+    .anim-up     { animation: content-up 350ms cubic-bezier(0.22,0.61,0.36,1) both; }
+    .anim-load   { animation: load-enter 350ms cubic-bezier(0.22,0.61,0.36,1) 120ms both; }
+    .anim-d100   { animation-delay:100ms; }
+    .anim-d200   { animation-delay:200ms; }
+    .anim-d280   { animation-delay:280ms; }
+
+    .verdict-star-svg {
+      display:block; margin:0 auto 6px;
+      transform-origin:50% 50%;
+      animation: star-spin 600ms cubic-bezier(0.22,0.61,0.36,1) 60ms both;
+    }
+    .glow-ring {
+      position:absolute; inset:-8px; border-radius:20px;
+      pointer-events:none; z-index:0;
+      animation: glow-burst 800ms ease-out both;
+    }
+    .glow-ring-2 { animation-delay:150ms; }
+    .conf-dot {
+      width:10px; height:10px; border-radius:50%; background:#22D3A4;
+      animation: dot-pop 250ms cubic-bezier(0.22,0.61,0.36,1) both;
+    }
+    .sparkle-spk { display:inline-block; animation: spk-pulse 1.3s ease-in-out 0.6s infinite; }
 
     .loading-question {
       font-family: var(--font-display);
@@ -1300,9 +1336,9 @@
     </div>
 
     <!-- Nav header -->
-    <div class="nav-header" style="background:transparent;border-bottom:none;padding:0 20px;">
+    <div id="home-nav" class="nav-header anim-nav" style="background:transparent;border-bottom:none;padding:0 20px;">
       <span style="font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--text-primary);letter-spacing:0.5px;">
-        <span style="color:var(--accent-gold);font-size:16px;margin-right:6px;">✦</span>Horary Reading
+        <span class="sparkle-spk" style="color:var(--accent-gold);font-size:16px;margin-right:6px;">✦</span>Horary Reading
       </span>
       <div class="nav-icon-btn" onclick="showScreen('settings')">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1310,7 +1346,7 @@
     </div>
 
     <!-- Scrollable content -->
-    <div class="screen-scroll" style="position:relative;z-index:1;">
+    <div id="home-body" class="screen-scroll anim-up anim-d100" style="position:relative;z-index:1;">
       <div style="padding:4px 20px 20px;">
 
         <!-- Streak badge -->
@@ -1392,7 +1428,7 @@
       </div>
     </div>
 
-    <div class="loading-content">
+    <div id="loading-content" class="loading-content anim-load">
       <div class="orbit-container">
         <div class="orbit-ring"></div>
         <div class="orbit-trail"></div>
@@ -1429,7 +1465,7 @@
     </div>
 
     <!-- Nav row -->
-    <div class="nav-header" style="flex-shrink:0;">
+    <div id="verdict-nav" class="nav-header anim-nav" style="flex-shrink:0;">
       <div class="nav-back" onclick="showScreen('journal')">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
         Journal
@@ -1438,30 +1474,46 @@
     </div>
 
     <!-- Scrollable content -->
-    <div class="screen-scroll" style="flex:1;">
+    <div id="verdict-body" class="screen-scroll anim-up anim-d100" style="flex:1;">
       <div style="padding:12px 20px 16px;">
 
         <!-- Question -->
         <div class="verdict-question">"Will my new project succeed in 2026?"</div>
 
-        <!-- Compact verdict badge -->
-        <div class="verdict-compact-badge verdict-card-anim">
-          <div class="verdict-compact-word">YES</div>
-          <span class="confidence-pill">HIGH CONFIDENCE</span>
+        <!-- Compact verdict badge — glow rings + VerdictStar + YES + confidence dots -->
+        <div style="position:relative;margin-bottom:16px;">
+          <!-- Glow ring burst (teal, mirrors VerdictCard.tsx double-ring) -->
+          <div id="vg1" class="glow-ring" style="background:rgba(34,211,164,0.45);"></div>
+          <div id="vg2" class="glow-ring glow-ring-2" style="background:rgba(34,211,164,0.45);"></div>
+
+          <div class="verdict-compact-badge verdict-card-anim" style="margin-bottom:0;position:relative;z-index:1;">
+            <!-- VerdictStar (8-point, mirrors VerdictStar.tsx: scale 0→1 + rotate 0→180°) -->
+            <svg id="verdict-star" class="verdict-star-svg" width="56" height="56" viewBox="0 0 64 64">
+              <polygon points="32,0 36.9,20.2 54.6,9.4 43.8,27.1 64,32 43.8,36.9 54.6,54.6 36.9,43.8 32,64 27.1,43.8 9.4,54.6 20.2,36.9 0,32 20.2,27.1 9.4,9.4 27.1,20.2" fill="#22D3A4"/>
+            </svg>
+            <div class="verdict-compact-word">YES</div>
+            <!-- Confidence dots (mirrors StaggerDot: 400/480/560ms) -->
+            <div style="display:flex;align-items:center;gap:6px;justify-content:center;margin-top:10px;">
+              <div class="conf-dot" style="animation-delay:400ms;"></div>
+              <div class="conf-dot" style="animation-delay:480ms;"></div>
+              <div class="conf-dot" style="animation-delay:560ms;"></div>
+              <span class="confidence-pill" style="margin-left:4px;">HIGH CONFIDENCE</span>
+            </div>
+          </div>
         </div>
 
         <!-- Chart strength bar -->
-        <div class="chart-strength-row">
+        <div class="chart-strength-row anim-up anim-d200">
           <span class="chart-strength-label">Chart Strength</span>
           <div class="strength-track"><div class="strength-fill"></div></div>
           <span class="strength-pill">Strong</span>
         </div>
 
         <!-- AI Summary -->
-        <div class="ai-summary">"Saturn applies to the cusp ruler with dignity. Mutual reception supports the matter. The Moon's final aspect perfects the promise."</div>
+        <div class="ai-summary anim-up anim-d280">"Saturn applies to the cusp ruler with dignity. Mutual reception supports the matter. The Moon's final aspect perfects the promise."</div>
 
         <!-- Timing teaser -->
-        <div class="timing-teaser" onclick="showScreen('verdict-full')">
+        <div class="timing-teaser anim-up" style="animation-delay:360ms;" onclick="showScreen('verdict-full')">
           <span style="font-size:16px;">🕐</span>
           <span class="timing-teaser-text">Likely within 3 months</span>
           <span class="timing-chevron">→</span>
@@ -1471,7 +1523,7 @@
     </div>
 
     <!-- Pinned CTA -->
-    <div class="verdict-cta-area">
+    <div id="verdict-cta" class="verdict-cta-area anim-up" style="animation-delay:440ms;">
       <div class="verdict-cta-hint">Significators · Aspects · Timing</div>
       <button class="btn-primary" onclick="showScreen('verdict-full')" style="font-family:var(--font-display);font-size:17px;">See Full Reading →</button>
     </div>
@@ -2105,13 +2157,25 @@
       target.classList.add('active');
       const scroll = target.querySelector('.screen-scroll');
       if (scroll) scroll.scrollTop = 0;
-      // Re-trigger verdict animation
-      if (name === 'verdict' || name === 'verdict-full') {
-        target.querySelectorAll('.verdict-card-anim').forEach(el => {
+      // Helper: reset CSS animation so it replays
+      function reAnimate(selector, root) {
+        (root || target).querySelectorAll(selector).forEach(el => {
           el.style.animation = 'none';
           void el.offsetWidth;
           el.style.animation = '';
         });
+      }
+      // Re-trigger verdict animations (nav enter + badge + star + glow + dots + stagger)
+      if (name === 'verdict' || name === 'verdict-full') {
+        reAnimate('.verdict-card-anim, .anim-nav, .anim-up, .verdict-star-svg, .glow-ring, .conf-dot');
+      }
+      // Re-trigger home entrance (nav + body slide-in + sparkle)
+      if (name === 'home') {
+        reAnimate('.anim-nav, .anim-up', document.getElementById('screen-home'));
+      }
+      // Re-trigger loading entrance
+      if (name === 'loading') {
+        reAnimate('.anim-load', document.getElementById('screen-loading'));
       }
       // Re-trigger chart wheel animation (rebuild clears + restarts CSS anim)
       if (name === 'chart-wheel') {
