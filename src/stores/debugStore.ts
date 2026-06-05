@@ -9,6 +9,8 @@
 import { create } from 'zustand';
 import type { VerdictType } from '@/types/horary';
 
+export type ForceErrorType = 'TIMEOUT' | 'NETWORK_ERROR' | 'INVALID_API_KEY' | 'LIMIT_EXCEEDED' | 'API_5XX' | null;
+
 interface DebugState {
   // True once the user has passed the 7-tap + PIN gate this session.
   isActive: boolean;
@@ -21,6 +23,12 @@ interface DebugState {
   // When true, _layout renders the force-update gate (for testing the gate).
   // Non-dismissable by design — restart the app to clear (in-memory flag).
   forceUpdateOverride: boolean;
+  // When true, demo journal is seeded and mock mode is implied.
+  isDemoActive: boolean;
+  // When non-null, useHoraryQuery throws a simulated error of this type.
+  forceErrorType: ForceErrorType;
+  // Simulated API delay: 0=instant, 600=realistic, 2000=slow.
+  mockDelayMs: 0 | 600 | 2000;
 
   activate: () => void;
   deactivate: () => void;
@@ -28,6 +36,9 @@ interface DebugState {
   setMockVerdict: (verdict: VerdictType) => void;
   setSkipMinLoading: (on: boolean) => void;
   triggerForceUpdate: () => void;
+  setIsDemoActive: (val: boolean) => void;
+  setForceErrorType: (type: ForceErrorType) => void;
+  setMockDelayMs: (ms: 0 | 600 | 2000) => void;
 }
 
 export const useDebugStore = create<DebugState>((set) => ({
@@ -36,6 +47,9 @@ export const useDebugStore = create<DebugState>((set) => ({
   mockVerdict: 'YES',
   skipMinLoading: false,
   forceUpdateOverride: false,
+  isDemoActive: false,
+  forceErrorType: null,
+  mockDelayMs: 600,
 
   activate: () => set({ isActive: true }),
   deactivate: () => set({ isActive: false, mockMode: false }),
@@ -43,4 +57,7 @@ export const useDebugStore = create<DebugState>((set) => ({
   setMockVerdict: (verdict) => set({ mockVerdict: verdict }),
   setSkipMinLoading: (on) => set({ skipMinLoading: on }),
   triggerForceUpdate: () => set({ forceUpdateOverride: true }),
+  setIsDemoActive: (val) => set({ isDemoActive: val }),
+  setForceErrorType: (type) => set({ forceErrorType: type }),
+  setMockDelayMs: (ms) => set({ mockDelayMs: ms }),
 }));

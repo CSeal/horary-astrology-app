@@ -64,7 +64,21 @@ export function useHoraryQuery(city?: string) {
   return useMutation<HoraryResponse, HoraryAPIError, HoraryRequest>({
     mutationFn: (request: HoraryRequest) => {
       // Debug mode: stub the response instead of hitting the real API.
-      const { mockMode, mockVerdict, skipMinLoading } = useDebugStore.getState();
+      const { mockMode, mockVerdict, skipMinLoading, forceErrorType, mockDelayMs } = useDebugStore.getState();
+
+      // Force error simulation — no real or mock API call made.
+      if (forceErrorType !== null) {
+        const err: HoraryAPIError = {
+          code: forceErrorType,
+          message: '[DEBUG] Simulated error: ' + forceErrorType,
+          retryable: forceErrorType === 'API_5XX',
+        };
+        const delay = skipMinLoading ? 0 : (mockDelayMs ?? 600);
+        return new Promise<HoraryResponse>((_, reject) =>
+          setTimeout(() => reject(err), delay)
+        );
+      }
+
       const call = mockMode
         ? mockHoraryApi.ask(request, mockVerdict)
         : horaryApi.ask(request);

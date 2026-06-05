@@ -28,9 +28,13 @@ import { View, Text, TouchableOpacity } from '@/tw';
 import { Button } from '@/components/ui/Button';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { useDebugStore } from '@/stores/debugStore';
+import { useSettingsStore } from '@/stores/settingsStore';
+import { demoService } from '@/services/demoService';
 import { DEBUG_PIN, ASYNC_STORAGE_KEYS } from '@/constants/config';
 import { colors, shadows } from '@/constants/theme';
 import type { VerdictType } from '@/types/horary';
+import type { ForceErrorType } from '@/stores/debugStore';
+import type { SupportedLocale } from '@/constants/config';
 
 export interface DebugSheetRef {
   present: () => void;
@@ -38,6 +42,33 @@ export interface DebugSheetRef {
 }
 
 const VERDICTS: VerdictType[] = ['YES', 'NO', 'MAYBE', 'UNCLEAR'];
+
+type ForceErrorOption = {
+  label: string;
+  value: ForceErrorType;
+};
+
+const FORCE_ERROR_OPTIONS: ForceErrorOption[] = [
+  { label: 'None', value: null },
+  { label: 'TIMEOUT', value: 'TIMEOUT' },
+  { label: 'NET', value: 'NETWORK_ERROR' },
+  { label: '401', value: 'INVALID_API_KEY' },
+  { label: '429', value: 'LIMIT_EXCEEDED' },
+  { label: '5XX', value: 'API_5XX' },
+];
+
+type DelayOption = {
+  label: string;
+  value: 0 | 600 | 2000;
+};
+
+const DELAY_OPTIONS: DelayOption[] = [
+  { label: 'Instant (0ms)', value: 0 },
+  { label: 'Realistic (600ms)', value: 600 },
+  { label: 'Slow (2s)', value: 2000 },
+];
+
+const LOCALE_OPTIONS: SupportedLocale[] = ['en', 'ru', 'de'];
 
 // Cross-platform card elevation: shadow on iOS, elevation on Android.
 const cardStyle = Platform.select({
@@ -79,12 +110,25 @@ export function DebugSheet({ ref }: DebugSheetProps) {
   const skipMinLoading = useDebugStore((s) => s.skipMinLoading);
   const setSkipMinLoading = useDebugStore((s) => s.setSkipMinLoading);
   const triggerForceUpdate = useDebugStore((s) => s.triggerForceUpdate);
+  const isDemoActive = useDebugStore((s) => s.isDemoActive);
+  const setIsDemoActive = useDebugStore((s) => s.setIsDemoActive);
+  const forceErrorType = useDebugStore((s) => s.forceErrorType);
+  const setForceErrorType = useDebugStore((s) => s.setForceErrorType);
+  const mockDelayMs = useDebugStore((s) => s.mockDelayMs);
+  const setMockDelayMs = useDebugStore((s) => s.setMockDelayMs);
 
+  const entries = useQuestionsStore((s) => s.entries);
   const clearAllEntries = useQuestionsStore((s) => s.clearAllEntries);
+
+  const hasApiKey = useSettingsStore((s) => s.hasApiKey);
+  const setHasApiKey = useSettingsStore((s) => s.setHasApiKey);
+  const locale = useSettingsStore((s) => s.locale);
+  const setLocale = useSettingsStore((s) => s.setLocale);
 
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
+  const [isSeeding, setIsSeeding] = useState(false);
 
   useEffect(() => {
     if (ref) {
@@ -157,6 +201,55 @@ export function DebugSheet({ ref }: DebugSheetProps) {
     triggerForceUpdate();
   }, [triggerForceUpdate]);
 
+  const handleDemoToggle = useCallback(async (val: boolean) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    setIsSeeding(true);
+    try {
+      if (val) {
+        await demoService.seed();
+        setIsDemoActive(true);
+        flashStatus(t('debug.demoActivated'));
+      } else {
+        await demoService.clear();
+        setIsDemoActive(false);
+        flashStatus(t('debug.demoCleared'));
+      }
+    } finally {
+      setIsSeeding(false);
+    }
+  }, [setIsDemoActive, flashStatus, t]);
+
+  const handleLoadPowerUser = useCallback(async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    setIsSeeding(true);
+    try {
+      await demoService.seed();
+      setIsDemoActive(true);
+      flashStatus(t('debug.demoPowerLoaded'));
+    } finally {
+      setIsSeeding(false);
+    }
+  }, [setIsDemoActive, flashStatus, t]);
+
+  const handleResetNewUser = useCallback(async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    setIsSeeding(true);
+    try {
+      await demoService.clear();
+      setIsDemoActive(false);
+      await clearAllEntries();
+      flashStatus(t('debug.demoResetDone'));
+    } finally {
+      setIsSeeding(false);
+    }
+  }, [setIsDemoActive, clearAllEntries, flashStatus, t]);
+
+  const handleSetDemoApiKey = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    setHasApiKey(true);
+    flashStatus(t('debug.inspectorApiKeyDone'));
+  }, [setHasApiKey, flashStatus, t]);
+
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => (
       <BottomSheetBackdrop
@@ -172,6 +265,9 @@ export function DebugSheet({ ref }: DebugSheetProps) {
     ),
     []
   );
+
+  const isDemoSeeded = demoService.isDemoSeeded();
+  const demoEntryCount = demoService.getDemoEntryCount();
 
   return (
     <BottomSheet
@@ -245,6 +341,64 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                 <Text className="font-inter-medium text-sm text-yes">✓ {status}</Text>
               </View>
             ) : null}
+
+            {/* DEMO DATA */}
+            <DebugSection
+              title={t('debug.demoSection')}
+              hint={t('debug.demoSectionHint')}
+              icon={<FlaskConical color={colors.accentGold} size={13} />}
+            >
+              <DebugToggleRow
+                label={t('debug.demoToggle')}
+                description={t('debug.demoToggleHint')}
+                value={isDemoActive}
+                onValueChange={handleDemoToggle}
+                disabled={isSeeding}
+              />
+              {isDemoSeeded ? (
+                <View
+                  style={{
+                    alignSelf: 'flex-start',
+                    backgroundColor: colors.bgSurface,
+                    borderRadius: 99,
+                    paddingHorizontal: 10,
+                    paddingVertical: 4,
+                    borderWidth: 1,
+                    borderColor: colors.accentGoldDim,
+                  }}
+                >
+                  <Text style={{ fontSize: 11, color: colors.accentGold, fontFamily: 'Inter_500Medium' }}>
+                    {t('debug.demoEntryCount', { count: demoEntryCount })}
+                  </Text>
+                </View>
+              ) : null}
+              <Divider />
+              <DebugRow
+                description={t('debug.demoPowerUserHint')}
+                action={
+                  <Button
+                    label={isSeeding ? t('debug.demoPowerUserLoading') : t('debug.demoPowerUserLabel')}
+                    variant="secondary"
+                    size="sm"
+                    disabled={isSeeding}
+                    onPress={handleLoadPowerUser}
+                  />
+                }
+              />
+              <Divider />
+              <DebugRow
+                description={t('debug.demoResetHint')}
+                action={
+                  <Button
+                    label={isSeeding ? t('debug.demoClearingLabel') : t('debug.demoResetLabel')}
+                    variant="destructive"
+                    size="sm"
+                    disabled={isSeeding}
+                    onPress={handleResetNewUser}
+                  />
+                }
+              />
+            </DebugSection>
 
             {/* STATE */}
             <DebugSection
@@ -341,6 +495,82 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                   </Text>
                 </>
               ) : null}
+
+              <Divider />
+
+              {/* Force Error subheader */}
+              <Text style={{ fontSize: 11, color: colors.textSecondary, fontFamily: 'Inter_600SemiBold', letterSpacing: 1, textTransform: 'uppercase' }}>
+                {t('debug.forceErrorHeader')}
+              </Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {FORCE_ERROR_OPTIONS.map((opt) => {
+                  const sel = forceErrorType === opt.value;
+                  const label = opt.value === null ? t('debug.forceErrorNone') : opt.label;
+                  return (
+                    <TouchableOpacity
+                      key={opt.label}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                        setForceErrorType(opt.value);
+                      }}
+                      className={`px-3 min-h-9 rounded-lg items-center justify-center border ${
+                        sel ? 'border-accent-gold bg-bg-surface' : 'bg-bg-surface border-border'
+                      }`}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: sel }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontFamily: 'Inter_500Medium',
+                          color: sel ? colors.accentGold : colors.textSecondary,
+                        }}
+                      >
+                        {label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+
+              {/* Response Delay subheader */}
+              <Text style={{ fontSize: 11, color: colors.textSecondary, fontFamily: 'Inter_600SemiBold', letterSpacing: 1, textTransform: 'uppercase' }}>
+                {t('debug.delayHeader')}
+              </Text>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+                {DELAY_OPTIONS.map((opt) => {
+                  const sel = mockDelayMs === opt.value;
+                  const label = opt.value === 0
+                    ? t('debug.delayInstant')
+                    : opt.value === 600
+                      ? t('debug.delayRealistic')
+                      : t('debug.delaySlow');
+                  return (
+                    <TouchableOpacity
+                      key={opt.label}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                        setMockDelayMs(opt.value);
+                      }}
+                      className={`px-3 min-h-9 rounded-lg items-center justify-center border ${
+                        sel ? 'border-accent-gold bg-bg-surface' : 'bg-bg-surface border-border'
+                      }`}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: sel }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontFamily: 'Inter_500Medium',
+                          color: sel ? colors.accentGold : colors.textSecondary,
+                        }}
+                      >
+                        {label}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </DebugSection>
 
             {/* PERFORMANCE */}
@@ -355,6 +585,84 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                 value={skipMinLoading}
                 onValueChange={setSkipMinLoading}
               />
+            </DebugSection>
+
+            {/* STATE INSPECTOR */}
+            <DebugSection
+              title={t('debug.inspectorSection')}
+              hint={t('debug.inspectorSectionHint')}
+              icon={<Gauge color={colors.accentGold} size={13} />}
+            >
+              <InspectorRow
+                label={t('debug.inspectorApiKey')}
+                value={hasApiKey ? t('debug.inspectorApiKeySet') : t('debug.inspectorApiKeyMissing')}
+                positive={hasApiKey}
+              />
+              <Divider />
+              <InspectorRow
+                label={t('debug.inspectorJournal')}
+                value={t('debug.inspectorJournalValue', { total: entries.length, demo: demoEntryCount })}
+              />
+              <Divider />
+              <InspectorRow label={t('debug.inspectorLocale')} value={locale} />
+              <Divider />
+              <InspectorRow
+                label={t('debug.inspectorMockMode')}
+                value={mockMode ? t('debug.inspectorMockOn', { verdict: mockVerdict }) : t('debug.inspectorMockOff')}
+              />
+              <Divider />
+              <InspectorRow
+                label={t('debug.inspectorForceError')}
+                value={forceErrorType ?? t('debug.inspectorNone')}
+              />
+
+              <Divider />
+
+              {/* Quick actions */}
+              <Text style={{ fontSize: 11, color: colors.textSecondary, fontFamily: 'Inter_600SemiBold', letterSpacing: 1, textTransform: 'uppercase' }}>
+                {t('debug.inspectorQuickActions')}
+              </Text>
+              <Button
+                label={t('debug.inspectorSetApiKey')}
+                variant="secondary"
+                size="sm"
+                onPress={handleSetDemoApiKey}
+              />
+
+              {/* Locale quick-switch */}
+              <Text style={{ fontSize: 11, color: colors.textSecondary, fontFamily: 'Inter_400Regular' }}>
+                {t('debug.inspectorLocaleSwitch')}
+              </Text>
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                {LOCALE_OPTIONS.map((loc) => {
+                  const sel = locale === loc;
+                  return (
+                    <TouchableOpacity
+                      key={loc}
+                      onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                        setLocale(loc).catch(() => {});
+                      }}
+                      className={`px-4 min-h-9 rounded-lg items-center justify-center border ${
+                        sel ? 'border-accent-gold bg-bg-surface' : 'bg-bg-surface border-border'
+                      }`}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: sel }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          fontFamily: 'Inter_500Medium',
+                          color: sel ? colors.accentGold : colors.textSecondary,
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {loc}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </DebugSection>
 
           </View>
@@ -397,7 +705,7 @@ function DebugSection({
   );
 }
 
-// Вертикальный ряд: описание сверху → кнопка снизу, полная ширина.
+// Vertical row: description above → action below, full width.
 function DebugRow({
   description,
   action,
@@ -423,17 +731,19 @@ function Divider() {
   );
 }
 
-// Ряд тогла: label + Switch в одну строку, описание снизу.
+// Toggle row: label + Switch inline, optional description below.
 function DebugToggleRow({
   label,
   description,
   value,
   onValueChange,
+  disabled,
 }: {
   label: string;
   description?: string;
   value: boolean;
   onValueChange: (v: boolean) => void;
+  disabled?: boolean;
 }) {
   return (
     <View style={{ gap: 6 }}>
@@ -444,6 +754,7 @@ function DebugToggleRow({
         <Switch
           value={value}
           onValueChange={onValueChange}
+          disabled={disabled}
           trackColor={{ false: colors.bgSurface, true: colors.accentGold }}
           thumbColor={colors.textPrimary}
         />
@@ -451,6 +762,45 @@ function DebugToggleRow({
       {description ? (
         <Text className="font-inter text-xs text-text-secondary">{description}</Text>
       ) : null}
+    </View>
+  );
+}
+
+// Read-only label/value row for the State Inspector section.
+function InspectorRow({
+  label,
+  value,
+  positive,
+}: {
+  label: string;
+  value: string;
+  positive?: boolean;
+}) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+      <Text
+        style={{
+          flex: 1,
+          fontSize: 13,
+          fontFamily: 'Inter_400Regular',
+          color: colors.textSecondary,
+        }}
+      >
+        {label}
+      </Text>
+      <Text
+        style={{
+          fontSize: 13,
+          fontFamily: 'Inter_500Medium',
+          color: positive === true
+            ? colors.yes
+            : positive === false
+              ? colors.no
+              : colors.textPrimary,
+        }}
+      >
+        {value}
+      </Text>
     </View>
   );
 }

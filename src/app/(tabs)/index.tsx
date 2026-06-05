@@ -7,6 +7,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Sparkles } from 'lucide-react-native';
+import * as Haptics from 'expo-haptics';
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -36,6 +37,8 @@ import {
   dismissToday,
 } from '@/services/onThisDayService';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { useDebugStore } from '@/stores/debugStore';
+import { DEMO_QUESTIONS } from '@/fixtures/demoQuestions';
 import {
   DEFAULT_HORARY_CATEGORY,
   DEFAULT_SUBJECT_ROLE,
@@ -105,6 +108,7 @@ function LoadingView({ label }: { label: string }) {
 export default function HomeScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const isDemoActive = useDebugStore((s) => s.isDemoActive);
   const { entries } = useJournal();
   const { current: currentStreak } = useStreak();
   const [onThisDayEntry, setOnThisDayEntry] = useState<JournalEntry | null>(null);
@@ -252,6 +256,22 @@ export default function HomeScreen() {
     transform: [{ scale: sparkleScale.value }],
   }));
 
+  // ── Demo hint animation — fades in/out when isDemoActive toggles ──
+  const demoHintOp = useSharedValue(0);
+  const demoHintY = useSharedValue(6);
+
+  useEffect(() => {
+    const visible = isDemoActive && question.trim() === '';
+    demoHintOp.value = withTiming(visible ? 1 : 0, { duration: 250 });
+    demoHintY.value = withTiming(visible ? 0 : 6, { duration: 250 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDemoActive, question]);
+
+  const demoHintStyle = useAnimatedStyle(() => ({
+    opacity: demoHintOp.value,
+    transform: [{ translateY: demoHintY.value }],
+  }));
+
   const headerStyle = useAnimatedStyle(() => ({
     opacity: headerOp.value,
     transform: [{ translateY: headerY.value }],
@@ -337,6 +357,24 @@ export default function HomeScreen() {
             <LoadingView label={t('home.castingChart')} />
           ) : (
             <AnimatedView style={formStyle}>
+              <AnimatedView style={demoHintStyle} className="mb-2">
+                <Pressable
+                  onPress={() => {
+                    setQuestion(DEMO_QUESTIONS[category]);
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel="Fill demo question"
+                  className="flex-row items-center px-1 py-1"
+                >
+                  <Text
+                    className="font-inter text-xs text-text-secondary"
+                    numberOfLines={1}
+                  >
+                    {`✨ ${DEMO_QUESTIONS[category]}`}
+                  </Text>
+                </Pressable>
+              </AnimatedView>
               <AskForm
                 value={question}
                 onChangeText={setQuestion}

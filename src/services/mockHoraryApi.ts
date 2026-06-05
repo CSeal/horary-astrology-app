@@ -14,8 +14,8 @@ import type {
   AspectPerfectionData,
   ReadingTiming,
 } from '@/types/horary';
-
-const MOCK_DELAY_MS = 600;
+import type { ChartWheelData } from '@/types/journal';
+import { useDebugStore } from '@/stores/debugStore';
 
 const CONFIDENCE_BY_VERDICT: Record<VerdictType, ConfidenceBand> = {
   YES: 'high',
@@ -303,6 +303,25 @@ const TESTIMONY_SCORE_BY_VERDICT: Record<
   UNCLEAR: { positive: 3, negative: 3, neutral: 4 },
 };
 
+// Ascendant Aries → houses follow tropical sequence (Ari/Tau/Gem/Can…).
+// Matches existing significators: Mars Aries h1, Venus Libra h7, Moon Cancer h4.
+// Saturn retrograde for MAYBE/UNCLEAR (non-radical charts); Venus Rx for NO.
+function buildChartWheel(verdict: VerdictType): ChartWheelData {
+  return {
+    ascendantSign: 'Ari',
+    houseSigns: ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis'],
+    planets: [
+      { name: 'Sun',     absoluteLongitude: 121.4, isRetrograde: false,                                        house: 5 },
+      { name: 'Moon',    absoluteLongitude: 100.2, isRetrograde: false,                                        house: 4 },
+      { name: 'Mercury', absoluteLongitude: 85.7,  isRetrograde: false,                                        house: 3 },
+      { name: 'Venus',   absoluteLongitude: 195.3, isRetrograde: verdict === 'NO',                             house: 7 },
+      { name: 'Mars',    absoluteLongitude: 8.1,   isRetrograde: false,                                        house: 1 },
+      { name: 'Jupiter', absoluteLongitude: 110.6, isRetrograde: false,                                        house: 4 },
+      { name: 'Saturn',  absoluteLongitude: 284.2, isRetrograde: verdict === 'MAYBE' || verdict === 'UNCLEAR', house: 10 },
+    ],
+  };
+}
+
 export const mockHoraryApi = {
   ask(request: HoraryRequest, verdict: VerdictType): Promise<HoraryResponse> {
     const response: HoraryResponse = {
@@ -334,11 +353,11 @@ export const mockHoraryApi = {
             voc_exception_sign: 'Cancer',
           }
         : {}),
+      chart_wheel: buildChartWheel(verdict),
       chart_time: request.timestamp,
       location_display: '[MOCK] Test Location',
     };
-    return new Promise((resolve) =>
-      setTimeout(() => resolve(response), MOCK_DELAY_MS)
-    );
+    const delay = useDebugStore.getState().mockDelayMs ?? 600;
+    return new Promise((resolve) => setTimeout(() => resolve(response), delay));
   },
 };
