@@ -130,6 +130,30 @@ function StaggerIn({ delay, children, className }: StaggerInProps) {
   );
 }
 
+// Skip control with a press-down scale spring.
+function SkipButton({ onPress, label }: { onPress: () => void; label: string }) {
+  const scale = useSharedValue(1);
+  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  return (
+    <AnimatedView style={animStyle}>
+      <TouchableOpacity
+        onPress={onPress}
+        onPressIn={() => {
+          scale.value = withSpring(0.9, { damping: 14, stiffness: 200 });
+        }}
+        onPressOut={() => {
+          scale.value = withSpring(1, { damping: 12, stiffness: 90 });
+        }}
+        className="min-h-11 min-w-11 px-3 items-center justify-center"
+        accessibilityRole="button"
+        accessibilityLabel={label}
+      >
+        <Text className="font-inter text-sm text-text-secondary">{label}</Text>
+      </TouchableOpacity>
+    </AnimatedView>
+  );
+}
+
 interface HowCardProps {
   icon: React.ReactNode;
   label: string;
@@ -276,16 +300,7 @@ export default function OnboardingScreen() {
           {/* Top: skip on steps 1 / 2 / 3 */}
           <View className="flex-row justify-end min-h-11">
             {step >= 1 && step <= 3 ? (
-              <TouchableOpacity
-                onPress={finish}
-                className="min-h-11 min-w-11 px-3 items-center justify-center"
-                accessibilityRole="button"
-                accessibilityLabel={t('onboarding.skip')}
-              >
-                <Text className="font-inter text-sm text-text-secondary">
-                  {t('onboarding.skip')}
-                </Text>
-              </TouchableOpacity>
+              <SkipButton onPress={finish} label={t('onboarding.skip')} />
             ) : null}
           </View>
 

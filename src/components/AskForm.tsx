@@ -5,9 +5,14 @@
 // Subcategory chips appear when the selected category has sub-options.
 // Subject role chips let the user specify whose perspective is being asked.
 
-import { useMemo } from 'react';
-import { View, Text, TouchableOpacity } from '@/tw';
+import { useEffect, useMemo, useState } from 'react';
+import { View, Text, TouchableOpacity, AnimatedView } from '@/tw';
 import { useTranslation } from 'react-i18next';
+import {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from 'react-native-reanimated';
 import {
   MapPin, X,
   CircleHelp, Heart, Gem, TrendingUp, Briefcase, Coins,
@@ -99,6 +104,16 @@ export function AskForm({
   onClearOverride,
 }: AskFormProps) {
   const { t } = useTranslation();
+
+  // Focus-ring overlay on the question input — fades a gold border in on focus.
+  const [isFocused, setIsFocused] = useState(false);
+  const focusOp = useSharedValue(0);
+  useEffect(() => {
+    focusOp.value = withTiming(isFocused ? 1 : 0, { duration: 200 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused]);
+  const focusBorderStyle = useAnimatedStyle(() => ({ opacity: focusOp.value }));
+
   const trimmedLen = value.trim().length;
   const isValid = trimmedLen >= MIN_QUESTION_CHARS && value.length <= MAX_QUESTION_CHARS;
 
@@ -164,15 +179,24 @@ export function AskForm({
         {t('home.inputHint')}
       </Text>
 
-      <Input
-        value={value}
-        onChangeText={onChangeText}
-        multiline
-        showCharCount
-        maxLength={MAX_QUESTION_CHARS}
-        placeholder={t('home.inputPlaceholder')}
-        accessibilityLabel={t('home.inputPlaceholder')}
-      />
+      <View className="relative">
+        <AnimatedView
+          style={focusBorderStyle}
+          className="absolute inset-0 rounded-2xl border-2 border-accent-gold"
+          pointerEvents="none"
+        />
+        <Input
+          value={value}
+          onChangeText={onChangeText}
+          multiline
+          showCharCount
+          maxLength={MAX_QUESTION_CHARS}
+          placeholder={t('home.inputPlaceholder')}
+          accessibilityLabel={t('home.inputPlaceholder')}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        />
+      </View>
 
       {/* Category — required by API */}
       <ChipScrollRow

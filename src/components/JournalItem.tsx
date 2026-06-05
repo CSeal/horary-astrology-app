@@ -3,7 +3,7 @@
 // Rises in from below with a stagger driven by the `index` prop.
 
 import { useRef, useEffect } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Dimensions } from 'react-native';
 import ReanimatedSwipeable, {
   type SwipeableMethods,
 } from 'react-native-gesture-handler/ReanimatedSwipeable';
@@ -18,6 +18,7 @@ import {
   withSpring,
   withTiming,
   withDelay,
+  runOnJS,
 } from 'react-native-reanimated';
 import { VerdictBadge } from '@/components/ui/Badge';
 import { colors } from '@/constants/theme';
@@ -38,6 +39,8 @@ const VERDICT_BORDER_CLASS: Record<JournalEntry['verdict'], string> = {
   MAYBE: 'border-l-maybe',
   UNCLEAR: 'border-l-unclear',
 };
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
 
 function formatDate(iso: string, locale: string): string {
   return new Date(iso).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US', {
@@ -143,6 +146,8 @@ export function JournalItem({
   const delay = Math.min(index * 60, 400);
   const enterY = useSharedValue(20);
   const enterOpacity = useSharedValue(0);
+  const exitX = useSharedValue(0);
+  const exitOp = useSharedValue(1);
 
   useEffect(() => {
     enterY.value = withDelay(
@@ -158,6 +163,19 @@ export function JournalItem({
     transform: [{ translateY: enterY.value }],
   }));
 
+  const exitStyle = useAnimatedStyle(() => ({
+    opacity: exitOp.value,
+    transform: [{ translateX: exitX.value }],
+  }));
+
+  const handleDelete = () => {
+    exitX.value = withTiming(-SCREEN_WIDTH, { duration: 250 });
+    exitOp.value = withTiming(0, { duration: 200 }, (finished) => {
+      'worklet';
+      if (finished) runOnJS(onDelete)();
+    });
+  };
+
   const confirmDelete = () => {
     Alert.alert(
       t('journal.deleteConfirmTitle'),
@@ -171,7 +189,7 @@ export function JournalItem({
         {
           text: t('journal.deleteConfirm'),
           style: 'destructive',
-          onPress: onDelete,
+          onPress: handleDelete,
         },
       ]
     );
@@ -194,12 +212,15 @@ export function JournalItem({
   );
 
   return (
-    <AnimatedView style={entranceStyle}>
+    <AnimatedView style={[entranceStyle, exitStyle]}>
       <ReanimatedSwipeable
         ref={swipeableRef}
         renderRightActions={renderRightActions}
         overshootRight={false}
         friction={2}
+        onSwipeableWillOpen={() =>
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+        }
       >
         <TouchableOpacity
           onPress={onPress}

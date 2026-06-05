@@ -2,7 +2,7 @@
 // Statistics screen — shows verdict distribution, outcome accuracy,
 // activity by month, streak, and top topics.
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useAnimatedStyle,
@@ -51,14 +51,39 @@ function AnimatedBar({
   return <AnimatedView style={animStyle} className={className} />;
 }
 
+// Pure-JS count-up: animates from 0 to `target` with an ease-out curve.
+function useCountUp(target: number, duration = 700): number {
+  const [display, setDisplay] = useState(0);
+  useEffect(() => {
+    if (target === 0) return;
+    const startTime = Date.now();
+    const tick = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 2); // ease-out quad
+      setDisplay(Math.round(target * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+      else setDisplay(target);
+    };
+    requestAnimationFrame(tick);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return display;
+}
+
 // Summary stat block with a spring scale + fade entrance on mount.
+// The number counts up from 0; `prefix`/`suffix` wrap it (e.g. "🔥 " / "%").
 function StatBlock({
   delay,
   value,
+  prefix = '',
+  suffix = '',
   label,
 }: {
   delay: number;
-  value: string;
+  value: number;
+  prefix?: string;
+  suffix?: string;
   label: string;
 }) {
   const scale = useSharedValue(0.8);
@@ -72,9 +97,12 @@ function StatBlock({
     opacity: opacity.value,
     transform: [{ scale: scale.value }],
   }));
+  const count = useCountUp(value);
   return (
     <AnimatedView style={animStyle} className="flex-1 items-center">
-      <Text className="font-cormorant-bold text-2xl text-accent-gold">{value}</Text>
+      <Text className="font-cormorant-bold text-2xl text-accent-gold">
+        {`${prefix}${count}${suffix}`}
+      </Text>
       <Text className="font-inter text-[10px] text-text-secondary uppercase tracking-wider mt-0.5">
         {label}
       </Text>
@@ -157,14 +185,15 @@ export default function StatsScreen() {
           <View className="flex-row bg-bg-card border border-border rounded-xl px-4 py-4">
             <StatBlock
               delay={0}
-              value={`${total}`}
+              value={total}
               label={t('stats.totalQuestions', { count: total })}
             />
 
             {currentStreak > 0 && (
               <StatBlock
                 delay={80}
-                value={`🔥 ${currentStreak}`}
+                value={currentStreak}
+                prefix="🔥 "
                 label={t('stats.streakLabel')}
               />
             )}
@@ -172,7 +201,8 @@ export default function StatsScreen() {
             {accuracyPercent !== null && (
               <StatBlock
                 delay={160}
-                value={`${accuracyPercent}%`}
+                value={accuracyPercent}
+                suffix="%"
                 label={t('stats.accuracyLabel')}
               />
             )}

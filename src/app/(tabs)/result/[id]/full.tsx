@@ -68,6 +68,25 @@ function StaggerIn({ delay, children, className }: StaggerInProps) {
   );
 }
 
+// Scale + fade entrance for the chart wheel (scale 0.85→1, opacity 0→1).
+function ChartMountIn({ children }: { children: React.ReactNode }) {
+  const scale = useSharedValue(0.85);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    scale.value = withDelay(160, withSpring(1, { damping: 13, stiffness: 90 }));
+    opacity.value = withDelay(160, withTiming(1, { duration: 400 }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
+  }));
+
+  return <AnimatedView style={animatedStyle}>{children}</AnimatedView>;
+}
+
 function SectionHeader({ label, count }: { label: string; count?: number }) {
   return (
     <View className="flex-row items-center gap-3 mt-2 mb-1">
@@ -204,13 +223,13 @@ export default function FullReadingScreen() {
           </View>
 
           {entry.keyFactors && entry.keyFactors.length > 0 && (
-            <>
+            <StaggerIn delay={80}>
               <SectionHeader
                 label={t('verdict.keyFactorsTitle')}
                 count={entry.keyFactors.length}
               />
               <KeyFactorsBlock factors={entry.keyFactors} />
-            </>
+            </StaggerIn>
           )}
 
           {aspects.length > 0 && (
@@ -254,35 +273,37 @@ export default function FullReadingScreen() {
 
           {entry.reception &&
             (entry.reception.hasMutual || entry.reception.hasOneWay) && (
-              <>
+              <StaggerIn delay={0}>
                 <SectionHeader label={t('verdict.receptionTitle')} />
                 <ReceptionBlock reception={entry.reception} />
-              </>
+              </StaggerIn>
             )}
 
           {entry.perfectionPath?.summary && (
-            <>
+            <StaggerIn delay={160}>
               <SectionHeader label={t('verdict.perfectionTitle')} />
               <PerfectionPathBlock perfectionPath={entry.perfectionPath} />
-            </>
+            </StaggerIn>
           )}
 
           {entry.radicalityFlags && entry.radicalityFlags.length > 0 && (
-            <>
+            <StaggerIn delay={240}>
               <SectionHeader
                 label={t('verdict.radicalityChecksTitle')}
                 count={entry.radicalityFlags.length}
               />
               <RadicalityFlagsBlock flags={entry.radicalityFlags} />
-            </>
+            </StaggerIn>
           )}
 
           {entry.chart_wheel && (
             <>
               <SectionHeader label={t('verdict.chartTitle')} />
-              <View className="items-center py-2">
-                <ChartWheel data={entry.chart_wheel} size={300} />
-              </View>
+              <ChartMountIn>
+                <View className="items-center py-2">
+                  <ChartWheel data={entry.chart_wheel} size={300} />
+                </View>
+              </ChartMountIn>
             </>
           )}
         </ScrollView>

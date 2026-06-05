@@ -7,6 +7,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { Alert, Share, Linking, Switch } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
+import * as Haptics from 'expo-haptics';
 import {
   Globe,
   Key,
@@ -97,12 +98,14 @@ export default function SettingsScreen() {
   const homePickerRef = useRef<LocationPickerSheetRef>(null);
 
   const handleSelectDevice = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     void setLocationSource('device');
   }, [setLocationSource]);
 
   // Switching to "manual" only makes sense with a city: reuse the saved one,
   // otherwise open the picker so the user can choose.
   const handleSelectManual = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     if (homeLocation) {
       void setLocationSource('manual');
     } else {
@@ -111,6 +114,7 @@ export default function SettingsScreen() {
   }, [homeLocation, setLocationSource]);
 
   const handleOpenHomePicker = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     homePickerRef.current?.present();
   }, []);
 
@@ -150,6 +154,7 @@ export default function SettingsScreen() {
   // if denied, revert to off and surface a banner pointing to device Settings.
   const handleToggleNotifications = useCallback(
     async (next: boolean) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
       if (!next) {
         setNotifPermissionDenied(false);
         await setNotificationsEnabled(false);
@@ -169,6 +174,7 @@ export default function SettingsScreen() {
 
   const handleSelectDelay = useCallback(
     (days: 7 | 14 | 30) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
       void setNotificationDelayDays(days);
     },
     [setNotificationDelayDays]
@@ -176,6 +182,7 @@ export default function SettingsScreen() {
 
   const handleLocaleChange = useCallback(
     async (next: SupportedLocale) => {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
       await setLocale(next);
       await i18n.changeLanguage(next);
     },
@@ -200,6 +207,7 @@ export default function SettingsScreen() {
   }, [apiKeyInput, setApiKeySource, setHasApiKey, t]);
 
   const handleStartEditKey = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     setApiKeyInput('');
     setEditingKey(true);
   }, []);
@@ -211,6 +219,7 @@ export default function SettingsScreen() {
 
   // FR-G03 — invite a friend via the native share sheet (UTM-tagged store link).
   const handleInviteFriend = useCallback(async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     try {
       await Share.share(
         {
@@ -227,6 +236,7 @@ export default function SettingsScreen() {
   // "Rate AstraSk" — direct App Store deep link (compliant for a button tap;
   // distinct from the event-driven StoreReview.requestReview() prompt).
   const handleRateApp = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     Linking.openURL(APP_STORE_REVIEW_URL).catch(() => {});
   }, []);
 
@@ -240,6 +250,7 @@ export default function SettingsScreen() {
           text: t('settings.apiKeyRemove'),
           style: 'destructive',
           onPress: async () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
             try {
               await secureKeyService.deleteKey();
               setApiKeySource('default');
@@ -529,7 +540,12 @@ export default function SettingsScreen() {
                 return (
                   <TouchableOpacity
                     key={zt}
-                    onPress={() => void setZodiacType(zt as ZodiacType)}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(
+                        () => {}
+                      );
+                      void setZodiacType(zt as ZodiacType);
+                    }}
                     className={`flex-1 min-h-11 rounded-xl items-center justify-center ${
                       isSelected
                         ? 'bg-accent-gold'

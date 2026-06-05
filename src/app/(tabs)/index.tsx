@@ -13,6 +13,7 @@ import {
   withSpring,
   withTiming,
   withDelay,
+  withRepeat,
 } from 'react-native-reanimated';
 import { AnimatedView, SafeAreaView, ScrollView, View, Text, Pressable } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
@@ -75,6 +76,28 @@ function BannerPressable({
       >
         {children}
       </Pressable>
+    </AnimatedView>
+  );
+}
+
+// Loading state shown while the chart is being cast — animates its own
+// entrance (fade + spring scale) on mount so the spinner doesn't snap in.
+function LoadingView({ label }: { label: string }) {
+  const op = useSharedValue(0);
+  const scale = useSharedValue(0.88);
+  useEffect(() => {
+    op.value = withTiming(1, { duration: 350 });
+    scale.value = withSpring(1, { damping: 14, stiffness: 100 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const style = useAnimatedStyle(() => ({
+    opacity: op.value,
+    transform: [{ scale: scale.value }],
+  }));
+  return (
+    <AnimatedView style={style} className="items-center justify-center py-12 gap-6">
+      <PlanetOrbit size={140} />
+      <Text className="font-cormorant-medium text-lg text-text-primary">{label}</Text>
     </AnimatedView>
   );
 }
@@ -209,6 +232,7 @@ export default function HomeScreen() {
   const headerOp = useSharedValue(0);
   const formY = useSharedValue(20);
   const formOp = useSharedValue(0);
+  const sparkleScale = useSharedValue(1);
 
   useEffect(() => {
     const spring = { damping: 12, stiffness: 90 };
@@ -216,8 +240,17 @@ export default function HomeScreen() {
     headerOp.value = withTiming(1, { duration: 350 });
     formY.value = withDelay(100, withSpring(0, spring));
     formOp.value = withDelay(100, withTiming(1, { duration: 350 }));
+    // Continuous subtle pulse on the sparkles icon (starts after entrance).
+    sparkleScale.value = withDelay(
+      600,
+      withRepeat(withSpring(1.18, { damping: 8, stiffness: 80 }), -1, true)
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const sparkleStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: sparkleScale.value }],
+  }));
 
   const headerStyle = useAnimatedStyle(() => ({
     opacity: headerOp.value,
@@ -241,7 +274,9 @@ export default function HomeScreen() {
             style={headerStyle}
             className="flex-row items-center justify-center gap-2 mb-2"
           >
-            <Sparkles color={colors.accentGold} size={typography.xl} />
+            <AnimatedView style={sparkleStyle}>
+              <Sparkles color={colors.accentGold} size={typography.xl} />
+            </AnimatedView>
             <Text className="font-cormorant-medium text-2xl text-text-primary">
               {t('home.title')}
             </Text>
@@ -299,12 +334,7 @@ export default function HomeScreen() {
           )}
 
           {mutation.isPending ? (
-            <View className="items-center justify-center py-12 gap-6">
-              <PlanetOrbit size={140} />
-              <Text className="font-cormorant-medium text-lg text-text-primary">
-                {t('home.castingChart')}
-              </Text>
-            </View>
+            <LoadingView label={t('home.castingChart')} />
           ) : (
             <AnimatedView style={formStyle}>
               <AskForm
