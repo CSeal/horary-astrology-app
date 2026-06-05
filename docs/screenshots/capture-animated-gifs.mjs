@@ -26,9 +26,9 @@ const FRAME_MS = 1000 / FPS; // 50ms
 
 // GIF specs: screen id, output file, lead delay (ms), total capture duration (ms)
 const GIFS = [
-  { id: 'loading', file: 'loading-animated.gif',  lead: 100,  total: 3000 },
-  { id: 'verdict', file: 'verdict-animated.gif',  lead: 50,   total: 2200 },
-  { id: 'home',    file: 'home-animated.gif',      lead: 50,   total: 1800 },
+  { id: 'loading', file: 'loading-animated.gif',  lead: 100,  total: 4000 },
+  { id: 'verdict', file: 'verdict-animated.gif',  lead: 60,   total: 3600 },
+  { id: 'home',    file: 'home-animated.gif',      lead: 60,   total: 2800 },
 ];
 
 function findFfmpeg() {
