@@ -58,9 +58,9 @@ You ask a sincere, specific yes-or-no question. Hora captures your precise locat
 | ![Verdict](docs/screenshots/04-verdict.png) | ![Full reading](docs/screenshots/04b-verdict-full.png) | ![Journal](docs/screenshots/05-journal.png) |
 | *Compact badge + AI summary + CTA* | *Significators · aspects · timing* | *Readings by month + streak* |
 
-| Stats | Settings | Chart Wheel |
+| Stats | Settings | Chart Wheel (animated) |
 |:---:|:---:|:---:|
-| ![Stats](docs/screenshots/07-stats.png) | ![Settings](docs/screenshots/06-settings.png) | ![Chart Wheel](docs/screenshots/08-chart-wheel.png) |
+| ![Stats](docs/screenshots/07-stats.png) | ![Settings](docs/screenshots/06-settings.png) | ![Chart Wheel](docs/screenshots/chart-wheel-animated.gif) |
 | *Distribution · streak · accuracy* | *7 languages · BYOK · notifications* | *Zodiac ring · house numbers · planet glyphs* |
 
 ---
