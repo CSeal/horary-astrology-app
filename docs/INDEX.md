@@ -33,6 +33,7 @@ Update this file whenever a new doc is added or a section status changes.
 |---|---|---|
 | [technical-architecture.md](technical-architecture.md) | Stack, data flow, module structure | Done |
 | [api-integration-spec.md](api-integration-spec.md) | astrology-api.io endpoints, auth, error handling | Done |
+| [IMPORT_CONVENTIONS.md](IMPORT_CONVENTIONS.md) | `@/` absolute import rules, ESLint enforcement, `@/tw` for RN primitives | Done |
 
 ---
 
@@ -52,6 +53,7 @@ Written and updated by `doc-writer` agent via `/doc:feature <name>`.
 | [features/location-override.md](features/location-override.md) | Manual city override (per-question) via bottom sheet + Photon geocoding | Done |
 | [features/debug-mode.md](features/debug-mode.md) | Hidden developer debug menu (20-tap + PIN gate, mock API, state resets) | Done |
 | [features/testing.md](features/testing.md) | Unit/integration test suite (16 suites / 209 tests, 100% coverage) + Stage 6 QA gate | Done |
+| [features/share-reading-G01-deferred.md](features/share-reading-G01-deferred.md) | Share Verdict Card (FR-G01) — deferred to first EAS dev build; native deps + iOS device required | Deferred |
 | _features/verdict-detail.md_ | Two-screen C+ verdict layout (compact badge + full reading with chart, significators, aspects, radicality, timing) | Planned |
 | _features/stats.md_ | Statistics screen — verdict distribution chart, accuracy %, monthly activity, streak milestones | Planned |
 | _features/streak.md_ | Consecutive-day streak tracking with milestone badges (StreakBadge) | Planned |
@@ -96,10 +98,12 @@ Process artifacts — not product docs, not feature docs.
 | Document | Description |
 |---|---|
 | [orchestration/handoff-log.md](orchestration/handoff-log.md) | Stage-by-stage completion log |
+| [orchestration/next-phases-plan.md](orchestration/next-phases-plan.md) | Current roadmap — what's shipped, what's next (owner-approved) |
 | [orchestration/plan.md](orchestration/plan.md) | Implementation partition map |
 | [orchestration/command-contracts.md](orchestration/command-contracts.md) | `/orchestrate:*` command specs |
-| [orchestration/gate-criteria.md](orchestration/gate-criteria.md) | Gate pass/fail rules |
-| [orchestration/coding-readiness-checklist.md](orchestration/coding-readiness-checklist.md) | Pre-coding binary checklist |
+| [orchestration/gate-criteria.md](orchestration/gate-criteria.md) | Gate pass/fail rules (Gates 1-8, M1-M5, 6b, 6c) |
+| [orchestration/coding-readiness-checklist.md](orchestration/coding-readiness-checklist.md) | Pre-coding binary checklist — PASS (historical record) |
+| [orchestration/superpowers-v-preflight.md](orchestration/superpowers-v-preflight.md) | Superpowers-v trigger setup and output locations |
 
 ---
 
