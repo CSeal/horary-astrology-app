@@ -9,7 +9,10 @@
       "WebFetch(domain:api.astrology-api.io)",
       "WebFetch(domain:astrology-api.io)",
       "WebFetch(domain:api.anthropic.com)",
-      "Edit(/.claude/skills/**)"
+      "Edit(/.claude/skills/**)",
+      "Bash(adb connect *)",
+      "Bash(adb devices *)",
+      "Bash(adb pair *)"
     ],
     "additionalDirectories": [
       "/tmp",

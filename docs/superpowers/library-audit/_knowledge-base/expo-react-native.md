@@ -267,3 +267,41 @@ Sources: Context7 `/callstack/react-native-testing-library` (v13.x migration + a
 ### msw — v2.14.6 (~May 2026), NOT installed
 - Compatible with jest-expo BUT must import from **`msw/native`** (not `msw/node` — RN has no `http` module). Needs polyfills in setup: `react-native-url-polyfill`, `fast-text-encoding`, `web-streams-polyfill`. Request-library agnostic (works with the repo's axios ^1.16.1 + @tanstack/react-query ^5.x).
 - Lighter alternative for pure axios unit tests: `axios-mock-adapter` (no polyfills, no network interception). Scoping decision — msw is more realistic, heavier footprint.
+
+---
+
+## Updated 2026-06-10 — Keyboard dismissal API surface
+
+Sources: Context7 (/facebook/react-native-website v0.85/0.86, forward-compatible with repo RN 0.83.6; /gorhom/react-native-bottom-sheet master; /websites/swmansion_react-native-gesture-handler; /expo/expo sdk-55), WebSearch (npmjs.com, github.com). Repo pins verified 2026-06-10 from package.json.
+
+### react-native Keyboard (RN 0.83.6) — 🟢 current
+- `Keyboard.dismiss()` — no args, unchanged since RN 0.36. Canonical programmatic dismiss.
+- `Keyboard.addListener(event, cb)` returns `EmitterSubscription`; remove via `subscription.remove()`. `Keyboard.removeListener` was removed (RN 0.65+) — do not use.
+- Events: `keyboardWillShow`/`keyboardDidShow`/`keyboardWillHide`/`keyboardDidHide`/`keyboardWillChangeFrame`/`keyboardDidChangeFrame`. **`will*` are iOS-only**; Android reliably fires only `did*`.
+
+### KeyboardAvoidingView (RN 0.83.6) — 🟢 current
+- `behavior`: `enum('height' | 'position' | 'padding')`. Other props: `enabled` (bool, default true), `keyboardVerticalOffset` (number, default 0), `contentContainerStyle` (only when behavior='position').
+- Classic split iOS `'padding'` / Android `'height'`. NOTE 2026-06-10: with Expo SDK 55 edge-to-edge default on Android, `'padding'` often behaves better on Android than legacy `'height'` — test on device.
+- `<TouchableWithoutFeedback onPress={Keyboard.dismiss}>` tap-to-dismiss is still the documented RN pattern (verified v0.85/0.86). NOT deprecated.
+
+### ScrollView keyboard props (RN 0.83.6) — 🟢 current
+- `keyboardDismissMode`: iOS `'none' | 'on-drag' | 'interactive'`; Android `'none' | 'on-drag'` (`'interactive'` silently == `'none'` on Android). Default `'none'`.
+- `keyboardShouldPersistTaps`: `'never' | 'always' | 'handled'` (default `'never'`). Deprecated: `false`→`'never'`, `true`→`'always'`. Cross-platform.
+
+### @gorhom/bottom-sheet 5.2.14 (repo pin == latest, ~May 2026) — 🟢 current, 🟠 known bugs
+- `keyboardBehavior`: `'interactive' | 'extend' | 'fillParent'` (verified src/constants.ts KEYBOARD_BEHAVIOR). **No `'none'` value** — will fail typecheck. Default `'interactive'`.
+- `keyboardBlurBehavior`: `'none' | 'restore'` (default `'none'`).
+- `android_keyboardInputMode`: `'adjustPan' | 'adjustResize'`. With `adjustResize`, the `interactive` position math is intentionally skipped.
+- Use `BottomSheetTextInput` (not raw TextInput) inside sheets for position tracking.
+- 🟠 Open bugs (as of 2026-06-10): #1887 & #2465 `keyboardBlurBehavior='restore'` does not restore prior detent reliably; #2509 sheet won't lower after keyboard close with `BottomSheetScrollView`; #2093 Android extra blank space. Mitigation: drive `snapToIndex` explicitly on `keyboardDidHide` instead of trusting `'restore'`.
+
+### react-native-gesture-handler — repo pins ~2.30.0; latest 3.0.0 (Jun 2026) — 🟡 one major behind
+- RNGH `ScrollView` accepts `keyboardDismissMode`/`keyboardShouldPersistTaps` (passthrough to RN ScrollView).
+- 🟠 Bug #3926 (opened 2026-01-19, OPEN): RNGH ScrollView does NOT count RNGH `Pressable`/`Gesture.Tap()` taps as "handled" for `keyboardShouldPersistTaps='handled'`. iOS+Android. NOT fixed in 3.0.0. Mitigation: use RN core ScrollView when you need `'handled'` + tappable buttons while keyboard is open.
+- RNGH `Pressable.onPress`: `(event: PressableEvent) => void`. Calling `Keyboard.dismiss()` in onPress is safe (JS thread).
+- 3.0.0 upgrade does NOT fix #3926 — no keyboard-driven reason to bump.
+
+### expo-router (SDK 55, repo ~55.0.16) — 🟢 current
+- No documented API auto-dismisses keyboard on `router.push`/`router.replace`. iOS often resigns first-responder incidentally; Android frequently keeps the keyboard open. Do NOT assume navigation dismisses.
+- Reliable: explicit `Keyboard.dismiss()` before navigating, or `useFocusEffect(() => () => Keyboard.dismiss())` from `'expo-router'` (blur cleanup). `useFocusEffect` import + cleanup signature verified.
+- SDK 55 keyboard-handling guide steers multi-input forms toward `react-native-keyboard-controller` (`KeyboardAwareScrollView`/`KeyboardToolbar`) — NOT a current dep; evaluate only if stacked inputs exist.
