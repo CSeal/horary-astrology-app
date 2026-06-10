@@ -15,14 +15,13 @@
 //   'exit':             exitProgress 0→1 over 380ms, then onComplete() via runOnJS.
 
 import { useEffect, useRef, useState } from 'react';
-import { useWindowDimensions } from 'react-native';
+import { useWindowDimensions, StyleSheet } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
   interpolate,
   runOnJS,
   SharedValue,
-  useAnimatedProps,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -30,10 +29,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { Svg, Polygon, Circle, Line, G } from 'react-native-svg';
+import { Svg, Polygon, Circle, Line } from 'react-native-svg';
 import { colors } from '@/constants/theme';
-
-const AnimatedG = Animated.createAnimatedComponent(G);
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -108,34 +105,40 @@ function StarDot({
 }
 
 // ─── Animated hand group ─────────────────────────────────────────────────────────
+// The hand rotates around the SVG center (110,110). We achieve this by wrapping
+// a separate 220×220 hand-only SVG in an Animated.View whose RN transform rotates
+// around the view's center — which is exactly (110,110) for a 220px square.
+// This avoids SVG transform strings in useAnimatedProps (unsupported by Reanimated 4).
 
 function RevealHand({ handAngle }: { handAngle: SharedValue<number> }) {
-  const props = useAnimatedProps(() => ({
-    transform: `rotate(${handAngle.value} 110 110)`,
+  const handStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${handAngle.value}deg` }],
   }));
   return (
-    <AnimatedG animatedProps={props}>
-      <Line
-        x1={110}
-        y1={110}
-        x2={53}
-        y2={79}
-        stroke={colors.accentGold}
-        strokeWidth={4.8}
-        strokeLinecap="round"
-      />
-      <Line
-        x1={110}
-        y1={110}
-        x2={130}
-        y2={121}
-        stroke={colors.accentGold}
-        strokeWidth={3.1}
-        strokeOpacity={0.5}
-        strokeLinecap="round"
-      />
-      <Polygon points="53,67 56,78 66,79 56,80 53,91 50,80 40,79 50,78" fill={colors.accentGold} />
-    </AnimatedG>
+    <Animated.View style={[StyleSheet.absoluteFill, styles.handLayer, handStyle]} pointerEvents="none">
+      <Svg width={220} height={220} viewBox="0 0 220 220">
+        <Line
+          x1={110}
+          y1={110}
+          x2={53}
+          y2={79}
+          stroke={colors.accentGold}
+          strokeWidth={4.8}
+          strokeLinecap="round"
+        />
+        <Line
+          x1={110}
+          y1={110}
+          x2={130}
+          y2={121}
+          stroke={colors.accentGold}
+          strokeWidth={3.1}
+          strokeOpacity={0.5}
+          strokeLinecap="round"
+        />
+        <Polygon points="53,67 56,78 66,79 56,80 53,91 50,80 40,79 50,78" fill={colors.accentGold} />
+      </Svg>
+    </Animated.View>
   );
 }
 
@@ -226,25 +229,15 @@ export function AnimatedSplash({ appReady, onComplete }: AnimatedSplashProps) {
           exitProgress={exitProgress}
         />
       ))}
-      <Animated.View style={glyphStyle}>
-        <Animated.View
-          style={[
-            {
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              alignItems: 'center',
-              justifyContent: 'center',
-            },
-            glowStyle,
-          ]}
-        >
+      {/* Three-layer clock: face → hand (rotates) → center dot on top */}
+      <Animated.View style={[styles.clockContainer, glyphStyle]}>
+        {/* Layer 0: ambient glow */}
+        <Animated.View style={[StyleSheet.absoluteFill, styles.handLayer, glowStyle]}>
           <Svg width={220} height={220} viewBox="0 0 220 220">
             <Circle cx={110} cy={110} r={97} fill={colors.accentViolet} />
           </Svg>
         </Animated.View>
+        {/* Layer 1: static clock face (rings + tick marks) */}
         <Svg width={220} height={220} viewBox="0 0 220 220">
           <Circle cx={110} cy={110} r={97} fill={colors.accentViolet} fillOpacity={0.12} />
           <Circle
@@ -265,127 +258,23 @@ export function AnimatedSplash({ appReady, onComplete }: AnimatedSplashProps) {
             strokeWidth={1.3}
             strokeOpacity={0.18}
           />
-          <Line
-            x1={110}
-            y1={13}
-            x2={110}
-            y2={37}
-            stroke={colors.accentGold}
-            strokeWidth={4}
-            strokeOpacity={0.9}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={207}
-            y1={110}
-            x2={183}
-            y2={110}
-            stroke={colors.accentGold}
-            strokeWidth={4}
-            strokeOpacity={0.9}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={110}
-            y1={207}
-            x2={110}
-            y2={183}
-            stroke={colors.accentGold}
-            strokeWidth={4}
-            strokeOpacity={0.9}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={13}
-            y1={110}
-            x2={37}
-            y2={110}
-            stroke={colors.accentGold}
-            strokeWidth={4}
-            strokeOpacity={0.9}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={158}
-            y1={26}
-            x2={152}
-            y2={38}
-            stroke={colors.accentGold}
-            strokeWidth={2.2}
-            strokeOpacity={0.4}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={194}
-            y1={62}
-            x2={182}
-            y2={68}
-            stroke={colors.accentGold}
-            strokeWidth={2.2}
-            strokeOpacity={0.4}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={194}
-            y1={158}
-            x2={182}
-            y2={152}
-            stroke={colors.accentGold}
-            strokeWidth={2.2}
-            strokeOpacity={0.4}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={158}
-            y1={194}
-            x2={152}
-            y2={182}
-            stroke={colors.accentGold}
-            strokeWidth={2.2}
-            strokeOpacity={0.4}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={62}
-            y1={194}
-            x2={68}
-            y2={182}
-            stroke={colors.accentGold}
-            strokeWidth={2.2}
-            strokeOpacity={0.4}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={26}
-            y1={158}
-            x2={38}
-            y2={152}
-            stroke={colors.accentGold}
-            strokeWidth={2.2}
-            strokeOpacity={0.4}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={26}
-            y1={62}
-            x2={38}
-            y2={68}
-            stroke={colors.accentGold}
-            strokeWidth={2.2}
-            strokeOpacity={0.4}
-            strokeLinecap="round"
-          />
-          <Line
-            x1={62}
-            y1={26}
-            x2={68}
-            y2={38}
-            stroke={colors.accentGold}
-            strokeWidth={2.2}
-            strokeOpacity={0.4}
-            strokeLinecap="round"
-          />
-          <RevealHand handAngle={handAngle} />
+          <Line x1={110} y1={13} x2={110} y2={37} stroke={colors.accentGold} strokeWidth={4} strokeOpacity={0.9} strokeLinecap="round" />
+          <Line x1={207} y1={110} x2={183} y2={110} stroke={colors.accentGold} strokeWidth={4} strokeOpacity={0.9} strokeLinecap="round" />
+          <Line x1={110} y1={207} x2={110} y2={183} stroke={colors.accentGold} strokeWidth={4} strokeOpacity={0.9} strokeLinecap="round" />
+          <Line x1={13} y1={110} x2={37} y2={110} stroke={colors.accentGold} strokeWidth={4} strokeOpacity={0.9} strokeLinecap="round" />
+          <Line x1={158} y1={26} x2={152} y2={38} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={194} y1={62} x2={182} y2={68} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={194} y1={158} x2={182} y2={152} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={158} y1={194} x2={152} y2={182} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={62} y1={194} x2={68} y2={182} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={26} y1={158} x2={38} y2={152} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={26} y1={62} x2={38} y2={68} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+          <Line x1={62} y1={26} x2={68} y2={38} stroke={colors.accentGold} strokeWidth={2.2} strokeOpacity={0.4} strokeLinecap="round" />
+        </Svg>
+        {/* Layer 2: rotating hand — Animated.View (RN transform, not SVG transform) */}
+        <RevealHand handAngle={handAngle} />
+        {/* Layer 3: center pivot dot — always on top of hand */}
+        <Svg style={StyleSheet.absoluteFill} width={220} height={220} viewBox="0 0 220 220">
           <Circle cx={110} cy={110} r={7.7} fill={colors.accentGold} />
           <Circle cx={110} cy={110} r={3.3} fill="white" fillOpacity={0.4} />
         </Svg>
@@ -393,3 +282,14 @@ export function AnimatedSplash({ appReady, onComplete }: AnimatedSplashProps) {
     </Animated.View>
   );
 }
+
+const styles = StyleSheet.create({
+  clockContainer: {
+    width: 220,
+    height: 220,
+  },
+  handLayer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

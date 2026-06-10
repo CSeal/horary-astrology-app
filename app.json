@@ -23,6 +23,7 @@
     },
     "android": {
       "package": "com.hora.app",
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "backgroundColor": "#070714",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

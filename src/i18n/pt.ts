@@ -411,6 +411,9 @@ const pt = {
     triggerForceUpdate: 'Acionar tela de atualização forçada',
     triggerForceUpdateHint:
       'Simula uma barreira de atualização obrigatória — útil para testar a interface da barreira.',
+    replaySplash: 'Reproduzir tela de início',
+    replaySplashHint:
+      'Reproduz a animação de início desde o começo. Útil quando permissões ou menus de desenvolvimento interromperam o primeiro lançamento.',
     mockApiSection: 'API SIMULADA',
     mockApiSectionHint:
       'Ignora a API real — sem requisições de rede ou créditos consumidos.',

@@ -404,6 +404,8 @@ const de = {
     resetOnboardingHint: 'Zeigt den Erststart-Ablauf beim nächsten App-Neustart.',
     triggerForceUpdate: 'Pflichtupdate-Bildschirm auslösen',
     triggerForceUpdateHint: 'Simuliert ein obligatorisches Update-Gate — nützlich zum Testen der Gate-Oberfläche.',
+    replaySplash: 'Splash-Screen wiederholen',
+    replaySplashHint: 'Spielt die Splash-Animation von Anfang an ab. Nützlich wenn Berechtigungsabfragen oder Dev-Menüs den ersten Start unterbrochen haben.',
     mockApiSection: 'MOCK-API',
     mockApiSectionHint: 'Umgeht die echte API — keine Netzwerkanfragen oder Guthaben werden verbraucht.',
     mockApiToggle: 'API-Antworten simulieren',

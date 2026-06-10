@@ -414,6 +414,9 @@ const es = {
     triggerForceUpdate: 'Activar pantalla de actualización forzada',
     triggerForceUpdateHint:
       'Simula una barrera de actualización obligatoria — útil para probar la interfaz de la barrera.',
+    replaySplash: 'Reproducir pantalla de inicio',
+    replaySplashHint:
+      'Reproduce la animación de inicio desde el principio. Útil cuando los permisos o menús de desarrollo interrumpieron el primer lanzamiento.',
     mockApiSection: 'API SIMULADA',
     mockApiSectionHint:
       'Omite la API real — sin solicitudes de red ni créditos consumidos.',

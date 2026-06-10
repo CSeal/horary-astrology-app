@@ -25,6 +25,7 @@ import {
   LocationPickerSheet,
   type LocationPickerSheetRef,
 } from '@/components/LocationPickerSheet';
+import { dismissKeyboard } from '@/utils/keyboard';
 import { useHoraryQuery } from '@/hooks/useHoraryQuery';
 import { useLocation } from '@/hooks/useLocation';
 import { useJournal } from '@/hooks/useJournal';
@@ -190,6 +191,7 @@ export default function HomeScreen() {
     const timezone = location?.timezone ?? Intl.DateTimeFormat().resolvedOptions().timeZone;
     setDismissedError(false);
     setDismissedLimit(false);
+    dismissKeyboard();
     mutation.mutate({
       question: question.trim(),
       category,
@@ -289,7 +291,9 @@ export default function HomeScreen() {
           className="flex-1"
           contentContainerClassName="px-5 py-4 gap-4"
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
         >
+          <Pressable onPress={dismissKeyboard} accessible={false}>
           <AnimatedView
             style={headerStyle}
             className="flex-row items-center justify-center gap-2 mb-2"
@@ -408,6 +412,7 @@ export default function HomeScreen() {
               }}
             />
           )}
+          </Pressable>
         </ScrollView>
       </SafeAreaView>
 

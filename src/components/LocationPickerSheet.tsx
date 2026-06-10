@@ -24,6 +24,7 @@ import {
 } from 'react-native-reanimated';
 import { useDebounce } from 'use-debounce';
 import { View, Text, TouchableOpacity, AnimatedView } from '@/tw';
+import { dismissKeyboard } from '@/utils/keyboard';
 import { geocodingService } from '@/services/geocodingService';
 import { colors, typography } from '@/constants/theme';
 import type { LocationOverride } from '@/types/location';
@@ -152,6 +153,7 @@ export function LocationPickerSheet({
 
   const handlePick = useCallback(
     (item: LocationOverride) => {
+      dismissKeyboard();
       onPick(item);
       setQuery('');
       setResults([]);
@@ -197,6 +199,7 @@ export function LocationPickerSheet({
       handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
     >
       <View className="px-5 pt-2 pb-4 gap-4 flex-1">
         <Text className="font-cormorant-medium text-2xl text-text-primary">

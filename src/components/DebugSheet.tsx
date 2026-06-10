@@ -110,6 +110,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
   const skipMinLoading = useDebugStore((s) => s.skipMinLoading);
   const setSkipMinLoading = useDebugStore((s) => s.setSkipMinLoading);
   const triggerForceUpdate = useDebugStore((s) => s.triggerForceUpdate);
+  const triggerReplaySplash = useDebugStore((s) => s.triggerReplaySplash);
   const isDemoActive = useDebugStore((s) => s.isDemoActive);
   const setIsDemoActive = useDebugStore((s) => s.setIsDemoActive);
   const forceErrorType = useDebugStore((s) => s.forceErrorType);
@@ -201,6 +202,11 @@ export function DebugSheet({ ref }: DebugSheetProps) {
     triggerForceUpdate();
   }, [triggerForceUpdate]);
 
+  const handleReplaySplash = useCallback(() => {
+    sheetRef.current?.close();
+    triggerReplaySplash();
+  }, [triggerReplaySplash]);
+
   const handleDemoToggle = useCallback(async (val: boolean) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     setIsSeeding(true);
@@ -282,6 +288,7 @@ export function DebugSheet({ ref }: DebugSheetProps) {
       handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
     >
       <BottomSheetScrollView
         contentContainerStyle={{ padding: 20, gap: 24 }}
@@ -445,6 +452,18 @@ export function DebugSheet({ ref }: DebugSheetProps) {
                     variant="secondary"
                     size="sm"
                     onPress={handleForceUpdate}
+                  />
+                }
+              />
+              <Divider />
+              <DebugRow
+                description={t('debug.replaySplashHint')}
+                action={
+                  <Button
+                    label={t('debug.replaySplash')}
+                    variant="secondary"
+                    size="sm"
+                    onPress={handleReplaySplash}
                   />
                 }
               />

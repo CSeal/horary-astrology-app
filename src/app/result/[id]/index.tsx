@@ -1,4 +1,4 @@
-// src/app/(tabs)/result/[id]/index.tsx
+// src/app/result/[id]/index.tsx
 // Verdict screen (Phase 1.5, layout C+). Compact verdict badge + chart strength
 // + void-of-course detail + AI summary, with a timing teaser and a CTA that
 // pushes the full reading (significators · perfections · timing).
@@ -74,6 +74,12 @@ export default function ResultScreen() {
     }
   }, [router]);
 
+  // TimingTeaser → focused timing screen
+  const handleViewTiming = useCallback(() => {
+    router.push(`/result/${id}/timing` as never);
+  }, [router, id]);
+
+  // CTA → full reading (significators, aspects, reception, perfection, flags)
   const handleViewFull = useCallback(() => {
     router.push(`/result/${id}/full` as never);
   }, [router, id]);
@@ -136,7 +142,7 @@ export default function ResultScreen() {
   if (!entry) {
     return (
       <CosmosBackground>
-        <SafeAreaView className="flex-1" edges={['top']}>
+        <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
           <View className="flex-1 items-center justify-center px-5 gap-4">
             <Text className="font-inter text-base text-text-primary text-center">
               {t('errors.apiError')}
@@ -152,7 +158,7 @@ export default function ResultScreen() {
 
   return (
     <CosmosBackground>
-      <SafeAreaView className="flex-1" edges={['top']}>
+      <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
         {/* Nav: ← Journal */}
         <AnimatedView style={navStyle} className="flex-row items-center px-5 py-3">
           <AnimatedView style={backStyle}>
@@ -251,8 +257,9 @@ export default function ResultScreen() {
               </Text>
             )}
 
+            {/* Timing teaser → focused timing screen */}
             {entry.timing && !notRadical && (
-              <TimingTeaser timing={entry.timing} onPress={handleViewFull} />
+              <TimingTeaser timing={entry.timing} onPress={handleViewTiming} />
             )}
           </AnimatedView>
         </ScrollView>
@@ -272,7 +279,7 @@ export default function ResultScreen() {
                 activeOpacity={0.85}
                 accessibilityRole="button"
                 accessibilityLabel={t('verdict.seeFullReading')}
-                className="bg-accent-gold rounded-xl min-h-[52px] flex-row items-center justify-center gap-2"
+                className="bg-accent-gold rounded-xl min-h-13 flex-row items-center justify-center gap-2"
               >
                 <Text className="font-inter-semibold text-base text-text-inverse">
                   {t('verdict.seeFullReading')}

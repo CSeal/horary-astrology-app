@@ -407,6 +407,8 @@ const en = {
     resetOnboardingHint: 'Shows the first-launch flow on next app restart.',
     triggerForceUpdate: 'Trigger force-update screen',
     triggerForceUpdateHint: 'Simulates a mandatory update gate — useful for testing the gate UI.',
+    replaySplash: 'Replay splash screen',
+    replaySplashHint: 'Replays the animated splash from the beginning. Useful when permissions or dev menus interrupted the first run.',
     mockApiSection: 'MOCK API',
     mockApiSectionHint: 'Bypasses the real API — no network requests or credits consumed.',
     mockApiToggle: 'Mock API responses',

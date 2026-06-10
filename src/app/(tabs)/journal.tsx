@@ -147,6 +147,7 @@ export default function JournalScreen() {
         <ScrollView
           className="flex-1"
           contentContainerClassName="px-5 pb-8 gap-6"
+          removeClippedSubviews
         >
           {(() => {
             let runningIndex = 0;

@@ -77,6 +77,8 @@ export default function RootLayout() {
   const locale = useSettingsStore((s) => s.locale);
   const onboardingComplete = useSettingsStore((s) => s.onboardingComplete);
   const forceUpdateOverride = useDebugStore((s) => s.forceUpdateOverride);
+  const replaySplash = useDebugStore((s) => s.replaySplash);
+  const clearReplaySplash = useDebugStore((s) => s.clearReplaySplash);
   const router = useRouter();
   const segments = useSegments();
 
@@ -162,6 +164,14 @@ export default function RootLayout() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Debug: replay AnimatedSplash on demand from DebugSheet.
+  useEffect(() => {
+    if (replaySplash) {
+      setSplashDone(false);
+      clearReplaySplash();
+    }
+  }, [replaySplash, clearReplaySplash]);
+
   // Gate route: redirect to /onboarding when flag is false; redirect home when
   // user accidentally lands on /onboarding after completion.
   useEffect(() => {
@@ -184,6 +194,10 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+          <Stack.Screen name="result/[id]/index" options={{ headerShown: false }} />
+          <Stack.Screen name="result/[id]/timing" options={{ headerShown: false }} />
+          <Stack.Screen name="result/[id]/full" options={{ headerShown: false }} />
+          <Stack.Screen name="result/[id]/chart" options={{ headerShown: false }} />
         </Stack>
       </QueryClientProvider>
 

@@ -1,12 +1,12 @@
-// src/app/(tabs)/result/[id]/full.tsx
+// src/app/result/[id]/full.tsx
 // Full-reading detail (Phase 1.5, layout C+ screen 2). Pushed from the verdict
-// screen. Shows the timing detail, significators, and aspect perfections.
-// Aspects beyond the first three collapse behind a "show all" toggle.
+// screen. Shows the timing detail, significators, aspect perfections, reception,
+// perfection path, and radicality flags. Chart wheel has its own route.
 
 import { useCallback, useEffect, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { ArrowLeft, ChevronDown } from 'lucide-react-native';
+import { ArrowLeft, ChevronDown, ChevronRight } from 'lucide-react-native';
 import {
   useSharedValue,
   useAnimatedStyle,
@@ -31,7 +31,6 @@ import { KeyFactorsBlock } from '@/components/KeyFactorsBlock';
 import { ReceptionBlock } from '@/components/ReceptionBlock';
 import { PerfectionPathBlock } from '@/components/PerfectionPathBlock';
 import { RadicalityFlagsBlock } from '@/components/RadicalityFlagsBlock';
-import { ChartWheel } from '@/components/svg/ChartWheel';
 import { Button } from '@/components/ui/Button';
 import { useJournal } from '@/hooks/useJournal';
 import { colors, typography } from '@/constants/theme';
@@ -66,25 +65,6 @@ function StaggerIn({ delay, children, className }: StaggerInProps) {
       {children}
     </AnimatedView>
   );
-}
-
-// Scale + fade entrance for the chart wheel (scale 0.85→1, opacity 0→1).
-function ChartMountIn({ children }: { children: React.ReactNode }) {
-  const scale = useSharedValue(0.85);
-  const opacity = useSharedValue(0);
-
-  useEffect(() => {
-    scale.value = withDelay(160, withSpring(1, { damping: 13, stiffness: 90 }));
-    opacity.value = withDelay(160, withTiming(1, { duration: 400 }));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [{ scale: scale.value }],
-  }));
-
-  return <AnimatedView style={animatedStyle}>{children}</AnimatedView>;
 }
 
 function SectionHeader({ label, count }: { label: string; count?: number }) {
@@ -135,12 +115,6 @@ export default function FullReadingScreen() {
     transform: [{ translateY: screenY.value }],
   }));
 
-  // Parallax background: background shifts at 0.3x scroll speed.
-  const scrollY = useSharedValue(0);
-  const bgParallaxStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: scrollY.value * -0.3 }],
-  }));
-
   // Back button press feedback.
   const backScale = useSharedValue(1);
   const backStyle = useAnimatedStyle(() => ({
@@ -161,10 +135,14 @@ export default function FullReadingScreen() {
     }
   }, [router, id]);
 
+  const handleViewChart = useCallback(() => {
+    router.push(`/result/${id}/chart` as never);
+  }, [router, id]);
+
   if (!entry) {
     return (
       <CosmosBackground>
-        <SafeAreaView className="flex-1" edges={['top']}>
+        <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
           <View className="flex-1 items-center justify-center px-5 gap-4">
             <Text className="font-inter text-base text-text-primary text-center">
               {t('errors.apiError')}
@@ -182,8 +160,8 @@ export default function FullReadingScreen() {
     : aspects.slice(0, ASPECT_PREVIEW_COUNT);
 
   return (
-    <CosmosBackground parallaxStyle={bgParallaxStyle}>
-      <SafeAreaView className="flex-1" edges={['top']}>
+    <CosmosBackground>
+      <SafeAreaView className="flex-1" edges={['top', 'bottom']}>
         {/* Nav: ← + Full Reading */}
         <AnimatedView
           style={headerStyle}
@@ -213,10 +191,7 @@ export default function FullReadingScreen() {
         <ScrollView
           className="flex-1"
           contentContainerClassName="px-5 pb-8 gap-2"
-          onScroll={(event) => {
-            scrollY.value = event.nativeEvent.contentOffset.y;
-          }}
-          scrollEventThrottle={16}
+          removeClippedSubviews
         >
           {entry.timing && (
             <>
@@ -309,15 +284,22 @@ export default function FullReadingScreen() {
             </StaggerIn>
           )}
 
+          {/* Chart wheel — opens as a dedicated full-screen route */}
           {entry.chart_wheel && (
-            <>
-              <SectionHeader label={t('verdict.chartTitle')} />
-              <ChartMountIn>
-                <View className="items-center py-2">
-                  <ChartWheel data={entry.chart_wheel} size={300} />
-                </View>
-              </ChartMountIn>
-            </>
+            <StaggerIn delay={280}>
+              <TouchableOpacity
+                onPress={handleViewChart}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel={t('verdict.chartTitle')}
+                className="flex-row items-center justify-between px-4 py-3.5 mt-2 rounded-xl border border-accent-gold/25 bg-accent-gold/5"
+              >
+                <Text className="font-inter-semibold text-sm text-accent-gold">
+                  {t('verdict.chartTitle')}
+                </Text>
+                <ChevronRight color={colors.accentGold} size={typography.base} />
+              </TouchableOpacity>
+            </StaggerIn>
           )}
         </ScrollView>
       </SafeAreaView>

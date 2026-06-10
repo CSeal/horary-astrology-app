@@ -7,14 +7,12 @@ import { useEffect, useMemo } from 'react';
 import Svg, { Polygon } from 'react-native-svg';
 import Animated, {
   useSharedValue,
-  useAnimatedProps,
+  useAnimatedStyle,
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { colors } from '@/constants/theme';
 import type { VerdictType } from '@/types/horary';
-
-const AnimatedPolygon = Animated.createAnimatedComponent(Polygon);
 
 const VERDICT_COLOR: Record<VerdictType, string> = {
   YES: colors.yes,
@@ -44,36 +42,36 @@ export function VerdictStar({ verdict, size = 64 }: VerdictStarProps) {
     rotation.value = withTiming(180, { duration: 600 });
   }, [scale, rotation]);
 
-  // Build the 8-point star polygon points around (0,0) — we let the SVG
-  // transform on the polygon handle scale/rotate from the center.
+  // Points centered at (center, center) so an Animated.View wrapper can handle
+  // scale + rotation via RN transforms — no SVG transform string needed.
   const points = useMemo(() => {
     const verts: string[] = [];
     for (let i = 0; i < POINTS * 2; i++) {
       const r = i % 2 === 0 ? outerRadius : innerRadius;
       const angle = (Math.PI / POINTS) * i - Math.PI / 2;
-      const x = Math.cos(angle) * r;
-      const y = Math.sin(angle) * r;
+      const x = center + Math.cos(angle) * r;
+      const y = center + Math.sin(angle) * r;
       verts.push(`${x},${y}`);
     }
     return verts.join(' ');
-  }, [outerRadius, innerRadius]);
+  }, [outerRadius, innerRadius, center]);
 
-  const animatedProps = useAnimatedProps(() => ({
-    transform: `translate(${center} ${center}) rotate(${rotation.value}) scale(${scale.value})`,
+  // RN transform on Animated.View — Reanimated 4 supports this; SVG transform
+  // strings in useAnimatedProps are NOT supported (mappers.ts throws on Android).
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }, { scale: scale.value }],
   }));
 
   return (
-    <Svg
-      width={size}
-      height={size}
-      accessibilityElementsHidden
-      importantForAccessibility="no-hide-descendants"
-    >
-      <AnimatedPolygon
-        points={points}
-        fill={color}
-        animatedProps={animatedProps}
-      />
-    </Svg>
+    <Animated.View style={animatedStyle}>
+      <Svg
+        width={size}
+        height={size}
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+      >
+        <Polygon points={points} fill={color} />
+      </Svg>
+    </Animated.View>
   );
 }

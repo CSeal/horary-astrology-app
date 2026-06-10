@@ -6,6 +6,7 @@ import React from 'react';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { Sparkles, BookOpen, BarChart2, Settings as SettingsIcon } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, typography } from '@/constants/theme';
 import { Pressable, AnimatedView } from '@/tw';
 import { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
@@ -36,8 +37,19 @@ function TabBarButton({ children, onPress, onLongPress, style, accessibilityStat
   );
 }
 
+// Height of the visible tab content (icons + labels), independent of safe area.
+const TAB_CONTENT_HEIGHT = 56;
+// Extra padding between the last label and the system nav bar / home indicator.
+const TAB_EXTRA_BOTTOM = 8;
+
 export default function TabsLayout() {
   const { t } = useTranslation();
+  const { bottom: bottomInset } = useSafeAreaInsets();
+
+  // Total tab bar height = content area + system inset + breathing room.
+  // We set paddingBottom explicitly so React Navigation doesn't double-add the inset.
+  const tabBarHeight = TAB_CONTENT_HEIGHT + bottomInset + TAB_EXTRA_BOTTOM;
+  const tabBarPaddingBottom = bottomInset + TAB_EXTRA_BOTTOM;
 
   return (
     <Tabs
@@ -47,7 +59,8 @@ export default function TabsLayout() {
           backgroundColor: colors.bgSurface,
           borderTopColor: colors.border,
           borderTopWidth: 1,
-          height: 83,
+          height: tabBarHeight,
+          paddingBottom: tabBarPaddingBottom,
         },
         tabBarActiveTintColor: colors.accentGold,
         tabBarInactiveTintColor: colors.textSecondary,
@@ -91,18 +104,6 @@ export default function TabsLayout() {
           tabBarAccessibilityLabel: t('a11y.settingsTab'),
           tabBarIcon: ({ color, size }) => <SettingsIcon color={color} size={size} />,
           tabBarButton: (props) => <TabBarButton {...props} />,
-        }}
-      />
-      <Tabs.Screen
-        name="result/[id]/index"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="result/[id]/full"
-        options={{
-          href: null,
         }}
       />
     </Tabs>

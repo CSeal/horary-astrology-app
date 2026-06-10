@@ -23,6 +23,8 @@ interface DebugState {
   // When true, _layout renders the force-update gate (for testing the gate).
   // Non-dismissable by design — restart the app to clear (in-memory flag).
   forceUpdateOverride: boolean;
+  // When true, _layout resets splashDone so AnimatedSplash replays from start.
+  replaySplash: boolean;
   // When true, demo journal is seeded and mock mode is implied.
   isDemoActive: boolean;
   // When non-null, useHoraryQuery throws a simulated error of this type.
@@ -36,6 +38,8 @@ interface DebugState {
   setMockVerdict: (verdict: VerdictType) => void;
   setSkipMinLoading: (on: boolean) => void;
   triggerForceUpdate: () => void;
+  triggerReplaySplash: () => void;
+  clearReplaySplash: () => void;
   setIsDemoActive: (val: boolean) => void;
   setForceErrorType: (type: ForceErrorType) => void;
   setMockDelayMs: (ms: 0 | 600 | 2000) => void;
@@ -47,6 +51,7 @@ export const useDebugStore = create<DebugState>((set) => ({
   mockVerdict: 'YES',
   skipMinLoading: false,
   forceUpdateOverride: false,
+  replaySplash: false,
   isDemoActive: false,
   forceErrorType: null,
   mockDelayMs: 600,
@@ -57,6 +62,8 @@ export const useDebugStore = create<DebugState>((set) => ({
   setMockVerdict: (verdict) => set({ mockVerdict: verdict }),
   setSkipMinLoading: (on) => set({ skipMinLoading: on }),
   triggerForceUpdate: () => set({ forceUpdateOverride: true }),
+  triggerReplaySplash: () => set({ replaySplash: true }),
+  clearReplaySplash: () => set({ replaySplash: false }),
   setIsDemoActive: (val) => set({ isDemoActive: val }),
   setForceErrorType: (type) => set({ forceErrorType: type }),
   setMockDelayMs: (ms) => set({ mockDelayMs: ms }),

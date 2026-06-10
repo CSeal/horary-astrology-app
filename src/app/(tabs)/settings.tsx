@@ -3,8 +3,8 @@
 // API key management (via SecureStore).
 // Four cards stagger in from below; the monthly progress bar fills with timing.
 
-import { useEffect, useState, useCallback, useRef } from 'react';
-import { Alert, Share, Linking, Switch } from 'react-native';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
+import { Alert, Share, Linking, Switch, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
@@ -96,8 +96,10 @@ export default function SettingsScreen() {
 
   // Home-location picker (sets the default/fallback city).
   const homePickerRef = useRef<LocationPickerSheetRef>(null);
+  const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
 
   const handleSelectDevice = useCallback(() => {
+    Keyboard.dismiss();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     void setLocationSource('device');
   }, [setLocationSource]);
@@ -105,6 +107,7 @@ export default function SettingsScreen() {
   // Switching to "manual" only makes sense with a city: reuse the saved one,
   // otherwise open the picker so the user can choose.
   const handleSelectManual = useCallback(() => {
+    Keyboard.dismiss();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     if (homeLocation) {
       void setLocationSource('manual');
@@ -114,6 +117,7 @@ export default function SettingsScreen() {
   }, [homeLocation, setLocationSource]);
 
   const handleOpenHomePicker = useCallback(() => {
+    Keyboard.dismiss();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     homePickerRef.current?.present();
   }, []);
@@ -150,10 +154,26 @@ export default function SettingsScreen() {
     };
   }, [setApiKeySource]);
 
+  // If the keyboard is dismissed for any reason (swipe, other modal opens, etc.)
+  // while in edit mode, reset back to the "show key status" view.
+  useEffect(() => {
+    const sub = Keyboard.addListener('keyboardDidHide', () => {
+      setEditingKey((prev) => {
+        if (prev) {
+          setApiKeyInput('');
+          return false;
+        }
+        return prev;
+      });
+    });
+    return () => sub.remove();
+  }, []);
+
   // Outcome reminder toggle. Turning ON requires OS notification permission;
   // if denied, revert to off and surface a banner pointing to device Settings.
   const handleToggleNotifications = useCallback(
     async (next: boolean) => {
+      Keyboard.dismiss();
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
       if (!next) {
         setNotifPermissionDenied(false);
@@ -174,6 +194,7 @@ export default function SettingsScreen() {
 
   const handleSelectDelay = useCallback(
     (days: 7 | 14 | 30) => {
+      Keyboard.dismiss();
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
       void setNotificationDelayDays(days);
     },
@@ -182,6 +203,7 @@ export default function SettingsScreen() {
 
   const handleLocaleChange = useCallback(
     async (next: SupportedLocale) => {
+      Keyboard.dismiss();
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
       await setLocale(next);
       await i18n.changeLanguage(next);
@@ -192,6 +214,7 @@ export default function SettingsScreen() {
   const handleSaveKey = useCallback(async () => {
     const trimmed = apiKeyInput.trim();
     if (!trimmed) return;
+    Keyboard.dismiss();
     setSavingKey(true);
     try {
       await secureKeyService.setKey(trimmed);
@@ -210,15 +233,21 @@ export default function SettingsScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     setApiKeyInput('');
     setEditingKey(true);
+    // Wait for keyboard animation before scrolling — ~300ms covers both platforms.
+    setTimeout(() => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    }, 300);
   }, []);
 
   const handleCancelEditKey = useCallback(() => {
+    Keyboard.dismiss();
     setApiKeyInput('');
     setEditingKey(false);
   }, []);
 
   // FR-G03 — invite a friend via the native share sheet (UTM-tagged store link).
   const handleInviteFriend = useCallback(async () => {
+    Keyboard.dismiss();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     try {
       await Share.share(
@@ -236,11 +265,13 @@ export default function SettingsScreen() {
   // "Rate Hora" — direct App Store deep link (compliant for a button tap;
   // distinct from the event-driven StoreReview.requestReview() prompt).
   const handleRateApp = useCallback(() => {
+    Keyboard.dismiss();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     Linking.openURL(APP_STORE_REVIEW_URL).catch(() => {});
   }, []);
 
   const handleClearKey = useCallback(() => {
+    Keyboard.dismiss();
     Alert.alert(
       t('settings.apiKeyRemove'),
       '',
@@ -340,8 +371,13 @@ export default function SettingsScreen() {
 
   return (
     <>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
     <SafeAreaView className="flex-1 bg-bg-base" edges={['top']}>
       <ScrollView
+        ref={scrollRef}
         className="flex-1"
         contentContainerClassName="px-5 py-4 gap-6"
         keyboardShouldPersistTaps="handled"
@@ -742,6 +778,8 @@ export default function SettingsScreen() {
                   autoCapitalize="none"
                   autoCorrect={false}
                   autoFocus
+                  returnKeyType="done"
+                  onSubmitEditing={handleSaveKey}
                   placeholder={t('settings.apiKeyPlaceholder')}
                   placeholderTextColor={colors.textDisabled}
                   className="bg-bg-surface rounded-xl px-4 min-h-12 font-inter text-base text-text-primary border border-border"
@@ -803,6 +841,7 @@ export default function SettingsScreen() {
         </AnimatedView>
       </ScrollView>
     </SafeAreaView>
+    </KeyboardAvoidingView>
     <DebugSheet ref={debugSheetRef} />
     <LocationPickerSheet
       ref={homePickerRef}

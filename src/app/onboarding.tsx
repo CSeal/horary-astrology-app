@@ -32,6 +32,7 @@ import {
 } from 'react-native-reanimated';
 import {
   AnimatedView,
+  Pressable,
   SafeAreaView,
   ScrollView,
   View,
@@ -50,6 +51,7 @@ import {
 import { locationService } from '@/services/locationService';
 import { secureKeyService } from '@/services/secureKeyService';
 import { useSettingsStore } from '@/stores/settingsStore';
+import { dismissKeyboard } from '@/utils/keyboard';
 import { colors, typography } from '@/constants/theme';
 import type { LocationOverride } from '@/types/location';
 
@@ -233,16 +235,19 @@ export default function OnboardingScreen() {
 
   const finish = useCallback(async () => {
     await completeOnboarding();
+    dismissKeyboard();
     router.replace('/');
   }, [completeOnboarding, router]);
 
   const next = useCallback(() => {
+    dismissKeyboard();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     directionRef.current = 'forward';
     setStep((s) => Math.min(TOTAL_STEPS - 1, s + 1));
   }, []);
 
   const back = useCallback(() => {
+    dismissKeyboard();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     directionRef.current = 'back';
     setStep((s) => Math.max(0, s - 1));
@@ -296,7 +301,13 @@ export default function OnboardingScreen() {
           className="flex-1"
           contentContainerClassName="flex-grow px-6 py-6 justify-between gap-6"
           keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
         >
+          <Pressable
+            onPress={dismissKeyboard}
+            accessible={false}
+            className="flex-1 justify-between gap-6"
+          >
           {/* Top: skip on steps 1 / 2 / 3 */}
           <View className="flex-row justify-end min-h-11">
             {step >= 1 && step <= 3 ? (
@@ -417,6 +428,8 @@ export default function OnboardingScreen() {
                   secureTextEntry
                   autoCapitalize="none"
                   autoCorrect={false}
+                  returnKeyType="done"
+                  onSubmitEditing={handleSaveKey}
                   className="w-full bg-bg-card border border-border rounded-2xl px-4 py-3 font-inter text-base text-text-primary"
                 />
                 <Text className="font-inter text-xs text-text-disabled text-center leading-relaxed px-2">
@@ -501,6 +514,7 @@ export default function OnboardingScreen() {
             )}
             <StepDots current={step} />
           </View>
+          </Pressable>
         </ScrollView>
       </SafeAreaView>
 

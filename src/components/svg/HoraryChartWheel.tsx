@@ -113,19 +113,9 @@ function RevealGlyph({
   cy,
   children,
 }: RevealGlyphProps) {
-  const animatedProps = useAnimatedProps(() => {
-    const t = interpolate(
-      reveal.value,
-      [start, end],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
-    const scale = interpolate(t, [0, 0.6, 1], [0.4, 1.08, 1]);
-    return {
-      opacity: t,
-      transform: `translate(${cx} ${cy}) scale(${scale}) translate(${-cx} ${-cy})`,
-    };
-  });
+  const animatedProps = useAnimatedProps(() => ({
+    opacity: interpolate(reveal.value, [start, end], [0, 1], Extrapolation.CLAMP),
+  }));
   return <AnimatedG animatedProps={animatedProps}>{children}</AnimatedG>;
 }
 

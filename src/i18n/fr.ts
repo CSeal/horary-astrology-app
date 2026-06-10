@@ -404,6 +404,8 @@ const fr = {
     resetOnboardingHint: "Affiche le flux de premier démarrage au prochain redémarrage de l'application.",
     triggerForceUpdate: "Déclencher l'écran de mise à jour obligatoire",
     triggerForceUpdateHint: "Simule un verrou de mise à jour obligatoire — utile pour tester l'interface du verrou.",
+    replaySplash: "Rejouer l'écran de démarrage",
+    replaySplashHint: "Rejoue l'animation de démarrage depuis le début. Utile quand les permissions ou les menus développeur ont interrompu le premier lancement.",
     mockApiSection: 'API SIMULÉE',
     mockApiSectionHint: "Contourne l'API réelle — aucune requête réseau ni crédit consommé.",
     mockApiToggle: "Simuler les réponses de l'API",

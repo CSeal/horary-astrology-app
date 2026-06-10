@@ -144,12 +144,16 @@ export function JournalItem({
   const swipeableRef = useRef<SwipeableMethods>(null);
 
   const delay = Math.min(index * 60, 400);
-  const enterY = useSharedValue(20);
-  const enterOpacity = useSharedValue(0);
+  // Items beyond the initial viewport don't need an entrance animation —
+  // they're off-screen on mount so animating them wastes UI-thread work.
+  const shouldAnimate = index <= 8;
+  const enterY = useSharedValue(shouldAnimate ? 20 : 0);
+  const enterOpacity = useSharedValue(shouldAnimate ? 0 : 1);
   const exitX = useSharedValue(0);
   const exitOp = useSharedValue(1);
 
   useEffect(() => {
+    if (!shouldAnimate) return;
     enterY.value = withDelay(
       delay,
       withSpring(0, { damping: 12, stiffness: 90 })
