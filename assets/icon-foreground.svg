@@ -1,69 +1,28 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- Android adaptive icon FOREGROUND — transparent background, glyph within 72% safe zone (≤737px radius from center 512,512) -->
+<svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#F5C842" stop-opacity="0.30"/>
-      <stop offset="60%" stop-color="#F5C842" stop-opacity="0.10"/>
-      <stop offset="100%" stop-color="#F5C842" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
     </radialGradient>
-    <filter id="softblur" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="24"/>
-    </filter>
   </defs>
-
-  <!-- Ambient glow (behind star) -->
-  <circle cx="512" cy="512" r="240" fill="#F5C842" filter="url(#softblur)" opacity="0.20"/>
-
-  <!-- Inner ring (subtle) -->
-  <circle cx="512" cy="512" r="296" fill="none" stroke="#F5C842" stroke-width="0.8" stroke-opacity="0.14"/>
-
-  <!-- Cross lines (very subtle) -->
-  <g stroke="#F5C842" stroke-width="0.6" stroke-opacity="0.07">
-    <line x1="512" y1="280" x2="512" y2="744"/>
-    <line x1="280" y1="512" x2="744" y2="512"/>
-    <line x1="348" y1="348" x2="676" y2="676"/>
-    <line x1="676" y1="348" x2="348" y2="676"/>
-  </g>
-
-  <!-- Violet depth shadow -->
-  <polygon
-    points="512,282 547.2,427 674.6,349.4 597,476.8 742,512 597,547.2 674.6,674.6 547.2,597 512,742 476.8,597 349.4,674.6 427,547.2 282,512 427,476.8 349.4,349.4 476.8,427"
-    fill="#8B5CF6"
-    opacity="0.20"
-    transform="scale(1.06) translate(-30.7,-30.7)"
-  />
-
-  <!-- Main gold 8-pointed star (same points as icon.svg) -->
-  <polygon
-    points="512,282 547.2,427 674.6,349.4 597,476.8 742,512 597,547.2 674.6,674.6 547.2,597 512,742 476.8,597 349.4,674.6 427,547.2 282,512 427,476.8 349.4,349.4 476.8,427"
-    fill="#F5C842"
-  />
-
-  <!-- Rim highlight -->
-  <polygon
-    points="512,278 547.2,423 678.6,345.4 598.6,474.8 746,512 598.6,549.2 678.6,678.6 547.2,601 512,746 476.8,601 345.4,678.6 425,549.2 278,512 425,474.8 345.4,345.4 476.8,423"
-    fill="none"
-    stroke="#FFFFFF"
-    stroke-width="2"
-    stroke-opacity="0.16"
-    stroke-linejoin="round"
-  />
-
-  <!-- Center dot -->
-  <circle cx="512" cy="512" r="26" fill="#F5C842"/>
-  <circle cx="512" cy="512" r="9"  fill="#FFFFFF" fill-opacity="0.35"/>
-
-  <!-- Scattered stars (within safe zone ~737px from center) -->
-  <g fill="#F0EEFF">
-    <circle cx="240" cy="210" r="4.0" opacity="0.85"/>
-    <circle cx="790" cy="195" r="3.0" opacity="0.80"/>
-    <circle cx="198" cy="410" r="2.5" opacity="0.70"/>
-    <circle cx="828" cy="385" r="4.5" opacity="0.88"/>
-    <circle cx="215" cy="640" r="3.0" opacity="0.78"/>
-    <circle cx="810" cy="650" r="2.5" opacity="0.72"/>
-    <circle cx="280" cy="800" r="3.5" opacity="0.82"/>
-    <circle cx="755" cy="790" r="2.0" opacity="0.68"/>
-    <circle cx="420" cy="168" r="2.5" opacity="0.65"/>
-    <circle cx="615" cy="858" r="2.0" opacity="0.62"/>
-  </g>
+  <circle cx="512" cy="512" r="496" fill="url(#glow)"/>
+  <circle cx="512" cy="512" r="450" fill="none" stroke="#F5C842" stroke-width="15" stroke-opacity="0.6"/>
+  <circle cx="512" cy="512" r="348" fill="none" stroke="#F5C842" stroke-width="6" stroke-opacity="0.18"/>
+  <line x1="512.0" y1="338.0" x2="512.0" y2="62.0" stroke="#F5C842" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="686.0" y1="512.0" x2="962.0" y2="512.0" stroke="#F5C842" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="512.0" y1="686.0" x2="512.0" y2="962.0" stroke="#F5C842" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="338.0" y1="512.0" x2="62.0" y2="512.0" stroke="#F5C842" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="670.5" y1="237.5" x2="737.0" y2="122.3" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="786.5" y1="353.5" x2="901.7" y2="287.0" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="786.5" y1="670.5" x2="901.7" y2="737.0" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="670.5" y1="786.5" x2="737.0" y2="901.7" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="353.5" y1="786.5" x2="287.0" y2="901.7" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="237.5" y1="670.5" x2="122.3" y2="737.0" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="237.5" y1="353.5" x2="122.3" y2="287.0" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="353.5" y1="237.5" x2="287.0" y2="122.3" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="246.1" y2="358.5" stroke="#F5C842" stroke-width="22" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="591.7" y2="558.0" stroke="#F5C842" stroke-width="14" stroke-opacity="0.5" stroke-linecap="round"/>
+  <polygon points="246.1,302.5 260.7,343.9 302.1,358.5 260.7,373.1 246.1,414.5 231.6,373.1 190.1,358.5 231.6,343.9" fill="#F5C842"/>
+  <circle cx="512" cy="512" r="36" fill="#F5C842"/>
+  <circle cx="512" cy="512" r="15" fill="white" fill-opacity="0.4"/>
 </svg>

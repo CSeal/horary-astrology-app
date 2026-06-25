@@ -104,7 +104,7 @@ const iconSvg = `<svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/
       <stop offset="100%" stop-color="${VIOLET}" stop-opacity="0"/>
     </radialGradient>
   </defs>
-  <rect width="${SIZE}" height="${SIZE}" fill="${BG}" rx="230"/>
+  <rect width="${SIZE}" height="${SIZE}" fill="${BG}"/>
   <circle cx="${CX}" cy="${CY}" r="496" fill="url(#glow)"/>
   ${clockBody(GOLD)}
 </svg>`;
@@ -130,6 +130,7 @@ const monoSvg = `<svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/
 
 async function generate() {
   const imagesDir = path.join(__dirname, '..', 'assets', 'images');
+  const assetsDir = path.join(__dirname, '..', 'assets');
   if (!fs.existsSync(imagesDir)) {
     fs.mkdirSync(imagesDir, { recursive: true });
   }
@@ -138,7 +139,7 @@ async function generate() {
   const adaptivePath = path.join(imagesDir, 'android-icon-foreground.png');
   const monoPath = path.join(imagesDir, 'android-icon-monochrome.png');
 
-  await sharp(Buffer.from(iconSvg)).png().toFile(iconPath);
+  await sharp(Buffer.from(iconSvg)).flatten({ background: BG }).png().toFile(iconPath);
   console.log(`Generated: ${iconPath}`);
 
   await sharp(Buffer.from(adaptiveSvg)).png().toFile(adaptivePath);
@@ -146,6 +147,14 @@ async function generate() {
 
   await sharp(Buffer.from(monoSvg)).png().toFile(monoPath);
   console.log(`Generated: ${monoPath}`);
+
+  // Keep SVG sources in sync with generated PNGs
+  fs.writeFileSync(path.join(assetsDir, 'icon.svg'), iconSvg);
+  console.log(`Written:   assets/icon.svg`);
+  fs.writeFileSync(path.join(assetsDir, 'icon-foreground.svg'), adaptiveSvg);
+  console.log(`Written:   assets/icon-foreground.svg`);
+  fs.writeFileSync(path.join(assetsDir, 'icon-monochrome.svg'), monoSvg);
+  console.log(`Written:   assets/icon-monochrome.svg`);
 
   console.log('');
   console.log('Next steps:');

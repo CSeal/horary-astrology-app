@@ -1,136 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <!-- Dark cosmos background gradient -->
-    <radialGradient id="bg" cx="50%" cy="50%" r="65%">
-      <stop offset="0%" stop-color="#12102A"/>
-      <stop offset="100%" stop-color="#050412"/>
-    </radialGradient>
-    <!-- Soft gold glow (applied via opacity layering) -->
     <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#F5C842" stop-opacity="0.22"/>
-      <stop offset="60%" stop-color="#F5C842" stop-opacity="0.06"/>
-      <stop offset="100%" stop-color="#F5C842" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
     </radialGradient>
-    <filter id="softblur" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="28"/>
-    </filter>
   </defs>
-
-  <!-- Background -->
-  <rect width="1024" height="1024" fill="url(#bg)"/>
-
-  <!-- Ambient glow behind glyph -->
-  <circle cx="512" cy="512" r="260" fill="#F5C842" filter="url(#softblur)" opacity="0.18"/>
-
-  <!-- ─── Outer decoration ring + zodiac ticks ─── -->
-  <circle cx="512" cy="512" r="388" fill="none" stroke="#F5C842" stroke-width="1.2" stroke-opacity="0.28"/>
-
-  <!-- 12 zodiac ticks: base line from y=124 to y=150, rotated around center (30° apart) -->
-  <!-- Cardinal ticks (longer, brighter) at 0°/90°/180°/270° -->
-  <g stroke="#F5C842" stroke-opacity="0.65" stroke-width="2.5" stroke-linecap="round">
-    <line x1="512" y1="124" x2="512" y2="158" transform="rotate(0 512 512)"/>
-    <line x1="512" y1="124" x2="512" y2="158" transform="rotate(90 512 512)"/>
-    <line x1="512" y1="124" x2="512" y2="158" transform="rotate(180 512 512)"/>
-    <line x1="512" y1="124" x2="512" y2="158" transform="rotate(270 512 512)"/>
-  </g>
-  <!-- Intercardinal ticks (shorter, dimmer) at 30°/60°/120°/150°/210°/240°/300°/330° -->
-  <g stroke="#F5C842" stroke-opacity="0.38" stroke-width="1.5" stroke-linecap="round">
-    <line x1="512" y1="130" x2="512" y2="154" transform="rotate(30 512 512)"/>
-    <line x1="512" y1="130" x2="512" y2="154" transform="rotate(60 512 512)"/>
-    <line x1="512" y1="130" x2="512" y2="154" transform="rotate(120 512 512)"/>
-    <line x1="512" y1="130" x2="512" y2="154" transform="rotate(150 512 512)"/>
-    <line x1="512" y1="130" x2="512" y2="154" transform="rotate(210 512 512)"/>
-    <line x1="512" y1="130" x2="512" y2="154" transform="rotate(240 512 512)"/>
-    <line x1="512" y1="130" x2="512" y2="154" transform="rotate(300 512 512)"/>
-    <line x1="512" y1="130" x2="512" y2="154" transform="rotate(330 512 512)"/>
-  </g>
-
-  <!-- Inner subtle ring -->
-  <circle cx="512" cy="512" r="296" fill="none" stroke="#F5C842" stroke-width="0.7" stroke-opacity="0.12"/>
-
-  <!-- Ultra-thin cross lines through center (chart-wheel feel) -->
-  <g stroke="#F5C842" stroke-width="0.6" stroke-opacity="0.07">
-    <line x1="512" y1="220" x2="512" y2="804"/>
-    <line x1="220" y1="512" x2="804" y2="512"/>
-    <line x1="318" y1="318" x2="706" y2="706"/>
-    <line x1="706" y1="318" x2="318" y2="706"/>
-  </g>
-
-  <!-- ─── 8-pointed star glyph ─── -->
-  <!--
-    Center: (512, 512)
-    Outer R = 230, Inner r = 92
-    Points alternate outer→inner at 22.5° increments, starting at -90° (top)
-
-    Calculated:
-    k0  outer -90°:   (512, 282)
-    k1  inner -67.5°: (547.2, 427.0)
-    k2  outer -45°:   (674.6, 349.4)
-    k3  inner -22.5°: (597.0, 476.8)
-    k4  outer   0°:   (742, 512)
-    k5  inner  22.5°: (597.0, 547.2)
-    k6  outer  45°:   (674.6, 674.6)
-    k7  inner  67.5°: (547.2, 597.0)
-    k8  outer  90°:   (512, 742)
-    k9  inner 112.5°: (476.8, 597.0)
-    k10 outer 135°:   (349.4, 674.6)
-    k11 inner 157.5°: (427.0, 547.2)
-    k12 outer 180°:   (282, 512)
-    k13 inner 202.5°: (427.0, 476.8)
-    k14 outer 225°:   (349.4, 349.4)
-    k15 inner 247.5°: (476.8, 427.0)
-  -->
-
-  <!-- Shadow/depth copy (slightly larger, darker, blur-like) -->
-  <polygon
-    points="512,276 548.8,424.4 677.2,347.0 598.6,475.2 748,512 598.6,548.8 677.2,677.0 548.8,599.6 512,748 475.2,599.6 346.8,677.0 425.4,548.8 276,512 425.4,475.2 346.8,347.0 475.2,424.4"
-    fill="#8B5CF6"
-    opacity="0.18"
-  />
-
-  <!-- Main gold star -->
-  <polygon
-    points="512,282 547.2,427 674.6,349.4 597,476.8 742,512 597,547.2 674.6,674.6 547.2,597 512,742 476.8,597 349.4,674.6 427,547.2 282,512 427,476.8 349.4,349.4 476.8,427"
-    fill="#F5C842"
-  />
-
-  <!-- Rim highlight (white stroke, low opacity, slightly larger) -->
-  <polygon
-    points="512,278 547.2,423 678.6,345.4 598.6,474.8 746,512 598.6,549.2 678.6,678.6 547.2,601 512,746 476.8,601 345.4,678.6 425,549.2 278,512 425,474.8 345.4,345.4 476.8,423"
-    fill="none"
-    stroke="#FFFFFF"
-    stroke-width="1.8"
-    stroke-opacity="0.14"
-    stroke-linejoin="round"
-  />
-
-  <!-- Center circle -->
-  <circle cx="512" cy="512" r="26" fill="#F5C842"/>
-  <!-- Center highlight dot -->
-  <circle cx="512" cy="512" r="9" fill="#FFFFFF" fill-opacity="0.35"/>
-
-  <!-- ─── Scattered star field ─── -->
-  <g fill="#F0EEFF">
-    <!-- top-left quadrant -->
-    <circle cx="195" cy="165" r="4.5" opacity="0.90"/>
-    <circle cx="285" cy="115" r="2.5" opacity="0.70"/>
-    <circle cx="152" cy="330" r="3.0" opacity="0.75"/>
-    <circle cx="105" cy="195" r="2.0" opacity="0.60"/>
-    <!-- top-right quadrant -->
-    <circle cx="835" cy="148" r="3.5" opacity="0.85"/>
-    <circle cx="760" cy="100" r="2.0" opacity="0.65"/>
-    <circle cx="892" cy="285" r="4.0" opacity="0.88"/>
-    <circle cx="920" cy="175" r="1.8" opacity="0.55"/>
-    <!-- bottom-left quadrant -->
-    <circle cx="160" cy="680" r="3.5" opacity="0.80"/>
-    <circle cx="115" cy="810" r="2.5" opacity="0.68"/>
-    <circle cx="235" cy="870" r="4.0" opacity="0.85"/>
-    <!-- bottom-right quadrant -->
-    <circle cx="855" cy="665" r="2.8" opacity="0.72"/>
-    <circle cx="900" cy="790" r="3.5" opacity="0.82"/>
-    <circle cx="785" cy="880" r="2.0" opacity="0.62"/>
-    <!-- extras for balance -->
-    <circle cx="410" cy="108" r="2.5" opacity="0.68"/>
-    <circle cx="628" cy="920" r="2.2" opacity="0.60"/>
-  </g>
+  <rect width="1024" height="1024" fill="#070714"/>
+  <circle cx="512" cy="512" r="496" fill="url(#glow)"/>
+  <circle cx="512" cy="512" r="450" fill="none" stroke="#F5C842" stroke-width="15" stroke-opacity="0.6"/>
+  <circle cx="512" cy="512" r="348" fill="none" stroke="#F5C842" stroke-width="6" stroke-opacity="0.18"/>
+  <line x1="512.0" y1="338.0" x2="512.0" y2="62.0" stroke="#F5C842" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="686.0" y1="512.0" x2="962.0" y2="512.0" stroke="#F5C842" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="512.0" y1="686.0" x2="512.0" y2="962.0" stroke="#F5C842" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="338.0" y1="512.0" x2="62.0" y2="512.0" stroke="#F5C842" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="670.5" y1="237.5" x2="737.0" y2="122.3" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="786.5" y1="353.5" x2="901.7" y2="287.0" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="786.5" y1="670.5" x2="901.7" y2="737.0" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="670.5" y1="786.5" x2="737.0" y2="901.7" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="353.5" y1="786.5" x2="287.0" y2="901.7" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="237.5" y1="670.5" x2="122.3" y2="737.0" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="237.5" y1="353.5" x2="122.3" y2="287.0" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="353.5" y1="237.5" x2="287.0" y2="122.3" stroke="#F5C842" stroke-width="10" stroke-opacity="0.4" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="246.1" y2="358.5" stroke="#F5C842" stroke-width="22" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="591.7" y2="558.0" stroke="#F5C842" stroke-width="14" stroke-opacity="0.5" stroke-linecap="round"/>
+  <polygon points="246.1,302.5 260.7,343.9 302.1,358.5 260.7,373.1 246.1,414.5 231.6,373.1 190.1,358.5 231.6,343.9" fill="#F5C842"/>
+  <circle cx="512" cy="512" r="36" fill="#F5C842"/>
+  <circle cx="512" cy="512" r="15" fill="white" fill-opacity="0.4"/>
 </svg>

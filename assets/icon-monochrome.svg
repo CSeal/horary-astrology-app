@@ -1,13 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- Android monochrome icon — single white layer, transparent background.
-       Used for notification icons and Android 13+ themed/monochrome adaptive icons. -->
-
-  <!-- Star glyph in pure white -->
-  <polygon
-    points="512,282 547.2,427 674.6,349.4 597,476.8 742,512 597,547.2 674.6,674.6 547.2,597 512,742 476.8,597 349.4,674.6 427,547.2 282,512 427,476.8 349.4,349.4 476.8,427"
-    fill="#FFFFFF"
-  />
-
-  <!-- Center dot -->
-  <circle cx="512" cy="512" r="26" fill="#FFFFFF"/>
+<svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="512" cy="512" r="450" fill="none" stroke="white" stroke-width="15" stroke-opacity="0.85"/>
+  <circle cx="512" cy="512" r="348" fill="none" stroke="white" stroke-width="6" stroke-opacity="0.35"/>
+  <line x1="512.0" y1="338.0" x2="512.0" y2="62.0" stroke="white" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="686.0" y1="512.0" x2="962.0" y2="512.0" stroke="white" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="512.0" y1="686.0" x2="512.0" y2="962.0" stroke="white" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="338.0" y1="512.0" x2="62.0" y2="512.0" stroke="white" stroke-width="18" stroke-opacity="0.9" stroke-linecap="round"/>
+  <line x1="670.5" y1="237.5" x2="737.0" y2="122.3" stroke="white" stroke-width="10" stroke-opacity="0.55" stroke-linecap="round"/>
+  <line x1="786.5" y1="353.5" x2="901.7" y2="287.0" stroke="white" stroke-width="10" stroke-opacity="0.55" stroke-linecap="round"/>
+  <line x1="786.5" y1="670.5" x2="901.7" y2="737.0" stroke="white" stroke-width="10" stroke-opacity="0.55" stroke-linecap="round"/>
+  <line x1="670.5" y1="786.5" x2="737.0" y2="901.7" stroke="white" stroke-width="10" stroke-opacity="0.55" stroke-linecap="round"/>
+  <line x1="353.5" y1="786.5" x2="287.0" y2="901.7" stroke="white" stroke-width="10" stroke-opacity="0.55" stroke-linecap="round"/>
+  <line x1="237.5" y1="670.5" x2="122.3" y2="737.0" stroke="white" stroke-width="10" stroke-opacity="0.55" stroke-linecap="round"/>
+  <line x1="237.5" y1="353.5" x2="122.3" y2="287.0" stroke="white" stroke-width="10" stroke-opacity="0.55" stroke-linecap="round"/>
+  <line x1="353.5" y1="237.5" x2="287.0" y2="122.3" stroke="white" stroke-width="10" stroke-opacity="0.55" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="246.1" y2="358.5" stroke="white" stroke-width="22" stroke-linecap="round"/>
+  <line x1="512" y1="512" x2="591.7" y2="558.0" stroke="white" stroke-width="14" stroke-opacity="0.6" stroke-linecap="round"/>
+  <polygon points="246.1,302.5 260.7,343.9 302.1,358.5 260.7,373.1 246.1,414.5 231.6,373.1 190.1,358.5 231.6,343.9" fill="white"/>
+  <circle cx="512" cy="512" r="36" fill="white"/>
+  <circle cx="512" cy="512" r="15" fill="white" fill-opacity="0.55"/>
 </svg>
