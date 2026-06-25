@@ -3,6 +3,26 @@
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "app-publish-mcp": {
+      "command": "npx",
+      "args": ["-y", "app-publish-mcp"],
+      "env": {
+        "APPLE_KEY_ID": "8NQS9JA767",
+        "APPLE_ISSUER_ID": "5726f3a0-ca34-4403-a767-3dae735b72bc",
+        "APPLE_P8_PATH": "/Users/user/.expo/AuthKey_8NQS9JA767.p8",
+        "GOOGLE_SERVICE_ACCOUNT_PATH": "/Users/user/.expo/google-play-service-account.json"
+      }
+    },
+    "expo-eas": {
+      "url": "https://mcp.expo.dev/mcp"
+    },
+    "appeeky": {
+      "type": "http",
+      "url": "https://mcp.appeeky.com/mcp",
+      "headers": {
+        "Authorization": "Bearer apk_5d3db8ef0c73cb2e84ae274f3eafdbe6610f158d44591e5587788d3ae897a87e"
+      }
     }
   }
 }

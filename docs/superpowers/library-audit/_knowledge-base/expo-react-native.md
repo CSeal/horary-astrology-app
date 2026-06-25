@@ -305,3 +305,32 @@ Sources: Context7 (/facebook/react-native-website v0.85/0.86, forward-compatible
 - No documented API auto-dismisses keyboard on `router.push`/`router.replace`. iOS often resigns first-responder incidentally; Android frequently keeps the keyboard open. Do NOT assume navigation dismisses.
 - Reliable: explicit `Keyboard.dismiss()` before navigating, or `useFocusEffect(() => () => Keyboard.dismiss())` from `'expo-router'` (blur cleanup). `useFocusEffect` import + cleanup signature verified.
 - SDK 55 keyboard-handling guide steers multi-input forms toward `react-native-keyboard-controller` (`KeyboardAwareScrollView`/`KeyboardToolbar`) — NOT a current dep; evaluate only if stacked inputs exist.
+
+---
+
+## Updated 2026-06-10 — List performance libraries (FlashList / Legend List / FlatList / BottomSheetFlatList)
+
+Sources: Context7 `/shopify/flash-list/v2.3.1` + `/gorhom/react-native-bottom-sheet`; npmjs.com/package/@shopify/flash-list; npmjs.com/package/@legendapp/list; github.com/Shopify/flash-list; github.com/software-mansion/react-native-gesture-handler issues #3141/#3307/#3344; nativewind.dev/v5 third-party-components + cssInterop docs.
+
+### @shopify/flash-list — latest 2.3.1 (~Mar 2026), NOT currently a repo dep — 🟢 if added
+- Actively maintained (commits through Jun 2026). v2 is a ground-up rewrite, JS-only, **NEW ARCHITECTURE ONLY** — will not run on old arch. SDK 55 / RN 0.83 default is new arch, so compatible.
+- v2 **removed** size-estimation props: `estimatedItemSize`, `estimatedListSize`, `estimatedFirstItemOffset` (no-ops/deprecated). Also dropped: `onBlankArea`, `disableHorizontalListHeightMeasurement`, `disableAutoLayout`, `inverted`. Auto-sizing now; no estimates needed.
+- `MasonryFlashList` removed → use `<FlashList masonry numColumns={n} />`. `overrideItemLayout` now only sets `layout.span` (no `layout.size`). `getColumnFlex` unsupported.
+- `maintainVisibleContentPosition` enabled BY DEFAULT in v2. `drawDistance` replaces blank-area tuning.
+- className: FlashList does NOT accept `className` out of the box. NativeWind needs `cssInterop`/`styled` mapping: map `className→style`, `contentContainerClassName→contentContainerStyle`. NativeWind v5 deprecated `cssInterop`/`remapProps` in favor of unified `styled()` (same options/return). Apply once at module scope, not per-render.
+- ⚠️ Recycling rules: NO `key` prop on item/children (kills recycling); reset any `useState` in items on prop change (recycled views retain state).
+
+### ReanimatedSwipeable + FlashList — 🟠 KNOWN PERFORMANCE TRAP
+- RNGH issues #3141, #3307, #3344 (OPEN as of 2026-06-10): wrapping each `renderItem` in `ReanimatedSwipeable` ('react-native-gesture-handler/ReanimatedSwipeable') causes large FPS drop (~2x slower, esp. Android). Works but janky.
+- Mitigation reported in issues: legacy `Swipeable` ('react-native-gesture-handler/Swipeable') performs notably better than `ReanimatedSwipeable` inside recycled lists. Legacy Swipeable is deprecated upstream, so this is a tradeoff. Validate FPS on a low-end Android device before committing swipe-per-row.
+
+### @legendapp/list (Legend List) — REAL, on npm, ~40k weekly downloads — 🟢 maintained alternative
+- Confirmed real: npmjs.com/package/@legendapp/list, github.com/LegendApp/legend-list. Pure-TS, no native deps, FlatList/FlashList-compatible API, strong dynamic-item-size handling. v2 + v3 docs live. Subpaths: `@legendapp/list/react-native`, `@legendapp/list/react`.
+
+### React Native FlatList — official smooth-scroll props
+- `removeClippedSubviews` (Android perf; can cause blank/clipped content on iOS — test), `windowSize` (default 21; lower to reduce mem, raise to reduce blanks), `maxToRenderPerBatch` (items per batch; raise for fill, lower for responsiveness), `initialNumToRender` (cover first viewport; avoid over-rendering), `getItemLayout` (skip async measurement when rows are fixed-height — biggest win), `keyboardShouldPersistTaps` (`'never'|'always'|'handled'` — set `'handled'` so taps work while keyboard open).
+
+### @gorhom/bottom-sheet 5.2.14 — BottomSheetFlatList prop passthrough
+- `BottomSheetFlatList` forwards standard FlatList props (`data`, `renderItem`, `keyExtractor`, `contentContainerStyle`, `refreshing`/`onRefresh`, and the perf props above) to the underlying FlatList.
+- **IGNORED props** (managed internally for gesture sync): `scrollEventThrottle`, `decelerationRate`, `onScrollBeginDrag`. Setting them has no effect.
+- Requires `GestureHandlerRootView` ancestor. There is NO `BottomSheetFlashList` export — to put FlashList in a sheet use `renderScrollComponent` / createBottomSheet scrollable wiring, not a drop-in component.

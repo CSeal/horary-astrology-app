@@ -3,6 +3,8 @@
 // Tap entry → /result/[id]. Long-press → delete confirmation (Alert).
 
 import { useMemo, useEffect } from 'react';
+// eslint-disable-next-line no-restricted-imports
+import { SectionList } from 'react-native'; // not in @/tw; uses style prop, not className
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import * as Haptics from 'expo-haptics';
@@ -15,7 +17,7 @@ import {
   withDelay,
   withRepeat,
 } from 'react-native-reanimated';
-import { SafeAreaView, ScrollView, View, Text, AnimatedView } from '@/tw';
+import { SafeAreaView, View, Text, AnimatedView } from '@/tw';
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { JournalItem } from '@/components/JournalItem';
 import { StreakBadge } from '@/components/StreakBadge';
@@ -37,12 +39,17 @@ const DATE_LOCALE_MAP: Record<SupportedLocale, string> = {
   es: 'es-ES',
 };
 
-interface MonthGroup {
-  label: string;
-  entries: JournalEntry[];
+interface SectionEntry {
+  entry: JournalEntry;
+  flatIndex: number;
 }
 
-function groupByMonth(entries: JournalEntry[], locale: string): MonthGroup[] {
+interface JournalSection {
+  title: string;
+  data: SectionEntry[];
+}
+
+function groupByMonth(entries: JournalEntry[], locale: string): { label: string; entries: JournalEntry[] }[] {
   const sorted = [...entries].sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   );
@@ -80,10 +87,14 @@ export default function JournalScreen() {
   const { current: currentStreak } = useStreak();
   const updateOutcome = useQuestionsStore((s) => s.updateOutcome);
 
-  const groups = useMemo(
-    () => groupByMonth(entries, i18n.language),
-    [entries, i18n.language]
-  );
+  const sections = useMemo((): JournalSection[] => {
+    const monthGroups = groupByMonth(entries, i18n.language);
+    let flatIndex = 0;
+    return monthGroups.map((g) => ({
+      title: g.label,
+      data: g.entries.map((entry) => ({ entry, flatIndex: flatIndex++ })),
+    }));
+  }, [entries, i18n.language]);
 
   const enterOp = useSharedValue(0);
   const enterY = useSharedValue(20);
@@ -144,42 +155,36 @@ export default function JournalScreen() {
           <StreakBadge streak={currentStreak} />
         </View>
 
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="px-5 pb-8 gap-6"
+        <SectionList
+          sections={sections}
+          keyExtractor={(item) => item.entry.id}
+          renderSectionHeader={({ section }) => (
+            <Text className="font-inter-semibold text-xs text-accent-gold tracking-widest mb-2 mt-2">
+              {section.title}
+            </Text>
+          )}
+          renderItem={({ item: { entry, flatIndex } }) => (
+            <JournalItem
+              entry={entry}
+              index={flatIndex}
+              onPress={() => router.push(`/result/${entry.id}`)}
+              onDelete={() => { void deleteEntry(entry.id); }}
+              outcome={entry.outcome}
+              onOutcome={(oc) => { void updateOutcome(entry.id, oc); }}
+            />
+          )}
+          ItemSeparatorComponent={() => <View className="h-3" />}
+          SectionSeparatorComponent={({ leadingItem }) =>
+            leadingItem !== null ? <View className="h-4" /> : null
+          }
+          style={{ flex: 1 }}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 32 }}
           removeClippedSubviews
-        >
-          {(() => {
-            let runningIndex = 0;
-            return groups.map((group) => (
-              <View key={group.label} className="gap-3">
-                <Text className="font-inter-semibold text-xs text-accent-gold tracking-widest">
-                  {group.label}
-                </Text>
-                <View className="gap-3">
-                  {group.entries.map((entry) => {
-                    const itemIndex = runningIndex++;
-                    return (
-                      <JournalItem
-                        key={entry.id}
-                        entry={entry}
-                        index={itemIndex}
-                        onPress={() => router.push(`/result/${entry.id}`)}
-                        onDelete={() => {
-                          void deleteEntry(entry.id);
-                        }}
-                        outcome={entry.outcome}
-                        onOutcome={(oc) => {
-                          void updateOutcome(entry.id, oc);
-                        }}
-                      />
-                    );
-                  })}
-                </View>
-              </View>
-            ));
-          })()}
-        </ScrollView>
+          initialNumToRender={10}
+          maxToRenderPerBatch={5}
+          windowSize={11}
+          stickySectionHeadersEnabled={false}
+        />
       </SafeAreaView>
     </CosmosBackground>
   );

@@ -12,7 +12,8 @@
       "Edit(/.claude/skills/**)",
       "Bash(adb connect *)",
       "Bash(adb devices *)",
-      "Bash(adb pair *)"
+      "Bash(adb pair *)",
+      "mcp__app-publish-mcp__apple_update_app_info_localization"
     ],
     "additionalDirectories": [
       "/tmp",

@@ -271,6 +271,9 @@ export function LocationPickerSheet({
                 `${item.latitude}-${item.longitude}-${idx}`
               }
               keyboardShouldPersistTaps="handled"
+              initialNumToRender={8}
+              maxToRenderPerBatch={8}
+              windowSize={5}
               renderItem={({ item, index }) => (
                 <ResultItem
                   item={item}

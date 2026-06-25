@@ -74,13 +74,12 @@ WAS DU ERHÄLTST
 - Stärke-Indikator des Horoskops (Radikalitäts-Score 0–100)
 - Kursloser-Mond-Warnung mit Lillys Ausnahmezeichen
 - Fragenjournal: alle Deutungen lokal auf deinem Gerät gespeichert
-- Vollständige Deutsch- und Russisch-Oberfläche (Englisch ebenfalls verfügbar)
 
 WARUM ES ANDERS IST
 
 Jede andere Stundenhoroskop-App zeigt dir ein rohes Horoskop und erwartet, dass du es selbst deutest. Hora deutet es für dich — mit demselben klassischen Regelwerk (wesentliche Würden, hausbasierte Signifikatoren, Rezeption), das ein ausgebildeter Astrologe verwenden würde.
 
-Andere Stundenhoroskop-Tools (Morinus, Janus, Solar Fire) sind web- oder Windows-only. Hora ist die erste schöne, native mobile Stundenhoroskop-App für iOS und Android.
+Andere Stundenhoroskop-Tools (Morinus, Janus, Solar Fire) sind web- oder Desktop-only. Hora ist die erste schöne, native mobile Stundenhoroskop-App.
 
 FRAGEN, DIE GESTELLT WERDEN
 
@@ -98,7 +97,7 @@ Alle Deutungen werden lokal auf deinem Gerät gespeichert. Kein Konto erforderli
 
 Nur für Unterhaltungs- und Bildungszwecke. Die Ergebnisse ersetzen keine professionelle Beratung.
 
-SPRACHEN: Deutsch, Русский (Russisch), English
+SPRACHEN: English · Русский · Deutsch · Français · Español · Português · Українська
 ```
 
 Character count: approximately 2,600 (within 4,000 limit)

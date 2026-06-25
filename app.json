@@ -14,16 +14,16 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.hora.app",
-      "appleTeamId": "DGAHHMV358",
+      "bundleIdentifier": "io.hora.app",
+      "appleTeamId": "T29RJZB64F",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Your exact location at the moment of asking is required to cast an accurate horary chart.",
         "NSUserNotificationUsageDescription": "We'll remind you to mark the outcome of your horary readings."
       }
     },
     "android": {
-      "package": "com.hora.app",
-      "softwareKeyboardLayoutMode": "pan",
+      "package": "io.hora.app",
+      "softwareKeyboardLayoutMode": "resize",
       "adaptiveIcon": {
         "backgroundColor": "#070714",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -38,6 +38,7 @@
     },
     "plugins": [
       "./plugins/withAutoSigning",
+      "./plugins/withAndroidSigning",
       ["@sentry/react-native", {
         "organization": "hora",
         "project": "hora"

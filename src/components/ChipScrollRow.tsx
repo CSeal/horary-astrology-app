@@ -128,6 +128,8 @@ export function ChipScrollRow({
         horizontal
         showsHorizontalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        decelerationRate="fast"
+        nestedScrollEnabled
         onLayout={handleContainerLayout}
         style={{ flexGrow: 0 }}
         contentContainerStyle={{ gap: 8, paddingRight: 8 }}

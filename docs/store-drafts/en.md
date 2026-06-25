@@ -25,9 +25,9 @@ Character count: 28
 
 **Android Short Description (max 80 chars):**
 ```
-Classical horary astrology + AI interpretation. Instant yes/no answers. Free.
+Classical horary astrology + AI interpretation. Instant yes/no answers.
 ```
-Character count: 78
+Character count: 71
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
@@ -72,15 +72,12 @@ WHAT YOU GET
 - Chart Strength indicator (radicality score 0–100) — how reliable is this chart to judge?
 - Void-of-course Moon warning when applicable, with Lilly's exception signs noted
 - Question journal: all your readings saved locally on your device, grouped by month
-- Full English and Russian interface
 
 WHY IT'S DIFFERENT
 
 Every other horary app shows you a raw chart and expects you to interpret it yourself. Hora interprets it for you — using the same classical rulebook (essential dignities, house-based significators, reception) that a trained astrologer would use.
 
-Every other horary app costs $15–$300 upfront. Hora is free to try — 5 questions per month, no commitment.
-
-Other horary tools (Morinus, Janus, Solar Fire) are web-only or Windows-only. Hora is the first beautiful, native mobile horary app built for both iOS and Android.
+Other horary tools (Morinus, Janus, Solar Fire) are web-only or desktop-only. Hora is the first beautiful, native mobile horary app.
 
 QUESTIONS PEOPLE ASK
 
@@ -104,7 +101,7 @@ All readings are stored locally on your device. No account required. No personal
 
 For entertainment and educational purposes only. Results are not professional advice.
 
-LANGUAGES: English, Русский (Russian)
+LANGUAGES: English · Русский · Deutsch · Français · Español · Português · Українська
 ```
 
 Character count: approximately 2,780 (well within 4,000 limit)

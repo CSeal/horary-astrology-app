@@ -128,6 +128,7 @@ export default function TimingScreen() {
         <ScrollView
           className="flex-1"
           contentContainerClassName="px-5 pb-8 gap-4"
+          removeClippedSubviews
         >
           <AnimatedView style={bodyStyle} className="gap-4">
             {/* Question + verdict badge for context */}

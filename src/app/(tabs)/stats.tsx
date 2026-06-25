@@ -194,6 +194,7 @@ export default function StatsScreen() {
         <ScrollView
           className="flex-1"
           contentContainerClassName="px-5 pb-10 gap-6"
+          removeClippedSubviews
         >
           {/* Summary card */}
           <View className="flex-row bg-bg-card border border-border rounded-xl px-4 py-4">

@@ -182,6 +182,7 @@ export default function ResultScreen() {
         <ScrollView
           className="flex-1"
           contentContainerClassName="px-5 pb-4 gap-3.5"
+          removeClippedSubviews
         >
           <AnimatedView style={bodyStyle} className="gap-3.5">
             <Text className="font-cormorant text-base text-text-secondary italic">

@@ -10,6 +10,8 @@ android/
 *.p12
 *.key
 *.mobileprovision
+*service-account*.json
+project-pc1-*.json
 *.orig.*
 web-build/
 

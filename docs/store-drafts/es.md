@@ -27,9 +27,9 @@ Character count: 30
 
 **Android Short Description (max 80 chars):**
 ```
-Astrología horaria clásica + IA. Respuestas sí/no instantáneas. Gratis.
+Astrología horaria clásica + IA. Respuestas sí/no instantáneas.
 ```
-Character count: 71
+Character count: 63
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
@@ -74,13 +74,12 @@ LO QUE OBTIENES
 - Indicador de fuerza de la carta (puntuación de radicalidad 0–100)
 - Advertencia de Luna vacía de curso con los signos de excepción de Lilly
 - Diario de preguntas: todas tus lecturas guardadas localmente en tu dispositivo
-- Interfaz completa en español, ruso e inglés
 
 POR QUÉ ES DIFERENTE
 
 Cada otra app horaria te muestra una carta cruda y espera que la interpretes tú mismo. Hora la interpreta por ti — usando el mismo manual clásico (dignidades esenciales, significadores de casas, recepción) que usaría un astrólogo formado.
 
-Las otras herramientas horarias (Morinus, Janus, Solar Fire) solo funcionan en web o en Windows. Hora es la primera app horaria nativa y hermosa para iOS y Android.
+Las otras herramientas horarias (Morinus, Janus, Solar Fire) solo funcionan en web o en escritorio. Hora es la primera app horaria nativa y hermosa para móvil.
 
 PREGUNTAS QUE LA GENTE HACE
 
@@ -98,7 +97,7 @@ Todas las lecturas se almacenan localmente en tu dispositivo. No se requiere cue
 
 Solo para entretenimiento y fines educativos. Los resultados no sustituyen el consejo profesional.
 
-IDIOMAS: Español, Русский (Ruso), English
+IDIOMAS: English · Русский · Deutsch · Français · Español · Português · Українська
 ```
 
 Character count: approximately 2,500 (within 4,000 limit)

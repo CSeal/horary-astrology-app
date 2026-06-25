@@ -1,10 +1,15 @@
 // src/app/(tabs)/settings.tsx
 // Settings screen — language toggle, timezone display, monthly counter,
 // API key management (via SecureStore).
-// Four cards stagger in from below; the monthly progress bar fills with timing.
+// Cards stagger in from below on mount.
+//
+// Re-render isolation:
+//   ApiKeySection  — owns editingKey/apiKeyInput/savingKey; keyboardDidHide listener.
+//                    Keystroke re-renders stay local, never propagate to other sections.
+//   NotificationsSection — owns notifPermissionDenied state.
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { Alert, Share, Linking, Switch, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import { Alert, Share, Linking, Switch, Keyboard, type ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import * as Haptics from 'expo-haptics';
@@ -23,10 +28,12 @@ import {
 import {
   useSharedValue,
   useAnimatedStyle,
+  useAnimatedKeyboard,
   withSpring,
   withTiming,
   withDelay,
   type SharedValue,
+  type AnimatedStyle,
 } from 'react-native-reanimated';
 import {
   AnimatedView,
@@ -69,93 +76,48 @@ const LANGUAGES: { code: SupportedLocale; flag: string; label: string }[] = [
   { code: 'es', flag: '🇪🇸', label: 'Español' },
 ];
 
-export default function SettingsScreen() {
-  const { t, i18n } = useTranslation();
-  const locale = useSettingsStore((s) => s.locale);
-  const setLocale = useSettingsStore((s) => s.setLocale);
+// ─── ApiKeySection ────────────────────────────────────────────────────────────
+// Owns editingKey / apiKeyInput / savingKey so that controlled-input keystrokes
+// do NOT trigger a re-render of the parent screen or any other section.
+
+interface ApiKeySectionProps {
+  animStyle: AnimatedStyle<ViewStyle>;
+  // Reports edit-mode transitions so the parent can size the keyboard spacer
+  // only while the key is actually being edited (no idle empty space).
+  onEditingChange?: (editing: boolean) => void;
+}
+
+const ApiKeySection = React.memo(function ApiKeySection({
+  animStyle,
+  onEditingChange,
+}: ApiKeySectionProps) {
+  const { t } = useTranslation();
   const apiKeySource = useSettingsStore((s) => s.apiKeySource);
   const setApiKeySource = useSettingsStore((s) => s.setApiKeySource);
   const setHasApiKey = useSettingsStore((s) => s.setHasApiKey);
-  const locationSource = useSettingsStore((s) => s.locationSource);
-  const setLocationSource = useSettingsStore((s) => s.setLocationSource);
-  const homeLocation = useSettingsStore((s) => s.homeLocation);
-  const setHomeLocation = useSettingsStore((s) => s.setHomeLocation);
-  const zodiacType = useSettingsStore((s) => s.zodiacType);
-  const setZodiacType = useSettingsStore((s) => s.setZodiacType);
-  const notificationsEnabled = useSettingsStore((s) => s.notificationsEnabled);
-  const setNotificationsEnabled = useSettingsStore((s) => s.setNotificationsEnabled);
-  const notificationDelayDays = useSettingsStore((s) => s.notificationDelayDays);
-  const setNotificationDelayDays = useSettingsStore((s) => s.setNotificationDelayDays);
-  const [notifPermissionDenied, setNotifPermissionDenied] = useState(false);
+
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [savingKey, setSavingKey] = useState(false);
   const [editingKey, setEditingKey] = useState(false);
-  const [timezone] = useState<string>(
-    () => Intl.DateTimeFormat().resolvedOptions().timeZone
-  );
 
-  // Home-location picker (sets the default/fallback city).
-  const homePickerRef = useRef<LocationPickerSheetRef>(null);
-  const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
+  // Surface edit-mode to the parent so it can grow the keyboard spacer only
+  // while editing (avoids an always-present empty gap below the content).
+  useEffect(() => {
+    onEditingChange?.(editingKey);
+  }, [editingKey, onEditingChange]);
 
-  const handleSelectDevice = useCallback(() => {
-    Keyboard.dismiss();
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    void setLocationSource('device');
-  }, [setLocationSource]);
-
-  // Switching to "manual" only makes sense with a city: reuse the saved one,
-  // otherwise open the picker so the user can choose.
-  const handleSelectManual = useCallback(() => {
-    Keyboard.dismiss();
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    if (homeLocation) {
-      void setLocationSource('manual');
-    } else {
-      homePickerRef.current?.present();
-    }
-  }, [homeLocation, setLocationSource]);
-
-  const handleOpenHomePicker = useCallback(() => {
-    Keyboard.dismiss();
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    homePickerRef.current?.present();
-  }, []);
-
-  const handlePickHome = useCallback(
-    (loc: LocationOverride) => {
-      void setHomeLocation(loc); // also flips source → 'manual'
-    },
-    [setHomeLocation]
-  );
-
-  const handleHomeUseGps = useCallback(() => {
-    void setLocationSource('device');
-  }, [setLocationSource]);
-
-  // Hidden debug mode: tap the version label 7× to open the developer sheet.
-  const debugSheetRef = useRef<DebugSheetRef>(null);
-  const { registerTap, tapCount, requiredTaps, showDotsFrom } = useDebugTrigger(() =>
-    debugSheetRef.current?.present()
-  );
-  const appVersion = Constants.expoConfig?.version ?? '1.0.0';
-
-  // Detect whether a personal key is already present.
+  // Detect whether a personal key is already stored on mount.
   useEffect(() => {
     let cancelled = false;
-    (async () => {
-      const stored = await secureKeyService.getKey();
-      if (!cancelled) {
-        setApiKeySource(stored ? 'personal' : 'default');
-      }
-    })();
+    secureKeyService.getKey().then((stored) => {
+      if (!cancelled) setApiKeySource(stored ? 'personal' : 'default');
+    });
     return () => {
       cancelled = true;
     };
   }, [setApiKeySource]);
 
-  // If the keyboard is dismissed for any reason (swipe, other modal opens, etc.)
-  // while in edit mode, reset back to the "show key status" view.
+  // Auto-reset edit mode whenever the keyboard is dismissed for any reason.
   useEffect(() => {
     const sub = Keyboard.addListener('keyboardDidHide', () => {
       setEditingKey((prev) => {
@@ -169,8 +131,171 @@ export default function SettingsScreen() {
     return () => sub.remove();
   }, []);
 
-  // Outcome reminder toggle. Turning ON requires OS notification permission;
-  // if denied, revert to off and surface a banner pointing to device Settings.
+  const handleSaveKey = useCallback(async () => {
+    const trimmed = apiKeyInput.trim();
+    if (!trimmed) return;
+    Keyboard.dismiss();
+    setSavingKey(true);
+    try {
+      await secureKeyService.setKey(trimmed);
+      setApiKeySource('personal');
+      setHasApiKey(true);
+      setApiKeyInput('');
+      setEditingKey(false);
+    } catch {
+      Alert.alert(t('errors.storageError'));
+    } finally {
+      setSavingKey(false);
+    }
+  }, [apiKeyInput, setApiKeySource, setHasApiKey, t]);
+
+  const handleStartEditKey = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    setApiKeyInput('');
+    setEditingKey(true);
+  }, []);
+
+  const handleCancelEditKey = useCallback(() => {
+    Keyboard.dismiss();
+    setApiKeyInput('');
+    setEditingKey(false);
+  }, []);
+
+  const handleClearKey = useCallback(() => {
+    Keyboard.dismiss();
+    Alert.alert(
+      t('settings.apiKeyRemove'),
+      '',
+      [
+        { text: t('journal.deleteCancel'), style: 'cancel' },
+        {
+          text: t('settings.apiKeyRemove'),
+          style: 'destructive',
+          onPress: async () => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+            try {
+              await secureKeyService.deleteKey();
+              setApiKeySource('default');
+              setHasApiKey(false);
+            } catch {
+              Alert.alert(t('errors.storageError'));
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  }, [setApiKeySource, setHasApiKey, t]);
+
+  return (
+    <AnimatedView style={animStyle} className="gap-2">
+      <View className="flex-row items-center gap-2">
+        <Key color={colors.accentGold} size={typography.sm} />
+        <Text
+          className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+          accessibilityRole="header"
+        >
+          {t('settings.apiKeySection')}
+        </Text>
+      </View>
+      <Card elevated>
+        <Text className="font-inter text-base text-text-primary mb-1">
+          {t('settings.apiKeyLabel')}
+        </Text>
+        <Text className="font-inter text-xs text-text-secondary mb-3">
+          {apiKeySource === 'personal'
+            ? t('settings.apiKeySourcePersonal')
+            : t('settings.apiKeySourceDefault')}
+        </Text>
+
+        {editingKey ? (
+          <>
+            <TextInput
+              value={apiKeyInput}
+              onChangeText={setApiKeyInput}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={handleSaveKey}
+              placeholder={t('settings.apiKeyPlaceholder')}
+              placeholderTextColor={colors.textDisabled}
+              className="bg-bg-surface rounded-xl px-4 min-h-12 font-inter text-base text-text-primary border border-border"
+            />
+            <View className="mt-3 gap-2">
+              <Button
+                label={t('settings.apiKeySave')}
+                variant="primary"
+                size="sm"
+                onPress={handleSaveKey}
+                disabled={savingKey || apiKeyInput.trim().length === 0}
+              />
+              <Button
+                label={t('journal.deleteCancel')}
+                variant="secondary"
+                size="sm"
+                onPress={handleCancelEditKey}
+              />
+            </View>
+          </>
+        ) : apiKeySource === 'personal' ? (
+          <>
+            <View className="flex-row items-center gap-2">
+              <Text className="flex-1 font-mono text-base text-text-primary tracking-widest">
+                {'●●●●●●●●●●●●●●●●'}
+              </Text>
+              <TouchableOpacity
+                onPress={handleStartEditKey}
+                className="min-h-11 px-3 flex-row items-center justify-center gap-1.5"
+                accessibilityRole="button"
+                accessibilityLabel={t('settings.apiKeyEdit')}
+              >
+                <Pencil color={colors.accentGold} size={typography.base} />
+                <Text className="font-inter-medium text-sm text-accent-gold">
+                  {t('settings.apiKeyEdit')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View className="mt-3">
+              <Button
+                label={t('settings.apiKeyRemove')}
+                variant="destructive"
+                size="sm"
+                onPress={handleClearKey}
+              />
+            </View>
+          </>
+        ) : (
+          <Button
+            label={t('settings.apiKeyPlaceholder')}
+            variant="secondary"
+            size="sm"
+            onPress={handleStartEditKey}
+          />
+        )}
+      </Card>
+    </AnimatedView>
+  );
+});
+
+// ─── NotificationsSection ─────────────────────────────────────────────────────
+// Owns notifPermissionDenied so that toggle re-renders stay local.
+
+interface NotificationsSectionProps {
+  animStyle: AnimatedStyle<ViewStyle>;
+}
+
+const NotificationsSection = React.memo(function NotificationsSection({
+  animStyle,
+}: NotificationsSectionProps) {
+  const { t } = useTranslation();
+  const notificationsEnabled = useSettingsStore((s) => s.notificationsEnabled);
+  const setNotificationsEnabled = useSettingsStore((s) => s.setNotificationsEnabled);
+  const notificationDelayDays = useSettingsStore((s) => s.notificationDelayDays);
+  const setNotificationDelayDays = useSettingsStore((s) => s.setNotificationDelayDays);
+  const [notifPermissionDenied, setNotifPermissionDenied] = useState(false);
+
   const handleToggleNotifications = useCallback(
     async (next: boolean) => {
       Keyboard.dismiss();
@@ -201,6 +326,141 @@ export default function SettingsScreen() {
     [setNotificationDelayDays]
   );
 
+  return (
+    <AnimatedView style={animStyle} className="gap-2">
+      <View className="flex-row items-center gap-2">
+        <Bell color={colors.accentGold} size={typography.sm} />
+        <Text
+          className="text-xs font-inter-semibold text-accent-gold tracking-widest"
+          accessibilityRole="header"
+        >
+          {t('notifications.sectionTitle')}
+        </Text>
+      </View>
+      <Card elevated>
+        <View className="flex-row items-center justify-between min-h-11">
+          <Text className="font-inter text-base text-text-primary">
+            {t('notifications.enabled')}
+          </Text>
+          <Switch
+            value={notificationsEnabled}
+            onValueChange={(next) => void handleToggleNotifications(next)}
+            trackColor={{ true: colors.accentGold, false: colors.border }}
+            thumbColor={colors.textInverse}
+            accessibilityLabel={t('notifications.enabled')}
+          />
+        </View>
+
+        {notifPermissionDenied && (
+          <View className="mt-2 rounded-xl bg-no/15 border border-no px-3 py-2">
+            <Text className="font-inter text-xs text-no">
+              {t('notifications.permissionDenied')}
+            </Text>
+          </View>
+        )}
+
+        {notificationsEnabled && (
+          <View className="mt-4">
+            <Text className="font-inter text-sm text-text-secondary mb-2">
+              {t('notifications.delayLabel')}
+            </Text>
+            <View className="flex-row gap-2">
+              {([7, 14, 30] as const).map((days) => {
+                const active = notificationDelayDays === days;
+                return (
+                  <TouchableOpacity
+                    key={days}
+                    onPress={() => handleSelectDelay(days)}
+                    className={`rounded-full px-3 py-1 ${
+                      active
+                        ? 'bg-accent-gold'
+                        : 'bg-bg-surface border border-border'
+                    }`}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: active }}
+                  >
+                    <Text
+                      className={`text-xs ${
+                        active
+                          ? 'text-text-inverse font-inter-semibold'
+                          : 'text-text-secondary font-inter'
+                      }`}
+                    >
+                      {t(`notifications.delay${days}`)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        )}
+
+        <Text className="font-inter text-xs text-text-secondary mt-3">
+          {t('notifications.hint')}
+        </Text>
+      </Card>
+    </AnimatedView>
+  );
+});
+
+// ─── SettingsScreen ───────────────────────────────────────────────────────────
+
+export default function SettingsScreen() {
+  const { t, i18n } = useTranslation();
+  const locale = useSettingsStore((s) => s.locale);
+  const setLocale = useSettingsStore((s) => s.setLocale);
+  const locationSource = useSettingsStore((s) => s.locationSource);
+  const setLocationSource = useSettingsStore((s) => s.setLocationSource);
+  const homeLocation = useSettingsStore((s) => s.homeLocation);
+  const setHomeLocation = useSettingsStore((s) => s.setHomeLocation);
+  const zodiacType = useSettingsStore((s) => s.zodiacType);
+  const setZodiacType = useSettingsStore((s) => s.setZodiacType);
+  const [timezone] = useState<string>(
+    () => Intl.DateTimeFormat().resolvedOptions().timeZone
+  );
+
+  const homePickerRef = useRef<LocationPickerSheetRef>(null);
+  const scrollRef = useRef<React.ComponentRef<typeof ScrollView>>(null);
+
+  const handleSelectDevice = useCallback(() => {
+    Keyboard.dismiss();
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    void setLocationSource('device');
+  }, [setLocationSource]);
+
+  const handleSelectManual = useCallback(() => {
+    Keyboard.dismiss();
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    if (homeLocation) {
+      void setLocationSource('manual');
+    } else {
+      homePickerRef.current?.present();
+    }
+  }, [homeLocation, setLocationSource]);
+
+  const handleOpenHomePicker = useCallback(() => {
+    Keyboard.dismiss();
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    homePickerRef.current?.present();
+  }, []);
+
+  const handlePickHome = useCallback(
+    (loc: LocationOverride) => {
+      void setHomeLocation(loc);
+    },
+    [setHomeLocation]
+  );
+
+  const handleHomeUseGps = useCallback(() => {
+    void setLocationSource('device');
+  }, [setLocationSource]);
+
+  const debugSheetRef = useRef<DebugSheetRef>(null);
+  const { registerTap, tapCount, requiredTaps, showDotsFrom } = useDebugTrigger(() =>
+    debugSheetRef.current?.present()
+  );
+  const appVersion = Constants.expoConfig?.version ?? '1.0.0';
+
   const handleLocaleChange = useCallback(
     async (next: SupportedLocale) => {
       Keyboard.dismiss();
@@ -211,41 +471,6 @@ export default function SettingsScreen() {
     [setLocale, i18n]
   );
 
-  const handleSaveKey = useCallback(async () => {
-    const trimmed = apiKeyInput.trim();
-    if (!trimmed) return;
-    Keyboard.dismiss();
-    setSavingKey(true);
-    try {
-      await secureKeyService.setKey(trimmed);
-      setApiKeySource('personal');
-      setHasApiKey(true);
-      setApiKeyInput('');
-      setEditingKey(false);
-    } catch {
-      Alert.alert(t('errors.storageError'));
-    } finally {
-      setSavingKey(false);
-    }
-  }, [apiKeyInput, setApiKeySource, setHasApiKey, t]);
-
-  const handleStartEditKey = useCallback(() => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    setApiKeyInput('');
-    setEditingKey(true);
-    // Wait for keyboard animation before scrolling — ~300ms covers both platforms.
-    setTimeout(() => {
-      scrollRef.current?.scrollToEnd({ animated: true });
-    }, 300);
-  }, []);
-
-  const handleCancelEditKey = useCallback(() => {
-    Keyboard.dismiss();
-    setApiKeyInput('');
-    setEditingKey(false);
-  }, []);
-
-  // FR-G03 — invite a friend via the native share sheet (UTM-tagged store link).
   const handleInviteFriend = useCallback(async () => {
     Keyboard.dismiss();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
@@ -262,39 +487,37 @@ export default function SettingsScreen() {
     }
   }, [t]);
 
-  // "Rate Hora" — direct App Store deep link (compliant for a button tap;
-  // distinct from the event-driven StoreReview.requestReview() prompt).
   const handleRateApp = useCallback(() => {
     Keyboard.dismiss();
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
     Linking.openURL(APP_STORE_REVIEW_URL).catch(() => {});
   }, []);
 
-  const handleClearKey = useCallback(() => {
-    Keyboard.dismiss();
-    Alert.alert(
-      t('settings.apiKeyRemove'),
-      '',
-      [
-        { text: t('journal.deleteCancel'), style: 'cancel' },
-        {
-          text: t('settings.apiKeyRemove'),
-          style: 'destructive',
-          onPress: async () => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
-            try {
-              await secureKeyService.deleteKey();
-              setApiKeySource('default');
-              setHasApiKey(false);
-            } catch {
-              Alert.alert(t('errors.storageError'));
-            }
-          },
-        },
-      ],
-      { cancelable: true }
-    );
-  }, [setApiKeySource, setHasApiKey, t]);
+  // ── Keyboard avoidance (edge-to-edge safe) ──────────────────────────────────
+  // Expo SDK 55 targets Android 15 (API 35) where edge-to-edge is enforced, so
+  // android:windowSoftInputMode no longer shrinks the window — the IME is a
+  // window inset we must consume ourselves. useAnimatedKeyboard reports the real
+  // keyboard height on the UI thread (works on iOS too); we render a spacer of
+  // that height at the end of the scroll content so the API-key section can be
+  // scrolled above the keyboard. react-native-edge-to-edge (Expo SDK 55 default)
+  // makes the hook inset-aware automatically — no options needed.
+  //
+  // The spacer only grows while the API key is being edited (isEditingKey),
+  // so there is no idle empty gap below the content the rest of the time.
+  const [isEditingKey, setIsEditingKey] = useState(false);
+  const keyboard = useAnimatedKeyboard();
+  const kbSpacerStyle = useAnimatedStyle(() => ({
+    height: isEditingKey ? keyboard.height.value : 0,
+  }));
+
+  // Once the keyboard is fully shown, scroll to the freshly-grown end so the
+  // API-key form sits just above the keyboard.
+  useEffect(() => {
+    const sub = Keyboard.addListener('keyboardDidShow', () => {
+      requestAnimationFrame(() => scrollRef.current?.scrollToEnd({ animated: true }));
+    });
+    return () => sub.remove();
+  }, []);
 
   // ── Card stagger (sections + title) ──
   const titleY = useSharedValue(20);
@@ -318,7 +541,7 @@ export default function SettingsScreen() {
     const spring = { damping: 12, stiffness: 90 };
     const fade = { duration: 350 };
     // Order: title, language, location, zodiac, timezone, share, notifications, key.
-    const sections: [SharedValue<number>, SharedValue<number>, number][] = [
+    const sectionList: [SharedValue<number>, SharedValue<number>, number][] = [
       [titleY, titleOp, 0],
       [s0Y, s0Op, 80],
       [s4Y, s4Op, 160],
@@ -328,7 +551,7 @@ export default function SettingsScreen() {
       [s6Y, s6Op, 480],
       [s3Y, s3Op, 560],
     ];
-    sections.forEach(([y, op, delay]) => {
+    sectionList.forEach(([y, op, delay]) => {
       y.value = withDelay(delay, withSpring(0, spring));
       op.value = withDelay(delay, withTiming(1, fade));
     });
@@ -368,13 +591,8 @@ export default function SettingsScreen() {
     transform: [{ translateY: s6Y.value }],
   }));
 
-
   return (
     <>
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
     <SafeAreaView className="flex-1 bg-bg-base" edges={['top']}>
       <ScrollView
         ref={scrollRef}
@@ -392,12 +610,11 @@ export default function SettingsScreen() {
             accessibilityRole="text"
             className="w-full items-center gap-1 mt-6"
           >
-            <AppLogo size={48} />
+            <AppLogo size={108} />
             <Text className="font-cormorant-bold text-3xl text-accent-gold">Hora</Text>
             <Text className="font-inter text-xs text-text-secondary">
               {t('settings.appVersion', { version: appVersion })}
             </Text>
-            {/* Progress dots — only appear from tap 15, show final 5 taps */}
             {tapCount >= showDotsFrom && (
               <View className="flex-row gap-1 mt-1">
                 {Array.from({ length: requiredTaps - showDotsFrom + 1 }).map((_, i) => (
@@ -672,176 +889,17 @@ export default function SettingsScreen() {
           </Card>
         </AnimatedView>
 
-        {/* OUTCOME REMINDERS */}
-        <AnimatedView style={s6Style} className="gap-2">
-          <View className="flex-row items-center gap-2">
-            <Bell color={colors.accentGold} size={typography.sm} />
-            <Text
-              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
-              accessibilityRole="header"
-            >
-              {t('notifications.sectionTitle')}
-            </Text>
-          </View>
-          <Card elevated>
-            <View className="flex-row items-center justify-between min-h-11">
-              <Text className="font-inter text-base text-text-primary">
-                {t('notifications.enabled')}
-              </Text>
-              <Switch
-                value={notificationsEnabled}
-                onValueChange={(next) => void handleToggleNotifications(next)}
-                trackColor={{ true: colors.accentGold, false: colors.border }}
-                thumbColor={colors.textInverse}
-                accessibilityLabel={t('notifications.enabled')}
-              />
-            </View>
+        {/* OUTCOME REMINDERS — isolated section, owns notifPermissionDenied */}
+        <NotificationsSection animStyle={s6Style} />
 
-            {notifPermissionDenied && (
-              <View className="mt-2 rounded-xl bg-no/15 border border-no px-3 py-2">
-                <Text className="font-inter text-xs text-no">
-                  {t('notifications.permissionDenied')}
-                </Text>
-              </View>
-            )}
+        {/* API KEY — isolated section, owns editingKey / apiKeyInput / savingKey */}
+        <ApiKeySection animStyle={s3Style} onEditingChange={setIsEditingKey} />
 
-            {notificationsEnabled && (
-              <View className="mt-4">
-                <Text className="font-inter text-sm text-text-secondary mb-2">
-                  {t('notifications.delayLabel')}
-                </Text>
-                <View className="flex-row gap-2">
-                  {([7, 14, 30] as const).map((days) => {
-                    const active = notificationDelayDays === days;
-                    return (
-                      <TouchableOpacity
-                        key={days}
-                        onPress={() => handleSelectDelay(days)}
-                        className={`rounded-full px-3 py-1 ${
-                          active
-                            ? 'bg-accent-gold'
-                            : 'bg-bg-surface border border-border'
-                        }`}
-                        accessibilityRole="button"
-                        accessibilityState={{ selected: active }}
-                      >
-                        <Text
-                          className={`text-xs ${
-                            active
-                              ? 'text-text-inverse font-inter-semibold'
-                              : 'text-text-secondary font-inter'
-                          }`}
-                        >
-                          {t(`notifications.delay${days}`)}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              </View>
-            )}
-
-            <Text className="font-inter text-xs text-text-secondary mt-3">
-              {t('notifications.hint')}
-            </Text>
-          </Card>
-        </AnimatedView>
-
-        {/* API KEY */}
-        <AnimatedView style={s3Style} className="gap-2">
-          <View className="flex-row items-center gap-2">
-            <Key color={colors.accentGold} size={typography.sm} />
-            <Text
-              className="text-xs font-inter-semibold text-accent-gold tracking-widest"
-              accessibilityRole="header"
-            >
-              {t('settings.apiKeySection')}
-            </Text>
-          </View>
-          <Card elevated>
-            <Text className="font-inter text-base text-text-primary mb-1">
-              {t('settings.apiKeyLabel')}
-            </Text>
-            <Text className="font-inter text-xs text-text-secondary mb-3">
-              {apiKeySource === 'personal'
-                ? t('settings.apiKeySourcePersonal')
-                : t('settings.apiKeySourceDefault')}
-            </Text>
-
-            {editingKey ? (
-              // ── Edit mode: enter a new key ──
-              <>
-                <TextInput
-                  value={apiKeyInput}
-                  onChangeText={setApiKeyInput}
-                  secureTextEntry
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  autoFocus
-                  returnKeyType="done"
-                  onSubmitEditing={handleSaveKey}
-                  placeholder={t('settings.apiKeyPlaceholder')}
-                  placeholderTextColor={colors.textDisabled}
-                  className="bg-bg-surface rounded-xl px-4 min-h-12 font-inter text-base text-text-primary border border-border"
-                />
-                <View className="mt-3 gap-2">
-                  <Button
-                    label={t('settings.apiKeySave')}
-                    variant="primary"
-                    size="sm"
-                    onPress={handleSaveKey}
-                    disabled={savingKey || apiKeyInput.trim().length === 0}
-                  />
-                  <Button
-                    label={t('journal.deleteCancel')}
-                    variant="secondary"
-                    size="sm"
-                    onPress={handleCancelEditKey}
-                  />
-                </View>
-              </>
-            ) : apiKeySource === 'personal' ? (
-              // ── View mode: a personal key is set ──
-              <>
-                <View className="flex-row items-center gap-2">
-                  <Text className="flex-1 font-mono text-base text-text-primary tracking-widest">
-                    {'●●●●●●●●●●●●●●●●'}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={handleStartEditKey}
-                    className="min-h-11 px-3 flex-row items-center justify-center gap-1.5"
-                    accessibilityRole="button"
-                    accessibilityLabel={t('settings.apiKeyEdit')}
-                  >
-                    <Pencil color={colors.accentGold} size={typography.base} />
-                    <Text className="font-inter-medium text-sm text-accent-gold">
-                      {t('settings.apiKeyEdit')}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View className="mt-3">
-                  <Button
-                    label={t('settings.apiKeyRemove')}
-                    variant="destructive"
-                    size="sm"
-                    onPress={handleClearKey}
-                  />
-                </View>
-              </>
-            ) : (
-              // ── View mode: no personal key, default in use ──
-              <Button
-                label={t('settings.apiKeyPlaceholder')}
-                variant="secondary"
-                size="sm"
-                onPress={handleStartEditKey}
-              />
-            )}
-          </Card>
-        </AnimatedView>
+        {/* Keyboard spacer — grows to the real IME height (edge-to-edge safe)
+            so the API-key form can scroll above the keyboard. */}
+        <AnimatedView style={kbSpacerStyle} />
       </ScrollView>
     </SafeAreaView>
-    </KeyboardAvoidingView>
     <DebugSheet ref={debugSheetRef} />
     <LocationPickerSheet
       ref={homePickerRef}
