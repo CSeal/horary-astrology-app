@@ -2,6 +2,7 @@
 created_by: claude-sonnet
 updated_by: claude-sonnet
 source_inputs: [aso-brief.md, prd-v1.md, src/i18n/es.ts]
+aso_research_updated: 2026-06-25
 reviewed_by: owner-pending
 ---
 
@@ -20,14 +21,9 @@ Character count: 22
 
 **iOS Subtitle (max 30 chars):**
 ```
-Pregunta. Respuesta al instante.
+Pregunta. Respuesta inmediata.
 ```
-Character count: 32 — OVER LIMIT. Use:
-
-```
-Pregunta. Respuesta instant.
-```
-Character count: 29
+Character count: 30
 
 **Android Short Description (max 80 chars):**
 ```
@@ -37,12 +33,19 @@ Character count: 71
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
-Words already indexed: Hora, Carta, Horaria, Pregunta, Respuesta, instant
+Words already indexed: hora, carta, horaria, pregunta, respuesta, inmediata
 
 ```
-astrología,horóscopo,clásica,veredicto,planetas,si,no,divinación,interpretación,IA,significador
+natal,astral,oráculo,predicción,zodiaco,divinación,horóscopo,astrología,tarot,mapa
 ```
-Character count: 95
+Character count: 83
+
+**Keyword rationale (updated 2026-06-25):**
+- "astrología,horóscopo" — высокий volume, не в title
+- "natal,astral,mapa" — chart-oriented аудитория
+- "oráculo,divinación,tarot" — prediction intent, cross-appeal
+- "predicción,zodiaco" — general discovery terms
+- Удалено: "clásica,veredicto,planetas,si,no,IA,significador" (низкий volume)
 
 ## Description (max 4000 chars)
 

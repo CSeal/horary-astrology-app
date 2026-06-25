@@ -2,6 +2,7 @@
 created_by: claude-sonnet
 updated_by: claude-sonnet
 source_inputs: [aso-brief.md, prd-v1.md, src/i18n/fr.ts]
+aso_research_updated: 2026-06-25
 reviewed_by: owner-pending
 ---
 
@@ -10,19 +11,19 @@ reviewed_by: owner-pending
 ## Title (max 30 chars)
 
 ```
-Hora: Thème Horaire
+Hora: Astrologie Horaire
 ```
-Character count: 22
+Character count: 24
 
-**Note:** "Thème Horaire" is the standard French term for Horary Chart. The accent on "Thème" is counted as one character.
+**Note:** "Astrologie Horaire" — точный французский термин для horary. "Astrologie" даёт высокочастотный трафик прямо в title, "horaire" — нулевая конкуренция во французском App Store.
 
 ## Subtitle / Short Description
 
 **iOS Subtitle (max 30 chars):**
 ```
-Posez. Obtenez une réponse.
+Pose ta question aux étoiles
 ```
-Character count: 27
+Character count: 28
 
 **Android Short Description (max 80 chars):**
 ```
@@ -32,12 +33,19 @@ Character count: 74
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
-Words already indexed: Hora, Thème, Horaire, Posez, réponse
+Words already indexed: hora, astrologie, horaire, pose, ta, question, aux, étoiles
 
 ```
-astrologie,horoscope,classique,verdict,planètes,oui,non,divination,interprétation,IA,significateur
+horoscope gratuit,thème natal,oracle,prédiction,thème astral,voyance,zodiaque,divination,natal
 ```
-Character count: 99
+Character count: 93
+
+**Keyword rationale (updated 2026-06-25):**
+- "horoscope gratuit" — высокий volume, конкурентно, но важно
+- "thème natal,thème astral" — chart-focused аудитория
+- "voyance" — французский термин для divination, специфичный запрос
+- "zodiaque,oracle,prédiction,divination,natal" — intent-matched
+- Удалено: "astrologie" (в title), "oui,non,IA,significateur,verdict,classique" (низкий volume)
 
 ## Description (max 4000 chars)
 

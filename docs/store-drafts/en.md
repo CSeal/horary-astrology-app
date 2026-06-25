@@ -2,6 +2,7 @@
 created_by: claude-sonnet
 updated_by: claude-sonnet
 source_inputs: [aso-brief.md, prd-v1.md, src/i18n/en.ts, competitor-research.md]
+aso_research_updated: 2026-06-25
 reviewed_by: owner-pending
 ---
 
@@ -10,9 +11,9 @@ reviewed_by: owner-pending
 ## Title (max 30 chars)
 
 ```
-Hora: Horary Chart
+Hora: Horary Astrology Chart
 ```
-Character count: 22
+Character count: 28
 
 ## Subtitle / Short Description
 
@@ -30,12 +31,19 @@ Character count: 78
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
-Words already indexed via title/subtitle: astro, horary, chart, ask, instant, answer
+Words already indexed via title/subtitle: hora, horary, astrology, chart, ask, question, get, answer
 
 ```
-astrology,question,yes,no,significator,classical,traditional,verdict,reading,cosmic,divination,star
+vedic,natal,birth,oracle,reading,horoscope,prediction,forecast,divination,zodiac,cosmic
 ```
-Character count: 99
+Character count: 87
+
+**Keyword rationale (updated 2026-06-25):**
+- "vedic" — volume 40, difficulty 29 (US): bridging keyword, low competition
+- "horoscope" — high-volume, not in title/subtitle
+- "natal,birth" — discovery terms for chart-focused users
+- "oracle,divination,forecast,prediction" — intent-matched alternatives
+- Removed: "astrology" (now in title), "significator/classical/traditional/yes/no" (low volume, waste of limit)
 
 ## Description (max 4000 chars)
 

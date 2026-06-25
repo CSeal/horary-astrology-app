@@ -2,6 +2,7 @@
 created_by: claude-sonnet
 updated_by: claude-sonnet
 source_inputs: [aso-brief.md, prd-v1.md, src/i18n/ru.ts, competitor-research.md]
+aso_research_updated: 2026-06-25
 reviewed_by: owner-pending
 ---
 
@@ -12,19 +13,19 @@ reviewed_by: owner-pending
 ## Title (max 30 chars)
 
 ```
-Hora: Хорарная Карта
+Hora: Хорарная Астрология
 ```
-Character count: 23
+Character count: 25
 
-**Note:** "Хорарная Карта" (Horary Chart) — directly captures the top niche keyword with near-zero Russian-market competition. No competitor uses this phrase in their App Store ru title.
+**Note:** "Хорарная Астрология" — размещает оба ключевых слова в title. "Астрология" — высокочастотный запрос (не занят в subtitle), "хорарная" — нишевый термин с нулевой конкуренцией.
 
 ## Subtitle / Short Description
 
 **iOS Subtitle (max 30 chars):**
 ```
-Вопрос. Мгновенный ответ.
+Задай вопрос — получи ответ
 ```
-Character count: 25
+Character count: 27
 
 **Android Short Description (max 80 chars):**
 ```
@@ -34,21 +35,20 @@ Character count: 75
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
-Words already indexed via ru title/subtitle: хорарная, карта, вопрос, мгновенный, ответ
+Words already indexed via ru title/subtitle: хорарная, астрология, задай, вопрос, получи, ответ
 
 ```
-астрология,да,нет,классическая,предсказание,звёзды,планеты,ИИ,гороскоп,традиционная,вердикт
+гороскоп,натальная карта,предсказание,оракул,зодиак,знак,карта,гадание,планеты,звёзды
 ```
-Character count: 92
+Character count: 85
 
-**Keyword rationale:**
-- "астрология" — high-volume ru search term (not in title)
-- "да,нет" — direct match for "да нет астрология" search cluster
-- "классическая,традиционная" — differentiator from generic horoscope apps
-- "ИИ" — captures "астрология ИИ" cluster (growing)
-- "гороскоп" — high-volume bridge keyword for users searching for horoscopes who need a more specific tool
-- "вердикт" — unique Hora terminology
-- "звёзды,планеты" — emotional/discovery keywords
+**Keyword rationale (updated 2026-06-25):**
+- "гороскоп" — высокочастотный мостовой запрос
+- "натальная карта" — chart-focused аудитория
+- "предсказание,гадание" — intent-matched для вопрос-ответ аудитории
+- "оракул,зодиак,знак" — discovery terms
+- "карта,планеты,звёзды" — астрологическая семантика без overlap с title
+- Удалено: "астрология" (теперь в title), "да,нет,ИИ,вердикт,классическая,традиционная" (низкий volume)
 
 ## Description (max 4000 chars)
 

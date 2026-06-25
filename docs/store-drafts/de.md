@@ -2,6 +2,7 @@
 created_by: claude-sonnet
 updated_by: claude-sonnet
 source_inputs: [aso-brief.md, prd-v1.md, src/i18n/de.ts]
+aso_research_updated: 2026-06-25
 reviewed_by: owner-pending
 ---
 
@@ -35,9 +36,16 @@ Character count: 78
 Words already indexed: Hora, Stundenhoroskop, Frage, sofortige, Antwort
 
 ```
-Astrologie,Horoskop,klassisch,traditionell,Urteil,Planeten,Deutung,KI,Ja,Nein,kosmisch,Signifikator
+Astrologie,Horoskop,geburtshoroskop,sternzeichen,natal,vorhersage,orakel,divination,tierkreis
 ```
-Character count: 100
+Character count: 93
+
+**Keyword rationale (updated 2026-06-25):**
+- "geburtshoroskop" — birth chart на немецком, высокий объём
+- "sternzeichen" — zodiac sign, популярный запрос
+- "natal,vorhersage,orakel,divination" — prediction intent
+- "tierkreis" — zodiac/horoscope семантика
+- Удалено: "Ja,Nein,kosmisch,Signifikator,klassisch,traditionell,KI" (низкий volume, нишевые)
 
 ## Description (max 4000 chars)
 

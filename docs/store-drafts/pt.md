@@ -2,6 +2,7 @@
 created_by: claude-sonnet
 updated_by: claude-sonnet
 source_inputs: [aso-brief.md, prd-v1.md, src/i18n/pt.ts]
+aso_research_updated: 2026-06-25
 reviewed_by: owner-pending
 ---
 
@@ -32,12 +33,19 @@ Character count: 73
 
 ## Keywords (max 100 chars, comma-separated, iOS only)
 
-Words already indexed: Hora, Mapa, Horário, Pergunte, Resposta, imediata
+Words already indexed: hora, mapa, horário, pergunte, resposta, imediata
 
 ```
-astrologia,horóscopo,clássica,veredicto,planetas,sim,não,adivinhação,interpretação,IA,significador
+natal,carta astral,oráculo,previsão,zodíaco,nascimento,tarô,adivinhação,astrologia,horóscopo
 ```
-Character count: 98
+Character count: 92
+
+**Keyword rationale (updated 2026-06-25):**
+- "astrologia,horóscopo" — основний трафік, не в title
+- "carta astral,natal,nascimento" — chart-focused аудиторія
+- "previsão,adivinhação,tarô,oráculo" — prediction/divination intent
+- "zodíaco" — discovery term
+- Видалено: "clássica,veredicto,planetas,sim,não,IA,significador" (низький volume)
 
 ## Description (max 4000 chars)
 
