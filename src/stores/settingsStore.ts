@@ -5,6 +5,7 @@
 
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getLocales } from 'expo-localization';
 import {
   ASYNC_STORAGE_KEYS,
   DEFAULT_ZODIAC_TYPE,
@@ -14,6 +15,23 @@ import {
 } from '@/constants/config';
 import { secureKeyService } from '@/services/secureKeyService';
 import type { LocationOverride } from '@/types/location';
+
+// First-launch language detection. Walks the device's preferred-language list
+// (most-preferred first) and returns the first entry we ship a translation for;
+// falls back to 'en' when none match. Used only when the user has never made a
+// manual choice in Settings — a stored locale always wins over this.
+function detectDeviceLocale(): SupportedLocale {
+  try {
+    for (const { languageCode } of getLocales()) {
+      if (SUPPORTED_LOCALES.includes(languageCode as SupportedLocale)) {
+        return languageCode as SupportedLocale;
+      }
+    }
+  } catch {
+    // expo-localization unavailable (e.g. unit test env) — fall through to 'en'.
+  }
+  return 'en';
+}
 
 // Where chart coordinates come from by default when no per-question override
 // is active. 'device' = GPS first, falling back to homeLocation when GPS is
@@ -166,7 +184,13 @@ export const useSettingsStore = create<SettingsState>((set) => ({
         secureKeyService.getKey(),
       ]);
       const update: Partial<SettingsState> = {};
-      if (SUPPORTED_LOCALES.includes(storedLocale as SupportedLocale)) update.locale = storedLocale as SupportedLocale;
+      // A persisted locale is an explicit manual choice from Settings and always
+      // wins. With none stored (first launch / never chosen), fall back to the
+      // device language when we ship it, otherwise 'en'. Auto-detection is NOT
+      // persisted, so the app keeps following the device until the user picks.
+      update.locale = SUPPORTED_LOCALES.includes(storedLocale as SupportedLocale)
+        ? (storedLocale as SupportedLocale)
+        : detectDeviceLocale();
       if (onboardingFlag === '1') update.onboardingComplete = true;
       if (storedSource === 'device' || storedSource === 'manual') {
         update.locationSource = storedSource;
