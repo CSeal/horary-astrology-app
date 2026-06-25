@@ -9,8 +9,8 @@ reviewed_by: owner-pending
 
 **Effective date:** 2026-06-04
 **App:** Hora: Horary Chart
-**Bundle ID:** com.hora.app
-**Contact:** [OWNER_EMAIL]
+**Bundle ID:** io.hora.app
+**Contact:** 19mann84@gmail.com
 
 ---
 
@@ -124,7 +124,7 @@ We may update this Privacy Policy from time to time. If we make material changes
 
 If you have questions about this Privacy Policy or your data, please contact:
 
-**Email:** [OWNER_EMAIL]
+**Email:** 19mann84@gmail.com
 
 ---
 

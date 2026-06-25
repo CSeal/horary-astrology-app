@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AstraSk — Privacy Policy</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px 80px;
+      background: #070714;
+      color: #F0EEFF;
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    a { color: #F5C842; text-decoration: underline; }
+    a:hover { opacity: 0.8; }
+    h1 { color: #F5C842; font-size: 2rem; margin: 40px 0 16px; border-bottom: 1px solid rgba(245,200,66,0.3); padding-bottom: 12px; }
+    h2 { color: #F5C842; font-size: 1.3rem; margin: 36px 0 12px; }
+    h3 { color: #D4BBFF; font-size: 1.1rem; margin: 24px 0 8px; }
+    p { margin: 12px 0; }
+    ul, ol { margin: 12px 0 12px 24px; }
+    li { margin: 6px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+    th { background: rgba(245,200,66,0.1); color: #F5C842; padding: 10px 12px; text-align: left; border: 1px solid rgba(240,238,255,0.15); }
+    td { padding: 9px 12px; border: 1px solid rgba(240,238,255,0.1); vertical-align: top; }
+    tr:nth-child(even) td { background: rgba(255,255,255,0.03); }
+    hr { border: none; border-top: 1px solid rgba(240,238,255,0.1); margin: 32px 0; }
+    code { background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 3px; font-size: 0.9em; font-family: 'SF Mono', Consolas, monospace; }
+    strong { color: #F0EEFF; font-weight: 600; }
+    .footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid rgba(240,238,255,0.1); color: rgba(240,238,255,0.4); font-size: 14px; }
+  </style>
+</head>
+<body>
+<h1>Hora — Privacy Policy</h1>
+<p><strong>Effective date:</strong> 2026-06-04
+<strong>App:</strong> Hora: Horary Chart
+<strong>Bundle ID:</strong> io.hora.app
+<strong>Contact:</strong> <a href="mailto:19mann84@gmail.com">19mann84@gmail.com</a></p>
+<hr>
+<h2>1. What Data We Collect</h2>
+<p>Hora is a horary astrology chart calculator. It is designed to operate with minimal data collection. The following data types are involved:</p>
+<table>
+<thead>
+<tr>
+<th>Data Type</th>
+<th>Collected</th>
+<th>Where Stored</th>
+<th>Shared With</th>
+<th>Linked to User Identity</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Device location (latitude, longitude)</td>
+<td>Yes — per chart request only</td>
+<td>Not persisted on our servers; included in journal entry as city name + coordinates</td>
+<td>astrology-api.io (for chart calculation, per-request only)</td>
+<td>No</td>
+</tr>
+<tr>
+<td>IANA timezone string</td>
+<td>Yes — per chart request</td>
+<td>Not persisted on our servers; derived from device at request time</td>
+<td>astrology-api.io (per-request only)</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Question text</td>
+<td>Yes — user-entered</td>
+<td>Device only (AsyncStorage, key: <code>horary_journal</code>)</td>
+<td>astrology-api.io (per-request only)</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Verdict and interpretation</td>
+<td>Yes — returned by API</td>
+<td>Device only (AsyncStorage, key: <code>horary_journal</code>)</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Journal entries (question + verdict + significators + timestamp + city)</td>
+<td>Yes — auto-saved</td>
+<td>Device only (AsyncStorage)</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>App language preference</td>
+<td>Yes</td>
+<td>Device only (AsyncStorage, key: <code>horary_language</code>)</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Location source preference</td>
+<td>Yes</td>
+<td>Device only (AsyncStorage, key: <code>horary_location_source</code>)</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Zodiac type preference</td>
+<td>Yes</td>
+<td>Device only (AsyncStorage, key: <code>horary_zodiac_type</code>)</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Onboarding completion flag</td>
+<td>Yes</td>
+<td>Device only (AsyncStorage, key: <code>horary_onboarding_complete</code>)</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Install date</td>
+<td>Yes</td>
+<td>Device only (AsyncStorage, key: <code>horary_install_date</code>) — used solely for review prompt timing</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Review prompt state</td>
+<td>Yes</td>
+<td>Device only (AsyncStorage, key: <code>horary_review_state</code>)</td>
+<td>None</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Personal API key (user-supplied)</td>
+<td>If user enters one</td>
+<td>Device only (SecureStore, encrypted)</td>
+<td>None</td>
+<td>No</td>
+</tr>
+</tbody></table>
+<p><strong>What we do NOT collect:</strong></p>
+<ul>
+<li>No account or user registration</li>
+<li>No email address or phone number</li>
+<li>No device identifier (IDFA, IDFV, Android Advertising ID)</li>
+<li>No analytics or event tracking (no Mixpanel, Amplitude, Firebase, or equivalent)</li>
+<li>No crash reporting SDK (no Sentry or equivalent in MVP)</li>
+<li>No advertising network integration</li>
+<li>No biometric data</li>
+</ul>
+<hr>
+<h2>2. How We Use Your Data</h2>
+<p><strong>Location</strong> is used exclusively to cast the horary chart at the precise moment your question is submitted. Traditional horary astrology requires the geographic coordinates of the querent at the exact time of asking. Your location is sent over HTTPS to astrology-api.io at the time of the request and is also saved in the local journal entry as a city name and coordinates for your own reference.</p>
+<p><strong>Question text</strong> is sent to astrology-api.io to classify and interpret your horary chart. It is also saved locally in your journal on-device for your review.</p>
+<p><strong>Timezone</strong> is captured from your device at the time of asking (IANA format, e.g., <code>Europe/Moscow</code>) and sent to astrology-api.io alongside your question. It is not stored independently on our servers.</p>
+<p><strong>Preferences</strong> (language, location source, zodiac type) are stored locally to personalize your experience. They are never transmitted to any server.</p>
+<p><strong>Install date and review prompt state</strong> are stored locally solely to determine when to show the in-app review prompt (after 3 readings and at least 7 days since install). No data is transmitted.</p>
+<p><strong>Personal API key</strong>, if supplied, is stored in your device&#39;s encrypted secure storage (SecureStore). It is sent only to astrology-api.io as a Bearer token on each chart request. It is never logged or transmitted to any other party.</p>
+<hr>
+<h2>3. Data Sharing</h2>
+<p><strong>We do not sell, rent, or share your personal data with third parties for advertising, marketing, or profiling.</strong></p>
+<p>The only third-party service that receives data from Hora is:</p>
+<p><strong>astrology-api.io</strong> (chart calculation provider)</p>
+<ul>
+<li>Data sent per request: question text, latitude, longitude, timezone, timestamp</li>
+<li>Purpose: horary chart calculation and AI interpretation</li>
+<li>Retention by provider: we have no evidence that astrology-api.io retains per-request data beyond what is required to fulfill the API call. Refer to astrology-api.io&#39;s own privacy policy for authoritative information on their data handling practices.</li>
+<li>Data is transmitted over HTTPS (TLS). No request data is cached or stored on our servers.</li>
+</ul>
+<p>We have no backend of our own. There is no Hora server that receives, stores, or processes your data.</p>
+<hr>
+<h2>4. Data Retention and Deletion</h2>
+<p><strong>All personal data generated by Hora is stored exclusively on your device.</strong></p>
+<ul>
+<li><strong>Journal entries</strong> persist until you delete them. You can delete individual entries by swiping left on any journal item and confirming deletion. You can also use the Developer Mode (Settings → version label × 7 → PIN) to clear all entries at once.</li>
+<li><strong>Preferences</strong> persist until you change them in Settings or uninstall the app.</li>
+<li><strong>Uninstalling the app</strong> removes all locally stored data, including journal entries, preferences, install date, and your personal API key from SecureStore.</li>
+<li>We cannot retrieve or delete your data on your behalf because we do not have access to it — it never leaves your device (except per-request data sent to astrology-api.io as described above).</li>
+</ul>
+<hr>
+<h2>5. Children&#39;s Privacy</h2>
+<p>Hora is not directed at children under the age of 13. We do not knowingly collect data from children under 13. The app is rated 4+ on the App Store and Everyone on Google Play, meaning the content contains no mature themes, but the app is designed for general audiences including adults seeking life guidance.</p>
+<p>If you are a parent or guardian and believe your child has used this app, no account or persistent personal data is stored on our servers. Uninstalling the app from the device removes all locally stored data.</p>
+<hr>
+<h2>6. Your Choices</h2>
+<ul>
+<li><strong>Location permission:</strong> You can deny location access at any time via your device&#39;s Settings. Without location access, the app will use any manual city you have set in Settings, or will prompt you to set one.</li>
+<li><strong>Journal:</strong> You can delete any or all journal entries from within the app.</li>
+<li><strong>Language:</strong> You can change the app language at any time in Settings.</li>
+<li><strong>API key:</strong> You can add, edit, or remove your personal API key at any time in Settings.</li>
+<li><strong>Uninstall:</strong> Uninstalling the app removes all locally stored data completely.</li>
+</ul>
+<hr>
+<h2>7. Security</h2>
+<ul>
+<li>Your personal API key (if supplied) is stored using the platform&#39;s encrypted secure storage (iOS Keychain via Expo SecureStore, Android Keystore equivalent).</li>
+<li>All communication with astrology-api.io occurs over HTTPS.</li>
+<li>We do not log, transmit, or store your API key on any external server.</li>
+<li>Journal data is stored in AsyncStorage on-device and is subject to the standard security protections of your device&#39;s operating system.</li>
+</ul>
+<hr>
+<h2>8. Changes to This Policy</h2>
+<p>We may update this Privacy Policy from time to time. If we make material changes, we will update the effective date at the top of this page. Continued use of Hora after changes are posted constitutes acceptance of the updated policy.</p>
+<hr>
+<h2>9. Contact</h2>
+<p>If you have questions about this Privacy Policy or your data, please contact:</p>
+<p><strong>Email:</strong> <a href="mailto:19mann84@gmail.com">19mann84@gmail.com</a></p>
+<hr>
+<p><em>Hora: Horary Chart — Privacy Policy v1.0</em>
+<em>Last updated: 2026-06-04</em></p>
+
+<div class="footer">AstraSk: Horary Chart &mdash; Privacy Policy</div>
+</body>
+</html>
