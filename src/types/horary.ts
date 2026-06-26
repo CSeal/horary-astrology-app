@@ -30,6 +30,8 @@ export interface SignificatorData {
   retrograde: boolean;
   accidentalConditions?: string[];  // full list, e.g. ['combust', 'angular', 'under_beams']
   aspect?: string | null;
+  dignity_score?: number;           // -10..15 (essential + accidental combined)
+  domicile_ruler?: string;          // planet ruling the sign the significator occupies
 }
 
 export interface AspectPerfectionData {

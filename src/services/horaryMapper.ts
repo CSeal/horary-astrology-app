@@ -96,6 +96,8 @@ function mapSignificator(s: WireSignificator): SignificatorData {
     retrograde: dignityInfo?.accidental_conditions?.includes('retrograde') ?? false,
     accidentalConditions: dignityInfo?.accidental_conditions,
     aspect: null,
+    dignity_score: dignityInfo?.dignity_score,
+    domicile_ruler: dignityInfo?.domicile_ruler,
   };
 }
 

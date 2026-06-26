@@ -135,6 +135,11 @@ export function SignificatorRow({ data, index = 0 }: SignificatorRowProps) {
         <Text className="font-inter text-xs text-text-secondary">
           {`H${data.house}`}
         </Text>
+        {data.domicile_ruler && !showDignityBadge && (
+          <Text className="font-inter text-[10px] text-text-disabled">
+            {`ruler ${PLANET_GLYPHS[data.domicile_ruler] ?? data.domicile_ruler}`}
+          </Text>
+        )}
       </View>
 
       {showDignityBadge && data.dignity && (

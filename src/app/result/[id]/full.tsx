@@ -81,12 +81,57 @@ function SectionHeader({ label, count }: { label: string; count?: number }) {
   );
 }
 
+// Pressable section header with a chevron that rotates between collapsed (-90°)
+// and expanded (0°). Owns its own rotation SharedValue, written in one effect.
+function CollapsibleSectionHeader({
+  label,
+  count,
+  expanded,
+  onToggle,
+}: {
+  label: string;
+  count?: number;
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  const rotation = useSharedValue(expanded ? 0 : -90);
+  useEffect(() => {
+    rotation.value = withTiming(expanded ? 0 : -90, { duration: 220 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expanded]);
+  const chevronStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }));
+
+  return (
+    <TouchableOpacity
+      onPress={onToggle}
+      activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityState={{ expanded }}
+      className="flex-row items-center gap-3 mt-2 mb-1 min-h-9"
+    >
+      <Text className="font-inter-semibold text-[11px] text-accent-gold uppercase tracking-[2px]">
+        {label}
+      </Text>
+      <View className="flex-1 h-px bg-border" />
+      {count != null && (
+        <Text className="font-mono text-[11px] text-text-secondary">{count}</Text>
+      )}
+      <AnimatedView style={chevronStyle}>
+        <ChevronDown color={colors.textSecondary} size={typography.sm} />
+      </AnimatedView>
+    </TouchableOpacity>
+  );
+}
+
 export default function FullReadingScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { t } = useTranslation();
   const { getEntryById } = useJournal();
   const [showAllAspects, setShowAllAspects] = useState(false);
+  const [sigsExpanded, setSigsExpanded] = useState(true);
 
   const entry = getEntryById(id ?? '');
 
@@ -124,6 +169,11 @@ export default function FullReadingScreen() {
   const toggleAspects = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setShowAllAspects((v) => !v);
+  }, []);
+
+  const toggleSigs = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setSigsExpanded((v) => !v);
   }, []);
 
   const handleBack = useCallback(() => {
@@ -200,15 +250,23 @@ export default function FullReadingScreen() {
             </>
           )}
 
-          <SectionHeader
+          <CollapsibleSectionHeader
             label={t('verdict.significatorsHeader')}
             count={entry.significators.length}
+            expanded={sigsExpanded}
+            onToggle={toggleSigs}
           />
-          <View className="gap-2">
-            {entry.significators.map((sig, idx) => (
-              <SignificatorRow key={`${sig.planet}-${idx}`} data={sig} index={idx} />
-            ))}
-          </View>
+          {sigsExpanded && (
+            <View className="gap-2">
+              {entry.significators.map((sig, idx) => (
+                <SignificatorRow
+                  key={`${sig.planet}-${idx}`}
+                  data={sig}
+                  index={idx}
+                />
+              ))}
+            </View>
+          )}
 
           {entry.keyFactors && entry.keyFactors.length > 0 && (
             <StaggerIn delay={80}>

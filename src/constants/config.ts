@@ -113,6 +113,8 @@ export const SUBJECT_ROLES = [
   'third_party_employer',
   'third_party_parent',
   'third_party_child',
+  'third_party_sibling',
+  'third_party_enemy',
   'third_party_other',
 ] as const;
 export type SubjectRole = (typeof SUBJECT_ROLES)[number];

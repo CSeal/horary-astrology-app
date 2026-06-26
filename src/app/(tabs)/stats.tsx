@@ -177,6 +177,7 @@ export default function StatsScreen() {
     topCategories,
     questionsByMonth,
     currentStreak,
+    maxStreak,
   } = stats;
 
   const maxMonth = Math.max(1, ...questionsByMonth.map((m) => m.count));
@@ -213,9 +214,18 @@ export default function StatsScreen() {
               />
             )}
 
-            {accuracyPercent !== null && (
+            {maxStreak > currentStreak && maxStreak > 1 && (
               <StatBlock
                 delay={160}
+                value={maxStreak}
+                prefix="✦ "
+                label={t('stats.maxStreakLabel')}
+              />
+            )}
+
+            {accuracyPercent !== null && (
+              <StatBlock
+                delay={240}
                 value={accuracyPercent}
                 suffix="%"
                 label={t('stats.accuracyLabel')}

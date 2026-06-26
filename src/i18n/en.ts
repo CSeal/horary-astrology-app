@@ -82,6 +82,8 @@ const en = {
     third_party_employer: 'For employer',
     third_party_parent: 'For parent',
     third_party_child: 'For child',
+    third_party_sibling: 'For sibling',
+    third_party_enemy: 'For opponent',
     third_party_other: 'For other',
   },
 
@@ -496,6 +498,7 @@ const en = {
     totalQuestions_many: '{{count}} questions',
     totalQuestions_other: '{{count}} questions',
     streakLabel: 'in a row',
+    maxStreakLabel: 'best streak',
     accuracyLabel: 'accuracy',
     verdicts: 'Verdicts',
     outcomes: 'Outcomes',

@@ -77,6 +77,8 @@ const uk = {
     third_party_employer: 'За роботодавця',
     third_party_parent: 'За батька/матір',
     third_party_child: 'За дитину',
+    third_party_sibling: 'За брата/сестру',
+    third_party_enemy: 'За опонента',
     third_party_other: 'За іншу особу',
   },
 
@@ -471,6 +473,7 @@ const uk = {
     totalQuestions_many: '{{count}} запитань',
     totalQuestions_other: '{{count}} запитань',
     streakLabel: 'поспіль',
+    maxStreakLabel: 'рекорд',
     accuracyLabel: 'точність',
     verdicts: 'Вердикти',
     outcomes: 'Результати',

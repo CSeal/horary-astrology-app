@@ -82,6 +82,8 @@ const de = {
     third_party_employer: 'Für Arbeitgeber',
     third_party_parent: 'Für Elternteil',
     third_party_child: 'Für Kind',
+    third_party_sibling: 'Für Geschwister',
+    third_party_enemy: 'Für Gegner',
     third_party_other: 'Für andere Person',
   },
 
@@ -490,6 +492,7 @@ const de = {
     totalQuestions_many: '{{count}} Fragen',
     totalQuestions_other: '{{count}} Fragen',
     streakLabel: 'hintereinander',
+    maxStreakLabel: 'Rekord',
     accuracyLabel: 'Genauigkeit',
     verdicts: 'Urteile',
     outcomes: 'Ergebnisse',

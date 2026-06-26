@@ -82,6 +82,8 @@ const es = {
     third_party_employer: 'Para el empleador',
     third_party_parent: 'Para el padre/madre',
     third_party_child: 'Para el hijo',
+    third_party_sibling: 'Para el hermano',
+    third_party_enemy: 'Para el oponente',
     third_party_other: 'Para otro',
   },
 
@@ -505,6 +507,7 @@ const es = {
     totalQuestions_many: '{{count}} preguntas',
     totalQuestions_other: '{{count}} preguntas',
     streakLabel: 'consecutivos',
+    maxStreakLabel: 'récord',
     accuracyLabel: 'precisión',
     verdicts: 'Veredictos',
     outcomes: 'Resultados',

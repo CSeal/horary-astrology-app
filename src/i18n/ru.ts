@@ -77,6 +77,8 @@ const ru = {
     third_party_employer: 'За работодателя',
     third_party_parent: 'За родителя',
     third_party_child: 'За ребёнка',
+    third_party_sibling: 'За брата/сестру',
+    third_party_enemy: 'За оппонента',
     third_party_other: 'За другого',
   },
 
@@ -471,6 +473,7 @@ const ru = {
     totalQuestions_many: '{{count}} вопросов',
     totalQuestions_other: '{{count}} вопросов',
     streakLabel: 'подряд',
+    maxStreakLabel: 'рекорд',
     accuracyLabel: 'точность',
     verdicts: 'Вердикты',
     outcomes: 'Исходы',

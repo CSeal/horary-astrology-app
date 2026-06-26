@@ -82,6 +82,8 @@ const pt = {
     third_party_employer: 'Para empregador',
     third_party_parent: 'Para pai/mãe',
     third_party_child: 'Para filho',
+    third_party_sibling: 'Para irmão',
+    third_party_enemy: 'Para oponente',
     third_party_other: 'Para outro',
   },
 
@@ -501,6 +503,7 @@ const pt = {
     totalQuestions_many: '{{count}} perguntas',
     totalQuestions_other: '{{count}} perguntas',
     streakLabel: 'dias seguidos',
+    maxStreakLabel: 'recorde',
     accuracyLabel: 'precisão',
     verdicts: 'Veredictos',
     outcomes: 'Resultados',

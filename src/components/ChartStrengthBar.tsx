@@ -3,7 +3,7 @@
 // one-line note. Band (yes/maybe/no) derives from the 0-100 score; a chart the
 // engine flagged non-radical is always shown as weak.
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   useAnimatedStyle,
@@ -11,6 +11,7 @@ import {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
 import { View, Text, AnimatedView } from '@/tw';
 import { colors } from '@/constants/theme';
 
@@ -54,6 +55,18 @@ export function ChartStrengthBar({ score, isRadical }: ChartStrengthBarProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clamped]);
   const fillStyle = useAnimatedStyle(() => ({ width: `${progress.value}%` }));
+
+  // Fire a success haptic once on mount when the chart reads strong + radical.
+  const hasFired = useRef(false);
+  useEffect(() => {
+    if (!hasFired.current && clamped >= 80 && isRadical !== false) {
+      hasFired.current = true;
+      Haptics.notificationAsync(
+        Haptics.NotificationFeedbackType.Success
+      ).catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View>

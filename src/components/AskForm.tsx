@@ -56,11 +56,10 @@ const SUBJECT_ROLE_ICONS: Record<SubjectRole, (c: string, s: number) => React.Re
   third_party_employer:  (c, s) => <Building2 color={c} size={s} />,
   third_party_parent:    (c, s) => <Users     color={c} size={s} />,
   third_party_child:     (c, s) => <Baby      color={c} size={s} />,
+  third_party_sibling:   (c, s) => <Users2    color={c} size={s} />,
+  third_party_enemy:     (c, s) => <UserX     color={c} size={s} />,
   third_party_other:     (c, s) => <UserRound color={c} size={s} />,
 };
-
-// Unused icons kept to avoid import-pruning — referenced by future roles.
-void Users2; void UserX;
 
 interface AskFormProps {
   value: string;

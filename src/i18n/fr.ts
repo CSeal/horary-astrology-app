@@ -82,6 +82,8 @@ const fr = {
     third_party_employer: "Pour l'employeur",
     third_party_parent: 'Pour un parent',
     third_party_child: 'Pour un enfant',
+    third_party_sibling: 'Pour un frère/une sœur',
+    third_party_enemy: 'Pour un adversaire',
     third_party_other: "Pour une autre personne",
   },
 
@@ -490,6 +492,7 @@ const fr = {
     totalQuestions_many: '{{count}} questions',
     totalQuestions_other: '{{count}} questions',
     streakLabel: 'd\'affilée',
+    maxStreakLabel: 'record',
     accuracyLabel: 'précision',
     verdicts: 'Verdicts',
     outcomes: 'Résultats',
