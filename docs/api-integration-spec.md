@@ -18,30 +18,43 @@ gate_linkage: Gate5
 
 ### Base URL & Auth
 
+Two hosts, picked per-request by key presence (see `horaryApi.ts` interceptor):
+
 ```
-Base URL:   https://api.astrology-api.io
-Auth:       Authorization: Bearer <api_key>
+Default (no key):  https://api-public.astrology-api.io   (NO Authorization header)
+With personal key: https://api.astrology-api.io          (Authorization: Bearer <key>)
 ```
 
-API key priority (see `horaryApi.ts`):
-1. User-supplied key in SecureStore (`horary_api_key`)
-2. `EXPO_PUBLIC_ASTROLOGY_API_KEY` env var
-3. Empty string → 401
+- **`api-public.`** — spam-protected public gateway. **No API key required.** This
+  is the default for a fresh install: the app sends NO `Authorization` header.
+  Verified keyless 2026-06-26 across all endpoints (200, `credits_used: 2`).
+  Override the public host per-build via `EXPO_PUBLIC_API_BASE_URL`.
+- **`api.`** — private authed host. Used only once the user enters a personal key
+  in Settings (the key is purely optional and discoverable only there — no UI
+  ever states a key is required).
+
+Host/key resolution (`getApiKey` + request interceptor):
+1. User-supplied key in SecureStore (`horary_api_key`) → authed host + Bearer.
+2. `EXPO_PUBLIC_ASTROLOGY_API_KEY` env var (dev fallback) → authed host + Bearer.
+3. No key → public host, no Authorization header (normal default, not an error).
 
 ### Endpoints
 
 | Endpoint | Method | Purpose | Credits |
 |---|---|---|---|
 | `/api/v3/horary/ask` | POST | AI auto-classify + full analysis | **10** |
-| `/api/v3/horary/analyze` | POST | Manual category + full analysis | 1 |
-| `/api/v3/horary/aspects` | POST | All applying aspects (timing) | ? |
-| `/api/v3/horary/chart` | POST | Raw chart data, dignities, Arabic Parts | ? |
+| `/api/v3/horary/analyze` | POST | Manual category + full analysis | 2 |
+| `/api/v3/horary/aspects` | POST | All applying aspects (timing) | 2 |
+| `/api/v3/horary/chart` | POST | Raw chart data, dignities, Arabic Parts | 2 |
 | `/api/v3/horary/fertility-analysis` | POST | Specialized pregnancy/fertility | 2 |
-| `/api/v3/horary/glossary/categories` | GET | Category reference (static) | 0 |
-| `/api/v3/horary/glossary/considerations` | GET | 8 radicality considerations (static) | 0 |
+| `/api/v3/horary/glossary/categories` | GET | Category reference (static) | 2 |
+| `/api/v3/horary/glossary/considerations` | GET | 8 radicality considerations (static) | 2 |
 
-> ⚠️ **Open question:** credit costs for `/aspects`, `/chart` not confirmed.
-> **Confirmed from live response 2026-06-03:** `/ask` costs **10 credits** (`metadata.credits_used: 10`). Earlier test showed `credits_used: 2` — discrepancy likely due to plan tier or pricing change. `metadata.endpoint` is `"horary.ask"` (distinct from `/analyze` → `"horary.analyze"`). Do NOT use `/ask` as the default MVP endpoint at 10 credits/call.
+> **Confirmed live on `api-public.` 2026-06-26 (keyless):** every endpoint above
+> returns 200 with no API key; `/analyze` reports `metadata.credits_used: 2`.
+> `/ask` (10 credits, AI classify+summarize) exists but the app does NOT use it —
+> the category/subcategory are chosen in-app and sent to `/analyze`.
+> The app uses **`/analyze` only**; the rest are documented for reference.
 
 ### Response Envelope
 
@@ -788,5 +801,31 @@ The SDK does **not** include a `horary` sub-client. Our custom `horaryApi.ts` + 
 
 ---
 
+## Live verification log — 2026-06-26 (keyless public host)
+
+Captured real `/analyze` responses on `api-public.astrology-api.io` (no key) for
+varied charts and reconciled the client wire models against them. **The app's
+wire types were correct; the published spec (`docs/horary/`) was the inaccurate
+side.** See the gated suite `src/services/__tests__/horaryApi.integration.test.ts`
+(`npm run test:integration` — runs with delays to respect the public rate limit).
+
+| Field | Published spec said | Live API actually returns | Verdict |
+|---|---|---|---|
+| `/analyze` response body | lean (7 fields) | **rich** (chart_data, lunar_analysis, aspect_perfections, reception_analysis, secondary_perfection, AskJudgment-style judgment) | app right; spec under-documents |
+| `timing` | single object | **array** (`WireTiming[]`, often `[]`) | app right (`timing?.[0]`) |
+| `judgment.voc_treatment` | `applied/ignored` | `ignored_due_to_aspect`, `not_applicable` (also `full_negation`/`mitigated`) | app enum right; spec wrong |
+| `lunar_analysis.voc_effective_strength` | `full/partial/none` | **`full`** (non-exception sign, e.g. Gemini) / **`mitigated`** (Lilly exception signs Can/Tau/Sag/Pis) / `null` | app type `'full'\|'mitigated'\|null` right; spec wrong |
+| `lunar_analysis.moon_sign` | full name (`Sagittarius`) | abbreviation (`Sag`) | app right |
+| categories / subcategories | — | match `config.ts` 1:1 (incl. `general` accepted) | no drift |
+| `judgment.confidence_band` | 5 bands | 5 bands per contract (`low/medium/high` observed) | **app fix:** mapper clamps 5→3 (`toConfidenceBand`) so the 3-band UI never hits a missing dot count / i18n key |
+
+**Client changes shipped from this verification (commit `6f7d590`):**
+- Keyless `api-public.` default; personal key in Settings → authed `api.` host.
+- Removed the "API key not configured" home banner + the ask-button block when no key.
+- `confidence_band` 5→3 clamp in `horaryMapper.ts`; `WireJudgment.confidence_band`
+  wire type widened to the real 5 values.
+
+---
+
 *Stage: Stage4-Architecture → Stage5-Implementation*
-*Gate 5: API contract specification — updated 2026-06-03*
+*Gate 5: API contract specification — updated 2026-06-26*
