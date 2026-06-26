@@ -33,6 +33,7 @@
     "submit:android": "eas submit -p android --profile production",
     "test": "jest",
     "test:table": "jest --reporters=./scripts/test-reporter.js",
+    "test:integration": "RUN_INTEGRATION=1 jest --runInBand horaryApi.integration",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "typecheck": "tsc --noEmit",

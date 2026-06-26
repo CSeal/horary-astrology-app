@@ -71,7 +71,6 @@ interface AskFormProps {
   locationSourceLabel?: string;
   locationPending?: boolean;
   locationMissing?: boolean;
-  noApiKey?: boolean;
   category: HoraryCategory;
   onSelectCategory: (category: HoraryCategory) => void;
   subcategory?: string;
@@ -92,7 +91,6 @@ export function AskForm({
   locationSourceLabel,
   locationPending = false,
   locationMissing = false,
-  noApiKey = false,
   category,
   onSelectCategory,
   subcategory,
@@ -118,7 +116,7 @@ export function AskForm({
   const isValid = trimmedLen >= MIN_QUESTION_CHARS && value.length <= MAX_QUESTION_CHARS;
 
   const hasLocation = override !== null || (!locationPending && !locationMissing);
-  const canSubmit = isValid && !isLoading && hasLocation && !noApiKey;
+  const canSubmit = isValid && !isLoading && hasLocation;
 
   const showOverrideChip = override !== null;
 

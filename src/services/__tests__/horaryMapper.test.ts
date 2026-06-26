@@ -208,6 +208,19 @@ describe('normalizeAnalysisResponse', () => {
     );
   });
 
+  it('clamps the API 5-band confidence scale into the UI 3-band scale', () => {
+    const band = (b: string) =>
+      normalizeAnalysisResponse(
+        wireResponse({ judgment: { answer: 'yes', confidence_band: b as never, reasoning: 'r' } }),
+        baseRequest
+      ).confidence_band;
+    expect(band('very_high')).toBe('high');
+    expect(band('very_low')).toBe('low');
+    expect(band('medium')).toBe('medium');
+    // Unknown/garbage bands fall back to 'low' rather than leaking through.
+    expect(band('bananas')).toBe('low');
+  });
+
   it('generates a non-empty string id and echoes chart_time', () => {
     const out = normalizeAnalysisResponse(wireResponse(), baseRequest);
     expect(typeof out.id).toBe('string');

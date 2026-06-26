@@ -155,10 +155,6 @@ export default function HomeScreen() {
 
   const pickerRef = useRef<LocationPickerSheetRef>(null);
 
-  const hasApiKey = useSettingsStore((s) => s.hasApiKey);
-  // In dev builds an env var key may substitute — suppress the UI guard then.
-  const keyMissing = !hasApiKey && !process.env.EXPO_PUBLIC_ASTROLOGY_API_KEY;
-
   const lastError = mutation.error as HoraryAPIError | null | undefined;
   const isLimitExceeded = lastError?.code === 'LIMIT_EXCEEDED';
   const errorMessage = lastError && !isLimitExceeded
@@ -312,20 +308,6 @@ export default function HomeScreen() {
             </View>
           )}
 
-          {keyMissing && (
-            <BannerPressable
-              onPress={() => router.push('/(tabs)/settings' as never)}
-              accessibilityLabel={t('home.noApiKeyBanner')}
-            >
-              <Text className="font-inter text-sm text-text-secondary flex-1 mr-2">
-                {t('home.noApiKeyBanner')}
-              </Text>
-              <Text className="font-inter-medium text-sm text-accent-gold">
-                {t('home.noApiKeyAction')}
-              </Text>
-            </BannerPressable>
-          )}
-
           {errorMessage && !dismissedError && (
             <Banner
               message={errorMessage}
@@ -388,7 +370,6 @@ export default function HomeScreen() {
                 locationSourceLabel={locationSourceLabel}
                 locationPending={locationPending}
                 locationMissing={locationMissing}
-                noApiKey={keyMissing}
                 category={category}
                 onSelectCategory={handleSelectCategory}
                 subcategory={subcategory}

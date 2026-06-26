@@ -277,7 +277,8 @@ export interface WireLunarSequence {
 export interface WireJudgment {
   answer: string;               // yes | no | unclear | reask_later
   confidence?: number;          // 0-100
-  confidence_band?: ConfidenceBand;
+  // Wire contract has 5 bands; the mapper clamps to the app's 3 (toConfidenceBand).
+  confidence_band?: 'very_low' | 'low' | 'medium' | 'high' | 'very_high';
   reasoning?: string;
   interpretation?: string | null;  // localized text; preferred over reasoning for display
   voc_treatment?: 'full_negation' | 'mitigated' | 'ignored_due_to_aspect' | 'not_applicable';

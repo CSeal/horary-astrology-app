@@ -47,6 +47,24 @@ function toVerdict(answer: string | undefined): VerdictType {
   return VERDICT_BY_ANSWER[(answer ?? '').toLowerCase()] ?? 'UNCLEAR';
 }
 
+// The API contract (and /ask) can return 5 confidence bands; the UI renders 3.
+// Clamp the extremes so confidence_band is always a band the UI maps (dots +
+// i18n key), regardless of which endpoint/value the engine returns.
+function toConfidenceBand(band: string | undefined): ConfidenceBand {
+  switch ((band ?? '').toLowerCase()) {
+    case 'very_high':
+    case 'high':
+      return 'high';
+    case 'medium':
+      return 'medium';
+    case 'very_low':
+    case 'low':
+      return 'low';
+    default:
+      return 'low';
+  }
+}
+
 // A chart is "not radical" when the API says reask_later (engine-level refusal)
 // OR when the radicality block explicitly marks it as non-radical.
 function resolveRadicality(
@@ -287,7 +305,7 @@ export function normalizeAnalysisResponse(
   return {
     id: generateId(),
     verdict: toVerdict(judgment?.answer),
-    confidence_band: (judgment?.confidence_band as ConfidenceBand) ?? 'low',
+    confidence_band: toConfidenceBand(judgment?.confidence_band),
     summary: judgment?.interpretation ?? judgment?.reasoning ?? '',
     significators: (raw.significators ?? []).map(mapSignificator),
     aspects: (raw.aspect_perfections ?? []).map(mapAspect),

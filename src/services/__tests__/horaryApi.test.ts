@@ -154,11 +154,13 @@ describe('getApiKey', () => {
     await expect(getApiKey()).resolves.toBe('env_fallback_key');
   });
 
-  it('returns empty string when neither source has a key', async () => {
+  it('returns empty string when neither source has a key (public-host default)', async () => {
+    // No key is the normal default now — requests use the public host, so this
+    // must NOT warn.
     mockedGetKey.mockResolvedValue(null);
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
     await expect(getApiKey()).resolves.toBe('');
-    expect(warn).toHaveBeenCalled();
+    expect(warn).not.toHaveBeenCalled();
     warn.mockRestore();
   });
 

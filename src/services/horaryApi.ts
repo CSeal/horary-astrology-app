@@ -5,7 +5,13 @@
 
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { secureKeyService } from '@/services/secureKeyService';
-import { API_BASE_URL, API_TIMEOUT, HORARY_ENDPOINT, SUPPORTED_LOCALES } from '@/constants/config';
+import {
+  API_BASE_URL_PUBLIC,
+  API_BASE_URL_AUTHED,
+  API_TIMEOUT,
+  HORARY_ENDPOINT,
+  SUPPORTED_LOCALES,
+} from '@/constants/config';
 import i18n from '@/i18n/index';
 import { useSettingsStore } from '@/stores/settingsStore';
 import {
@@ -36,7 +42,7 @@ export async function getApiKey(): Promise<string> {
     return envKey;
   }
 
-  console.warn('[horaryApi] No API key found — request will likely fail with 401');
+  // No key is the normal default — requests fall back to the public host.
   return '';
 }
 
@@ -110,7 +116,7 @@ export function normalizeError(error: AxiosError): HoraryAPIError {
 }
 
 const apiInstance: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: API_BASE_URL_PUBLIC,
   timeout: API_TIMEOUT,
   headers: {
     'Content-Type': 'application/json',
@@ -118,9 +124,18 @@ const apiInstance: AxiosInstance = axios.create({
   },
 });
 
+// Host is picked per-request by key presence: a personal key (Settings) routes
+// to the authed host with a Bearer header; with no key we hit the public,
+// spam-protected gateway and send no Authorization header at all.
 apiInstance.interceptors.request.use(/* istanbul ignore next */ async (config) => {
   const key = await getApiKey();
-  config.headers.Authorization = `Bearer ${key}`;
+  if (key) {
+    config.baseURL = API_BASE_URL_AUTHED;
+    config.headers.Authorization = `Bearer ${key}`;
+  } else {
+    config.baseURL = API_BASE_URL_PUBLIC;
+    delete config.headers.Authorization;
+  }
   return config;
 });
 

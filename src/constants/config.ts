@@ -2,8 +2,15 @@
 // App-wide configuration constants.
 // API keys are NEVER stored here — see secureKeyService.ts and .env.local.example
 
-// Real API lives on the api. subdomain (the bare domain is the marketing site).
-export const API_BASE_URL = 'https://api.astrology-api.io';
+// Two hosts (bare domain is the marketing site):
+//   - api-public.  → spam-protected public gateway, NO key required. Default.
+//   - api.         → private host, requires Authorization: Bearer <key>.
+// Host is chosen per-request in horaryApi.ts: a personal key in Settings routes
+// to the authed host; with no key we use the public gateway. Override the
+// public host per-build with EXPO_PUBLIC_API_BASE_URL.
+export const API_BASE_URL_PUBLIC =
+  process.env.EXPO_PUBLIC_API_BASE_URL ?? 'https://api-public.astrology-api.io';
+export const API_BASE_URL_AUTHED = 'https://api.astrology-api.io';
 export const HORARY_ENDPOINT = '/api/v3/horary/analyze';
 export const API_TIMEOUT = 10000; // 10 seconds
 
