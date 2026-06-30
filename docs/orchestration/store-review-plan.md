@@ -227,12 +227,47 @@ style review (do NOT mass-strip — em-dash is valid typography and stripping fl
 
 ---
 
+## 5c. Compliance gate — Apple + Google (`npm run store-compliance`)
+
+Two-sided pre-submission scanner, one command (`scripts/store-compliance.js`):
+- **Apple** → `greenlight` (RevylAI, MIT) — App Store Review Guidelines: metadata, code patterns
+  (private API / secrets / payments), privacy manifest, Required Reason APIs, tracking SDKs.
+- **Google** → `gpc` (yasserstudio, MIT) — Play policy code scan: secrets, non-Play billing SDKs,
+  tracking libraries.
+
+Both scan broadly and over-report; the gate **filters noise by path** (docs/scripts/plugins/tests/
+Pods/prototype) and applies **documented, visible suppressions** for verified false positives —
+suppressed items print with their reason, never silently dropped.
+
+**Install (one-time):**
+```
+greenlight:  brew install go && go install github.com/RevylAI/greenlight/cmd/greenlight@latest
+gpc:         npm install -g @gpc-cli/cli
+```
+> CLT note: `greenlight` is built with `go install` (uses the working Xcode 26.5 clang). Homebrew's
+> "Command Line Tools too outdated" complaint is a stale standalone-CLT-package check, **not** a real
+> toolchain problem — no CLT update needed.
+
+**Baseline (2026-06-30): no blocking findings.**
+- Apple: 1 WARN — privacy-policy URL not in app.json (it is set in App Store Connect; informational).
+  The "Amplitude tracking without ATT" CRITICAL is a **verified false positive** (amplitude appears
+  only in the `docs/html-prototype` vendored react-dom bundle, not in deps/`src/`) — suppressed with reason.
+  Fixed live: added `expo.description` to app.json.
+- Google: clean (the lone hit is a mock token in a `__tests__` fixture — filtered).
+
+**Tool caveats:** greenlight v0.1.0 has no ignore/`--config` (README is ahead of the release) → we
+filter its JSON by path; gpc's full `preflight <aab>` zip reader crashes on our bundle → we use
+`codescan` on `src/`. Re-run `--ci` to gate; a real CRITICAL/ERROR after filtering blocks.
+
+---
+
 ## 6. Execution phases (how to actually realize this)
 
 ```
 Phase 0  Static pre-flight (NO build, do first, inline)
-         expo-doctor · typecheck/lint/test · copy-audit (AI-writing tells) · audit APP_STORE_ID,
-         fertility disclaimer, targetSdk, app.json compliance, debug-gate. → quick-win findings.
+         expo-doctor · typecheck/lint/test · copy-audit (AI-writing tells) ·
+         store-compliance (greenlight + gpc) · audit APP_STORE_ID, fertility disclaimer,
+         targetSdk, app.json compliance, debug-gate. → quick-win findings.
 
 Phase 1  Builds
          1a iOS debug → iPhone 17 Pro Max sim (expo run:ios)

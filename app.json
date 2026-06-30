@@ -3,6 +3,7 @@
     "name": "Hora",
     "slug": "hora",
     "version": "1.0.0",
+    "description": "Classical horary astrology with AI interpretation. Ask a sincere question and receive an instant verdict — YES, NO, MAYBE, or UNCLEAR — cast from the chart of the moment you asked.",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "hora",

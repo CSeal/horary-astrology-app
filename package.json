@@ -39,7 +39,8 @@
     "typecheck": "tsc --noEmit",
     "generate:icon": "node scripts/generate-icon.js",
     "build:privacy": "node scripts/build-privacy.js",
-    "copy-audit": "node scripts/copy-audit.js"
+    "copy-audit": "node scripts/copy-audit.js",
+    "store-compliance": "node scripts/store-compliance.js"
   },
   "jest": {
     "preset": "jest-expo",
