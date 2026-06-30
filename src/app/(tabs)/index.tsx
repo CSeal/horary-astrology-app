@@ -321,10 +321,10 @@ export default function HomeScreen() {
               onPress={handleOpenPicker}
               accessibilityLabel={t('home.chooseCity')}
             >
-              <Text className="font-inter text-sm text-text-secondary">
+              <Text className="flex-1 font-inter text-sm text-text-secondary">
                 {t('home.locationDeniedPickCity')}
               </Text>
-              <Text className="font-inter-medium text-sm text-accent-gold">
+              <Text className="flex-shrink-0 ml-3 font-inter-medium text-sm text-accent-gold">
                 {t('home.chooseCity')}
               </Text>
             </BannerPressable>
