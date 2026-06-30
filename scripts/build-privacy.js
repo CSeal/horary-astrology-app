@@ -1,38 +1,33 @@
 // scripts/build-privacy.js
 // Usage: node scripts/build-privacy.js
-// Output: public/privacy-policy.html
+// Output: public/{index,privacy-policy,support}.html
 // Requires: npm install --save-dev marked
 //
-// Converts docs/privacy-policy.md to a styled HTML page for GitHub Pages hosting.
+// Converts the docs/*.md site sources to styled HTML pages for GitHub Pages hosting.
 // Deployed automatically via .github/workflows/deploy-privacy.yml on push to main.
-// After first deploy, the URL is: https://<owner>.github.io/<repo>/privacy-policy.html
+// After deploy the URLs are: https://<owner>.github.io/<repo>/{privacy-policy,support}.html
 
 const { marked } = require('marked');
 const fs = require('fs');
 const path = require('path');
 
-const mdPath = path.join(__dirname, '..', 'docs', 'privacy-policy.md');
+const docsDir = path.join(__dirname, '..', 'docs');
 const outDir = path.join(__dirname, '..', 'public');
-const outPath = path.join(outDir, 'privacy-policy.html');
 
-if (!fs.existsSync(mdPath)) {
-  console.error(`Error: docs/privacy-policy.md not found at ${mdPath}`);
-  process.exit(1);
-}
+// source markdown → output html. Order is cosmetic. `landing.md` is named to avoid
+// colliding with docs/INDEX.md on case-insensitive filesystems.
+const PAGES = [
+  { md: 'landing.md', out: 'index.html', title: 'Hora — Horary Astrology', footer: 'Hora: Horary Astrology' },
+  { md: 'privacy-policy.md', out: 'privacy-policy.html', title: 'Hora — Privacy Policy', footer: 'Hora: Horary Astrology — Privacy Policy' },
+  { md: 'support.md', out: 'support.html', title: 'Hora — Support', footer: 'Hora: Horary Astrology — Support' },
+];
 
-const md = fs.readFileSync(mdPath, 'utf8');
-
-// Strip YAML front-matter (lines between --- markers)
-const stripped = md.replace(/^---[\s\S]*?---\n/, '');
-
-const body = marked(stripped);
-
-const html = `<!DOCTYPE html>
+const page = (title, body, footer) => `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AstraSk — Privacy Policy</title>
+  <title>${title}</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -65,13 +60,21 @@ const html = `<!DOCTYPE html>
 </head>
 <body>
 ${body}
-<div class="footer">AstraSk: Horary Chart &mdash; Privacy Policy</div>
+<div class="footer">${footer}</div>
 </body>
 </html>`;
 
 fs.mkdirSync(outDir, { recursive: true });
-fs.writeFileSync(outPath, html, 'utf8');
-console.log(`Generated: ${outPath}`);
-console.log('');
-console.log('Deploy: git push to main triggers GitHub Actions (see .github/workflows/deploy-privacy.yml)');
-console.log('URL after deploy: https://<owner>.github.io/<repo>/privacy-policy.html');
+let built = 0;
+for (const p of PAGES) {
+  const mdPath = path.join(docsDir, p.md);
+  if (!fs.existsSync(mdPath)) {
+    console.warn(`skip: docs/${p.md} not found`);
+    continue;
+  }
+  const md = fs.readFileSync(mdPath, 'utf8').replace(/^---[\s\S]*?---\n/, '');
+  fs.writeFileSync(path.join(outDir, p.out), page(p.title, marked(md), p.footer), 'utf8');
+  console.log(`Generated: public/${p.out}`);
+  built++;
+}
+console.log(`\n${built} page(s) built. Deploy: push to main → .github/workflows/deploy-privacy.yml`);

@@ -1,9 +1,12 @@
-name: Deploy Privacy Policy
+name: Deploy Site (privacy · support · landing)
 
 on:
   push:
     paths:
       - 'docs/privacy-policy.md'
+      - 'docs/support.md'
+      - 'docs/landing.md'
+      - 'scripts/build-privacy.js'
     branches:
       - main
 
