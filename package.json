@@ -38,7 +38,8 @@
     "lint:fix": "eslint src/ --fix",
     "typecheck": "tsc --noEmit",
     "generate:icon": "node scripts/generate-icon.js",
-    "build:privacy": "node scripts/build-privacy.js"
+    "build:privacy": "node scripts/build-privacy.js",
+    "copy-audit": "node scripts/copy-audit.js"
   },
   "jest": {
     "preset": "jest-expo",

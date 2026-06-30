@@ -207,12 +207,32 @@ static pre-flight gate.
 
 ---
 
+## 5b. Copy quality — AI-writing audit (`npm run copy-audit`)
+
+Automated gate over every i18n locale + store-listing draft, using the vendored
+avoid-ai-writing detector (`scripts/vendor/avoid-ai-writing/`, MIT). Blocks on actionable
+English AI-vocabulary slop (tier1/tier2, hashtag-stuffing, unfilled placeholders); reports
+em-dash/formatting/bullet-list habits as warnings; ignores multilingual homoglyph and string-table
+diversity false positives.
+
+**Baseline (2026-06-30): 0 FAIL across all 14 sources** — copy reads human, not AI, in all 7
+languages. Only soft signals present:
+- **em-dash habit** everywhere (≈18 per locale file, 5–12 per store draft) — the one consistent tell.
+- `bullet-np-list` on es/ru/uk store feature lists (standard store convention; low concern).
+- The EN store description's "13 homoglyph swaps" flag is a **false positive** (legit `Русский ·
+  Français · Português` + typography; no hidden homoglyph inside any English word — verified).
+
+Run before every store submission; treat new tier1/tier2 hits as blockers, em-dash as a
+style review (do NOT mass-strip — em-dash is valid typography and stripping flattens the voice).
+
+---
+
 ## 6. Execution phases (how to actually realize this)
 
 ```
 Phase 0  Static pre-flight (NO build, do first, inline)
-         expo-doctor · typecheck/lint/test · audit APP_STORE_ID, fertility disclaimer,
-         targetSdk, app.json compliance, debug-gate. → quick-win findings.
+         expo-doctor · typecheck/lint/test · copy-audit (AI-writing tells) · audit APP_STORE_ID,
+         fertility disclaimer, targetSdk, app.json compliance, debug-gate. → quick-win findings.
 
 Phase 1  Builds
          1a iOS debug → iPhone 17 Pro Max sim (expo run:ios)
