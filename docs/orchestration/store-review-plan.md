@@ -259,6 +259,13 @@ gpc:         npm install -g @gpc-cli/cli
 filter its JSON by path; gpc's full `preflight <aab>` zip reader crashes on our bundle → we use
 `codescan` on `src/`. Re-run `--ci` to gate; a real CRITICAL/ERROR after filtering blocks.
 
+**`--live` mode** (`npm run store-compliance -- --live`) also scans the *published* listings:
+`greenlight scan` (App Store Connect) + `gpc listings analyze` (Play). greenlight byte-counts
+non-Latin text, so it false-flags ru/uk length — the gate suppresses those with a reason; trust gpc
+for length. Live audit + the metadata fixes applied (Support URL ×7, app.json description, APP_STORE_ID)
+are recorded in [docs/store-drafts/live-audit.md](../store-drafts/live-audit.md). Live gate is down to
+2 blocking findings, both Apple assets/build (screenshots + uploaded build).
+
 ---
 
 ## 6. Execution phases (how to actually realize this)

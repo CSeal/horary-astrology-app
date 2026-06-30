@@ -26,6 +26,11 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const CI = process.argv.includes('--ci');
+const LIVE = process.argv.includes('--live'); // also scan the live store listings
+
+// Live-listing identifiers (used only with --live).
+const APP_STORE_APP_ID = '6784362149';
+const ANDROID_PACKAGE = 'io.hora.app';
 
 const C = {
   reset: '\x1b[0m', red: '\x1b[31m', yellow: '\x1b[33m', green: '\x1b[32m',
@@ -42,6 +47,14 @@ const SUPPRESSIONS = [
     match: (f) => /tracking sdk/i.test(f.title) && /amplitude/i.test(JSON.stringify(f)),
     reason: "verified FP — 'amplitude' appears only in docs/html-prototype's vendored " +
             'react-dom bundle, not in package.json deps or src/. Re-check if Amplitude is added.',
+  },
+  {
+    // greenlight counts BYTES, not Unicode characters, so it over-reports length for
+    // Cyrillic locales. Verified: ru/uk keywords are 85 chars (160 bytes); ru description
+    // is ~3111 chars (gpc, char-accurate) — both well under the limit.
+    match: (f) => /(exceeds?|over).*character limit/i.test(f.title) && /\[(ru|uk)\]/i.test(f.title),
+    reason: 'greenlight byte-counts non-Latin text → false over-limit for ru/uk. ' +
+            'Length is char-accurate via gpc; verified under limit.',
   },
 ];
 
@@ -99,6 +112,63 @@ function runGpc() {
     sevKey: (f) => (f.severity || '').toUpperCase(), idOf: (f) => f.ruleId || '', fileOf: (f) => (f.title || '').replace(/^.*?found in /, '') };
 }
 
+// ── Apple: greenlight live ASC scan (--live) ──────────────────────────────────
+function runGreenlightScan() {
+  const label = 'Apple — live ASC listing';
+  const bin = findBin('greenlight', [path.join(os.homedir(), 'go/bin/greenlight')]);
+  if (!bin) return { tool: 'greenlight scan', label, missing: true };
+  const out = path.join(os.tmpdir(), 'greenlight-scan.json');
+  try { execFileSync(bin, ['scan', '--app-id', APP_STORE_APP_ID, '--tier', '1', '--format', 'json', '--output', out], { stdio: 'ignore' }); }
+  catch { /* non-zero exit when findings exist — JSON is still written */ }
+  let data;
+  try { data = JSON.parse(fs.readFileSync(out, 'utf8')); }
+  catch { return { tool: 'greenlight scan', label, missing: true, note: 'not authenticated — run `greenlight auth setup`' }; }
+  const real = [], suppressed = [];
+  for (const f of data.findings || []) {
+    const s = suppressionFor(f);
+    if (s) suppressed.push({ ...f, _reason: s.reason });
+    else real.push(f);
+  }
+  return {
+    tool: 'greenlight scan', label, real, suppressed, noise: 0,
+    sevKey: (f) => (f.severity >= 2 ? 'CRITICAL' : 'WARN'),
+    idOf: (f) => `§${f.guideline}`, fileOf: () => '(App Store Connect)',
+  };
+}
+
+// ── Google: gpc live listing char-limit analysis (--live) ─────────────────────
+function runGpcAnalyze() {
+  const label = 'Google — live Play listing';
+  const bin = findBin('gpc', []);
+  if (!bin) return { tool: 'gpc listings analyze', label, missing: true };
+  const sa = path.join(ROOT, 'service-account.json');
+  const env = { ...process.env };
+  if (fs.existsSync(sa)) env.GOOGLE_APPLICATION_CREDENTIALS = sa;
+  let raw;
+  try { raw = execFileSync(bin, ['listings', 'analyze', '--json'], { cwd: ROOT, encoding: 'utf8', env }); }
+  catch (e) { raw = (e.stdout || '').toString(); }
+  const i = raw.indexOf('{');
+  if (i < 0) return { tool: 'gpc listings analyze', label, missing: true, note: 'configure gpc: `gpc config set app io.hora.app` + service-account.json' };
+  let data;
+  try { data = JSON.parse(raw.slice(i)); }
+  catch { return { tool: 'gpc listings analyze', label, missing: true, note: 'unexpected gpc output' }; }
+  const real = [], near = [];
+  for (const r of data.results || []) {
+    for (const fld of r.fields || []) {
+      const st = String(fld.status).toLowerCase();
+      if (!['ok', 'warn', 'pass', 'valid'].includes(st)) {
+        real.push({ severity: 'CRITICAL', guideline: 'length', title: `[${r.language}] ${fld.field} ${fld.chars}/${fld.limit} over limit` });
+      } else if (fld.pct >= 90) {
+        near.push(`[${r.language}] ${fld.field} ${fld.pct}%`);
+      }
+    }
+  }
+  return {
+    tool: 'gpc listings analyze', label, real, suppressed: [], noise: 0, near,
+    sevKey: (f) => f.severity, idOf: (f) => f.guideline, fileOf: () => '(Play Console)',
+  };
+}
+
 // ── severity ranking ──────────────────────────────────────────────────────────
 const RANK = { CRITICAL: 3, ERROR: 3, WARN: 2, WARNING: 2, INFO: 1 };
 const isBlocking = (sev) => (RANK[(sev || '').toUpperCase()] || 0) >= 3;
@@ -110,18 +180,25 @@ const sevColor = (sev) => {
 // ── render ────────────────────────────────────────────────────────────────────
 console.log(`\n${C.cyan}${C.bold}store-compliance — Apple + Google pre-submission gate${C.reset}`);
 console.log(`${C.dim}greenlight (App Store) + gpc (Play). Noise filtered by path; suppressions shown with reason.${C.reset}`);
+if (LIVE) console.log(`${C.dim}--live: also scanning the published App Store Connect + Play listings.${C.reset}`);
+
+const runs = [runGreenlight(), runGpc()];
+if (LIVE) runs.push(runGreenlightScan(), runGpcAnalyze());
 
 let blocking = 0;
-for (const res of [runGreenlight(), runGpc()]) {
+for (const res of runs) {
   console.log(`\n${C.bold}${res.label || res.tool}${C.reset} ${C.dim}(${res.tool})${C.reset}`);
   if (res.missing) {
-    console.log(`  ${C.yellow}• not installed — skipped.${C.reset} ${C.dim}see install notes at the top of this script${C.reset}`);
+    console.log(`  ${C.yellow}• skipped${C.reset} ${C.dim}— ${res.note || 'not installed; see install notes atop this script'}${C.reset}`);
     continue;
   }
   const blockers = res.real.filter((f) => isBlocking(res.sevKey(f)));
   blocking += blockers.length;
   if (res.real.length === 0) {
     console.log(`  ${C.green}✓ clean${C.reset} ${C.dim}(${res.noise} noise filtered, ${res.suppressed.length} suppressed)${C.reset}`);
+  }
+  if (res.near && res.near.length) {
+    console.log(`  ${C.dim}near limit (≥90%): ${res.near.join(' · ')}${C.reset}`);
   }
   for (const f of res.real) {
     const sev = res.sevKey(f);

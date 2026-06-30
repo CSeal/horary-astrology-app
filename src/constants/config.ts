@@ -49,9 +49,8 @@ export const ASYNC_STORAGE_KEYS = {
 } as const;
 
 // App Store / Play Store links (Phase 1.5 growth — invite + rate).
-// APP_STORE_ID is a placeholder until the app is registered in App Store Connect;
-// replace '000000000' with the real numeric ID before launch.
-export const APP_STORE_ID = '000000000';
+// Numeric App Store app ID (App Store Connect → io.hora.app, registered 2026-06-25).
+export const APP_STORE_ID = '6784362149';
 export const APP_STORE_URL = `https://apps.apple.com/app/id${APP_STORE_ID}`;
 // Direct "write a review" deep link — compliant for a user-tapped Rate row
 // (distinct from the event-driven StoreReview.requestReview() prompt).
