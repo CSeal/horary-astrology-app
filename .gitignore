@@ -20,3 +20,6 @@ web-build/
 
 expo-env.d.ts
 # @end expo-cli
+# Store screenshot capture (regenerable; finals live in the stores)
+screenshots-raw/
+store-assets/screenshots/

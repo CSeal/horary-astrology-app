@@ -38,6 +38,21 @@ import { ForceUpdateScreen } from '@/components/ForceUpdateScreen';
 import { checkForUpdate, UpdateCheckResult } from '@/services/updateCheckService';
 import { reviewPromptService } from '@/services/reviewPromptService';
 import { notificationService } from '@/services/notificationService';
+import { demoService } from '@/services/demoService';
+import { SCREENSHOT_TARGET, SCREENSHOT_LOCALE } from '@/screenshotTarget';
+
+// Dev-only screenshot mode: when EXPO_PUBLIC_SCREENSHOT=1 in a dev build, the app
+// auto-seeds the demo journal, skips onboarding, applies SCREENSHOT_LOCALE, and
+// navigates to SCREENSHOT_TARGET so the store-asset capture pipeline lands on the
+// right populated screen. Never active in a production binary (__DEV__ is false).
+const SCREENSHOT_MODE = __DEV__ && process.env.EXPO_PUBLIC_SCREENSHOT === '1';
+const SCREENSHOT_ROUTES: Record<string, string> = {
+  home: '/',
+  verdict: '/result/demo-1',
+  full: '/result/demo-1/full',
+  journal: '/journal',
+  stats: '/stats',
+};
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   /* splash auto-hide may have already happened */
@@ -122,6 +137,22 @@ export default function RootLayout() {
       cancelled = true;
     };
   }, [hydrateSettings, hydrateQuestions]);
+
+  // Screenshot mode: seed demo data + mark onboarding complete once stores are
+  // hydrated, so capture lands on populated home/journal/stats screens.
+  useEffect(() => {
+    if (!SCREENSHOT_MODE || !storesHydrated) return;
+    (async () => {
+      await useSettingsStore.getState().setLocale(SCREENSHOT_LOCALE as never);
+      await demoService.seed();
+      await useSettingsStore.getState().completeOnboarding();
+      // Let onboarding redirect settle, then jump to the capture target.
+      setTimeout(() => {
+        router.replace((SCREENSHOT_ROUTES[SCREENSHOT_TARGET] ?? '/') as never);
+      }, 600);
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storesHydrated, SCREENSHOT_TARGET, SCREENSHOT_LOCALE]);
 
   // Run update check in parallel with store hydration and onboarding flag.
   // Fail-open: updateCheckDone is set to true regardless of fetch outcome.
