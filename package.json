@@ -41,6 +41,8 @@
     "build:privacy": "node scripts/build-privacy.js",
     "release:ios": "bash scripts/build-ios.sh",
     "release:ios:dry": "bash scripts/build-ios.sh --no-upload",
+    "release:android": "bash scripts/build-android.sh",
+    "release:android:fast": "bash scripts/build-android.sh --no-prebuild",
     "copy-audit": "node scripts/copy-audit.js",
     "store-compliance": "node scripts/store-compliance.js"
   },
