@@ -8,15 +8,17 @@ import { useTranslation } from 'react-i18next';
 import { Sparkles, BookOpen, BarChart2, Settings as SettingsIcon } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, typography } from '@/constants/theme';
-import { Pressable, AnimatedView } from '@/tw';
-import { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { Pressable } from '@/tw';
 import * as Haptics from 'expo-haptics';
 import type { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
 
+// Render `children` directly (React Navigation's own icon+label layout) so the
+// label measures at full width and the icon centers over it identically on iOS
+// and Android. Wrapping children in a sizing/animated View broke this: iOS mis-
+// centered the icon (~19pt left) and Android truncated labels ("Chronicles" ->
+// "Chronicl...") on tab re-render. We keep the press haptic; the press-scale
+// bounce is dropped to preserve correct native tab-bar layout.
 function TabBarButton({ children, onPress, onLongPress, style, accessibilityState, testID }: BottomTabBarButtonProps) {
-  const scale = useSharedValue(1);
-  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
-
   return (
     <Pressable
       style={style}
@@ -24,17 +26,11 @@ function TabBarButton({ children, onPress, onLongPress, style, accessibilityStat
       accessibilityState={accessibilityState}
       testID={testID}
       onPress={(e) => {
-        scale.value = withSpring(0.82, { damping: 10, stiffness: 200 });
-        setTimeout(() => {
-          scale.value = withSpring(1, { damping: 12, stiffness: 90 });
-        }, 80);
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
         onPress?.(e);
       }}
     >
-      <AnimatedView style={animStyle} className="flex-1 items-center justify-center">
-        {children}
-      </AnimatedView>
+      {children}
     </Pressable>
   );
 }
