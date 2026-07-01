@@ -39,7 +39,7 @@ export function Input({
     borderColor: interpolateColor(
       focusProgress.value,
       [0, 1],
-      [colors.border, colors.borderFocus]
+      [colors.border, colors.accentGold]
     ),
     borderWidth: 1,
     borderRadius: 12,
