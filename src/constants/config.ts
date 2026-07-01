@@ -70,6 +70,18 @@ export const SECURE_STORE_KEY_API = 'horary_api_key';
 export const SUPPORTED_LOCALES = ['en', 'ru', 'uk', 'de', 'fr', 'pt', 'es'] as const;
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
+// BCP-47 tags for Intl date/number formatting, keyed by app locale. Shared by the
+// journal month headers and the per-entry date so every locale formats natively.
+export const DATE_LOCALE_MAP: Record<SupportedLocale, string> = {
+  en: 'en-US',
+  ru: 'ru-RU',
+  uk: 'uk-UA',
+  de: 'de-DE',
+  fr: 'fr-FR',
+  pt: 'pt-BR',
+  es: 'es-ES',
+};
+
 // Horary question categories — required by POST /api/v3/horary/analyze.
 // 'general' is the catch-all default shown first in the picker.
 export const HORARY_CATEGORIES = [

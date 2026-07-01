@@ -27,17 +27,8 @@ import { useStreak } from '@/hooks/useStreak';
 import { useQuestionsStore } from '@/stores/questionsStore';
 import { colors, typography } from '@/constants/theme';
 import type { JournalEntry } from '@/types/journal';
-import type { SupportedLocale } from '@/constants/config';
+import { DATE_LOCALE_MAP, type SupportedLocale } from '@/constants/config';
 
-const DATE_LOCALE_MAP: Record<SupportedLocale, string> = {
-  en: 'en-US',
-  ru: 'ru-RU',
-  uk: 'uk-UA',
-  de: 'de-DE',
-  fr: 'fr-FR',
-  pt: 'pt-BR',
-  es: 'es-ES',
-};
 
 interface SectionEntry {
   entry: JournalEntry;

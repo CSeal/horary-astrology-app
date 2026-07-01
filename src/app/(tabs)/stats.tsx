@@ -243,7 +243,11 @@ export default function StatsScreen() {
                 key={verdict}
                 className="flex-row items-center gap-2 py-1"
               >
-                <Text className="font-mono text-xs text-text-secondary w-16">
+                <Text
+                  className="font-mono text-xs text-text-secondary w-16"
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                >
                   {t(`verdictTypes.${verdict}` as const)}
                 </Text>
                 <View className="flex-1 h-1.5 rounded-full bg-bg-surface overflow-hidden">

@@ -22,6 +22,7 @@ import {
 } from 'react-native-reanimated';
 import { VerdictBadge } from '@/components/ui/Badge';
 import { colors } from '@/constants/theme';
+import { DATE_LOCALE_MAP, type SupportedLocale } from '@/constants/config';
 import type { JournalEntry } from '@/types/journal';
 
 interface JournalItemProps {
@@ -43,10 +44,10 @@ const VERDICT_BORDER_CLASS: Record<JournalEntry['verdict'], string> = {
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 function formatDate(iso: string, locale: string): string {
-  return new Date(iso).toLocaleDateString(locale === 'ru' ? 'ru-RU' : 'en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
+  return new Date(iso).toLocaleDateString(
+    DATE_LOCALE_MAP[locale as SupportedLocale] ?? 'en-US',
+    { month: 'short', day: 'numeric' }
+  );
 }
 
 type OutcomeValue = NonNullable<JournalEntry['outcome']>;

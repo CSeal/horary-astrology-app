@@ -522,7 +522,7 @@ const pt = {
     homeTab: 'Perguntar',
     journalTab: 'Crônicas',
     statsTab: 'Estatísticas',
-    settingsTab: 'Meu Almanaque',
+    settingsTab: 'Almanaque',
     backButton: 'Voltar',
     settingsIcon: 'Abrir configurações',
     openLocationPicker: 'Alterar localização',

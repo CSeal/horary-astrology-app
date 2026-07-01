@@ -50,8 +50,11 @@ const SCREENSHOT_ROUTES: Record<string, string> = {
   home: '/',
   verdict: '/result/demo-1',
   full: '/result/demo-1/full',
+  timing: '/result/demo-1/timing',
+  chart: '/result/demo-1/chart',
   journal: '/journal',
   stats: '/stats',
+  settings: '/settings',
 };
 
 SplashScreen.preventAutoHideAsync().catch(() => {

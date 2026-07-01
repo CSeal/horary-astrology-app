@@ -74,7 +74,7 @@ function BannerPressable({
         onPressOut={() => {
           scale.value = withSpring(1, { damping: 12, stiffness: 90 });
         }}
-        className="flex-row items-center justify-between bg-bg-surface rounded-xl px-4 py-3 border border-border"
+        className="flex-row items-start justify-between bg-bg-surface rounded-xl px-4 py-3 border border-border"
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel}
       >

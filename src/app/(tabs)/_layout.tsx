@@ -32,7 +32,9 @@ function TabBarButton({ children, onPress, onLongPress, style, accessibilityStat
         onPress?.(e);
       }}
     >
-      <AnimatedView style={animStyle}>{children}</AnimatedView>
+      <AnimatedView style={animStyle} className="flex-1 items-center justify-center">
+        {children}
+      </AnimatedView>
     </Pressable>
   );
 }

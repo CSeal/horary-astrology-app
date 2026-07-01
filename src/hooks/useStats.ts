@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { useJournal } from '@/hooks/useJournal';
 import { useStreak } from '@/hooks/useStreak';
 import type { VerdictType } from '@/types/horary';
+import { useSettingsStore } from '@/stores/settingsStore';
+import { DATE_LOCALE_MAP, type SupportedLocale } from '@/constants/config';
 
 export interface JournalStats {
   total: number;
@@ -18,11 +20,6 @@ export interface JournalStats {
 }
 
 const VERDICTS: VerdictType[] = ['YES', 'NO', 'UNCLEAR', 'MAYBE'];
-const MONTH_ABBREV = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
-
 function round1(value: number): number {
   return Math.round(value * 10) / 10;
 }
@@ -30,6 +27,7 @@ function round1(value: number): number {
 export function useStats(): JournalStats | null {
   const { entries } = useJournal();
   const streak = useStreak();
+  const locale = useSettingsStore((s) => s.locale);
 
   return useMemo(() => {
     if (entries.length === 0) return null;
@@ -97,7 +95,10 @@ export function useStats(): JournalStats | null {
       const monthDate = new Date(now.getFullYear(), now.getMonth() - offset, 1);
       const year = monthDate.getFullYear();
       const month = monthDate.getMonth();
-      const label = `${MONTH_ABBREV[month]} ${String(year).slice(-2)}`;
+      const label = `${monthDate.toLocaleDateString(
+        DATE_LOCALE_MAP[locale as SupportedLocale] ?? 'en-US',
+        { month: 'short' }
+      )} ${String(year).slice(-2)}`;
       const count = entries.filter((e) => {
         const d = new Date(e.timestamp);
         return d.getFullYear() === year && d.getMonth() === month;
@@ -117,5 +118,5 @@ export function useStats(): JournalStats | null {
       currentStreak: streak.current,
       maxStreak: streak.max,
     };
-  }, [entries, streak]);
+  }, [entries, streak, locale]);
 }
