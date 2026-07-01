@@ -19,9 +19,11 @@ export const MAX_QUESTION_CHARS = 280;
 export const MIN_QUESTION_CHARS = 5;
 export const MAX_JOURNAL_ENTRIES = 500;
 
-// Force-update remote config — GitHub Gist URL (or any static JSON endpoint).
-// Set EXPO_PUBLIC_UPDATE_CONFIG_URL in .env.local before production builds.
-// Leave empty to disable the update check (fail-open, same as unreachable endpoint).
+// Force-update remote config — static JSON endpoint (source: docs/app-version.json,
+// deployed to GitHub Pages by build:privacy). Set in .env.local before prod builds:
+//   EXPO_PUBLIC_UPDATE_CONFIG_URL=https://cseal.github.io/horary-astrology-app/app-version.json
+// To force old clients to update, raise minVersion in docs/app-version.json and push.
+// Leave empty to disable the check (fail-open, same as an unreachable endpoint).
 export const UPDATE_CONFIG_URL =
   process.env.EXPO_PUBLIC_UPDATE_CONFIG_URL ?? '';
 

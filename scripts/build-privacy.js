@@ -77,4 +77,19 @@ for (const p of PAGES) {
   console.log(`Generated: public/${p.out}`);
   built++;
 }
+
+// Static assets copied verbatim (e.g. the force-update version config consumed
+// by updateCheckService via EXPO_PUBLIC_UPDATE_CONFIG_URL).
+const STATIC = ['app-version.json'];
+for (const f of STATIC) {
+  const src = path.join(docsDir, f);
+  if (!fs.existsSync(src)) {
+    console.warn(`skip: docs/${f} not found`);
+    continue;
+  }
+  fs.copyFileSync(src, path.join(outDir, f));
+  console.log(`Copied: public/${f}`);
+  built++;
+}
+
 console.log(`\n${built} page(s) built. Deploy: push to main → .github/workflows/deploy-privacy.yml`);
