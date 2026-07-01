@@ -19,7 +19,8 @@
       "appleTeamId": "T29RJZB64F",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Your exact location at the moment of asking is required to cast an accurate horary chart.",
-        "NSUserNotificationUsageDescription": "We'll remind you to mark the outcome of your horary readings."
+        "NSUserNotificationUsageDescription": "We'll remind you to mark the outcome of your horary readings.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
