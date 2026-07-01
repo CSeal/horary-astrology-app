@@ -288,6 +288,7 @@ export default function HomeScreen() {
           contentContainerClassName="px-5 py-4 gap-4"
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
+          automaticallyAdjustKeyboardInsets
         >
           <Pressable onPress={dismissKeyboard} accessible={false}>
           <AnimatedView
@@ -324,7 +325,7 @@ export default function HomeScreen() {
               <Text className="flex-1 font-inter text-sm text-text-secondary">
                 {t('home.locationDeniedPickCity')}
               </Text>
-              <Text className="flex-shrink-0 ml-3 font-inter-medium text-sm text-accent-gold">
+              <Text className="shrink-0 ml-3 font-inter-medium text-sm text-accent-gold">
                 {t('home.chooseCity')}
               </Text>
             </BannerPressable>

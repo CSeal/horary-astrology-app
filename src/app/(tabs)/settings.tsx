@@ -599,6 +599,7 @@ export default function SettingsScreen() {
         className="flex-1"
         contentContainerClassName="px-5 py-4 gap-6"
         keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
       >
         <AnimatedView style={titleStyle}>
           <Text className="font-cormorant-medium text-2xl text-text-primary">
