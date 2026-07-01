@@ -18,6 +18,10 @@ Deliverable of the plan in [store-review-plan.md](store-review-plan.md), phases 
 - **Perf + keyboard passes done** (code-level): animations on the Reanimated UI thread, lists
   virtualized, inputs now keyboard-avoiding. Quantitative FPS + soft-keyboard behaviour still
   need a release build on a physical device (simulator can't represent either).
+- **Android pass done** (Pixel_9_Pro): same 56-cell capture. One Android-only defect (tab-label
+  truncation, a regression from the iOS tab fix) found + refixed cross-platform; everything else
+  renders consistently with iOS and the keyboard is already handled by `adjustResize`. Plus a
+  focus-border fix on the question input the owner spotted. **10 fixes total this session.**
 - **No 🔴 blockers.** The app's layout is genuinely solid across all 7 languages — German
   (longest words) and Russian/Ukrainian (widest Cyrillic) included. The worst-case German
   cases (verdict CTA, full-reading headers, settings rows) all fit cleanly on the 6.9".
@@ -149,14 +153,43 @@ with project conventions. `npm run typecheck` + `eslint` on all changed files: *
   interactive still require a release build on a physical device** (simulator uses the Mac
   GPU/CPU and a debug bundle — not representative).
 
+## Android pass (Pixel_9_Pro, API 35)
+
+Built + ran the app on the Pixel_9_Pro emulator and captured the same 8 screens × 7
+locales (56 cells) via `adb` deep links, then diffed each against the iOS baseline.
+
+**One genuine Android-specific defect — found and fixed:**
+- 🟠 **Tab labels truncated on Android** ("Chronicles" → "Chronicl…", even "Ask" → "A…").
+  Root cause was the iOS tab-centering fix itself: wrapping the icon+label in a
+  flex/animated View collapsed the label's measured width on Android during tab
+  re-render. Refixed by rendering React Navigation's children directly (native tab
+  layout) — icon still centered (iOS re-measured at −0.7 pt) and full labels on both
+  platforms. Verified on iPhone 17 Pro Max + Pixel_9_Pro. (Trade-off: tab press-scale
+  bounce dropped; tap haptic kept.)
+
+**Everything else renders consistently with iOS.** The shared-JS fixes all carry over
+and were confirmed on Android: journal/stats dates localize via `Intl` (DE "März", RU/UK
+Cyrillic months), the location-banner link stays on line 1 when the message wraps (Android
+fonts are a touch wider so EN also wraps to 2 lines — the `items-start` fix handles it),
+stats verdict labels fit, PT "Almanaque" tab, verdict/full/settings cards and the German
+long CTA all fit. **Keyboard:** Android already handles it via `windowSoftInputMode=adjustResize`
++ `softwareKeyboardLayoutMode:resize` (no code change needed).
+
+**Notes:** the Android debug build installs as `com.hora.app` (the `android/` project predates
+the `io.hora.app` rename — run `expo prebuild --clean --platform android` before a release
+build, same as iOS). A few capture cells mis-navigated (en-settings→stats, ru/uk-journal→chart)
+— a deep-link sequencing artifact, not an app bug (the same screens captured cleanly in other
+locales). Not run: the API-24 floor + a low-end AVD (the plan's extra devices).
+
 ## Remaining limitations
 
 - **Haptics** are wired in code (Button impact styles, milestone Success) but **cannot be felt
   on a simulator** — physical-device pass.
 - **Quantitative perf** (release build, device) — see above.
 - **iOS floor unverified** — only iOS 26 sims installed; deployment target is 16.0.
-- **Android not run** this pass (iOS only). The 8 fixes are in shared JS so they apply to both,
-  but Android-specific rendering (fonts, safe-area, soft keyboard) was not visually audited.
+- **Android audited on Pixel_9_Pro only** (see the Android pass above). The API-24 floor and a
+  low-end AVD were not run; the `android/` project still needs a `prebuild --clean` for the
+  `io.hora.app` package before a release build.
 
 ---
 
