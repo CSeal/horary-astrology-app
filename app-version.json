@@ -1,0 +1,11 @@
+{
+  "_comment": "Force-update config read by src/services/updateCheckService.ts. Published to GitHub Pages (public/app-version.json) and fetched via EXPO_PUBLIC_UPDATE_CONFIG_URL. To FORCE users below a version to update, raise minVersion to the new release and push to main (deploy is automatic). minVersion == current app version means nobody is blocked.",
+  "ios": {
+    "minVersion": "1.0.0",
+    "storeUrl": "itms-apps://apps.apple.com/app/id6784362149"
+  },
+  "android": {
+    "minVersion": "1.0.0",
+    "storeUrl": "market://details?id=io.hora.app"
+  }
+}
