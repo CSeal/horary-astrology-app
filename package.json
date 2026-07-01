@@ -39,6 +39,8 @@
     "typecheck": "tsc --noEmit",
     "generate:icon": "node scripts/generate-icon.js",
     "build:privacy": "node scripts/build-privacy.js",
+    "release:ios": "bash scripts/build-ios.sh",
+    "release:ios:dry": "bash scripts/build-ios.sh --no-upload",
     "copy-audit": "node scripts/copy-audit.js",
     "store-compliance": "node scripts/store-compliance.js"
   },
