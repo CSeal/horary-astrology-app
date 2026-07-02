@@ -40,6 +40,26 @@ done
 
 log() { printf "\n\033[1;36m▸ %s\033[0m\n" "$1"; }
 
+# ---- 0. hide .env.local for the duration of the release build ---------------
+# .env.local is for LOCAL DEV ONLY (personal astrology-api.io test key, debug
+# PIN, etc.) and must NEVER leak into a release bundle. EXPO_PUBLIC_* vars are
+# inlined as literal strings into the JS bundle at build time — Expo's env
+# loader reads .env.local straight off disk regardless of the calling shell's
+# own env, so `unset` alone would NOT be enough. Stash it out of the way for
+# the whole build, always restored on exit (even on failure) via trap.
+# History: build 110 shipped with EXPO_PUBLIC_ASTROLOGY_API_KEY baked into
+# both store binaries — every install silently shared the developer's
+# personal key and its quota. See KEY_CHECK below for the regression guard.
+ENV_LOCAL=".env.local"
+ENV_LOCAL_STASH=".env.local.release-stash"
+restore_env_local() { [ -f "$ENV_LOCAL_STASH" ] && mv -f "$ENV_LOCAL_STASH" "$ENV_LOCAL"; }
+trap restore_env_local EXIT
+LEAKED_KEY=""
+if [ -f "$ENV_LOCAL" ]; then
+  LEAKED_KEY=$(grep '^EXPO_PUBLIC_ASTROLOGY_API_KEY=' "$ENV_LOCAL" | cut -d= -f2- || true)
+  mv "$ENV_LOCAL" "$ENV_LOCAL_STASH"
+fi
+
 # ---- 1. prebuild (optional) -------------------------------------------------
 if [ "$DO_PREBUILD" = 1 ] || [ ! -d ios ]; then
   log "expo prebuild (iOS)"
@@ -73,6 +93,18 @@ ENT="ios/Hora/Hora.entitlements"
 BUILD_NO=$(git rev-list --count HEAD 2>/dev/null || date +%s)
 log "Build number: $BUILD_NO"
 
+# CURRENT_PROJECT_VERSION on the xcodebuild command line (step 5) does NOT
+# reach the compiled binary: expo prebuild writes CFBundleVersion into
+# Info.plist as a literal string (not a $(CURRENT_PROJECT_VERSION) variable
+# reference), since app.json has no expo.ios.buildNumber set. Xcode only
+# substitutes actual $(VAR) placeholders, so the literal silently overrides
+# the CLI flag. Patch the plist directly — same pattern as the
+# aps-environment strip above. (Discovered when build 112's IPA still
+# reported CFBundleVersion=1, blocking the v1.0.1 hotfix submission.)
+INFO_PLIST="ios/Hora/Info.plist"
+/usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NO" "$INFO_PLIST"
+log "Info.plist CFBundleVersion patched to $BUILD_NO"
+
 # ---- 5. archive -------------------------------------------------------------
 log "xcodebuild archive (Release)"
 security unlock-keychain -p "$KC_PASS" "$KEYCHAIN"
@@ -104,6 +136,22 @@ xcodebuild -exportArchive -archivePath "$ARCHIVE" -exportPath "$EXPORT_DIR" \
   -exportOptionsPlist /tmp/hora-export-opts.plist
 IPA="$EXPORT_DIR/$SCHEME.ipa"
 log "IPA: $IPA ($(stat -f%z "$IPA") bytes)"
+
+# ---- 6b. regression guard: confirm no dev API key leaked into the bundle ----
+log "Verifying no personal API key is embedded in the IPA"
+if [ -n "$LEAKED_KEY" ]; then
+  TMP_UNZIP=$(mktemp -d)
+  unzip -qo "$IPA" -d "$TMP_UNZIP"
+  if grep -arq -- "$LEAKED_KEY" "$TMP_UNZIP"; then
+    rm -rf "$TMP_UNZIP"
+    echo "✗ EXPO_PUBLIC_ASTROLOGY_API_KEY is embedded in the built IPA — release blocked." >&2
+    exit 1
+  fi
+  rm -rf "$TMP_UNZIP"
+  echo "✓ Confirmed clean — dev key from .env.local is NOT present in the IPA"
+else
+  echo "✓ No dev API key was set in .env.local — nothing to check"
+fi
 
 # ---- 7. validate + upload ---------------------------------------------------
 mkdir -p ~/.appstoreconnect/private_keys

@@ -26,6 +26,26 @@ for a in "$@"; do [ "$a" = "--no-prebuild" ] && DO_PREBUILD=0; done
 
 log() { printf "\n\033[1;36m▸ %s\033[0m\n" "$1"; }
 
+# ---- 0. hide .env.local for the duration of the release build ---------------
+# .env.local is for LOCAL DEV ONLY (personal astrology-api.io test key, debug
+# PIN, etc.) and must NEVER leak into a release bundle. EXPO_PUBLIC_* vars are
+# inlined as literal strings into the JS bundle at build time — Expo's env
+# loader reads .env.local straight off disk regardless of the calling shell's
+# own env, so `unset` alone would NOT be enough. Stash it out of the way for
+# the whole build, always restored on exit (even on failure) via trap.
+# History: v110 shipped with EXPO_PUBLIC_ASTROLOGY_API_KEY baked into both
+# store binaries — every install silently shared the developer's personal key
+# and its quota. See KEY_CHECK below for the regression guard.
+ENV_LOCAL=".env.local"
+ENV_LOCAL_STASH=".env.local.release-stash"
+restore_env_local() { [ -f "$ENV_LOCAL_STASH" ] && mv -f "$ENV_LOCAL_STASH" "$ENV_LOCAL"; }
+trap restore_env_local EXIT
+LEAKED_KEY=""
+if [ -f "$ENV_LOCAL" ]; then
+  LEAKED_KEY=$(grep '^EXPO_PUBLIC_ASTROLOGY_API_KEY=' "$ENV_LOCAL" | cut -d= -f2- || true)
+  mv "$ENV_LOCAL" "$ENV_LOCAL_STASH"
+fi
+
 # ---- 1. prebuild (regenerate android/ with io.hora.app + release signing) ----
 # rm + prebuild (not --clean) so only android/ is touched — never clobbers the
 # already-uploaded ios/ project.
@@ -64,6 +84,22 @@ log "AAB: $AAB ($(stat -f%z "$AAB") bytes)"
 jarsigner -verify "$AAB" >/dev/null 2>&1 \
   && echo "✓ AAB jar-signature verified (release keystore)" \
   || echo "⚠ jarsigner verify inconclusive — Play re-signs on ingest anyway"
+
+# ---- 6. regression guard: confirm no dev API key leaked into the bundle -----
+log "Verifying no personal API key is embedded in the AAB"
+if [ -n "$LEAKED_KEY" ]; then
+  TMP_UNZIP=$(mktemp -d)
+  unzip -qo "$AAB" -d "$TMP_UNZIP"
+  if grep -arq -- "$LEAKED_KEY" "$TMP_UNZIP"; then
+    rm -rf "$TMP_UNZIP"
+    echo "✗ EXPO_PUBLIC_ASTROLOGY_API_KEY is embedded in the built AAB — release blocked." >&2
+    exit 1
+  fi
+  rm -rf "$TMP_UNZIP"
+  echo "✓ Confirmed clean — dev key from .env.local is NOT present in the AAB"
+else
+  echo "✓ No dev API key was set in .env.local — nothing to check"
+fi
 
 echo "✓ Built signed AAB versionCode $VC → $AAB"
 echo "  Next: upload to Play via google_upload_bundle → create_release (internal, draft)."

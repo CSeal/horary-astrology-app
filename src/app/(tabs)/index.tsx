@@ -20,6 +20,7 @@ import { AnimatedView, SafeAreaView, ScrollView, View, Text, Pressable } from '@
 import { CosmosBackground } from '@/components/CosmosBackground';
 import { AskForm } from '@/components/AskForm';
 import { Banner } from '@/components/ui/Banner';
+import { KeyboardDismissBar } from '@/components/KeyboardDismissBar';
 import { PlanetOrbit } from '@/components/svg/PlanetOrbit';
 import {
   LocationPickerSheet,
@@ -129,6 +130,7 @@ export default function HomeScreen() {
   const { location, permissionStatus } = useLocation();
   const locationSource = useSettingsStore((s) => s.locationSource);
   const homeLocation = useSettingsStore((s) => s.homeLocation);
+  const apiKeySource = useSettingsStore((s) => s.apiKeySource);
 
   // Resolve the default location (used when there's no per-question override):
   //   1. source = 'manual' + home city  → home city (GPS ignored by choice)
@@ -333,7 +335,11 @@ export default function HomeScreen() {
 
           {isLimitExceeded && !dismissedLimit && (
             <Banner
-              message={t('home.questionLimitBanner')}
+              message={t(
+                apiKeySource === 'personal'
+                  ? 'home.questionLimitBannerPersonal'
+                  : 'home.questionLimitBanner'
+              )}
               type="warning"
               onDismiss={() => setDismissedLimit(true)}
               // TODO Phase 3: replace this banner with a paywall modal (RevenueCat entitlement gate)
@@ -396,6 +402,7 @@ export default function HomeScreen() {
           )}
           </Pressable>
         </ScrollView>
+        <KeyboardDismissBar />
       </SafeAreaView>
 
       <LocationPickerSheet

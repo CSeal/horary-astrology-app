@@ -5,7 +5,7 @@
     "storeUrl": "itms-apps://apps.apple.com/app/id6784362149"
   },
   "android": {
-    "minVersion": "1.0.0",
+    "minVersion": "1.0.1",
     "storeUrl": "market://details?id=io.hora.app"
   }
 }

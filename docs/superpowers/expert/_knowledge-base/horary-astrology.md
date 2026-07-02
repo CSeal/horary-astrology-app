@@ -105,3 +105,45 @@ Source: [Apple Review Guidelines 2.3.7](https://developer.apple.com/app-store/re
 Hard system limit: 3 prompts per app per device per 365-day rolling window. Silent swallow after limit reached. No API to check remaining count. Must track client-side.
 
 Source: [ASO Maniac review popup guide](https://asomaniac.com/blog/app-store-review-popup), [Apple Dev Forum 115193](https://developer.apple.com/forums/thread/115193)
+
+---
+
+## Updated 2026-07-02 — Unused-endpoint domain value: sect, Lots, Sabian, whole-chart dignity, VOC-timing + analytics-sensitivity (roadmap audit)
+
+Context: audit of astrology-api.io endpoints the shipped app does NOT yet call, judged for genuine traditional-horary (Lilly-method) analytical value vs "more data for its own sake." Anti-dilution frame: differentiation is depth + correctness of traditional technique, not breadth of modalities (competitor "Lunaton" lost ground bolting tarot/runes onto horary).
+
+### Reusable matrix — does this data layer add real horary value?
+
+| API data layer | Horary value | Verdict | Why / source |
+|---|---|---|---|
+| Whole-chart essential+accidental dignity for ALL 7 planets (not just significators) | HIGH | Surface | Lilly judges the whole chart — dispositors, almuten, any benefic/malefic aspecting the significators matter. |
+| Sect (day/night, in-/out-of-sect malefic) | MEDIUM-HIGH | Surface as affliction-severity modifier | Sect "adjusts the volume": day chart → Mars is the worse malefic, Saturn tamer; night chart reverses. Tells you WHICH malefic afflicting a significator is the real threat. [ET Shipley](https://etshipley.com/current-writing/sect-in-astrology), [traditional-astrology.com](https://traditional-astrology.com/blog/day-chart-vs-night-chart.html) |
+| Mutual reception between ANY pair | HIGH | Surface | Reception is horary's "get-out-of-jail" testimony; can perfect a matter with no direct aspect; also required for Collection of Light. |
+| Moon's next applying aspect + exact time-to-perfection | HIGH | Surface | Moon = universal co-significator & "narrator"; its next aspect = "what happens next" and the primary timing engine. [kerykeion VOC](https://kerykeion.net/content/learn-astrology/horary-void-moon-horary) |
+| Full 15-pair applying aspects (beyond significators) | MEDIUM-HIGH | Surface | Translation & Collection of Light BOTH require a third planet aspecting both significators — undetectable from significator-only aspect data, so the app can currently MISS a valid perfection. [Lilly, via kerykeion](https://kerykeion.net/content/learn-astrology/horary-collection-translation-light) |
+| Significator ingress ("about to change sign") / station | MEDIUM | Surface as timing/last-chance flag | Significator about to change sign = matter about to change / last chance; stationing significator = highly significant. |
+| Arabic Parts / Lots (general) | LOW in horary | Mostly skip | By Lilly's era only the Lot of Fortune survived, "rarely used and usually misunderstood"; Frawley (leading modern authority), as quoted in review: "I cannot remember ever judging a horary where Fortuna showed anything of importance." [Wikipedia Arabic parts](https://en.wikipedia.org/wiki/Arabic_parts), [traditionalmedicalastrology.org review](https://traditionalmedicalastrology.org/horary-textbook-john-frawley-review/) |
+| Topical Lot matched to question house (esp. Part of Children, 5th) | MEDIUM | Surface ONLY on the matching topical screen | The one place a Part earns its keep: Part of Children is core Lilly pregnancy doctrine (see 2026-06-03 entry). Never a generic "Lots panel." |
+| Sabian symbols | ~NONE for traditional horary | SKIP (brand-dilution risk) | Modern construct: created 1925 by Marc Edmund Jones + clairvoyant Elsie Wheeler; humanistic/psychological (Rudhyar) lineage, NOT Lilly-tradition. Repeats the modality dilution that cost "Lunaton." [sabiansymbols.com story](https://sabiansymbols.com/about/the-sabian-symbols-story/) |
+| Moon phase / illumination % / "phase meaning" text | LOW | SKIP / de-emphasize | Phase mysticism drifts toward generic daily-horoscope content (the dilution trap). VOC + next-applying-aspect is the horary-native lunar signal, not phase vibes. |
+| fertility_score (0–100) | see 2026-06-03 | SKIP as raw number | Non-traditional vendor synthesis; pseudo-medical; Apple 1.4.1 surface. |
+| Server-rendered chart SVG | n/a (infra) | Engineering call, not a domain feature | Practitioner cares about correctness/legibility of the wheel, not client vs server rendering. |
+
+### Sect in horary — the load-bearing distinction
+Benefic/malefic assignment is sect-dependent: benefics Jupiter (day) / Venus (night); the OUT-of-sect malefic is the genuine troublemaker (day → Mars; night → Saturn), the in-sect malefic is "stern discipline, not destruction." Horary use: when a significator is afflicted by a malefic, sect tells you whether the affliction is severe (out-of-sect) or survivable (in-sect). Most web sources frame sect natally, but it's the same traditional framework Lilly-method horary sits in. [ET Shipley](https://etshipley.com/current-writing/sect-in-astrology), [traditional-astrology.com](https://traditional-astrology.com/blog/day-chart-vs-night-chart.html)
+
+### Arabic Parts in horary — use sparingly
+[Wikipedia](https://en.wikipedia.org/wiki/Arabic_parts): by Lilly's time only Lot of Fortune remained, "rarely used and usually misunderstood… mainly appears today in horary practice." Rule of thumb (same corpus): "most questions can be answered by looking at the seven inner planets, one or two Arabic parts, maybe a star and no more." → General Lots dump = noise; single topical Lot on its matching screen = legitimate depth.
+
+### Analytics / telemetry sensitivity for a divination app (NEW — reusable for any astrology/horary/tarot product)
+Horary questions are free-text about health, pregnancy, love/affairs, money/debt, legal trouble, death.
+- **GDPR Art. 9 special categories** = health, sex life/orientation, religious/philosophical belief. ICO: analytics can process special-category data by INFERENCE — "product choices, user behaviour… search history or support messages can reveal health, religion… sexual orientation… even without direct collection." → Logging that a user asked a 5th-house pregnancy / 6th-house illness question INFERS health data; consulting astrology itself can imply philosophical belief. The question stream is special-category-by-inference. [gdpr-info Art.9](https://gdpr-info.eu/art-9-gdpr/), [ICO special category](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/lawful-basis/special-category-data/what-is-special-category-data/)
+- **FTC precedent (direct analogs):** BetterHelp — $7.8M, banned from sharing mental-health data w/ Facebook/Snapchat for ads (shared email, IP, questionnaire responses). Cerebral — $7M+, disclosed sensitive health data of 3.2M users to LinkedIn/Snapchat/TikTok via tracking SDKs in its app. Pattern = sensitive-category app → third-party analytics/ad SDK → enforcement. [FTC BetterHelp](https://www.ftc.gov/news-events/news/press-releases/2023/03/ftc-ban-betterhelp-revealing-consumers-data-including-sensitive-mental-health-information-facebook), [FTC Cerebral](https://www.ftc.gov/news-events/news/press-releases/2024/04/proposed-ftc-order-will-prohibit-telehealth-firm-cerebral-using-or-disclosing-sensitive-data)
+- **Never send to any analytics/ad SDK:** question text (raw/truncated/hashed); question category joined to a user id; verdict joined to category; outcome ("came true") on health/pregnancy/legal categories; precise lat/long + exact question timestamp; any free-text (journal notes, custom titles); stable user id / IDFA / GAID joined to any of the above. Watch auto-capture SDKs that grab screen titles/text by default.
+- **Safe:** aggregate feature-usage counts, funnels, retention, crash/perf, paywall events — provided NO sensitive property rides along.
+
+### On-brand engagement mechanic
+VOC-Moon / next-applying-aspect awareness ("Moon is void of course — tradition suggests waiting to ask"; "Moon applies to Jupiter in ~6h — a favorable window") is the horary-native re-engagement signal: technique-grounded (Lilly's "considerations before judgment"), opt-in, fires at astrologically meaningful moments, reinforces the serious-traditional brand; powered by the lunar-metrics endpoint. CONTRAST: generic moon-phase/full-moon "content" = daily-horoscope dilution trap; reject. [kerykeion VOC](https://kerykeion.net/content/learn-astrology/horary-void-moon-horary)
+
+### Search gap (honest)
+`horary astrology app practitioners want features complaints reddit 2025 2026` → ZERO results (same Layer-3 gap flagged 2026-06-03). Practitioner-value judgments below rest on classical corpus + technique authorities, NOT on a community-complaint corpus.
