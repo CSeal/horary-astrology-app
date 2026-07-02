@@ -97,13 +97,14 @@ Process artifacts — not product docs, not feature docs.
 
 | Document | Description |
 |---|---|
-| [orchestration/handoff-log.md](orchestration/handoff-log.md) | Stage-by-stage completion log |
-| [orchestration/next-phases-plan.md](orchestration/next-phases-plan.md) | Current roadmap — what's shipped, what's next (owner-approved) |
-| [orchestration/plan.md](orchestration/plan.md) | Implementation partition map |
-| [orchestration/command-contracts.md](orchestration/command-contracts.md) | `/orchestrate:*` command specs |
+| [orchestration/handoff-log.md](orchestration/handoff-log.md) | Stage-by-stage completion log — living, append on every stage/incident |
+| [orchestration/next-phases-plan.md](orchestration/next-phases-plan.md) | Post-launch roadmap — what's shipped (see handoff-log), what's actually next |
+| [orchestration/incident-runbook.md](orchestration/incident-runbook.md) | Checklist for a critical bug found in an already-live/submitted build |
+| [orchestration/command-contracts.md](orchestration/command-contracts.md) | `/orchestrate:*` command specs — most build-phase commands won't re-run for this app (already built); market-research/deps-audit/sdk-upgrade remain live tools |
 | [orchestration/gate-criteria.md](orchestration/gate-criteria.md) | Gate pass/fail rules (Gates 1-8, M1-M5, 6b, 6c) |
-| [orchestration/coding-readiness-checklist.md](orchestration/coding-readiness-checklist.md) | Pre-coding binary checklist — PASS (historical record) |
+| [orchestration/store-review-findings.md](orchestration/store-review-findings.md) | UI/i18n/perf audit findings (56-screen pass) — historical record, has a live "remaining polish" tail tracked in next-phases-plan.md |
 | [orchestration/superpowers-v-preflight.md](orchestration/superpowers-v-preflight.md) | Superpowers-v trigger setup and output locations |
+| [orchestration/archive/](orchestration/archive/) | Completed planning docs for already-shipped phases — historical only, see `archive/README.md` |
 
 ---
 

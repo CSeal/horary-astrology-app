@@ -1,5 +1,11 @@
 # Orchestrate Command Contracts (Core Schema)
 
+> **Status (2026-07-02):** the app is live in both stores. `/orchestrate:start` through
+> `/orchestrate:qa` (Stages 1-6) built this app and won't be re-run for it — kept here as
+> reference for the process, and in case a future app reuses this orchestration setup.
+> `/orchestrate:market-research`, `/deps:audit`, and `/sdk:upgrade` remain live, repeatable tools.
+> Current roadmap: `../next-phases-plan.md`. Incident pattern: `../incident-runbook.md`.
+
 ## `/orchestrate:start`
 - Required inputs: `mission`, `constraints`, `existing_docs`
 - Expected outputs: initialized run context, selected first stage, initial blockers list

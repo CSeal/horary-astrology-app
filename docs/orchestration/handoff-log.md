@@ -304,3 +304,85 @@ owner_actions_required:
   - "Verify all store-drafts character counts before entering into App Store Connect / Play Console"
 next_stage: /orchestrate:screenshots → then App Store Connect submission
 blockers: []
+
+## Catch-Up — 2026-06-04 → 2026-07-01 (retroactive, condensed)
+status: COMPLETE (all items)
+note: >
+  This log fell behind reality for a month — the team moved straight from feature work into
+  release/signing/submission work without circling back to log each stage individually.
+  next-phases-plan.md was similarly stale (still read "Stage 5a ← NEXT" as of 2026-07-02
+  despite everything below being done). Reconstructed from direct source verification
+  (grep/read against current code), not from original per-stage handoffs — dates are
+  approximate. See git log for exact commit-level history.
+shipped:
+  phase1.5_verdict_cplus: "Two-screen verdict layout (compact badge + full reading), ChartStrengthBar, VocMoonBanner rich detail, AspectRow, TimingBlock/TimingTeaser — commit 6aeae17"
+  phase1.5_growth: "G02 review prompt (reviewPromptService) + G03 invite/rate (Settings Share section) — commit ecdb629. G01 share verdict card DEFERRED (needs physical-device dev build, see docs/features/share-reading-G01-deferred.md)"
+  outcome_tracking: "came_true/did_not_happen/pending on JournalEntry + Journal UI — commit e960185"
+  chart_wheel: "HoraryChartWheel SVG (12 houses + planets, chart_data mapping) — commit f1e0101"
+  location_fallback: "LocationPickerSheet wired as GPS-denied fallback — commit 7d5a364"
+  sentry: "@sentry/react-native installed + wired in _layout.tsx, guarded by EXPO_PUBLIC_SENTRY_DSN — commit 0c67e9f. NOTE: DSN was never actually set, so this stayed dormant through the incident below — see Stage-Incident entry."
+  full_api_coverage: "All of docs/api-gap-spec.md GAP-1 through GAP-8 closed — aspect_perfections (AspectRow, not the spec's suggested AspectPerfectionRow name), dignity_score/domicile_ruler, radicality_score + flags filter, SUBJECT_ROLES third_party_sibling/enemy, significators collapsible toggle, lunar_rich VOC detail, timing[] extraction. Plus beyond-spec: reception, secondary_perfection/perfectionPath, key_factors, testimony_score, full accidental_conditions. GAP-9 (/horary/aspects full coverage) and GAP-10 (fertility routing) remain deliberately deferred, not oversights."
+  retention_stage6: "stats.tsx screen (verdict distribution, accuracy%, activity chart, top categories), useStats/useStreak hooks, StreakBadge, OnThisDayBanner + onThisDayService, local outcome-reminder notifications (notificationService, expo-notifications) — all confirmed shipped, no dedicated log entry ever written"
+  ui_i18n_audit: "56-screen (8 screens × 7 locales) UI/i18n/perf audit — 10 defects found and fixed (localized dates in journal/stats, FR/DE label wrapping, banner link alignment, PT tab label, tab-bar icon centering ~19pt off → 0.3pt, Android tab-label truncation regression, keyboard inset hardening). Findings: docs/orchestration/store-review-findings.md. Plan (now archived, audit complete): docs/orchestration/archive/store-review-plan.md"
+  store_submission: "iOS 1.0.0 build 1 submitted 2026-07-01 (WAITING_FOR_REVIEW). Android v110 submitted 2026-07-02 (production, 100% rollout, status completed, review pending). Both later found broken — see Stage-Incident entry immediately below."
+test_baseline_growth: "217 passed / 223 total (6 skipped), 17 suites — grown from the 84 recorded at Stage6b-QARerun"
+blockers: []
+
+## Stage-Incident-APIKeyLeak — 2026-07-02
+status: COMPLETE
+severity: P0 — production-breaking, both platforms, confirmed live
+summary: >
+  v1.0.0 (iOS build 1) / v110 (Android) shipped with EXPO_PUBLIC_ASTROLOGY_API_KEY from the
+  developer's own .env.local baked into both release binaries. EXPO_PUBLIC_* vars are inlined
+  as literal strings into the JS bundle at build time — every install without a personal key
+  in Settings silently authenticated with this one shared dev key against the AUTHED host
+  (api.astrology-api.io), not the anonymous public host as intended. The key's quota, already
+  exhausted by a month of live-API testing/audits, meant EVERY real user got a persistent
+  LIMIT_EXCEEDED error on every question — the app's core flow was fully broken for the entire
+  install base. Confirmed live and reproducible by the owner via direct Play Store install.
+root_cause_chain:
+  - "getApiKey() priority: SecureStore (personal) → EXPO_PUBLIC_ASTROLOGY_API_KEY env var (dev fallback) → empty (public host). Intent: dev convenience only."
+  - "Expo's env loader reads .env.local straight off disk for ANY build (dev or release) — build-android.sh / build-ios.sh never excluded it."
+  - "The generic LIMIT_EXCEEDED banner text ('...monthly limit...') masked the real cause — misleadingly implies a client-side monthly quota that doesn't exist in the current codebase (the old local-counter design was already fully replaced by pure 429 passthrough from the server; nobody had updated the copy)."
+diagnosis_method: >
+  Live curl tests against api-public.astrology-api.io confirmed the ANONYMOUS public host was
+  healthy (200 OK, then a burst of 5 rapid requests tripped a real short-window 429 — proving
+  the server-side burst protection is real but NOT what the shipped app was hitting). Direct
+  unzip + grep of the ALREADY-SUBMITTED AAB/IPA for the literal .env.local key value confirmed
+  it was embedded in both `base/assets/index.android.bundle` and `Payload/Hora.app/main.jsbundle`.
+fix:
+  - "scripts/build-android.sh, scripts/build-ios.sh: stash .env.local for the full release build duration (trap-restored even on failure), fail the build if the stashed key is found embedded in the output AAB/IPA (regression guard)"
+  - "build-ios.sh: second bug found during re-verification — expo prebuild writes CFBundleVersion into Info.plist as a literal string (no expo.ios.buildNumber was ever set in app.json), so the xcodebuild CURRENT_PROJECT_VERSION flag never reached the compiled binary; every 'release' build silently kept CFBundleVersion=1. Fixed via direct PlistBuddy patch right after prebuild."
+  - "app.json version 1.0.0 → 1.0.1 (needed so force-update semver comparison can distinguish fixed installs from broken ones)"
+  - "LIMIT_EXCEEDED banner split into two copy variants keyed on settingsStore.apiKeySource (personal vs default/public) across all 7 locales — public-key copy now explains the shared connection + points at Settings; personal-key copy points at the user's own astrology-api.io quota. Old 'monthly limit' framing removed entirely."
+  - "New src/components/KeyboardDismissBar.tsx — unrelated small UX add bundled into the same fix cycle, floating hide-keyboard button above the software keyboard, visible only while it's open"
+android_resolution: "Rebuilt AAB (versionCode 112, versionName 1.0.1), independently verified key-free (fresh unzip + grep, not trusting the build script's own echo), uploaded via google_upload_bundle, production release created at 100% rollout (not staged — the prior release was broken for everyone, so partial rollout would leave some users on the broken build for no benefit). Verified live via fresh google_get_track read. v110 fully superseded."
+ios_resolution: >
+  Cancelled the pending 1.0.0 WAITING_FOR_REVIEW submission (apple_cancel_submission) → version
+  went to DEVELOPER_REJECTED (normal, fully-editable state, not an error). Rebuilt IPA with the
+  Info.plist fix, independently reverified (CFBundleVersion=112, CFBundleShortVersionString=1.0.1).
+  Uploaded via altool, waited for Apple's async processing (~2-10 min — NOT reflected immediately
+  in apple_list_builds; a first poll too early showed the OLD build only). Attempted
+  apple_create_version for a clean parallel 1.0.1 record — rejected (409, Apple does not allow a
+  second unreleased version while one exists in any pre-READY_FOR_SALE state). Reused the existing
+  1.0.0 version record instead: apple_assign_build succeeded (state → PREPARE_FOR_SUBMISSION)
+  without requiring the versionString to match the binary's internal 1.0.1. apple_submit_for_review
+  then hit an unclear 403/409 pair (leftover appStoreVersionSubmissions resource in a delete-only
+  state; a retry cancel returned "Cannot reject version" / "Submit for review errors found" with no
+  actionable detail) — stopped automating at that point rather than guessing further against a
+  production Apple account. Owner completed the final Submit for Review click manually in the ASC
+  web UI (which also corrected the version string to 1.0.1 in the same pass). Confirmed via API:
+  appStoreState WAITING_FOR_REVIEW, versionString 1.0.1, build 112 attached.
+process_notes_for_next_time:
+  - "Trust but verify applies to your own build scripts, not just the code under review — the build-number bug was only caught because the IPA's actual Info.plist was re-checked independently before upload, not because the script's own echo output was trusted."
+  - "A background agent asked to poll an external API on a timer got confused about how to wait (tried something resembling a blind sleep, self-corrected, then stalled) — for main-loop polling, a bare `sleep N` with run_in_background:true works and gets a completion notification; chained `sleep && command` is blocked entirely. Prefer handling multi-step external-API polling in the main loop rather than delegating the wait itself to a sub-agent."
+  - "google_create_release requires an explicit google_validate_edit + google_commit_edit — nothing publishes until commit_edit, independent of whether the task prompt enumerates that step."
+  - "Apple: cancelling a submission does not delete the underlying appStoreVersionSubmissions resource cleanly in all cases; re-submission after a cancel can hit unclear state errors with no available list/delete tool to fully diagnose via API — budget for a manual ASC web UI fallback on any future cancel-and-resubmit."
+force_update: "docs/app-version.json android.minVersion raised 1.0.0 → 1.0.1 (Android hotfix confirmed live). ios.minVersion intentionally left at 1.0.0 until Apple approves the resubmitted 1.0.1 — bumping early would force-gate users onto a build that doesn't exist yet in the store."
+commit: "61a81f3 — not yet pushed (owner deferred the push/force-update-activation decision separately from the commit itself)"
+outstanding_after_this_entry:
+  - "Push commit 61a81f3 to main (activates Android force-update via GitHub Pages deploy) — owner decision pending"
+  - "iOS still WAITING_FOR_REVIEW — once approved, raise ios.minVersion to 1.0.1 and push again"
+  - "GCP service-account key (hora-mcp@...) exposed in a chat transcript 2026-06-25 — rotation still not confirmed done (see feedback_keystore_in_git / project_status_audit_20260702 memory)"
+  - "Appeeky Bearer token was committed in plaintext to a PUBLIC repo (.mcp.json, github.com/CSeal/horary-astrology-app) — owner said not worth rotating given a planned subscription cancellation in ~2 weeks; GCP key is unrelated and still needs a decision"
+blockers: []
