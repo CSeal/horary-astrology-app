@@ -6,9 +6,11 @@ on:
       - 'docs/privacy-policy.md'
       - 'docs/support.md'
       - 'docs/landing.md'
+      - 'docs/app-version.json'
       - 'scripts/build-privacy.js'
     branches:
       - main
+  workflow_dispatch: {}
 
 jobs:
   deploy:
